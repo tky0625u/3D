@@ -4,7 +4,7 @@
 class TPSCamera : public CameraBase
 {
 public:
-	TPSCamera()							{}
+	TPSCamera()                         { Init(); }
 	~TPSCamera()			override	{}
 
 	void Init()				override;

@@ -82,6 +82,15 @@
     <Filter Include="Src\Application\GameObject\Camera\TPSCamera">
       <UniqueIdentifier>{c8cf7720-4d00-4c0b-a1cf-bc64280b295f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\StageObject">
+      <UniqueIdentifier>{82b830cd-d621-4f56-8920-1d3ae43b1650}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\StageObject\StageManager">
+      <UniqueIdentifier>{d8bed04c-e6e1-41af-bbed-5ab83a4042fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\StageObject\Wall">
+      <UniqueIdentifier>{cf091ee2-14a5-474d-a15c-c766a7beab6f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -258,6 +267,15 @@
     <ClInclude Include="Src\Application\GameObject\Camera\FPSCamera\FPSCamera.h">
       <Filter>Src\Application\GameObject\Camera\FPSCamera</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\StageObject\StageManager\StageManager.h">
+      <Filter>Src\Application\GameObject\StageObject\StageManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\StageObject\ObjectBase.h">
+      <Filter>Src\Application\GameObject\StageObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\StageObject\Wall\Wall.h">
+      <Filter>Src\Application\GameObject\StageObject\Wall</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -406,6 +424,15 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Camera\FPSCamera\FPSCamera.cpp">
       <Filter>Src\Application\GameObject\Camera\FPSCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\StageObject\StageManager\StageManager.cpp">
+      <Filter>Src\Application\GameObject\StageObject\StageManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\StageObject\ObjectBase.cpp">
+      <Filter>Src\Application\GameObject\StageObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\StageObject\Wall\Wall.cpp">
+      <Filter>Src\Application\GameObject\StageObject\Wall</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
