@@ -5,8 +5,8 @@ class StageManager :public KdGameObject
 public:
 	enum ObjectType
 	{
-		Wall,
-		Floor
+		FloorType,
+		WallType
 	};
 
 	StageManager()                            { Init(); }
@@ -29,4 +29,6 @@ public:
 
 private:
 	std::vector < std::shared_ptr<KdGameObject> > m_StgObjList; //ステージオブジェクトリスト
+
+	static const int                              m_ObjDistans = 4;
 };

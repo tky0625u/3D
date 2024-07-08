@@ -3,7 +3,7 @@
 class ObjectBase :public KdGameObject
 {
 public:
-	ObjectBase()                    { Init(); }
+	ObjectBase()                    {}
 	~ObjectBase()          override {};
 
 	virtual void DrawLit() override;

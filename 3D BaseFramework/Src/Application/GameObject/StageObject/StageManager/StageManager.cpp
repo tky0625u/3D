@@ -4,6 +4,11 @@
 #include<fstream>
 #include<sstream>
 
+//壁
+#include"../Wall/Wall.h"
+//床
+#include"../Floor/Floor.h"
+
 void StageManager::PreUpdate()
 {
 	for (auto& obj : m_StgObjList)
@@ -49,7 +54,7 @@ void StageManager::GenerateDepthMapFromLight()
 {
 	for (auto& obj : m_StgObjList)
 	{
-		if (obj->IsExpired())
+		if (!obj->IsExpired())
 		{
 			obj->GenerateDepthMapFromLight();
 		}
@@ -60,7 +65,7 @@ void StageManager::PreDraw()
 {
 	for (auto& obj : m_StgObjList)
 	{
-		if (obj->IsExpired())
+		if (!obj->IsExpired())
 		{
 			obj->PreDraw();
 		}
@@ -71,7 +76,7 @@ void StageManager::DrawLit()
 {
 	for (auto& obj : m_StgObjList)
 	{
-		if (obj->IsExpired())
+		if (!obj->IsExpired())
 		{
 			obj->DrawLit();
 		}
@@ -82,7 +87,7 @@ void StageManager::DrawUnLit()
 {
 	for (auto& obj : m_StgObjList)
 	{
-		if (obj->IsExpired())
+		if (!obj->IsExpired())
 		{
 			obj->DrawUnLit();
 		}
@@ -93,7 +98,7 @@ void StageManager::DrawBright()
 {
 	for (auto& obj : m_StgObjList)
 	{
-		if (obj->IsExpired())
+		if (!obj->IsExpired())
 		{
 			obj->DrawBright();
 		}
@@ -104,7 +109,7 @@ void StageManager::DrawSprite()
 {
 	for (auto& obj : m_StgObjList)
 	{
-		if (obj->IsExpired())
+		if (!obj->IsExpired())
 		{
 			obj->DrawSprite();
 		}
@@ -122,7 +127,7 @@ void StageManager::Load(int StageNumber)
 	switch (StageNumber)
 	{
 	case 1:
-
+		filePath = ("CSV/Stage/Stage1/Stage1.csv");
 		break;
 	case 2:
 
@@ -152,11 +157,18 @@ void StageManager::Load(int StageNumber)
 		break;
 	}
 
+	//オブジェクト配置
 	std::ifstream ifs(filePath);
+
+	if(!ifs.is_open())return;
 
 	std::string lineString;
 	int z = 0;  //Z軸
 	int x = 0;  //X軸
+
+	std::shared_ptr<Floor> floor;  //床
+	std::shared_ptr<Wall>  wall;   //壁
+
 	while (getline(ifs, lineString))
 	{
 		std::istringstream iss(lineString);
@@ -169,17 +181,24 @@ void StageManager::Load(int StageNumber)
 
 			switch (commaData)
 			{
-			case ObjectType::Wall:
-
+			case ObjectType::FloorType:  //床
+				floor = std::make_shared<Floor>();
+				floor->SetPos(Math::Vector3{ float(m_ObjDistans * x),0.0f,float(m_ObjDistans * z) });
+				floor->Init();
+				m_StgObjList.push_back(floor);
 				break;
-			case ObjectType::Floor:
-
+			case ObjectType::WallType:  //壁
+				wall = std::make_shared<Wall>();
+				wall->SetPos(Math::Vector3{ float(m_ObjDistans * x),0.0f,float(m_ObjDistans * z) });
+				wall->Init();
+				m_StgObjList.push_back(wall);
 				break;
 			default:
 				break;
 			}
 			x++;
 		}
+		x = 0;
 		z++;
 	}
 }

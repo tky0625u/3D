@@ -8,7 +8,4 @@ void ObjectBase::DrawLit()
 void ObjectBase::Init()
 {
 	m_model = std::make_shared<KdModelData>();
-
-	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
-	m_mWorld = Trans;
 }

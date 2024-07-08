@@ -2,11 +2,11 @@
 
 #include"../ObjectBase.h"
 
-class Wall :public ObjectBase
+class Floor :public ObjectBase
 {
 public:
-	Wall()                  {}
-	~Wall()        override {};
+	Floor()                 {}
+	~Floor()       override {};
 
 	void DrawLit() override;
 	void Init()    override;
