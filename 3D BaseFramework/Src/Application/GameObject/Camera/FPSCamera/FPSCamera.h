@@ -4,7 +4,7 @@
 class FPSCamera : public CameraBase
 {
 public:
-	FPSCamera()							{}
+	FPSCamera()                         { Init(); }
 	~FPSCamera()			override	{}
 
 	void Init()				override;

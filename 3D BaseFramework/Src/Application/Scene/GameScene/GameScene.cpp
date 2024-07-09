@@ -7,6 +7,7 @@
 #include"../../GameObject/StageObject/StageManager/StageManager.h"
 //カメラ
 #include"../../GameObject/Camera/TPSCamera/TPSCamera.h"
+#include"../../GameObject/Camera/FPSCamera/FPSCamera.h"
 
 void GameScene::Event()
 {
@@ -25,6 +26,7 @@ void GameScene::Init()
 
 	//カメラ
 	std::shared_ptr<TPSCamera> camera = std::make_shared<TPSCamera>();
+	//std::shared_ptr<FPSCamera> camera = std::make_shared<FPSCamera>();
 	m_objList.push_back(camera);
 
 	//情報セット

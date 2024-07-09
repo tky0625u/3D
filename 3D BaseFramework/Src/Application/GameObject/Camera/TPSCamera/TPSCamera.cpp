@@ -6,9 +6,7 @@ void TPSCamera::Init()
 	CameraBase::Init();
 
 	// 注視点
-	m_mLocalPos = Math::Matrix::CreateTranslation(0, 1.5f, -10.0f);
-
-	SetCursorPos(m_FixMousePos.x, m_FixMousePos.y);
+	m_mLocalPos = Math::Matrix::CreateTranslation(0, 3.0f, -10.0f);
 }
 
 void TPSCamera::Update()
@@ -18,13 +16,10 @@ void TPSCamera::Update()
 	const std::shared_ptr<const KdGameObject>	_spTarget	= m_wpTarget.lock();
 	if (_spTarget)
 	{
-		_targetMat = Math::Matrix::CreateTranslation(_spTarget->GetPos());
+		_targetMat = _spTarget->GetMatrix();
 	}
 
-	// カメラの回転
-	UpdateRotateByMouse();
-	m_mRotation = GetRotationMatrix();
-	m_mWorld	= m_mLocalPos * m_mRotation * _targetMat;
+	m_mWorld	= m_mLocalPos * _targetMat;
 
 	CameraBase::Update();
 }
