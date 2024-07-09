@@ -94,6 +94,12 @@
     <Filter Include="Src\Application\GameObject\StageObject\Floor">
       <UniqueIdentifier>{71c3e851-b2dd-42e7-b122-fb183e560b70}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\Character">
+      <UniqueIdentifier>{ee5c1fb1-581e-4092-b586-8733c4ebbbb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Player">
+      <UniqueIdentifier>{e406b39c-98ca-4dbc-aad2-f3d943bd632b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -282,6 +288,12 @@
     <ClInclude Include="Src\Application\GameObject\StageObject\Floor\Floor.h">
       <Filter>Src\Application\GameObject\StageObject\Floor</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\CharacterBase.h">
+      <Filter>Src\Application\GameObject\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Player\Player.h">
+      <Filter>Src\Application\GameObject\Character\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -442,6 +454,12 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\StageObject\Floor\Floor.cpp">
       <Filter>Src\Application\GameObject\StageObject\Floor</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\CharacterBase.cpp">
+      <Filter>Src\Application\GameObject\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Player\Player.cpp">
+      <Filter>Src\Application\GameObject\Character\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
