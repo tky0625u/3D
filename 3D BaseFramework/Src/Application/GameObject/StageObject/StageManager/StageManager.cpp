@@ -183,13 +183,13 @@ void StageManager::Load(int StageNumber)
 			{
 			case ObjectType::FloorType:  //床
 				floor = std::make_shared<Floor>();
-				floor->SetPos(Math::Vector3{ float(m_ObjDistans * x),0.0f,float(m_ObjDistans * z) });
+				floor->SetPos(Math::Vector3{ float(m_ObjDistans * x),0.0f,float(m_ObjDistans * -z) });
 				floor->Init();
 				m_StgObjList.push_back(floor);
 				break;
 			case ObjectType::WallType:  //壁
 				wall = std::make_shared<Wall>();
-				wall->SetPos(Math::Vector3{ float(m_ObjDistans * x),0.0f,float(m_ObjDistans * z) });
+				wall->SetPos(Math::Vector3{ float(m_ObjDistans * x),0.0f,float(m_ObjDistans * -z) });
 				wall->Init();
 				m_StgObjList.push_back(wall);
 				break;
