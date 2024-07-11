@@ -10,7 +10,7 @@ void Player::Update()
 	if (GetAsyncKeyState('D') & 0x8000)dir.x =  1.0f;
 	dir = dir.TransformNormal(dir, GetRotationYMatrix()); //向いてる方向によってのベクトル変換
 	dir.Normalize();       //正規化
-	m_pos += m_move * dir; //座標更新
+	m_pos += (m_status.SP * m_SpeedCorrection) * dir; //座標更新
 
 	//方向転換
 	UpdateRotateByMouse();
@@ -25,7 +25,8 @@ void Player::Init()
 {
 	CharacterBase::Init();
 	m_model->Load("Asset/Models/Character/Player/Player.gltf");
-	m_move = 0.1f;
+
+	StatusLoad("CSV/Character/Player/Player.csv");
 
 	// ↓画面中央座標
 	m_FixMousePos.x = 640;

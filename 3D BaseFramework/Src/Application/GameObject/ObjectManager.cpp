@@ -8,8 +8,6 @@
 
 //プレイヤー
 #include"Character/Player/Player.h"
-//ステージ
-#include"StageObject/StageManager/StageManager.h"
 //カメラ
 #include"Camera/TPSCamera/TPSCamera.h"
 #include"Camera/FPSCamera/FPSCamera.h"
@@ -130,10 +128,6 @@ void ObjectManager::Init()
 	//プレイヤー
 	std::shared_ptr<Player> player = std::make_shared<Player>();
 	m_ObjList.push_back(player);
-
-	//ステージ
-	std::shared_ptr<StageManager> stage = std::make_shared<StageManager>();
-	m_ObjList.push_back(stage);
 
 	//カメラ
 	std::shared_ptr<TPSCamera> camera = std::make_shared<TPSCamera>();

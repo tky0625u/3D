@@ -21,3 +21,8 @@ void CharacterBase::Init()
 {
 	m_model = std::make_shared<KdModelData>();
 }
+
+void CharacterBase::StatusLoad(std::string a_filePath)
+{
+	
+}
