@@ -25,7 +25,6 @@ void Player::Init()
 {
 	CharacterBase::Init();
 	m_model->Load("Asset/Models/Character/Player/Player.gltf");
-	m_pos  = { 0.0f,1.0f,0.0f };
 	m_move = 0.1f;
 
 	// ↓画面中央座標

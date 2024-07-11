@@ -1,47 +1,56 @@
-﻿#include "StageManager.h"
+﻿#include "ObjectManager.h"
 
 #include<iostream>
 #include<fstream>
 #include<sstream>
 
-//壁
-#include"../Wall/Wall.h"
-//床
-#include"../Floor/Floor.h"
+#include"Character/CharacterBase.h"
 
-void StageManager::PreUpdate()
+//プレイヤー
+#include"Character/Player/Player.h"
+//ステージ
+#include"StageObject/StageManager/StageManager.h"
+//カメラ
+#include"Camera/TPSCamera/TPSCamera.h"
+#include"Camera/FPSCamera/FPSCamera.h"
+//壁
+#include"StageObject/Wall/Wall.h"
+//床
+#include"StageObject/Floor/Floor.h"
+
+void ObjectManager::PreUpdate()
 {
-	for (auto& obj : m_StgObjList)
+	for (auto& obj : m_ObjList)
 	{
 		if (!obj->IsExpired())obj->PreUpdate();
 	}
 }
 
-void StageManager::Update()
+void ObjectManager::Update()
 {
-	for (auto& obj : m_StgObjList)
+	for (auto& obj : m_ObjList)
 	{
 		if (!obj->IsExpired())obj->Update();
 	}
 }
 
-void StageManager::PostUpdate()
+void ObjectManager::PostUpdate()
 {
-	for (auto& obj : m_StgObjList)
+	for (auto& obj : m_ObjList)
 	{
 		if (!obj->IsExpired())obj->PostUpdate();
 	}
 
 	//リスト削除
-	auto it = m_StgObjList.begin();
+	auto it = m_ObjList.begin();
 
-	while (it != m_StgObjList.end())
+	while (it != m_ObjList.end())
 	{
 		const bool Expired = (*it)->IsExpired();
 
 		if (Expired)
 		{
-			it = m_StgObjList.erase(it);
+			it = m_ObjList.erase(it);
 		}
 		else
 		{
@@ -50,9 +59,9 @@ void StageManager::PostUpdate()
 	}
 }
 
-void StageManager::GenerateDepthMapFromLight()
+void ObjectManager::GenerateDepthMapFromLight()
 {
-	for (auto& obj : m_StgObjList)
+	for (auto& obj : m_ObjList)
 	{
 		if (!obj->IsExpired())
 		{
@@ -61,9 +70,9 @@ void StageManager::GenerateDepthMapFromLight()
 	}
 }
 
-void StageManager::PreDraw()
+void ObjectManager::PreDraw()
 {
-	for (auto& obj : m_StgObjList)
+	for (auto& obj : m_ObjList)
 	{
 		if (!obj->IsExpired())
 		{
@@ -72,9 +81,9 @@ void StageManager::PreDraw()
 	}
 }
 
-void StageManager::DrawLit()
+void ObjectManager::DrawLit()
 {
-	for (auto& obj : m_StgObjList)
+	for (auto& obj : m_ObjList)
 	{
 		if (!obj->IsExpired())
 		{
@@ -83,9 +92,9 @@ void StageManager::DrawLit()
 	}
 }
 
-void StageManager::DrawUnLit()
+void ObjectManager::DrawUnLit()
 {
-	for (auto& obj : m_StgObjList)
+	for (auto& obj : m_ObjList)
 	{
 		if (!obj->IsExpired())
 		{
@@ -94,9 +103,9 @@ void StageManager::DrawUnLit()
 	}
 }
 
-void StageManager::DrawBright()
+void ObjectManager::DrawBright()
 {
-	for (auto& obj : m_StgObjList)
+	for (auto& obj : m_ObjList)
 	{
 		if (!obj->IsExpired())
 		{
@@ -105,9 +114,9 @@ void StageManager::DrawBright()
 	}
 }
 
-void StageManager::DrawSprite()
+void ObjectManager::DrawSprite()
 {
-	for (auto& obj : m_StgObjList)
+	for (auto& obj : m_ObjList)
 	{
 		if (!obj->IsExpired())
 		{
@@ -116,11 +125,28 @@ void StageManager::DrawSprite()
 	}
 }
 
-void StageManager::Init()
+void ObjectManager::Init()
 {
+	//プレイヤー
+	std::shared_ptr<Player> player = std::make_shared<Player>();
+	m_ObjList.push_back(player);
+
+	//ステージ
+	std::shared_ptr<StageManager> stage = std::make_shared<StageManager>();
+	m_ObjList.push_back(stage);
+
+	//カメラ
+	std::shared_ptr<TPSCamera> camera = std::make_shared<TPSCamera>();
+	//std::shared_ptr<FPSCamera> camera = std::make_shared<FPSCamera>();
+	m_ObjList.push_back(camera);
+
+	//情報セット
+	player->SetCamera(camera);
+	m_player = player;
+	camera->SetTarget(player);
 }
 
-void StageManager::Load(int StageNumber)
+void ObjectManager::Load(int StageNumber)
 {
 	std::string filePath;
 
@@ -160,7 +186,7 @@ void StageManager::Load(int StageNumber)
 	//オブジェクト配置
 	std::ifstream ifs(filePath);
 
-	if(!ifs.is_open())return;
+	if (!ifs.is_open())return;
 
 	std::string lineString;
 	int z = 0;  //Z軸
@@ -185,13 +211,19 @@ void StageManager::Load(int StageNumber)
 				floor = std::make_shared<Floor>();
 				floor->SetPos(Math::Vector3{ float(m_ObjDistans * x),0.0f,float(m_ObjDistans * -z) });
 				floor->Init();
-				m_StgObjList.push_back(floor);
+				m_ObjList.push_back(floor);
 				break;
 			case ObjectType::WallType:  //壁
 				wall = std::make_shared<Wall>();
 				wall->SetPos(Math::Vector3{ float(m_ObjDistans * x),0.0f,float(m_ObjDistans * -z) });
 				wall->Init();
-				m_StgObjList.push_back(wall);
+				m_ObjList.push_back(wall);
+				break;
+			case ObjectType::PlayerType:  //プレイヤー
+				if (m_player.expired() == false)
+				{
+					m_player.lock()->SetPos(Math::Vector3{ float(m_ObjDistans * x),1.0f,float(m_ObjDistans * -z) });
+				}
 				break;
 			default:
 				break;

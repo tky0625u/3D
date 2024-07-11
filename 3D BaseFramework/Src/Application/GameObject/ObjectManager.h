@@ -1,16 +1,19 @@
 ﻿#pragma once
 
-class StageManager :public KdGameObject
+class CharacterBase;
+
+class ObjectManager :public KdGameObject
 {
 public:
 	enum ObjectType
 	{
 		FloorType,
-		WallType
+		WallType,
+		PlayerType
 	};
 
-	StageManager()                            { Init(); }
-	~StageManager()                  override {};
+	ObjectManager() { Init(); }
+	~ObjectManager()                  override {};
 
 	void PreUpdate()                 override;
 	void Update()                    override;
@@ -28,7 +31,9 @@ public:
 	void Load(int StageNumber);
 
 private:
-	std::vector < std::shared_ptr<KdGameObject> > m_StgObjList; //ステージオブジェクトリスト
+	std::vector < std::shared_ptr<KdGameObject> > m_ObjList; //ステージオブジェクトリスト
 
 	static const int                              m_ObjDistans = 4;
+
+	std::weak_ptr<CharacterBase>                  m_player;
 };
