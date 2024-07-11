@@ -13,15 +13,28 @@ public:
 		 int SM  = 1; //スタミナ
 	};
 
+	 enum StatusType
+	 {
+		 HPType,  //体力
+		 ATKType, //攻撃力
+		 MPType,  //魔力
+		 DFType,  //防御力
+		 SPType,  //素早さ
+		 SMType   //スタミナ
+	 };
+
 	CharacterBase()                                   { Init(); }
 	~CharacterBase()                         override {};
 
-	virtual void Update()                    override;
+	void Update()                            override;
 	virtual void GenerateDepthMapFromLight() override;
 	virtual void DrawLit()                   override;
 	virtual void Init()                      override;
 
-	void StatusLoad(std::string a_filePath);
+	virtual void Action() {}; //行動
+	virtual void CrushingAction(); //やられ演出
+
+	void StatusLoad(std::string a_filePath); //ステータス読み取り
 
 	void SetPos(Math::Vector3 a_pos) { m_pos = a_pos; }
 
@@ -30,4 +43,7 @@ protected:
 	std::shared_ptr<KdModelData> m_model;
 	Math::Vector3                m_pos = Math::Vector3::Zero;
 	const float                  m_SpeedCorrection = 0.1f;
+
+	Math::Matrix                 m_trans = Math::Matrix::Identity;
+	Math::Matrix                 m_rot = Math::Matrix::Identity;
 };

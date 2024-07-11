@@ -214,6 +214,13 @@ void ObjectManager::Load(int StageNumber)
 				m_ObjList.push_back(wall);
 				break;
 			case ObjectType::PlayerType:  //プレイヤー
+				//床　※地面に穴を開けないため
+				floor = std::make_shared<Floor>();
+				floor->SetPos(Math::Vector3{ float(m_ObjDistans * x),0.0f,float(m_ObjDistans * -z) });
+				floor->Init();
+				m_ObjList.push_back(floor);
+
+				//プレイヤー
 				if (m_player.expired() == false)
 				{
 					m_player.lock()->SetPos(Math::Vector3{ float(m_ObjDistans * x),1.0f,float(m_ObjDistans * -z) });
@@ -227,4 +234,6 @@ void ObjectManager::Load(int StageNumber)
 		x = 0;
 		z++;
 	}
+
+	ifs.close();
 }

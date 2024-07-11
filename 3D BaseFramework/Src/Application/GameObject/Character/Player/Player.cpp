@@ -1,6 +1,6 @@
 ﻿#include "Player.h"
 
-void Player::Update()
+void Player::Action()
 {
 	//移動
 	Math::Vector3 dir = Math::Vector3::Zero; //ベクトルリセット
@@ -14,11 +14,7 @@ void Player::Update()
 
 	//方向転換
 	UpdateRotateByMouse();
-
-	//ワールド行列更新
-	Math::Matrix Rot   = GetRotationMatrix();
-	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
-	m_mWorld = Rot * Trans;
+	m_rot = GetRotationMatrix();
 }
 
 void Player::Init()
@@ -34,6 +30,11 @@ void Player::Init()
 
 	SetCursorPos(m_FixMousePos.x, m_FixMousePos.y);
 	ShowCursor(false);
+}
+
+void Player::CrushingAction()
+{
+	CharacterBase::CrushingAction();
 }
 
 void Player::UpdateRotateByMouse()

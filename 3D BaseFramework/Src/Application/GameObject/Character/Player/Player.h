@@ -10,8 +10,10 @@ public:
 	Player()               { Init(); }
 	~Player()     override {};
 
-	void Update() override;
+	void Action() override;
 	void Init()   override;
+
+	void CrushingAction()override;
 
 	void UpdateRotateByMouse();
 
