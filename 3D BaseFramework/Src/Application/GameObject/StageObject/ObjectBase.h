@@ -6,7 +6,7 @@ public:
 	ObjectBase()                    {}
 	~ObjectBase()          override {};
 
-	virtual void DrawLit() override;
+	 virtual void DrawLit() override;
 
 	void SetPos(Math::Vector3 a_pos) { m_pos = a_pos; }
 	void SetModel(const std::shared_ptr<KdModelData>& _model) { m_model = _model; }

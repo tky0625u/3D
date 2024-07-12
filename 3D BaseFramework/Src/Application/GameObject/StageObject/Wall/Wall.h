@@ -8,7 +8,6 @@ public:
 	Wall()                  {}
 	~Wall()        override {};
 
-	void DrawLit() override;
 	void Init()    override;
 
 private:

@@ -8,7 +8,6 @@ public:
 	Floor()                 {}
 	~Floor()       override {};
 
-	void DrawLit() override;
 	void Init()    override;
 
 private:
