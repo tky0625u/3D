@@ -37,4 +37,5 @@ private:
 	std::weak_ptr<CameraBase> m_camera;
 	POINT					  m_FixMousePos{};
 	Math::Vector3			  m_DegAng = Math::Vector3::Zero;
+	float                     m_DashCorrection; //ダッシュ補正
 };

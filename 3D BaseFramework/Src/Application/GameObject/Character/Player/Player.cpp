@@ -10,7 +10,15 @@ void Player::Action()
 	if (GetAsyncKeyState('D') & 0x8000)dir.x =  1.0f;
 	dir = dir.TransformNormal(dir, GetRotationYMatrix()); //向いてる方向によってのベクトル変換
 	dir.Normalize();       //正規化
-	m_pos += (m_status.SP * m_SpeedCorrection) * dir; //座標更新
+	float Move = m_status.SP * m_SpeedCorrection;
+	
+	//ダッシュ
+	if (GetAsyncKeyState(VK_LSHIFT) & 0x8000)
+	{
+		Move *= m_DashCorrection;
+	}
+
+	m_pos += Move * dir; //座標更新
 
 	//方向転換
 	UpdateRotateByMouse();
@@ -22,7 +30,9 @@ void Player::Init()
 	CharacterBase::Init();
 	m_model->Load("Asset/Models/Character/Player/Player.gltf");
 
-	StatusLoad("CSV/Character/Player/Player.csv");
+	StatusLoad("CSV/Character/Status/Player/Player.csv");
+
+	m_DashCorrection = 2.0f;
 
 	// ↓画面中央座標
 	m_FixMousePos.x = 640;
