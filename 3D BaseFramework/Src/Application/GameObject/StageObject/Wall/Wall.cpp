@@ -7,8 +7,6 @@ void Wall::DrawLit()
 
 void Wall::Init()
 {
-	ObjectBase::Init();
-	m_model->Load("Asset/Models/StageObject/Wall/Wall.gltf");
 	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
 	m_mWorld = Trans;
 }

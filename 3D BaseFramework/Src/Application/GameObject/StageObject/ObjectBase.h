@@ -7,9 +7,9 @@ public:
 	~ObjectBase()          override {};
 
 	virtual void DrawLit() override;
-	virtual void Init()    override;
 
 	void SetPos(Math::Vector3 a_pos) { m_pos = a_pos; }
+	void SetModel(const std::shared_ptr<KdModelData>& _model) { m_model = _model; }
 
 protected:
 	std::shared_ptr<KdModelData> m_model;

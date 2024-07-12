@@ -129,6 +129,14 @@ void ObjectManager::Init()
 	std::shared_ptr<Player> player = std::make_shared<Player>();
 	m_ObjList.push_back(player);
 
+	//床
+	m_floorModel = std::make_shared<KdModelData>();
+	m_floorModel->Load("Asset/Models/StageObject/Floor/Floor.gltf");
+
+	//壁
+	m_wallModel = std::make_shared<KdModelData>();
+	m_wallModel->Load("Asset/Models/StageObject/Wall/Wall.gltf");
+
 	//カメラ
 	std::shared_ptr<TPSCamera> camera = std::make_shared<TPSCamera>();
 	//std::shared_ptr<FPSCamera> camera = std::make_shared<FPSCamera>();
@@ -205,12 +213,14 @@ void ObjectManager::Load(int StageNumber)
 				floor = std::make_shared<Floor>();
 				floor->SetPos(Math::Vector3{ float(m_ObjDistans * x),0.0f,float(m_ObjDistans * -z) });
 				floor->Init();
+				floor->SetModel(m_floorModel);
 				m_ObjList.push_back(floor);
 				break;
 			case ObjectType::WallType:  //壁
 				wall = std::make_shared<Wall>();
 				wall->SetPos(Math::Vector3{ float(m_ObjDistans * x),0.0f,float(m_ObjDistans * -z) });
 				wall->Init();
+				wall->SetModel(m_wallModel);
 				m_ObjList.push_back(wall);
 				break;
 			case ObjectType::PlayerType:  //プレイヤー
@@ -218,6 +228,7 @@ void ObjectManager::Load(int StageNumber)
 				floor = std::make_shared<Floor>();
 				floor->SetPos(Math::Vector3{ float(m_ObjDistans * x),0.0f,float(m_ObjDistans * -z) });
 				floor->Init();
+				floor->SetModel(m_floorModel);
 				m_ObjList.push_back(floor);
 
 				//プレイヤー

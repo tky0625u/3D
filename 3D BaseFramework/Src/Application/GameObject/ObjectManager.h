@@ -36,4 +36,7 @@ private:
 	static const int                              m_ObjDistans = 4;
 
 	std::weak_ptr<CharacterBase>                  m_player;
+
+	std::shared_ptr<KdModelData>                  m_floorModel;
+	std::shared_ptr<KdModelData>                  m_wallModel;
 };
