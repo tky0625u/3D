@@ -18,6 +18,21 @@ void GameScene::Event()
 
 void GameScene::Init()
 {
+	//プレイヤー
+	std::shared_ptr<Player> player = std::make_shared<Player>(); 
+	m_objList.push_back(player);
+
+	//カメラ
+	std::shared_ptr<TPSCamera> camera = std::make_shared<TPSCamera>();
+	//std::shared_ptr<FPSCamera> camera = std::make_shared<FPSCamera>();
+	m_objList.push_back(camera);
+
+	//情報セット
+	player->SetCamera(camera);
+	m_player = player;
+	camera->SetTarget(player);
+
+
 	//床
 	m_floorModel = std::make_shared<KdModelData>();
 	m_floorModel->Load("Asset/Models/StageObject/Floor/Floor.gltf");
@@ -75,17 +90,6 @@ void GameScene::Load(int StageNumber)
 	int z = 0;  //Z軸
 	int x = 0;  //X軸
 
-	std::shared_ptr<Player> player = std::make_shared<Player>(); //プレイヤー
-
-	//カメラ
-	std::shared_ptr<TPSCamera> camera = std::make_shared<TPSCamera>();
-	//std::shared_ptr<FPSCamera> camera = std::make_shared<FPSCamera>();
-
-	//情報セット
-	player->SetCamera(camera);
-	m_player = player;
-	camera->SetTarget(player);
-
 	std::shared_ptr<Floor> floor;  //床
 	std::shared_ptr<Wall>  wall;   //壁
 
@@ -124,9 +128,10 @@ void GameScene::Load(int StageNumber)
 				m_objList.push_back(floor);
 
 				//プレイヤー
-				player->SetPos(Math::Vector3{ float(m_ObjDistans * x),1.0f,float(m_ObjDistans * -z) });
-				m_objList.push_back(player);
-				m_objList.push_back(camera);
+				if (m_player.expired() == false)
+				{
+					m_player.lock()->SetPos(Math::Vector3{ float(m_ObjDistans * x),1.0f,float(m_ObjDistans * -z) });
+				}
 				break;
 			default:
 				break;
