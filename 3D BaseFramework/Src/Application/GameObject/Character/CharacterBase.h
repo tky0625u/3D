@@ -27,6 +27,7 @@ public:
 	~CharacterBase()                         override {};
 
 	void Update()                            override;
+	void PostUpdate()                        override;
 	virtual void GenerateDepthMapFromLight() override;
 	virtual void DrawLit()                   override;
 	virtual void Init()                      override;
@@ -42,7 +43,10 @@ protected:
 	Status                       m_status;
 	std::shared_ptr<KdModelData> m_model;
 	Math::Vector3                m_pos = Math::Vector3::Zero;
+	float                        m_sizeHalf;
 	const float                  m_SpeedCorrection = 0.1f;
+	const float                  m_gravityPow = 0.1f;
+	float                        m_gravity = 0.0f;
 
 	Math::Matrix                 m_trans = Math::Matrix::Identity;
 	Math::Matrix                 m_rot = Math::Matrix::Identity;

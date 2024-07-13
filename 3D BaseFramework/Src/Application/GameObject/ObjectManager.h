@@ -30,6 +30,8 @@ public:
 
 	void Load(int StageNumber);
 
+	const std::vector < std::shared_ptr<KdGameObject> >& GetObj()const { return m_ObjList; }
+
 private:
 	std::vector < std::shared_ptr<KdGameObject> > m_ObjList; //ステージオブジェクトリスト
 
@@ -39,4 +41,12 @@ private:
 
 	std::shared_ptr<KdModelData>                  m_floorModel;
 	std::shared_ptr<KdModelData>                  m_wallModel;
+
+public:
+
+	static ObjectManager& instance()
+	{
+		static ObjectManager instance;
+		return instance;
+	}
 };

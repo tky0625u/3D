@@ -32,6 +32,7 @@ void Player::Init()
 
 	StatusLoad("CSV/Character/Status/Player/Player.csv");
 
+	m_sizeHalf = 1.0f;
 	m_DashCorrection = 2.0f;
 
 	// ↓画面中央座標
