@@ -1,69 +1,114 @@
 ﻿#include "Player.h"
+#include"../../Camera/CameraBase.h"
 
 void Player::Action()
 {
 	//移動
 	Math::Vector3 dir = Math::Vector3::Zero; //ベクトルリセット
-	if (GetAsyncKeyState('W') & 0x8000)dir.z =  1.0f;
-	if (GetAsyncKeyState('S') & 0x8000)dir.z = -1.0f;
-	if (GetAsyncKeyState('A') & 0x8000)dir.x = -1.0f;
-	if (GetAsyncKeyState('D') & 0x8000)dir.x =  1.0f;
-	dir = dir.TransformNormal(dir, GetRotationYMatrix()); //向いてる方向によってのベクトル変換
-	dir.Normalize();       //正規化
-	float Move = m_status.SP * m_SpeedCorrection;
-	
-	//ダッシュ
-	if (GetAsyncKeyState(VK_LSHIFT) & 0x8000)
+	bool          moveFlg = false;
+	if (GetAsyncKeyState('W') & 0x8000)
 	{
-		Move *= m_DashCorrection;
+		dir.z   = 1.0f;
+		moveFlg = true;
+	}
+	if (GetAsyncKeyState('S') & 0x8000)
+	{
+		dir.z   = -1.0f;
+		moveFlg = true;
+	}
+	if (GetAsyncKeyState('A') & 0x8000)
+	{
+		dir.x   = -1.0f;
+		moveFlg = true;
+	}	
+	if (GetAsyncKeyState('D') & 0x8000)
+	{
+		dir.x   = 1.0f;
+		moveFlg = true;
 	}
 
-	m_pos += Move * dir; //座標更新
+	Math::Matrix cameraRotYMat = Math::Matrix::Identity;
+	if (m_camera.expired() == false)
+	{
+		cameraRotYMat = m_camera.lock()->GetRotationYMatrix();
+	}
+	dir = dir.TransformNormal(dir, cameraRotYMat);
 
-	//方向転換
-	UpdateRotateByMouse();
-	m_rot = GetRotationMatrix();
+	//回転
+	if (moveFlg)
+	{
+		dir.Normalize();       //正規化
+		
+		//今の方向
+		Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
+		Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3(0, 0, 1), nowRot);
+
+		//向きたい方向
+		Math::Vector3 toVec = dir;
+		toVec.Normalize();
+
+		//内角 回転する各を求める
+		float d = nowVec.Dot(toVec);
+		d = std::clamp(d, -1.0f, 1.0f); //誤差修正
+
+		//回転角度を求める
+		float ang = DirectX::XMConvertToDegrees(acos(d));
+
+		//角度変更
+		if (ang >= 0.1f)
+		{
+			if (ang > 20)
+			{
+				ang = 20.0f; //変更角度
+			}
+
+			//外角　どっち回転かを求める
+			Math::Vector3 c = toVec.Cross(nowVec);
+			if (c.y >= 0)
+			{
+				//右回転
+				m_angle -= ang;
+				if (m_angle < 0.0f)
+				{
+					m_angle += 360.0f;
+				}
+			}
+			else
+			{
+				//左回転
+				m_angle += ang;
+				if (m_angle >= 360.0f)
+				{
+					m_angle -= 360.0f;
+				}
+			}
+		}
+
+		float Move = m_status.SP * m_SpeedCorrection;
+		//ダッシュ
+		if (GetAsyncKeyState(VK_LSHIFT) & 0x8000)
+		{
+			Move *= m_DashCorrection;
+		}
+
+		m_pos += Move * dir; //座標更新
+	}
+
 }
 
 void Player::Init()
 {
 	CharacterBase::Init();
-	m_model->Load("Asset/Models/Character/Player/Player.gltf");
+	m_model->Load("Asset/Models/Character/Player/tank.gltf");
 
 	StatusLoad("CSV/Character/Status/Player/Player.csv");
 
 	m_sizeHalf = 1.0f;
 	m_DashCorrection = 2.0f;
 
-	// ↓画面中央座標
-	m_FixMousePos.x = 640;
-	m_FixMousePos.y = 360;
-
-	SetCursorPos(m_FixMousePos.x, m_FixMousePos.y);
-	ShowCursor(false);
 }
 
 void Player::CrushingAction()
 {
 	CharacterBase::CrushingAction();
-}
-
-void Player::UpdateRotateByMouse()
-{
-	// マウスでカメラを回転させる処理
-	POINT _nowPos;
-	GetCursorPos(&_nowPos);
-
-	POINT _mouseMove{};
-	_mouseMove.x = _nowPos.x - m_FixMousePos.x;
-	_mouseMove.y = _nowPos.y - m_FixMousePos.y;
-
-	SetCursorPos(m_FixMousePos.x, m_FixMousePos.y);
-
-	// 実際にカメラを回転させる処理(0.15はただの補正値)
-	m_DegAng.x += _mouseMove.y * 0.15f;
-	m_DegAng.y += _mouseMove.x * 0.15f;
-
-	// 回転制御
-	m_DegAng.x = std::clamp(m_DegAng.x, -45.f, 45.f);
 }

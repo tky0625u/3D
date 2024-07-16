@@ -16,8 +16,9 @@ void CharacterBase::Update()
 	m_pos.y -= m_gravity;
 
 	//ワールド行列更新
-	m_trans = Math::Matrix::CreateTranslation(m_pos);
-	m_mWorld = m_rot * m_trans;
+	Math::Matrix RotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
+	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
+	m_mWorld = RotY * Trans;
 }
 
 void CharacterBase::PostUpdate()
