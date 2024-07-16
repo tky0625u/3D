@@ -47,7 +47,7 @@ void Player::Action()
 		Math::Vector3 toVec = dir;
 		toVec.Normalize();
 
-		//内角 回転する各を求める
+		//内角 回転する角を求める
 		float d = nowVec.Dot(toVec);
 		d = std::clamp(d, -1.0f, 1.0f); //誤差修正
 
