@@ -49,7 +49,9 @@ protected:
 	std::weak_ptr<KdGameObject>	m_wpTarget;
 
 	Math::Matrix				m_mLocalPos		= Math::Matrix::Identity;
-	Math::Matrix				m_mRotation = Math::Matrix::Identity;
+	Math::Matrix				m_mRotation     = Math::Matrix::Identity;
+
+	float                       m_ViewingAngle;
 
 	// カメラ回転用マウス座標の差分
 	POINT						m_FixMousePos{};

@@ -12,6 +12,9 @@ void CameraBase::Init()
 	// ↓画面中央座標
 	m_FixMousePos.x = 640;
 	m_FixMousePos.y = 360;
+
+	m_ViewingAngle = 60;
+	m_spCamera->SetProjectionMatrix(m_ViewingAngle);
 }
 
 void CameraBase::Update()
