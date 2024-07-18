@@ -10,7 +10,6 @@ public :
 	enum ObjectType
 	{
 		FloorType,
-		WallType,
 		PlayerType
 	};
 

@@ -7,10 +7,7 @@
 //プレイヤー
 #include"../../GameObject/Character/Player/Player.h"
 //カメラ
-//#include"../../GameObject/Camera/FPSCamera/FPSCamera.h"
 #include"../../GameObject/Camera/TPSCamera/TPSCamera.h"
-//壁
-#include"../../GameObject/StageObject/Wall/Wall.h"
 //床
 #include"../../GameObject/StageObject/Floor/Floor.h"
 
@@ -26,7 +23,6 @@ void GameScene::Init()
 
 	//カメラ
 	std::shared_ptr<TPSCamera> camera = std::make_shared<TPSCamera>();
-	//std::shared_ptr<FPSCamera> camera = std::make_shared<FPSCamera>();
 	m_objList.push_back(camera);
 
 	//情報セット
@@ -38,10 +34,6 @@ void GameScene::Init()
 	//床
 	m_floorModel = std::make_shared<KdModelData>();
 	m_floorModel->Load("Asset/Models/StageObject/Floor/Floor.gltf");
-
-	//壁
-	m_wallModel = std::make_shared<KdModelData>();
-	m_wallModel->Load("Asset/Models/StageObject/Wall/Wall.gltf");
 
 	Load(1, 0, 0);
 	//MapLoad("CSV/Map/Map.csv");
@@ -131,7 +123,6 @@ void GameScene::Load(int StageNumber,int Z, int X)
 	int x = 0;  //X軸
 
 	std::shared_ptr<Floor> floor;  //床
-	std::shared_ptr<Wall>  wall;   //壁
 
 	float _StageDistaceX = m_StageDistans * float(X);
 	float _StageDistaceZ = m_StageDistans * float(Z);
@@ -154,13 +145,6 @@ void GameScene::Load(int StageNumber,int Z, int X)
 				floor->SetModel(m_floorModel);
 				floor->Init();
 				m_objList.push_back(floor);
-				break;
-			case ObjectType::WallType:  //壁
-				wall = std::make_shared<Wall>();
-				wall->SetPos(Math::Vector3{ float(m_ObjDistans * x) + _StageDistaceX,0.0f,(float(m_ObjDistans * z) + _StageDistaceZ) * -1 });
-				wall->SetModel(m_wallModel);
-				wall->Init();
-				m_objList.push_back(wall);
 				break;
 			case ObjectType::PlayerType:  //プレイヤー
 				//床　※地面に穴を開けないため

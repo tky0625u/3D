@@ -84,6 +84,54 @@ void CharacterBase::CrushingAction()
 	if(!IsExpired())m_isExpired = true;
 }
 
+void CharacterBase::Rotation(Math::Vector3 _moveDir)
+{
+	//今の方向
+	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
+	Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3(0, 0, 1), nowRot);
+
+	//向きたい方向
+	Math::Vector3 toVec = _moveDir;
+	toVec.Normalize();
+
+	//内角 回転する角を求める
+	float d = nowVec.Dot(toVec);
+	d = std::clamp(d, -1.0f, 1.0f); //誤差修正
+
+	//回転角度を求める
+	float ang = DirectX::XMConvertToDegrees(acos(d));
+
+	//角度変更
+	if (ang >= 0.1f)
+	{
+		if (ang > 20)
+		{
+			ang = 20.0f; //変更角度
+		}
+
+		//外角　どっち回転かを求める
+		Math::Vector3 c = toVec.Cross(nowVec);
+		if (c.y >= 0)
+		{
+			//右回転
+			m_angle -= ang;
+			if (m_angle < 0.0f)
+			{
+				m_angle += 360.0f;
+			}
+		}
+		else
+		{
+			//左回転
+			m_angle += ang;
+			if (m_angle >= 360.0f)
+			{
+				m_angle -= 360.0f;
+			}
+		}
+	}
+}
+
 void CharacterBase::StatusLoad(std::string a_filePath)
 {
 	std::ifstream ifs(a_filePath);
@@ -105,7 +153,7 @@ void CharacterBase::StatusLoad(std::string a_filePath)
 	}
 
 	//ステータス更新
-	m_status = { comma[StatusType::HPType],comma[StatusType::ATKType],comma[StatusType::MPType],comma[StatusType::DFType],comma[StatusType::SPType],comma[StatusType::SMType] };
+	m_status = { comma[StatusType::HPType],comma[StatusType::ATKType],comma[StatusType::DFType],comma[StatusType::SPType],comma[StatusType::SMType] };
 
 	ifs.close();
 }

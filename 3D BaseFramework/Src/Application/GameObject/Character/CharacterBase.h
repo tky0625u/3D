@@ -17,10 +17,17 @@ public:
 	 {
 		 HPType,  //体力
 		 ATKType, //攻撃力
-		 MPType,  //魔力
 		 DFType,  //防御力
 		 SPType,  //素早さ
 		 SMType   //スタミナ
+	 };
+
+	 enum CharacterType
+	 {
+		 OnePlayer = 1 << 0,
+		 TwoPlayer = 1 << 1,
+		 Leader    = 1 << 2,
+		 Normal    = 1 << 3
 	 };
 
 	CharacterBase()                                   { Init(); }
@@ -35,12 +42,15 @@ public:
 	virtual void Action() {}; //行動
 	virtual void CrushingAction(); //やられ演出
 
+	void Rotation(Math::Vector3 _moveDir);
+
 	void StatusLoad(std::string a_filePath); //ステータス読み取り
 
 	void SetPos(Math::Vector3 a_pos) { m_pos = a_pos; }
 
 protected:
 	Status                       m_status;
+	CharacterType                m_characterType;
 	std::shared_ptr<KdModelData> m_model;
 	Math::Vector3                m_pos = Math::Vector3::Zero;
 	float                        m_angle = 0.0f;
@@ -48,4 +58,5 @@ protected:
 	const float                  m_SpeedCorrection = 0.1f;
 	const float                  m_gravityPow = 0.1f;
 	float                        m_gravity = 0.0f;
+	float                        m_atkRange;
 };
