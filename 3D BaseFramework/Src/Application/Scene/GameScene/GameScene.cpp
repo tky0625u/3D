@@ -1,11 +1,13 @@
 ﻿#include "GameScene.h"
 #include"../SceneManager.h"
 
+#include<fstream>
+#include<sstream>
 
 //プレイヤー
 #include"../../GameObject/Character/Player/Player.h"
 //カメラ
-#include"../../GameObject/Camera/FPSCamera/FPSCamera.h"
+//#include"../../GameObject/Camera/FPSCamera/FPSCamera.h"
 #include"../../GameObject/Camera/TPSCamera/TPSCamera.h"
 //壁
 #include"../../GameObject/StageObject/Wall/Wall.h"
@@ -41,41 +43,79 @@ void GameScene::Init()
 	m_wallModel = std::make_shared<KdModelData>();
 	m_wallModel->Load("Asset/Models/StageObject/Wall/Wall.gltf");
 
-	Load(1);
+	Load(1, 0, 0);
+	//MapLoad("CSV/Map/Map.csv");
 }
 
-void GameScene::Load(int StageNumber)
+void GameScene::MapLoad(std::string _filePath)
+{
+	std::ifstream ifs(_filePath);
+
+	if (!ifs.is_open())return;
+
+	std::vector<int>              WideList;
+	std::vector<std::vector<int>> MapList;
+
+	std::string lineString;
+	int Z = 0;
+	while (getline(ifs, lineString))
+	{
+		std::istringstream iss(lineString);
+		std::string commaString;
+
+		while (getline(iss, commaString, ','))
+		{
+			int Data = std::stoi(commaString);
+			WideList.push_back(Data);
+		}
+		Z++;
+		MapList.push_back(WideList);
+		WideList.clear();
+	}
+
+	for (int z = 0; z < MapList.size(); ++z)
+	{
+		for (int x = 0; x < MapList[z].size(); ++x)
+		{
+			Load(MapList[z][x],z,x);
+		}
+	}
+
+	ifs.close();
+}
+
+void GameScene::Load(int StageNumber,int Z, int X)
 {
 	std::string filePath;
 
 	switch (StageNumber)
 	{
 	case 1:
-		filePath = ("CSV/Stage/Stage1/Stage1.csv");
+		filePath = ("CSV/Stage/Stage1.csv");
 		break;
 	case 2:
-
+		filePath = ("CSV/Stage/Stage2.csv");
 		break;
 	case 3:
-
+		filePath = ("CSV/Stage/Stage3.csv");
 		break;
 	case 4:
-
+		filePath = ("CSV/Stage/Stage4.csv");
 		break;
 	case 5:
-
+		filePath = ("CSV/Stage/Stage5.csv");
 		break;
 	case 6:
-
+		filePath = ("CSV/Stage/Stage6.csv");
 		break;
 	case 7:
-
+		filePath = ("CSV/Stage/Stage7.csv");
 		break;
 	case 8:
-
+		filePath = ("CSV/Stage/Stage8.csv");
 		break;
 	case 9:
-
+		filePath = ("CSV/Stage/Stage9.csv");
 		break;
 	default:
 		break;
@@ -93,6 +133,9 @@ void GameScene::Load(int StageNumber)
 	std::shared_ptr<Floor> floor;  //床
 	std::shared_ptr<Wall>  wall;   //壁
 
+	float _StageDistaceX = m_StageDistans * float(X);
+	float _StageDistaceZ = m_StageDistans * float(Z);
+
 	while (getline(ifs, lineString))
 	{
 		std::istringstream iss(lineString);
@@ -107,14 +150,14 @@ void GameScene::Load(int StageNumber)
 			{
 			case ObjectType::FloorType:  //床
 				floor = std::make_shared<Floor>();
-				floor->SetPos(Math::Vector3{ float(m_ObjDistans * x),0.0f,float(m_ObjDistans * -z) });
+				floor->SetPos(Math::Vector3{ float(m_ObjDistans * x) + _StageDistaceX,0.0f,(float(m_ObjDistans * z) + _StageDistaceZ) * -1 });
 				floor->SetModel(m_floorModel);
 				floor->Init();
 				m_objList.push_back(floor);
 				break;
 			case ObjectType::WallType:  //壁
 				wall = std::make_shared<Wall>();
-				wall->SetPos(Math::Vector3{ float(m_ObjDistans * x),0.0f,float(m_ObjDistans * -z) });
+				wall->SetPos(Math::Vector3{ float(m_ObjDistans * x) + _StageDistaceX,0.0f,(float(m_ObjDistans * z) + _StageDistaceZ) * -1 });
 				wall->SetModel(m_wallModel);
 				wall->Init();
 				m_objList.push_back(wall);
@@ -122,7 +165,7 @@ void GameScene::Load(int StageNumber)
 			case ObjectType::PlayerType:  //プレイヤー
 				//床　※地面に穴を開けないため
 				floor = std::make_shared<Floor>();
-				floor->SetPos(Math::Vector3{ float(m_ObjDistans * x),0.0f,float(m_ObjDistans * -z) });
+				floor->SetPos(Math::Vector3{ float(m_ObjDistans * x) + _StageDistaceX,0.0f,(float(m_ObjDistans * z) + _StageDistaceZ) * -1 });
 				floor->SetModel(m_floorModel);
 				floor->Init();
 				m_objList.push_back(floor);
@@ -130,7 +173,7 @@ void GameScene::Load(int StageNumber)
 				//プレイヤー
 				if (m_player.expired() == false)
 				{
-					m_player.lock()->SetPos(Math::Vector3{ float(m_ObjDistans * x),1.0f,float(m_ObjDistans * -z) });
+					m_player.lock()->SetPos(Math::Vector3{ float(m_ObjDistans * x) + _StageDistaceX,0.0f,(float(m_ObjDistans * z) + _StageDistaceZ) * -1 });
 				}
 				break;
 			default:
