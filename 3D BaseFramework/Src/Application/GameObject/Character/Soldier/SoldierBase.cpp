@@ -10,6 +10,7 @@ void SoldierBase::Action()
 	}
 
 	Math::Vector3 dir = enemyLeaderPos - m_pos;
+	dir.y = 0.0f;
 	dir.Normalize();
 
 	CharacterBase::Rotation(dir);
