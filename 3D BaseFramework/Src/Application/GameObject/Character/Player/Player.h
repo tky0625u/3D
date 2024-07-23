@@ -19,5 +19,5 @@ public:
 
 private:
 	std::weak_ptr<CameraBase> m_camera;
-	const float               m_DashCorrection = 5.0f; //ダッシュ補正
+	const float               m_DashCorrection = 2.0f; //ダッシュ補正
 };

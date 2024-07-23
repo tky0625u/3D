@@ -62,6 +62,7 @@ protected:
 	std::string                  m_beforeAction    = m_Action;
 	Math::Vector3                m_pos             = Math::Vector3::Zero;
 	float                        m_gravity         = 0.0f;
+	float                        m_animeSpeed      = 1.0f;
 	const float                  m_SpeedCorrection = 0.1f;
 	const float                  m_gravityPow      = 0.1f;
 	bool                         m_atkFlg          = false;

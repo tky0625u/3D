@@ -19,7 +19,7 @@ void TPSCamera::PostUpdate()
 	const std::shared_ptr<const KdGameObject>	_spTarget = m_wpTarget.lock();
 	if (_spTarget)
 	{
-		_targetMat = Math::Matrix::CreateTranslation(_spTarget->GetPos());
+		_targetMat = Math::Matrix::CreateTranslation(_spTarget->GetPos() );
 		m_targetPos = _targetMat.Translation();
 	}
 

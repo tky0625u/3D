@@ -67,7 +67,7 @@ void CharacterBase::PostUpdate()
 		m_animator->SetAnimation(m_model->GetData()->GetAnimation(m_Action), m_animeFlg);
 		m_beforeAction = m_Action;
 	}
-	m_animator->AdvanceTime(m_model->WorkNodes());
+	m_animator->AdvanceTime(m_model->WorkNodes(), m_animeSpeed);
 	m_model->CalcNodeMatrices();
 }
 

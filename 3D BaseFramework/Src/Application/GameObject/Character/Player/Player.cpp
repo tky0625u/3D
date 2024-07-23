@@ -63,6 +63,8 @@ void Player::Action()
 	//回転
 	if (moveFlg)
 	{
+		m_animeSpeed = 1.0f;
+
 		dir.Normalize(); //正規化
 
 		CharacterBase::Rotation(dir);
@@ -72,22 +74,26 @@ void Player::Action()
 		if (GetAsyncKeyState(VK_LSHIFT) & 0x8000)
 		{
 			Move *= m_DashCorrection;
+			m_animeSpeed *= m_DashCorrection;
 		}
 
 		m_pos += Move * dir; //座標更新
 
 		m_animeFlg = true;
+
 	}
 	else
 	{
 		if (m_Action=="Run")
 		{
 			m_Action = "RunToIdol";
+			m_animeSpeed = 2.0f;
 			m_animeFlg = false;
 		}
 		if (m_animator->IsAnimationEnd())
 		{
 			m_Action = "Idol";
+			m_animeSpeed = 1.0f;
 			m_animeFlg = true;
 		}
 	}
