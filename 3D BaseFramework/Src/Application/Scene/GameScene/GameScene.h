@@ -23,7 +23,7 @@ private:
 	void MapLoad(std::string _filePath);
 	void Load(int StageNumber,int Z,int X);
 
-	static const int                              m_ObjDistans = 64;
+	static const int                              m_ObjDistans   = 64;
 	const float                                   m_StageDistans = 50.0f;
 	std::weak_ptr<CharacterBase>                  m_player;
 	std::shared_ptr<KdModelData>                  m_floorModel;

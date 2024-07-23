@@ -65,9 +65,9 @@ void GameScene::MapLoad(std::string _filePath)
 		WideList.clear();
 	}
 
-	for (int z = 0; z < MapList.size(); ++z)
+	for (unsigned int z = 0; z < MapList.size(); ++z)
 	{
-		for (int x = 0; x < MapList[z].size(); ++x)
+		for (unsigned int x = 0; x < MapList[z].size(); ++x)
 		{
 			Load(MapList[z][x],z,x);
 		}

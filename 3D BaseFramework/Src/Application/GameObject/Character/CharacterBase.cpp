@@ -3,7 +3,7 @@
 
 void CharacterBase::Update()
 {
-	if (m_status.HP <= 0)
+	if (m_param.Hp <= 0)
 	{
 		CrushingAction();
 	}
@@ -16,9 +16,10 @@ void CharacterBase::Update()
 	m_pos.y -= m_gravity;
 
 	//ワールド行列更新
-	Math::Matrix RotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
+	Math::Matrix Scale = Math::Matrix::CreateScale(m_param.Size);
+	Math::Matrix RotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_param.Angle));
 	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
-	m_mWorld = RotY * Trans;
+	m_mWorld = Scale * RotY * Trans;
 }
 
 void CharacterBase::PostUpdate()
@@ -26,9 +27,9 @@ void CharacterBase::PostUpdate()
 	KdCollider::RayInfo rayInfo;
 	rayInfo.m_pos = m_pos;
 	float LitleUP = 0.1f;
-	rayInfo.m_pos.y -= m_sizeHalf - LitleUP;
-	rayInfo.m_dir = Math::Vector3::Down;
-	rayInfo.m_range = m_gravity;
+	rayInfo.m_pos.y += LitleUP;
+	rayInfo.m_dir = Math::Vector3::Down;  //↓原点が少しずれているので修正
+	rayInfo.m_range = m_gravity + LitleUP + m_param.ErrorNum;
 	rayInfo.m_type = KdCollider::TypeGround;
 
 	Math::Color color = { 1,1,1,1 };
@@ -57,9 +58,17 @@ void CharacterBase::PostUpdate()
 	if (_hitFlg)
 	{
 		m_pos = _hitPos;
-		m_pos.y += m_sizeHalf;
 		m_gravity = 0.0f;
 	}
+
+	//アニメーションの更新
+	if (m_Action != m_beforeAction)
+	{
+		m_animator->SetAnimation(m_model->GetData()->GetAnimation(m_Action), m_animeFlg);
+		m_beforeAction = m_Action;
+	}
+	m_animator->AdvanceTime(m_model->WorkNodes());
+	m_model->CalcNodeMatrices();
 }
 
 void CharacterBase::GenerateDepthMapFromLight()
@@ -74,9 +83,12 @@ void CharacterBase::DrawLit()
 
 void CharacterBase::Init()
 {
-	m_model = std::make_shared<KdModelData>();
+	m_model = std::make_shared<KdModelWork>();
+
+	m_animator = std::make_shared<KdAnimator>();
 
 	m_pDebugWire = std::make_unique<KdDebugWireFrame>();
+
 }
 
 void CharacterBase::CrushingAction()
@@ -87,8 +99,8 @@ void CharacterBase::CrushingAction()
 void CharacterBase::Rotation(Math::Vector3 _moveDir)
 {
 	//今の方向
-	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
-	Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3(0, 0, 1), nowRot);
+	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_param.Angle));
+	Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3(m_param.ForwardX, m_param.ForwardY, m_param.ForwardZ), nowRot);
 
 	//向きたい方向
 	Math::Vector3 toVec = _moveDir;
@@ -114,32 +126,32 @@ void CharacterBase::Rotation(Math::Vector3 _moveDir)
 		if (c.y >= 0)
 		{
 			//右回転
-			m_angle -= ang;
-			if (m_angle < 0.0f)
+			m_param.Angle -= ang;
+			if (m_param.Angle < 0.0f)
 			{
-				m_angle += 360.0f;
+				m_param.Angle += 360.0f;
 			}
 		}
 		else
 		{
 			//左回転
-			m_angle += ang;
-			if (m_angle >= 360.0f)
+			m_param.Angle += ang;
+			if (m_param.Angle >= 360.0f)
 			{
-				m_angle -= 360.0f;
+				m_param.Angle -= 360.0f;
 			}
 		}
 	}
 }
 
-void CharacterBase::StatusLoad(std::string a_filePath)
+void CharacterBase::ParamLoad(std::string a_filePath)
 {
 	std::ifstream ifs(a_filePath);
 
 	if (!ifs.is_open())return;
 
 	std::string lineString;
-	std::vector<int> comma; //読み取ったステータスを格納する配列
+	std::vector<float> comma; //読み取ったパラメータを格納する配列
 	while (getline(ifs, lineString))
 	{
 		std::istringstream iss(lineString);
@@ -148,12 +160,23 @@ void CharacterBase::StatusLoad(std::string a_filePath)
 		while (getline(iss, commaString, ','))
 		{
 			getline(iss, commaString, ',');  //最初は名称が書かれているので飛ばす
-			comma.push_back(stoi(commaString));
+			comma.push_back(stof(commaString));
 		}
 	}
 
-	//ステータス更新
-	m_status = { comma[StatusType::HPType],comma[StatusType::ATKType],comma[StatusType::DFType],comma[StatusType::SPType],comma[StatusType::SMType] };
+	//パラメータ更新
+	m_param = { (int)comma[ParamType::HpType],    //体力
+				(int)comma[ParamType::AtkType],	  //攻撃力
+				(int)comma[ParamType::DfType],	  //防御力
+				(int)comma[ParamType::SpType],	  //素早さ
+				(int)comma[ParamType::SmType],	  //スタミナ
+				     comma[ParamType::AgType],	  //角度
+				     comma[ParamType::SzType],	  //大きさ
+				     comma[ParamType::EnType],	  //モデルの原点の誤差
+				     comma[ParamType::ArType],    //攻撃範囲
+				     comma[ParamType::FXType],    //攻撃範囲
+				     comma[ParamType::FYType],    //攻撃範囲
+				     comma[ParamType::FZType] };  //攻撃範囲
 
 	ifs.close();
 }

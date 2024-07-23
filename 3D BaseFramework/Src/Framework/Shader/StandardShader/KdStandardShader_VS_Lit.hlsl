@@ -5,12 +5,31 @@
 // 頂点シェーダ
 //================================
 VSOutput main(
-	float4 pos : POSITION,		// 頂点座標
-	float2 uv : TEXCOORD0,		// テクスチャUV座標
-	float4 color : COLOR,		// 頂点カラー
-	float3 normal : NORMAL,		// 法線
-	float3 tangent : TANGENT)	// 接線
+	float4 pos : POSITION,           // 頂点座標
+	float2 uv : TEXCOORD0,           // テクスチャUV座標
+	float4 color : COLOR,            // 頂点カラー
+	float3 normal : NORMAL,          // 法線
+	float3 tangent : TANGENT,        // 接線
+	uint4 skinIndex : SKININDEX,     // スキンメッシュのボーンインデックス（何番目のボーンに影響しているか）
+	float4 skinWeight : SKINWEIGHT)  // ボーンの影響
 {
+	//スキニング------------------------->
+	if(g_IsSkinMeshObj)
+	{
+		//行列を合成
+		row_major float4x4 mBones = 0;
+		[unroll]
+		for (int i = 0; i < 4;i++)
+		{
+			mBones += g_mBones[skinIndex[i]] * skinWeight[i];
+		}
+
+		//座標と法線に適応
+		pos = mul(pos, mBones);
+		normal = mul(normal, (float3x3) mBones);
+	}
+	//<-------------------------スキニング
+	
 	VSOutput Out;
 
     // 座標変換

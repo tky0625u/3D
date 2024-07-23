@@ -17,7 +17,7 @@ void CameraBase::Init()
 	m_spCamera->SetProjectionMatrix(m_ViewingAngle);
 }
 
-void CameraBase::Update()
+void CameraBase::PostUpdate()
 {
 	if (!m_spCamera) { return; }
 

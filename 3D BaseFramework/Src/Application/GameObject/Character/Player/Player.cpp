@@ -3,28 +3,53 @@
 
 void Player::Action()
 {
+	//攻撃
+	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+	{
+		m_atkFlg = true;
+		m_animeFlg = false;
+		m_Action = "Attack1";
+	}
+
+	if (m_atkFlg)return;
+
 	//移動
 	Math::Vector3 dir = Math::Vector3::Zero; //ベクトルリセット
 	bool          moveFlg = false;
 	if (GetAsyncKeyState('W') & 0x8000)
 	{
-		dir.z   = 1.0f;
+		dir.z = 1.0f;
+		m_Action = "Run";
 		moveFlg = true;
 	}
 	if (GetAsyncKeyState('S') & 0x8000)
 	{
-		dir.z   = -1.0f;
+		dir.z = -1.0f;
+		m_Action = "Run";
 		moveFlg = true;
 	}
 	if (GetAsyncKeyState('A') & 0x8000)
 	{
-		dir.x   = -1.0f;
+		dir.x = -1.0f;
+		m_Action = "Run";
 		moveFlg = true;
-	}	
+	}
 	if (GetAsyncKeyState('D') & 0x8000)
 	{
-		dir.x   = 1.0f;
+		dir.x = 1.0f;
+		m_Action = "Run";
 		moveFlg = true;
+	}
+	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+	{
+		//今の方向
+		Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_param.Angle));
+		Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3(m_param.ForwardX, m_param.ForwardY, m_param.ForwardZ), nowRot);
+		dir = nowVec;
+		m_Action = "Roll";
+		//moveFlg = true;
+
+
 	}
 
 	Math::Matrix cameraRotYMat = Math::Matrix::Identity;
@@ -34,57 +59,15 @@ void Player::Action()
 	}
 	dir = dir.TransformNormal(dir, cameraRotYMat);
 
+
 	//回転
 	if (moveFlg)
 	{
-		dir.Normalize();       //正規化
-		
-		//今の方向
-		Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
-		Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3(0, 0, 1), nowRot);
+		dir.Normalize(); //正規化
 
-		//向きたい方向
-		Math::Vector3 toVec = dir;
-		toVec.Normalize();
+		CharacterBase::Rotation(dir);
 
-		//内角 回転する角を求める
-		float d = nowVec.Dot(toVec);
-		d = std::clamp(d, -1.0f, 1.0f); //誤差修正
-
-		//回転角度を求める
-		float ang = DirectX::XMConvertToDegrees(acos(d));
-
-		//角度変更
-		if (ang >= 0.1f)
-		{
-			if (ang > 20)
-			{
-				ang = 20.0f; //変更角度
-			}
-
-			//外角　どっち回転かを求める
-			Math::Vector3 c = toVec.Cross(nowVec);
-			if (c.y >= 0)
-			{
-				//右回転
-				m_angle -= ang;
-				if (m_angle < 0.0f)
-				{
-					m_angle += 360.0f;
-				}
-			}
-			else
-			{
-				//左回転
-				m_angle += ang;
-				if (m_angle >= 360.0f)
-				{
-					m_angle -= 360.0f;
-				}
-			}
-		}
-
-		float Move = m_status.SP * m_SpeedCorrection;
+		float Move = m_param.Sp * m_SpeedCorrection;
 		//ダッシュ
 		if (GetAsyncKeyState(VK_LSHIFT) & 0x8000)
 		{
@@ -92,6 +75,21 @@ void Player::Action()
 		}
 
 		m_pos += Move * dir; //座標更新
+
+		m_animeFlg = true;
+	}
+	else
+	{
+		if (m_Action=="Run")
+		{
+			m_Action = "RunToIdol";
+			m_animeFlg = false;
+		}
+		if (m_animator->IsAnimationEnd())
+		{
+			m_Action = "Idol";
+			m_animeFlg = true;
+		}
 	}
 
 }
@@ -99,12 +97,10 @@ void Player::Action()
 void Player::Init()
 {
 	CharacterBase::Init();
-	m_model->Load("Asset/Models/Character/Player/tank.gltf");
+	m_model->SetModelData("Asset/Models/Character/Player/Player.gltf");
+	m_animator->SetAnimation(m_model->GetData()->GetAnimation(m_Action), m_animeFlg);
 
-	StatusLoad("CSV/Character/Status/Player/Player.csv");
-
-	m_sizeHalf = 1.0f;
-
+	ParamLoad("CSV/Character/Param/Player/Player.csv");
 }
 
 void Player::CrushingAction()

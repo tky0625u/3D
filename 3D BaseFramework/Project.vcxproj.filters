@@ -91,12 +91,6 @@
     <Filter Include="Src\Application\GameObject\Character\Player">
       <UniqueIdentifier>{e406b39c-98ca-4dbc-aad2-f3d943bd632b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Soldier">
-      <UniqueIdentifier>{cd0724d3-703d-49de-b3de-c6d00f17098b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Leader">
-      <UniqueIdentifier>{b8fd5897-4494-4eea-b700-0024ddda4dc9}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -282,12 +276,6 @@
     <ClInclude Include="Src\Application\GameObject\Character\Player\Player.h">
       <Filter>Src\Application\GameObject\Character\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Soldier\SoldierBase.h">
-      <Filter>Src\Application\GameObject\Character\Soldier</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Leader\LeaderBase.h">
-      <Filter>Src\Application\GameObject\Character\Leader</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -445,12 +433,6 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Player\Player.cpp">
       <Filter>Src\Application\GameObject\Character\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Soldier\SoldierBase.cpp">
-      <Filter>Src\Application\GameObject\Character\Soldier</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Leader\LeaderBase.cpp">
-      <Filter>Src\Application\GameObject\Character\Leader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

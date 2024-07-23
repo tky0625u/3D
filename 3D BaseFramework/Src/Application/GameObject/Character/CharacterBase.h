@@ -3,31 +3,37 @@
 class CharacterBase :public KdGameObject
 {
 public:
-	 struct Status
+	 struct Param
 	{
-		 int HP  = 1; //体力
-		 int ATK = 1; //攻撃力
-		 int MP  = 1; //魔力
-		 int DF  = 1; //防御力
-		 int SP  = 1; //素早さ
-		 int SM  = 1; //スタミナ
+		 int Hp  = 1; //体力
+		 int Atk = 1; //攻撃力
+		 int Df  = 1; //防御力
+		 int Sp  = 1; //素早さ
+		 int Sm  = 1; //スタミナ
+
+		 float  Angle    = 0.0f; //角度
+		 float  Size     = 1.0f; //大きさ
+		 float  ErrorNum = 0.0f; //モデルの原点の誤差
+		 float  AtkRange; //攻撃範囲
+		 float  ForwardX = 0.0f; //前方方向X
+		 float  ForwardY = 0.0f; //前方方向Y
+		 float  ForwardZ = 0.0f; //前方方向Z
 	};
 
-	 enum StatusType
+	 enum ParamType
 	 {
-		 HPType,  //体力
-		 ATKType, //攻撃力
-		 DFType,  //防御力
-		 SPType,  //素早さ
-		 SMType   //スタミナ
-	 };
-
-	 enum CharacterType
-	 {
-		 OnePlayer = 1 << 0,
-		 TwoPlayer = 1 << 1,
-		 Leader    = 1 << 2,
-		 Normal    = 1 << 3
+		 HpType,  //体力
+		 AtkType, //攻撃力
+		 DfType,  //防御力
+		 SpType,  //素早さ
+		 SmType,  //スタミナ
+		 AgType,  //角度
+		 SzType,  //大きさ
+		 EnType,  //モデルの原点の誤差
+		 ArType,  //攻撃範囲
+		 FXType,  //前方方向X
+		 FYType,  //前方方向Y
+		 FZType,  //前方方向Z
 	 };
 
 	CharacterBase()                                   { Init(); }
@@ -44,19 +50,20 @@ public:
 
 	void Rotation(Math::Vector3 _moveDir);
 
-	void StatusLoad(std::string a_filePath); //ステータス読み取り
+	void ParamLoad(std::string a_filePath); //ステータス読み取り
 
 	void SetPos(Math::Vector3 a_pos) { m_pos = a_pos; }
 
 protected:
-	Status                       m_status;
-	CharacterType                m_characterType;
-	std::shared_ptr<KdModelData> m_model;
-	Math::Vector3                m_pos = Math::Vector3::Zero;
-	float                        m_angle = 0.0f;
-	float                        m_sizeHalf;
+	Param                        m_param;
+	std::shared_ptr<KdModelWork> m_model;
+	std::shared_ptr<KdAnimator>  m_animator;
+	std::string                  m_Action = "Idol";
+	std::string                  m_beforeAction    = m_Action;
+	Math::Vector3                m_pos             = Math::Vector3::Zero;
+	float                        m_gravity         = 0.0f;
 	const float                  m_SpeedCorrection = 0.1f;
-	const float                  m_gravityPow = 0.1f;
-	float                        m_gravity = 0.0f;
-	float                        m_atkRange;
+	const float                  m_gravityPow      = 0.1f;
+	bool                         m_atkFlg          = false;
+	bool                         m_animeFlg        = true;
 };
