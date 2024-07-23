@@ -93,7 +93,13 @@ void CharacterBase::Init()
 
 void CharacterBase::CrushingAction()
 {
-	if(!IsExpired())m_isExpired = true;
+	if (m_Action != "Death")
+	{
+		m_Action = "Death";
+		m_animeFlg = false;
+		m_animeSpeed = 1.0f;
+	}
+	if(m_animator->IsAnimationEnd() && !IsExpired())m_isExpired = true;
 }
 
 void CharacterBase::Rotation(Math::Vector3 _moveDir)

@@ -3,6 +3,8 @@
 
 void Player::Action()
 {
+	if (GetAsyncKeyState('E') & 0x8000)m_param.Hp--;
+
 	//攻撃
 	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 	{
@@ -111,5 +113,10 @@ void Player::Init()
 
 void Player::CrushingAction()
 {
-	CharacterBase::CrushingAction();
+	if (m_Action != "Death")
+	{
+		m_Action = "Death";
+		m_animeFlg = false;
+		m_animeSpeed = 1.0f;
+	}
 }
