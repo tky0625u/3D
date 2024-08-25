@@ -91,6 +91,69 @@
     <Filter Include="Src\Application\GameObject\Character\Player">
       <UniqueIdentifier>{e406b39c-98ca-4dbc-aad2-f3d943bd632b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\SkyBox">
+      <UniqueIdentifier>{9c58ef51-86d0-4bf5-9205-a04249ca4610}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action">
+      <UniqueIdentifier>{6096abf0-115f-4212-8c4f-c4211e4c8288}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Player">
+      <UniqueIdentifier>{0eefed0f-1378-4ec4-ab8f-d5c80ba03aba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Player\Run">
+      <UniqueIdentifier>{4996e4fd-4d29-45b0-8d44-d3e75f5c7dc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Player\Idol">
+      <UniqueIdentifier>{7b99e2b8-fc23-4c58-a358-e2ebde8a46f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Player\Roll">
+      <UniqueIdentifier>{79b13ae2-a426-456a-ad4f-2b256ccab563}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Player\Guard">
+      <UniqueIdentifier>{517e2d4c-a245-49e9-b936-b8472c54874d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Player\Attack">
+      <UniqueIdentifier>{0252b22a-deb8-4c9c-9884-8a9df53a29aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Stage">
+      <UniqueIdentifier>{3239d098-54de-43c1-9f96-56c300b188c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Enemy">
+      <UniqueIdentifier>{4dccf43d-50f2-425d-8842-a440d1c54774}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Enemy\Bone">
+      <UniqueIdentifier>{866d8ab7-1703-4b74-b438-579645749bcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy">
+      <UniqueIdentifier>{0bec7508-9c7b-4041-92fa-0c008727e956}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Idol">
+      <UniqueIdentifier>{055ecc30-6e8c-4df1-bf9b-de0e234265b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Run">
+      <UniqueIdentifier>{114858be-3c1a-43be-af6f-d16dafb82aea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Attack">
+      <UniqueIdentifier>{14de5f19-ae70-4de4-b690-40bf0d4ce28e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Player\Hit">
+      <UniqueIdentifier>{27422866-6bd7-470e-884a-d1f82839bc63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Player\GuardReaction">
+      <UniqueIdentifier>{fbf10cc2-5b18-4948-af22-d519c87bbf0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Player\Parry">
+      <UniqueIdentifier>{2771c20a-b6b5-4470-976f-e87264548e49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Player\Counter">
+      <UniqueIdentifier>{bbb0e903-43a8-483e-ab36-5f02c98d19f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Stumble">
+      <UniqueIdentifier>{dad5e448-46fb-4f32-8828-2103f9ab20fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Hit">
+      <UniqueIdentifier>{c4b2560b-287f-44d3-9cf0-b38ead125dab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -276,6 +339,60 @@
     <ClInclude Include="Src\Application\GameObject\Character\Player\Player.h">
       <Filter>Src\Application\GameObject\Character\Player</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\SkyBox\SkyBox.h">
+      <Filter>Src\Application\GameObject\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\ActionBase.h">
+      <Filter>Src\Application\GameObject\Character\Action</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Run\Player_Run.h">
+      <Filter>Src\Application\GameObject\Character\Action\Player\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Idol\Player_Idol.h">
+      <Filter>Src\Application\GameObject\Character\Action\Player\Idol</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Roll\Player_Roll.h">
+      <Filter>Src\Application\GameObject\Character\Action\Player\Roll</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Guard\Player_Guard.h">
+      <Filter>Src\Application\GameObject\Character\Action\Player\Guard</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Attack\Player_Attack.h">
+      <Filter>Src\Application\GameObject\Character\Action\Player\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Stage\Stage.h">
+      <Filter>Src\Application\GameObject\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Enemy\Bone\Bone.h">
+      <Filter>Src\Application\GameObject\Character\Enemy\Bone</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Idol\Enemy_Idol.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Idol</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Run\Enemy_Run.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Attack\Enemy_Attack.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Hit\Player_Hit.h">
+      <Filter>Src\Application\GameObject\Character\Action\Player\Hit</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\GuardReaction\Player_GuardReaction.h">
+      <Filter>Src\Application\GameObject\Character\Action\Player\GuardReaction</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Parry\Player_Parry.h">
+      <Filter>Src\Application\GameObject\Character\Action\Player\Parry</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Counter\Player_Counter.h">
+      <Filter>Src\Application\GameObject\Character\Action\Player\Counter</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Stumble\Enemy_Stumble.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Stumble</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Hit\Enemy_Hit.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Hit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -433,6 +550,60 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Player\Player.cpp">
       <Filter>Src\Application\GameObject\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\SkyBox\SkyBox.cpp">
+      <Filter>Src\Application\GameObject\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\ActionBase.cpp">
+      <Filter>Src\Application\GameObject\Character\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Run\Player_Run.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Player\Run</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Idol\Player_Idol.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Player\Idol</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Roll\Player_Roll.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Player\Roll</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Guard\Player_Guard.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Player\Guard</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Attack\Player_Attack.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Player\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Stage\Stage.cpp">
+      <Filter>Src\Application\GameObject\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Enemy\Bone\Bone.cpp">
+      <Filter>Src\Application\GameObject\Character\Enemy\Bone</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Idol\Enemy_Idol.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Idol</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Run\Enemy_Run.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Run</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Attack\Enemy_Attack.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Hit\Player_Hit.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Player\Hit</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\GuardReaction\Player_GuardReaction.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Player\GuardReaction</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Parry\Player_Parry.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Player\Parry</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Counter\Player_Counter.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Player\Counter</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Stumble\Enemy_Stumble.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Stumble</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Hit\Enemy_Hit.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Hit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

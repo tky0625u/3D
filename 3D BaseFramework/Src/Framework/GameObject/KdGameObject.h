@@ -1,7 +1,9 @@
 ﻿#pragma once
 
+class CharacterBase;
+
 // ゲーム上に存在するすべてのオブジェクトの基底となるクラス
-class KdGameObject : public std::enable_shared_from_this<KdGameObject>
+class KdGameObject //: public std::enable_shared_from_this<KdGameObject>
 {
 public:
 
@@ -13,6 +15,13 @@ public:
 		eDrawTypeBright = 1 << 2,
 		eDrawTypeUI = 1 << 3,
 		eDrawTypeDepthOfShadow = 1 << 4,
+	};
+
+	enum ObjType
+	{
+		oPlayer,
+		oEnemy,
+		oStage,
 	};
 
 	KdGameObject() {}
@@ -62,9 +71,13 @@ public:
 
 	UINT GetDrawType() const { return m_drawType; }
 
+	UINT GetObjType()const { return m_ObjType; }
+
 	bool Intersects(const KdCollider::SphereInfo& targetShape, std::list<KdCollider::CollisionResult>* pResults);
 	bool Intersects(const KdCollider::BoxInfo& targetBox, std::list<KdCollider::CollisionResult>* pResults);
 	bool Intersects(const KdCollider::RayInfo& targetShape, std::list<KdCollider::CollisionResult>* pResults);
+
+	virtual void Hit(int Damage,bool& stumble) {};
 
 protected:
 
@@ -72,6 +85,9 @@ protected:
 
 	// 描画タイプ・何の描画を行うのかを決める / 最適な描画リスト作成用
 	UINT m_drawType = 0;
+
+	//オブジェクトタイプ
+	UINT m_ObjType = oStage;
 
 	// カメラからの距離
 	float m_distSqrFromCamera = 0;

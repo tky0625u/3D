@@ -1,6 +1,8 @@
 ﻿#pragma once
 
-class CharacterBase :public KdGameObject
+class ActionBase;
+
+class CharacterBase :public KdGameObject, public std::enable_shared_from_this<CharacterBase>
 {
 public:
 	 struct Param
@@ -49,22 +51,51 @@ public:
 	virtual void CrushingAction(); //やられ演出
 
 	void Rotation(Math::Vector3 _moveDir);
-
 	void ParamLoad(std::string a_filePath); //ステータス読み取り
+	void RegisterAction(std::string_view actionName, std::shared_ptr<ActionBase> action);
+	void ChangeAction(std::string_view nextAction);
+	void Attack(UINT ObjType);
+	void Hit(int Damage,bool& stumble)override;
+
+	void InviON() { m_inviFlg = true; }
+	void InviOFF() { m_inviFlg = false; }
 
 	void SetPos(Math::Vector3 a_pos) { m_pos = a_pos; }
+	void SetAnime(std::string animeName, bool animeFlg, float animeSpeed) {
+																			m_anime = animeName;
+																			m_animeFlg = animeFlg;
+																			m_animeSpeed = animeSpeed;
+																		  }
+	void SetMove(Math::Vector3 dir,bool moveFlg){
+													m_dir = dir;
+													m_moveFlg = moveFlg;
+												}
+	void SetNextAction(std::string next) { m_NowAction = next; }
+
+	Param GetParam() { return m_param; }
+	bool GetIsAnimator() { return m_animator->IsAnimationEnd(); }
+	std::string GetAnime() { return m_anime; }
 
 protected:
 	Param                        m_param;
-	std::shared_ptr<KdModelWork> m_model;
-	std::shared_ptr<KdAnimator>  m_animator;
-	std::string                  m_Action = "Idol";
-	std::string                  m_beforeAction    = m_Action;
+	std::shared_ptr<KdModelWork> m_model           = nullptr;
+	std::shared_ptr<KdAnimator>  m_animator        = nullptr;
+	std::shared_ptr<ActionBase>  m_action          = nullptr;
+	std::string                  m_NowAction;
+	std::string                  m_anime           = "Idol";
+	std::string                  m_beforeAnime     = m_anime;
+	std::unordered_map<std::string, std::shared_ptr<ActionBase>> m_actionList;
 	Math::Vector3                m_pos             = Math::Vector3::Zero;
+	Math::Vector3                m_dir             = Math::Vector3::Zero;
+	int                          m_inviTime        = 0;
+	int                          m_ParryTime       = 0;
 	float                        m_gravity         = 0.0f;
 	float                        m_animeSpeed      = 1.0f;
-	const float                  m_SpeedCorrection = 0.1f;
+	const float                  m_SpeedCorrection = 0.2f;
 	const float                  m_gravityPow      = 0.1f;
 	bool                         m_atkFlg          = false;
 	bool                         m_animeFlg        = true;
+	bool                         m_moveFlg         = false;
+	bool                         m_guardFlg        = false;
+	bool                         m_inviFlg         = false;
 };

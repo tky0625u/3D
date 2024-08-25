@@ -6,36 +6,58 @@
 
 //プレイヤー
 #include"../../GameObject/Character/Player/Player.h"
+//敵
+#include"../../GameObject/Character/Enemy/Bone/Bone.h"
 //カメラ
 #include"../../GameObject/Camera/TPSCamera/TPSCamera.h"
 //床
 #include"../../GameObject/StageObject/Floor/Floor.h"
+//空
+#include"../../GameObject/SkyBox/SkyBox.h"
+//ステージ
+#include"../../GameObject/Stage/Stage.h"
 
 void GameScene::Event()
 {
+
 }
 
 void GameScene::Init()
 {
 	//プレイヤー
 	std::shared_ptr<Player> player = std::make_shared<Player>(); 
+	player->Init();
 	m_objList.push_back(player);
+
+	//敵
+	std::shared_ptr<Bone> bone = std::make_shared<Bone>();
+	bone->Init();
+	bone->SetPlayer(player);
+	m_objList.push_back(bone);
 
 	//カメラ
 	std::shared_ptr<TPSCamera> camera = std::make_shared<TPSCamera>();
 	m_objList.push_back(camera);
+	//KdShaderManager::Instance().WorkAmbientController().SetFogEnable(false, true);
+	//KdShaderManager::Instance().WorkAmbientController().SetheightFog({ 0.0f,0.0f,0.0f }, 10.0f, 200.0f, 30.0f);
+
+	//空
+	std::shared_ptr<SkyBox> skyBox = std::make_shared<SkyBox>();
+	m_objList.push_back(skyBox);
+
+	//ステージ
+	std::shared_ptr<Stage> stage = std::make_shared<Stage>();
+	m_objList.push_back(stage);
 
 	//情報セット
 	player->SetCamera(camera);
 	m_player = player;
+	skyBox->SetTarget(player);
 	camera->SetTarget(player);
 
 
-	//床
-	m_floorModel = std::make_shared<KdModelData>();
-	m_floorModel->Load("Asset/Models/StageObject/Floor/Floor.gltf");
 
-	Load(1, 0, 0);
+	//Load(1, 0, 0);
 	//MapLoad("CSV/Map/Map.csv");
 }
 
@@ -123,6 +145,8 @@ void GameScene::Load(int StageNumber,int Z, int X)
 	int x = 0;  //X軸
 
 	std::shared_ptr<Floor> floor;  //床
+	std::shared_ptr<KdModelData> floorModel = std::make_shared<KdModelData>();
+	floorModel->Load("Asset/Models/StageObject/Floor/Floor.gltf");
 
 	float _StageDistaceX = m_StageDistans * float(X);
 	float _StageDistaceZ = m_StageDistans * float(Z);
@@ -142,7 +166,7 @@ void GameScene::Load(int StageNumber,int Z, int X)
 			case ObjectType::FloorType:  //床
 				floor = std::make_shared<Floor>();
 				floor->SetPos(Math::Vector3{ float(m_ObjDistans * x) + _StageDistaceX,0.0f,(float(m_ObjDistans * z) + _StageDistaceZ) * -1 });
-				floor->SetModel(m_floorModel);
+				floor->SetModel(floorModel);
 				floor->Init();
 				m_objList.push_back(floor);
 				break;
@@ -150,7 +174,7 @@ void GameScene::Load(int StageNumber,int Z, int X)
 				//床　※地面に穴を開けないため
 				floor = std::make_shared<Floor>();
 				floor->SetPos(Math::Vector3{ float(m_ObjDistans * x) + _StageDistaceX,0.0f,(float(m_ObjDistans * z) + _StageDistaceZ) * -1 });
-				floor->SetModel(m_floorModel);
+				floor->SetModel(floorModel);
 				floor->Init();
 				m_objList.push_back(floor);
 

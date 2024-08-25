@@ -1,5 +1,6 @@
 ﻿#include "CharacterBase.h"
 #include"../../Scene/SceneManager.h"
+#include"Action/ActionBase.h"
 
 void CharacterBase::Update()
 {
@@ -9,7 +10,10 @@ void CharacterBase::Update()
 	}
 	else
 	{
-		Action();
+		if (m_anime != "Fall" )
+		{
+			Action();
+		}
 	}
 
 	m_gravity += m_gravityPow;
@@ -24,6 +28,7 @@ void CharacterBase::Update()
 
 void CharacterBase::PostUpdate()
 {
+
 	KdCollider::RayInfo rayInfo;
 	rayInfo.m_pos = m_pos;
 	float LitleUP = 0.1f;
@@ -33,7 +38,7 @@ void CharacterBase::PostUpdate()
 	rayInfo.m_type = KdCollider::TypeGround;
 
 	Math::Color color = { 1,1,1,1 };
-	m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
+	//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
 
 	std::list<KdCollider::CollisionResult> retRayList;
 	for (auto& ret : SceneManager::Instance().GetObjList())
@@ -60,15 +65,58 @@ void CharacterBase::PostUpdate()
 		m_pos = _hitPos;
 		m_gravity = 0.0f;
 	}
+	else
+	{
+		m_anime = "Fall";
+		m_animeFlg = true;
+		m_animeSpeed = 1.0f;
+	}
+
+	//KdCollider::SphereInfo sphereInfo;
+	//sphereInfo.m_sphere.Center = m_pos;
+	//sphereInfo.m_sphere.Radius = 2.0f;
+	//sphereInfo.m_type = KdCollider::TypeBump;
+
+	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
+
+	//std::list<KdCollider::CollisionResult>retSphereList;
+	//for (auto& ret : SceneManager::Instance().GetObjList())
+	//{
+	//	ret->Intersects(sphereInfo, &retSphereList);
+	//}
+
+	//Math::Vector3 HitDir = Math::Vector3::Zero;
+	//float maxOverLap = 0.0f;
+	//bool HitFlg = false;
+
+	//for (auto& sphere : retSphereList)
+	//{
+	//	if (maxOverLap < sphere.m_overlapDistance)
+	//	{
+	//		maxOverLap = sphere.m_overlapDistance;
+	//		HitDir = sphere.m_hitDir;
+	//		HitFlg = true;
+	//	}
+	//}
+
+	//if (HitFlg == true)
+	//{
+	//	HitDir.y = 0;
+	//	HitDir.Normalize();
+	//	m_pos += maxOverLap * HitDir;
+	//}
 
 	//アニメーションの更新
-	if (m_Action != m_beforeAction)
+	if (m_anime != m_beforeAnime)
 	{
-		m_animator->SetAnimation(m_model->GetData()->GetAnimation(m_Action), m_animeFlg);
-		m_beforeAction = m_Action;
+		m_animator->SetAnimation(m_model->GetData()->GetAnimation(m_anime), m_animeFlg);
+		m_beforeAnime = m_anime;
 	}
 	m_animator->AdvanceTime(m_model->WorkNodes(), m_animeSpeed);
 	m_model->CalcNodeMatrices();
+
+	m_inviTime--;
+	if (m_inviTime <= 0)m_inviTime = 0;
 }
 
 void CharacterBase::GenerateDepthMapFromLight()
@@ -93,9 +141,9 @@ void CharacterBase::Init()
 
 void CharacterBase::CrushingAction()
 {
-	if (m_Action != "Death")
+	if (m_anime != "Death")
 	{
-		m_Action = "Death";
+		m_anime = "Death";
 		m_animeFlg = false;
 		m_animeSpeed = 1.0f;
 	}
@@ -122,9 +170,9 @@ void CharacterBase::Rotation(Math::Vector3 _moveDir)
 	//角度変更
 	if (ang >= 0.1f)
 	{
-		if (ang > 20)
+		if (ang > 10)
 		{
-			ang = 20.0f; //変更角度
+			ang = 10.0f; //変更角度
 		}
 
 		//外角　どっち回転かを求める
@@ -180,9 +228,98 @@ void CharacterBase::ParamLoad(std::string a_filePath)
 				     comma[ParamType::SzType],	  //大きさ
 				     comma[ParamType::EnType],	  //モデルの原点の誤差
 				     comma[ParamType::ArType],    //攻撃範囲
-				     comma[ParamType::FXType],    //攻撃範囲
-				     comma[ParamType::FYType],    //攻撃範囲
-				     comma[ParamType::FZType] };  //攻撃範囲
+				     comma[ParamType::FXType],    //前方方向X
+				     comma[ParamType::FYType],    //前方方向Y
+				     comma[ParamType::FZType] };  //前方方向Z
 
 	ifs.close();
+}
+
+void CharacterBase::RegisterAction(std::string_view actionName, std::shared_ptr<ActionBase> action)
+{
+	auto actionList = m_actionList.find(actionName.data());
+
+	if (actionList == m_actionList.end())
+	{
+		m_actionList[actionName.data()] = action;
+	}
+}
+
+void CharacterBase::ChangeAction(std::string_view nextAction)
+{
+	auto NextAction = m_actionList.find(nextAction.data());
+
+	if (NextAction == m_actionList.end())return;
+	if (NextAction->second == m_action)return;
+
+	m_action = NextAction->second;
+	m_NowAction = NextAction->first;
+}
+
+void CharacterBase::Attack(UINT ObjType)
+{
+	KdCollider::SphereInfo sphereInfo;
+
+	Math::Matrix nowRotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_param.Angle));
+	Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3{ m_param.ForwardX,m_param.ForwardY,m_param.ForwardZ }, nowRotY);
+	nowVec.Normalize();
+	sphereInfo.m_sphere.Center = m_pos + nowVec * m_param.AtkRange / 2.0f;
+	sphereInfo.m_sphere.Center.y += 1.0f;
+	sphereInfo.m_sphere.Radius = m_param.AtkRange / 2.0f;
+	sphereInfo.m_type = KdCollider::TypeDamage;
+
+	Math::Color color = { 1,0,0,1 };
+	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, color);
+
+	bool stumbleFlg = false;
+
+	std::list<KdCollider::CollisionResult> retSphereList;
+	for (auto& sphere : SceneManager::Instance().GetObjList())
+	{
+		if (sphere->Intersects(sphereInfo, &retSphereList))
+		{
+			if (sphere->GetObjType()==m_ObjType)continue;
+			sphere->Hit(m_param.Atk,stumbleFlg);
+		}
+	}
+
+	if (stumbleFlg)
+	{
+		m_action->Reset();
+		ChangeAction("Stumble");
+	}
+}
+
+void CharacterBase::Hit(int Damage,bool& stumble)
+{
+	if (m_inviTime > 0)return;
+	if (m_inviFlg)return;
+	if (m_guardFlg == true)
+	{
+		if (m_ParryTime <= 10)
+		{
+			m_action->Reset();
+			ChangeAction("Parrying");
+			m_inviFlg = true;
+			stumble = true;
+		}
+		else if (m_NowAction != "GuardReaction")
+		{
+			ChangeAction("GuardReaction");
+		}
+		return;
+	}
+
+	m_param.Hp -= Damage;
+	m_inviTime = 60;
+	if (m_param.Hp <= 0)
+	{
+		m_param.Hp = 0;
+	}
+
+	if (m_NowAction != "Hit")
+	{
+		m_action->Reset();
+		ChangeAction("Hit");
+	}
 }
