@@ -19,6 +19,7 @@ public:
 	virtual void Center()  {};
 	virtual void End()     {};
 
+	virtual void Event()   {};
 	virtual void KeyCheck(const UINT key, const UINT before) {};
 	virtual void Reset() {
 					m_flow = Flow::StartType;

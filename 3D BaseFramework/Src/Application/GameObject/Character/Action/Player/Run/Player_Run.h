@@ -14,7 +14,7 @@ public:
 	void End()      override;
 
 	void KeyCheck(const UINT key, const UINT before) override;
-	void Move(std::shared_ptr<CharacterBase>& _player);
+	void Event()override;
 
 private:
 

@@ -12,6 +12,8 @@ public:
 
 	void KeyCheck(const UINT key, const UINT before) override;
 
-private:
+	void SetTargetPos(Math::Vector3 targetPos) { m_targetPos = targetPos; }
 
+private:
+	Math::Vector3 m_targetPos = Math::Vector3::Zero;
 };

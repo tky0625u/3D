@@ -10,7 +10,7 @@ public:
 	void Start()    override;
 	void End()      override;
 
-	void Roll();
+	void Event()    override;
 
 	void Init()     override;
 

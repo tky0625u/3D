@@ -137,6 +137,7 @@ void CharacterBase::DrawLit()
 
 void CharacterBase::Init()
 {
+
 	m_model = std::make_shared<KdModelWork>();
 
 	m_animator = std::make_shared<KdAnimator>();

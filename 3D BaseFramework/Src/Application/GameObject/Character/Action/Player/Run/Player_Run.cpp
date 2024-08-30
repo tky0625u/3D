@@ -68,7 +68,7 @@ void Player_Run::KeyCheck(UINT key, const UINT before)
 	}
 	else
 	{
-		Move(player);
+		Event();
 	}
 
 	if (!m_ChangeFlg)return;
@@ -93,8 +93,10 @@ void Player_Run::KeyCheck(UINT key, const UINT before)
 	}
 }
 
-void Player_Run::Move(std::shared_ptr<CharacterBase>& _player)
+void Player_Run::Event()
 {
+	std::shared_ptr<CharacterBase> _player = nullptr;
+	if (m_target.expired() == false)_player = m_target.lock();
 	Math::Vector3 dir = Math::Vector3::Zero;
 	if (GetAsyncKeyState('W') & 0x8000)
 	{

@@ -5,7 +5,7 @@ void Player_Roll::Start()
 {
 	if (m_target.expired() == false)
 	{
-		Roll();
+		Event();
 		if (m_target.lock()->GetAnime() != "Roll")
 		{
 			m_target.lock()->SetAnime("Roll", false, 1.2f);
@@ -43,13 +43,13 @@ void Player_Roll::End()
 	}
 }
 
-void Player_Roll::Roll()
+void Player_Roll::Event()
 {
 	if (m_target.expired() == false)m_target.lock()->InviON();
 
 	Math::Vector3 dir = Math::Vector3::Zero;
 	std::shared_ptr<CharacterBase> player;
-	if(m_target.expired()==false)player = m_target.lock();
+	if (m_target.expired() == false)player = m_target.lock();
 
 	//今の方向
 	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(player->GetParam().Angle));
