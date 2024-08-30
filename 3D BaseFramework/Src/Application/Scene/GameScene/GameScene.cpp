@@ -16,6 +16,8 @@
 #include"../../GameObject/SkyBox/SkyBox.h"
 //ステージ
 #include"../../GameObject/Stage/Stage.h"
+//武器
+#include"../../GameObject/Weapon/Weapon.h"
 
 void GameScene::Event()
 {
@@ -28,6 +30,11 @@ void GameScene::Init()
 	std::shared_ptr<Player> player = std::make_shared<Player>(); 
 	player->Init();
 	m_objList.push_back(player);
+
+	//武器
+	std::shared_ptr<Weapon> weapon = std::make_shared<Weapon>();
+	weapon->SetTarget(player);
+	m_objList.push_back(weapon);
 
 	//敵
 	std::shared_ptr<Bone> bone = std::make_shared<Bone>();

@@ -7,6 +7,7 @@ public:
 	Player_Roll() {Init();}
 	~Player_Roll()  override {};
 
+	void Start()    override;
 	void End()      override;
 
 	void Roll();

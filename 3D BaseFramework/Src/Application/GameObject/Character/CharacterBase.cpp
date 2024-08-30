@@ -126,7 +126,13 @@ void CharacterBase::GenerateDepthMapFromLight()
 
 void CharacterBase::DrawLit()
 {
+	//オブジェクトを裏返す==========================================================
+	KdShaderManager::Instance().ChangeRasterizerState(KdRasterizerState::CullNone);
+
 	KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
+
+	KdShaderManager::Instance().ChangeRasterizerState(KdRasterizerState::CullBack);
+	//==============================================================================
 }
 
 void CharacterBase::Init()

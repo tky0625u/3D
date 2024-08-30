@@ -1,15 +1,32 @@
 ﻿#include "Player_Roll.h"
 #include"../../../Player/Player.h"
 
-void Player_Roll::End()
+void Player_Roll::Start()
 {
-	Roll();
-
 	if (m_target.expired() == false)
 	{
+		Roll();
 		if (m_target.lock()->GetAnime() != "Roll")
 		{
-			m_target.lock()->SetAnime("Roll", false, 2.0f);
+			m_target.lock()->SetAnime("Roll", false, 1.2f);
+			return;
+		}
+
+		if (m_target.lock()->GetIsAnimator())
+		{
+			m_flow = Flow::EndType;
+			return;
+		}
+	}
+}
+
+void Player_Roll::End()
+{
+	if (m_target.expired() == false)
+	{
+		if (m_target.lock()->GetAnime() != "RollToIdol")
+		{
+			m_target.lock()->SetAnime("RollToIdol", false, 1.0f);
 			return;
 		}
 
@@ -20,7 +37,7 @@ void Player_Roll::End()
 				m_target.lock()->SetNextAction("Idol");
 				m_target.lock()->InviOFF();
 			}
-			m_end = true;
+			Reset();
 			return;
 		}
 	}
@@ -46,6 +63,6 @@ void Player_Roll::Roll()
 void Player_Roll::Init()
 {
 	m_ChangeFlg = true;
-	m_flow = Flow::EndType;
+	m_flow = Flow::StartType;
 	m_end = false;
 }

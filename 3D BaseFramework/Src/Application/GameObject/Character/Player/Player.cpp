@@ -9,7 +9,7 @@
 #include"../Action/Player/GuardReaction/Player_GuardReaction.h"
 #include"../Action/Player/Parry/Player_Parry.h"
 #include"../Action/Player/Counter/Player_Counter.h"
-
+#include"Application/main.h"
 void Player::PreUpdate()
 {
 	//移動

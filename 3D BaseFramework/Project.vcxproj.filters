@@ -154,6 +154,9 @@
     <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Hit">
       <UniqueIdentifier>{c4b2560b-287f-44d3-9cf0-b38ead125dab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\Weapon">
+      <UniqueIdentifier>{ef1aa68a-185c-4004-be5f-184c89f8530b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -393,6 +396,9 @@
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Hit\Enemy_Hit.h">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Hit</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Weapon\Weapon.h">
+      <Filter>Src\Application\GameObject\Weapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -604,6 +610,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Hit\Enemy_Hit.cpp">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Hit</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Weapon\Weapon.cpp">
+      <Filter>Src\Application\GameObject\Weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

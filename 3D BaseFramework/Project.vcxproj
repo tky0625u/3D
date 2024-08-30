@@ -180,6 +180,7 @@
     <ClInclude Include="Src\Application\GameObject\StageObject\Floor\Floor.h" />
     <ClInclude Include="Src\Application\GameObject\StageObject\ObjectBase.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Stage.h" />
+    <ClInclude Include="Src\Application\GameObject\Weapon\Weapon.h" />
     <ClInclude Include="Src\Application\main.h" />
     <ClInclude Include="Src\Application\Scene\BaseScene\BaseScene.h" />
     <ClInclude Include="Src\Application\Scene\GameScene\GameScene.h" />
@@ -254,6 +255,7 @@
     <ClCompile Include="Src\Application\GameObject\StageObject\Floor\Floor.cpp" />
     <ClCompile Include="Src\Application\GameObject\StageObject\ObjectBase.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Stage.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Weapon\Weapon.cpp" />
     <ClCompile Include="Src\Application\main.cpp" />
     <ClCompile Include="Src\Application\Scene\BaseScene\BaseScene.cpp" />
     <ClCompile Include="Src\Application\Scene\GameScene\GameScene.cpp" />
