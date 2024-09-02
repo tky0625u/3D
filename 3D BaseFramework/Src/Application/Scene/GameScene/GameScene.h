@@ -20,11 +20,9 @@ private:
 
 	void Event() override;
 	void Init() override;
-	void MapLoad(std::string _filePath);
-	void Load(int StageNumber,int Z,int X);
 
-	static const int                              m_ObjDistans   = 64;
-	const float                                   m_StageDistans = 50.0f;
+	void RegisterObj(std::string_view ObjectName, std::shared_ptr<KdGameObject> Object);
+	std::unordered_map<std::string, std::shared_ptr<KdGameObject>> m_ObjectList;
 	std::weak_ptr<CharacterBase>                  m_player;
 
 };
