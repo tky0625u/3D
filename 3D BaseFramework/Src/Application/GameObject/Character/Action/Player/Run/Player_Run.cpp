@@ -7,7 +7,7 @@ void Player_Run::Start()
 	{
 		if (m_target.lock()->GetAnime() != "IdolToRun")
 		{
-			m_target.lock()->SetAnime("IdolToRun", false, 1.5f);
+			m_target.lock()->SetAnime("IdolToRun", false, 3.0f);
 			return;
 		}
 
@@ -26,7 +26,7 @@ void Player_Run::Center()
 	{
 		if (m_target.lock()->GetAnime() != "Run")
 		{
-			m_target.lock()->SetAnime("Run", true, 0.7f);
+			m_target.lock()->SetAnime("Run", true, 1.0f);
 			return;
 		}
 	}
@@ -38,7 +38,7 @@ void Player_Run::End()
 	{
 		if (m_target.lock()->GetAnime() != "RunToIdol")
 		{
-			m_target.lock()->SetAnime("RunToIdol", false, 1.5f);
+			m_target.lock()->SetAnime("RunToIdol", false, 3.0f);
 			return;
 		}
 
