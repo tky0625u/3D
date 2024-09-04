@@ -85,7 +85,6 @@ void Bone::Init()
 	m_model->SetModelData("Asset/Models/Character/Enemy/Bone/Bone.gltf");
 	m_pos = { 0.0f,0.0f,20.0f };
 
-	ParamLoad("CSV/Character/Param/Enemy/Bone/Bone.csv");
 
 	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
 	m_mWorld = Trans;

@@ -4,22 +4,24 @@
 #include"Character/CharacterBase.h"
 #include<fstream>
 #include<sstream>
-//
-//void ObjectManager::RegisterObj(std::shared_ptr<KdGameObject> Object,const UINT16& a_ClassId)
-//{
-//	auto Obj = m_ObjectMap.find(a_ClassId);
-//
-//	if (Obj == m_ObjectMap.end())
-//	{
-//		std::weak_ptr<KdGameObject> _obj = Object;
-//		m_ObjectMap[a_ClassId].push_back(Object);
-//	}
-//}
 
-void ObjectManager::SetObjectParam(std::string _StageNUM, std::string _ObjectName, std::shared_ptr<KdGameObject> _Object)
+//ステージ
+#include"../GameObject/Stage/Stage.h"
+//スカイボックス
+#include"../GameObject/SkyBox/SkyBox.h"
+//武器
+#include"../GameObject/Weapon/Weapon.h"
+//プレイヤー
+#include"../GameObject/Character/Player/Player.h"
+//カメラ
+#include"../GameObject/Camera/TPSCamera/TPSCamera.h"
+//敵
+#include"../GameObject/Character/Enemy/Bone/Bone.h"
+
+void ObjectManager::SetObjectParam()
 {
 	//jsonファイル
-	std::string fileName = "Json/GameObject.json";
+	std::string fileName = "Json/Object/Object.json";
 
 	std::ifstream ifs(fileName.c_str());
 	nlohmann::json _json;
@@ -28,27 +30,195 @@ void ObjectManager::SetObjectParam(std::string _StageNUM, std::string _ObjectNam
 		ifs >> _json;
 	}
 
-	for (auto& stage : _json[_StageNUM]["Object"])
+	for (auto& stage : _json)
 	{
-				//座標
-				Math::Vector3 _pos = Math::Vector3::Zero;
-				_pos.x = stage["PosX"];
-				int a = 0;
-				//_pos.y = obj["PosY"];
-				//_pos.z = obj["PosZ"];
+		Math::Vector3 _pos = Math::Vector3::Zero;
+		_pos.x = stage["PosX"];
+		_pos.y = stage["PosY"];
+		_pos.z = stage["PosZ"];
 
-				////大きさ
-				//float _size = 1.0f;
-				//_size = obj["Size"];
+		float _size = 0.0f;
+		_size = stage["Size"];
 
-				////角度
-				//float _angleY = 0.0f;
-				//_angleY = obj["Angle"];
+		float _angleY = 0.0f;
+		_angleY = stage["Angle"];
 
-				//_Object->SetPos(_pos);
-				//_Object->SetScale(_size);
-				//_Object->SetAngleY(_angleY);
+		std::shared_ptr<KdGameObject> obj;
+		if (stage["Name"] == "Stage")
+		{
+			obj = std::make_shared<Stage>();
+		}
+		if (stage["Name"] == "SkyBox")
+		{
+			obj = std::make_shared<SkyBox>();
+		}
 
-				SceneManager::Instance().AddObject(_Object);
+		obj->SetPos(_pos);
+		obj->SetScale(_size);
+		obj->SetAngleY(_angleY);
+
+		SceneManager::Instance().AddObject(obj);
+	}
+}
+
+void ObjectManager::SetPlayerParam()
+{
+	//jsonファイル
+	std::string fileName = "Json/Player/Player.json";
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& stage : _json)
+	{
+		Math::Vector3 _pos = Math::Vector3::Zero;
+		_pos.x = stage["PosX"];
+		_pos.y = stage["PosY"];
+		_pos.z = stage["PosZ"];
+
+		float _size = 0.0f;
+		_size = stage["Size"];
+
+		float _angleY = 0.0f;
+		_angleY = stage["Angle"];
+
+		int _hp = 0;
+		_hp = stage["HP"];
+
+		int _atk = 0;
+		_atk = stage["ATK"];
+
+		float _speed = 0.0f;
+		_speed = stage["Speed"];
+
+		int _stamina = 0;
+		_stamina = stage["Stamina"];
+
+		float _atkRange = 0.0f;
+		_atkRange = stage["ATKRange"];
+
+		Math::Vector3 _forword = Math::Vector3::Zero;
+		_forword.x = stage["ForwordX"];
+		_forword.y = stage["ForwordY"];
+		_forword.z = stage["ForwordZ"];
+
+		std::shared_ptr<Player> player = std::make_shared<Player>();
+		std::shared_ptr<TPSCamera> camera = std::make_shared<TPSCamera>();
+		player->Init();
+		player->SetPos(_pos);
+		player->SetParam(_hp, _atk, _speed, _stamina, _angleY, _size, _atkRange, _forword);
+		player->SetCamera(camera);
+
+		SceneManager::Instance().AddObject(player);
+		m_player = player;
+
+		camera->SetTarget(player);
+		SceneManager::Instance().AddObject(camera);
+	}
+}
+
+void ObjectManager::SetWeaponParam()
+{
+	//jsonファイル
+	std::string fileName = "Json/Weapon/Weapon.json";
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& stage : _json)
+	{
+		Math::Vector3 _pos = Math::Vector3::Zero;
+		_pos.x = stage["PosX"];
+		_pos.y = stage["PosY"];
+		_pos.z = stage["PosZ"];
+
+		float _size = 0.0f;
+		_size = stage["Size"];
+
+		float _angleY = 0.0f;
+		_angleY = stage["Angle"];
+
+		std::shared_ptr<Weapon> weapon = std::make_shared<Weapon>();
+
+		weapon->SetPos(_pos);
+		weapon->SetScale(_size);
+		weapon->SetAngleY(_angleY);
+		if (m_player.expired() == false)
+		{
+			weapon->SetTarget(m_player.lock());
+		}
+
+		SceneManager::Instance().AddObject(weapon);
+	}
+}
+
+void ObjectManager::SetEnemyParam(std::string _StageNum)
+{
+	//jsonファイル
+	std::string fileName = "Json/Enemy/Enemy.json";
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& stage : _json[_StageNum])
+	{
+		Math::Vector3 _pos = Math::Vector3::Zero;
+		_pos.x = stage["PosX"];
+		_pos.y = stage["PosY"];
+		_pos.z = stage["PosZ"];
+
+		float _size = 0.0f;
+		_size = stage["Size"];
+
+		float _angleY = 0.0f;
+		_angleY = stage["Angle"];
+
+		int _hp = 0;
+		_hp = stage["HP"];
+
+		int _atk = 0;
+		_atk = stage["ATK"];
+
+		float _speed = 0.0f;
+		_speed = stage["Speed"];
+
+		int _stamina = 0;
+		_stamina = stage["Stamina"];
+
+		float _atkRange = 0.0f;
+		_atkRange = stage["ATKRange"];
+
+		Math::Vector3 _forword = Math::Vector3::Zero;
+		_forword.x = stage["ForwordX"];
+		_forword.y = stage["ForwordY"];
+		_forword.z = stage["ForwordZ"];
+
+		float _chaseRange = 0.0f;
+		_chaseRange = stage["ChaseRange"];
+
+		std::shared_ptr<Bone> bone = std::make_shared<Bone>();
+		bone->Init();
+		bone->SetPos(_pos);
+		bone->SetParam(_hp, _atk, _speed, _stamina, _angleY, _size, _atkRange, _forword);
+		bone->SetChaseRange(_chaseRange);
+		if (m_player.expired() == false)
+		{
+			bone->SetPlayer(m_player.lock());
+		}
+
+		SceneManager::Instance().AddObject(bone);
+
 	}
 }

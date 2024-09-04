@@ -9,8 +9,7 @@ public:
 	{
 		 int Hp  = 1; //体力
 		 int Atk = 1; //攻撃力
-		 int Df  = 1; //防御力
-		 int Sp  = 1; //素早さ
+		 float Sp  = 1; //素早さ
 		 int Sm  = 1; //スタミナ
 
 		 float  Angle    = 0.0f; //角度
@@ -26,7 +25,6 @@ public:
 	 {
 		 HpType,  //体力
 		 AtkType, //攻撃力
-		 DfType,  //防御力
 		 SpType,  //素早さ
 		 SmType,  //スタミナ
 		 AgType,  //角度
@@ -51,7 +49,7 @@ public:
 	virtual void CrushingAction(); //やられ演出
 
 	void Rotation(Math::Vector3 _moveDir);
-	void ParamLoad(std::string a_filePath); //ステータス読み取り
+	void SetParam(int _hp, int _atk, float _speed, int _stamina, float _angle, float _size, float _atkRange, Math::Vector3 _forword);
 	void RegisterAction(std::string_view actionName, std::shared_ptr<ActionBase> action);
 	void ChangeAction(std::string_view nextAction);
 	void Attack(UINT ObjType);

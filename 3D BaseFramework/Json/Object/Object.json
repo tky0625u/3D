@@ -1,0 +1,18 @@
+{
+	"0Stage": {
+		"Name": "Stage",
+		"PosX": 1.0,
+		"PosY": 0.0,
+		"PosZ": 0.0,
+		"Size": 10.0,
+		"Angle": 0.0
+	},
+	"1SkyBox": {
+		"Name": "SkyBox",
+		"PosX": 2.0,
+		"PosY": 0.0,
+		"PosZ": 0.0,
+		"Size": 10.0,
+		"Angle": 0.0
+	}
+}

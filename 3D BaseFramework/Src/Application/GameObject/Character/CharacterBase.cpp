@@ -10,10 +10,7 @@ void CharacterBase::Update()
 	}
 	else
 	{
-		if (m_anime != "Fall" )
-		{
-			Action();
-		}
+		Action();
 	}
 
 	m_gravity += m_gravityPow;
@@ -205,41 +202,18 @@ void CharacterBase::Rotation(Math::Vector3 _moveDir)
 	}
 }
 
-void CharacterBase::ParamLoad(std::string a_filePath)
+void CharacterBase::SetParam(int _hp, int _atk, float _speed, int _stamina, float _angle, float _size, float _atkRange, Math::Vector3 _forword)
 {
-	std::ifstream ifs(a_filePath);
-
-	if (!ifs.is_open())return;
-
-	std::string lineString;
-	std::vector<float> comma; //読み取ったパラメータを格納する配列
-	while (getline(ifs, lineString))
-	{
-		std::istringstream iss(lineString);
-		std::string commaString;
-
-		while (getline(iss, commaString, ','))
-		{
-			getline(iss, commaString, ',');  //最初は名称が書かれているので飛ばす
-			comma.push_back(stof(commaString));
-		}
-	}
-
-	//パラメータ更新
-	m_param = { (int)comma[ParamType::HpType],    //体力
-				(int)comma[ParamType::AtkType],	  //攻撃力
-				(int)comma[ParamType::DfType],	  //防御力
-				(int)comma[ParamType::SpType],	  //素早さ
-				(int)comma[ParamType::SmType],	  //スタミナ
-				     comma[ParamType::AgType],	  //角度
-				     comma[ParamType::SzType],	  //大きさ
-				     comma[ParamType::EnType],	  //モデルの原点の誤差
-				     comma[ParamType::ArType],    //攻撃範囲
-				     comma[ParamType::FXType],    //前方方向X
-				     comma[ParamType::FYType],    //前方方向Y
-				     comma[ParamType::FZType] };  //前方方向Z
-
-	ifs.close();
+	m_param.Hp = _hp;
+	m_param.Atk = _atk;
+	m_param.Sp = _speed;
+	m_param.Sm = _stamina;
+	m_param.Angle = _angle;
+	m_param.Size = _size;
+	m_param.AtkRange = _atkRange;
+	m_param.ForwardX = _forword.x;
+	m_param.ForwardY = _forword.y;
+	m_param.ForwardZ = _forword.z;
 }
 
 void CharacterBase::RegisterAction(std::string_view actionName, std::shared_ptr<ActionBase> action)

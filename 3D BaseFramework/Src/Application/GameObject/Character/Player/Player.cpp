@@ -116,8 +116,6 @@ void Player::Init()
 	m_model->SetModelData("Asset/Models/Character/Player/Player.gltf");
 	m_animator->SetAnimation(m_model->GetData()->GetAnimation(m_anime), m_animeFlg);
 
-	ParamLoad("CSV/Character/Param/Player/Player.csv");
-
 	std::shared_ptr<Player_Idol> idol = std::make_shared<Player_Idol>();
 	idol->SetTarget(shared_from_this());
 	RegisterAction("Idol", idol);
