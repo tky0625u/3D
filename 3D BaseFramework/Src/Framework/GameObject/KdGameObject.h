@@ -54,6 +54,8 @@ public:
 	virtual void SetScale(const Math::Vector3& scale);
 	virtual Math::Vector3 GetScale() const;
 
+	void SetAngleY(float angleY);
+
 	const Math::Matrix& GetMatrix() const { return m_mWorld; }
 
 	virtual bool IsExpired() const { return m_isExpired; }

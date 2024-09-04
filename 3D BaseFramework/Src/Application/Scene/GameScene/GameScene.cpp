@@ -1,6 +1,7 @@
 ﻿#include "GameScene.h"
 #include"../SceneManager.h"
 
+#include"../tinygltf/json.hpp"
 #include<fstream>
 #include<sstream>
 
@@ -18,6 +19,8 @@
 #include"../../GameObject/Stage/Stage.h"
 //武器
 #include"../../GameObject/Weapon/Weapon.h"
+//オブジェクトマネジャ
+#include"../../GameObject/ObjectManager.h"
 
 void GameScene::Event()
 {
@@ -26,22 +29,21 @@ void GameScene::Event()
 
 void GameScene::Init()
 {
+	//オブジェクトマネジャ
+	std::shared_ptr<ObjectManager> obj = std::make_shared<ObjectManager>();
+
 	//プレイヤー
 	std::shared_ptr<Player> player = std::make_shared<Player>(); 
 	player->Init();
-	RegisterObj("Player", player);
-
+	
 	//武器
 	std::shared_ptr<Weapon> weapon = std::make_shared<Weapon>();
 	weapon->SetTarget(player);
-	RegisterObj("Weapon", weapon);
-	m_objList.push_back(weapon);
 
 	//敵
 	std::shared_ptr<Bone> bone = std::make_shared<Bone>();
 	bone->Init();
 	bone->SetPlayer(player);
-	RegisterObj("Bone", bone);
 
 	//カメラ
 	std::shared_ptr<TPSCamera> camera = std::make_shared<TPSCamera>();
@@ -51,11 +53,11 @@ void GameScene::Init()
 
 	//空
 	std::shared_ptr<SkyBox> skyBox = std::make_shared<SkyBox>();
-	RegisterObj("SkyBox", skyBox);
 
 	//ステージ
 	std::shared_ptr<Stage> stage = std::make_shared<Stage>();
-	RegisterObj("Stage", stage);
+	//obj->SetObjectParam("Stage1", "Stage", stage);
+	obj->SetObjectParam("Stage1", "Stage", stage);
 
 	//情報セット
 	player->SetCamera(camera);
@@ -63,14 +65,4 @@ void GameScene::Init()
 	skyBox->SetTarget(player);
 	camera->SetTarget(player);
 
-}
-
-void GameScene::RegisterObj(std::string_view ObjectName, std::shared_ptr<KdGameObject> Object)
-{
-	auto ObjList = m_ObjectList.find(ObjectName.data());
-
-	if (ObjList == m_ObjectList.end())
-	{
-		m_ObjectList[ObjectName.data()] = Object;
-	}
 }

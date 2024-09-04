@@ -176,6 +176,7 @@
     <ClInclude Include="Src\Application\GameObject\Character\CharacterBase.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\Bone\Bone.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Player\Player.h" />
+    <ClInclude Include="Src\Application\GameObject\ObjectManager.h" />
     <ClInclude Include="Src\Application\GameObject\SkyBox\SkyBox.h" />
     <ClInclude Include="Src\Application\GameObject\StageObject\Floor\Floor.h" />
     <ClInclude Include="Src\Application\GameObject\StageObject\ObjectBase.h" />
@@ -251,6 +252,7 @@
     <ClCompile Include="Src\Application\GameObject\Character\CharacterBase.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\Bone\Bone.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Player\Player.cpp" />
+    <ClCompile Include="Src\Application\GameObject\ObjectManager.cpp" />
     <ClCompile Include="Src\Application\GameObject\SkyBox\SkyBox.cpp" />
     <ClCompile Include="Src\Application\GameObject\StageObject\Floor\Floor.cpp" />
     <ClCompile Include="Src\Application\GameObject\StageObject\ObjectBase.cpp" />

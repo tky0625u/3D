@@ -28,11 +28,13 @@ public :
 		m_objList.push_back(obj);
 	}
 
+	virtual void Init();
+
 protected :
 
 	// 継承先シーンで必要ならオーバーライドする
 	virtual void Event();
-	virtual void Init();
+	
 
 	// 全オブジェクトのアドレスをリストで管理
 	std::list<std::shared_ptr<KdGameObject>> m_objList;

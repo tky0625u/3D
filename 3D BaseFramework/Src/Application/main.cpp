@@ -228,6 +228,10 @@ void Application::Execute()
 
 	// 時間
 	m_fpsController.Init();
+	
+	SceneManager::Instance();
+	SceneManager::Instance().Init();
+
 
 	// ループ
 	while (1)

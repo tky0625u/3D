@@ -399,6 +399,9 @@
     <ClInclude Include="Src\Application\GameObject\Weapon\Weapon.h">
       <Filter>Src\Application\GameObject\Weapon</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\ObjectManager.h">
+      <Filter>Src\Application\GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -613,6 +616,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Weapon\Weapon.cpp">
       <Filter>Src\Application\GameObject\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\ObjectManager.cpp">
+      <Filter>Src\Application\GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

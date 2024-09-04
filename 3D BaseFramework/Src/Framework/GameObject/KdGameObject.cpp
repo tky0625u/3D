@@ -35,6 +35,11 @@ Math::Vector3 KdGameObject::GetScale() const
 	return Math::Vector3(m_mWorld.Right().Length(), m_mWorld.Up().Length(), m_mWorld.Backward().Length());
 }
 
+void KdGameObject::SetAngleY(float angleY)
+{
+	m_mWorld.CreateRotationY(DirectX::XMConvertToRadians(angleY));
+}
+
 void KdGameObject::CalcDistSqrFromCamera(const Math::Vector3& camPos)
 {
 	m_distSqrFromCamera = (m_mWorld.Translation() - camPos).LengthSquared();

@@ -34,7 +34,7 @@ public :
 	// 現在のシーンにオブジェクトを追加
 	void AddObject(const std::shared_ptr<KdGameObject>& obj);
 
-private :
+
 
 	// マネージャーの初期化
 	// インスタンス生成(アプリ起動)時にコンストラクタで自動実行
@@ -43,6 +43,8 @@ private :
 		// 開始シーンに切り替え
 		ChangeScene(m_currentSceneType);
 	}
+
+private:
 
 	// シーン切り替え関数
 	void ChangeScene(SceneType sceneType);
@@ -58,7 +60,7 @@ private :
 
 private:
 
-	SceneManager() { Init(); }
+	SceneManager() { }
 	~SceneManager() {}
 
 public:
