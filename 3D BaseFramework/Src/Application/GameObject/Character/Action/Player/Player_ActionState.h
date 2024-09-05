@@ -10,6 +10,8 @@ public:
 	Player_ActionState() {};
 	~Player_ActionState()override {};
 
+	void SetConText(std::shared_ptr<Player_ActionConText> _conText) { if (m_conText == nullptr)m_conText = _conText; }
+
 	virtual void Idol(std::shared_ptr<Player_ActionConText> context)          { return; };  //待ち
 	virtual void Run(std::shared_ptr<Player_ActionConText> context,std::weak_ptr<CameraBase> _camera)  { return; };  //走り
 	virtual void Attack(std::shared_ptr<Player_ActionConText> context)        { return; };  //攻撃
@@ -20,6 +22,6 @@ public:
 	virtual void Roll(std::shared_ptr<Player_ActionConText> context, std::weak_ptr<CameraBase> _camera) { return; };  //回避
 	virtual void Hit(std::shared_ptr<Player_ActionConText> context)           { return; };  //被弾
 
-private:
-
+protected:
+	std::shared_ptr<Player_ActionConText> m_conText = nullptr;
 };

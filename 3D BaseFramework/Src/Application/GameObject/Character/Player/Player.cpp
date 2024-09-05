@@ -35,6 +35,7 @@ void Player::PreUpdate()
 	}
 
 	m_state = m_context->GetState();
+	if (m_state.expired() == false)m_state.lock()->SetConText(m_context);
 }
 
 void Player::Action()
@@ -52,21 +53,6 @@ void Player::Action()
 		else if (flow == m_state.lock()->EndType) { m_state.lock()->End(); }
 	}
 
-	//回転
-	if (m_moveFlg)
-	{
-		//if (m_NowAction=="Run")
-		//{
-		//	Math::Matrix cameraRotYMat = Math::Matrix::Identity;
-		//	if (m_camera.expired() == false)
-		//	{
-		//		cameraRotYMat = m_camera.lock()->GetRotationYMatrix();
-		//	}
-		//	m_dir = m_dir.TransformNormal(m_dir, cameraRotYMat);
-
-		//	m_dir.Normalize(); //正規化
-		//}
-	}
 
 	Move = m_param.Sp * m_SpeedCorrection;
 	m_pos += Move * m_dir; //座標更新
@@ -82,14 +68,14 @@ void Player::Init()
 	std::shared_ptr<Player_Idol> idol = std::make_shared<Player_Idol>();
 	idol->SetTarget(shared_from_this());
 
+	m_context = std::make_shared<Player_ActionConText>(idol);
+	if(m_camera.expired()==false)m_context->SetCamera(m_camera.lock());
+	m_state = m_context->GetState();
+
 	m_pCollider = std::make_unique<KdCollider>();
 	m_pCollider->RegisterCollisionShape("Player", m_model, KdCollider::TypeBump | KdCollider::TypeDamage | KdCollider::TypeEvent);
 
 	m_ObjType = ObjType::oPlayer;
-
-	m_context = std::make_shared<Player_ActionConText>(idol);
-	if(m_camera.expired()==false)m_context->SetCamera(m_camera.lock());
-	m_state = m_context->GetState();
 }
 
 void Player::CrushingAction()

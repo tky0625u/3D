@@ -41,10 +41,9 @@ void Player_Parry::End()
 		{
 			if (m_target.expired() == false)
 			{
-				m_target.lock()->SetNextAction("Idol");
 				m_target.lock()->InviOFF();
 			}
-			m_end = true;
+			Idol(m_conText);
 			return;
 		}
 	}

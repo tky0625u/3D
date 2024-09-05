@@ -16,7 +16,7 @@ void Player_Hit::Start()
 
 		if (m_target.lock()->GetIsAnimator())
 		{
-			if (m_target.expired() == false)m_target.lock()->SetNextAction("Idol");
+			Idol(m_conText);
 			return;
 		}
 	}

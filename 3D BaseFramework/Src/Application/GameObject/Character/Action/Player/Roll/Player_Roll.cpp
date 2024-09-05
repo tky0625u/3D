@@ -37,8 +37,8 @@ void Player_Roll::End()
 		{
 			if (m_target.expired() == false)
 			{
-				m_target.lock()->SetNextAction("Idol");
 				m_target.lock()->InviOFF();
+				Idol(m_conText);
 			}
 			return;
 		}
