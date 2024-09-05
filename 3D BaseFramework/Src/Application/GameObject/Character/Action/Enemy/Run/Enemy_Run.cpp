@@ -56,7 +56,6 @@ void Enemy_Run::End()
 					m_atkFlg = false;
 				}
 			}
-			Reset();
 			return;
 		}
 	}

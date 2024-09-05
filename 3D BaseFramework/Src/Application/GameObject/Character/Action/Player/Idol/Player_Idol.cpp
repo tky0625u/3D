@@ -1,5 +1,12 @@
 ﻿#include "Player_Idol.h"
 #include"../../../Player/Player.h"
+#include"../Player_ConText.h"
+
+#include"../Run/Player_Run.h"
+#include"../Attack/Player_Attack.h"
+#include"../Roll/Player_Roll.h"
+#include"../Guard/Player_Guard.h"
+#include"../Hit/Player_Hit.h"
 
 void Player_Idol::Center()
 {
@@ -13,49 +20,44 @@ void Player_Idol::Center()
 	}
 }
 
-void Player_Idol::Reset()
+void Player_Idol::Run(std::shared_ptr<Player_ActionConText> context, std::weak_ptr<CameraBase> _camera)
 {
-	m_flow = Flow::CenterType;
-	m_ChangeFlg = true;
-	m_end = false;
+	std::shared_ptr<Player_Run> run = std::make_shared<Player_Run>();
+	if (m_target.expired())return;
+	run->SetTarget(m_target.lock());
+	run->SetCamera(_camera);
+	context->SetState(run);
 }
 
-void Player_Idol::KeyCheck(const UINT key, const UINT before)
+void Player_Idol::Attack(std::shared_ptr<Player_ActionConText> context)
 {
-	if (!m_ChangeFlg)return;
+	std::shared_ptr<Player_Attack> attack = std::make_shared<Player_Attack>();
+	if (m_target.expired())return;
+	attack->SetTarget(m_target.lock());
+	context->SetState(attack);
+}
 
-	std::shared_ptr<CharacterBase> player = nullptr;
-	if (m_target.expired() == false)player = m_target.lock();
+void Player_Idol::Guard(std::shared_ptr<Player_ActionConText> context)
+{
+	std::shared_ptr<Player_Guard> guard = std::make_shared<Player_Guard>();
+	if (m_target.expired())return;
+	guard->SetTarget(m_target.lock());
+	context->SetState(guard);
+}
 
-	if (key & Player::ActionType::Roll && !(before & Player::ActionType::Roll))
-	{
-		player->SetNextAction("Roll");
-		Reset();
+void Player_Idol::Roll(std::shared_ptr<Player_ActionConText> context, std::weak_ptr<CameraBase> _camera)
+{
+	std::shared_ptr<Player_Roll> roll = std::make_shared<Player_Roll>();
+	if (m_target.expired())return;
+	roll->SetTarget(m_target.lock());
+	roll->SetCamera(_camera);
+	context->SetState(roll);
+}
 
-		return;
-	}
-	if (key & Player::ActionType::Guard && !(before & Player::ActionType::Guard))
-	{
-		player->SetNextAction("Guard");
-		Reset();
-		m_flow = Flow::CenterType;
-		m_ChangeFlg = true;
-		return;
-	}
-	if (key & Player::ActionType::Attack && !(before & Player::ActionType::Attack))
-	{
-		player->SetNextAction("Attack");
-		Reset();
-		m_flow = Flow::CenterType;
-		m_ChangeFlg = true;
-		return;
-	}
-	if (key & Player::ActionType::Move)
-	{
-		player->SetNextAction("Run");
-		Reset();
-		m_flow = Flow::CenterType;
-		m_ChangeFlg = true;
-		return;
-	}
+void Player_Idol::Hit(std::shared_ptr<Player_ActionConText> context)
+{
+	std::shared_ptr<Player_Hit> hit = std::make_shared<Player_Hit>();
+	if (m_target.expired())return;
+	hit->SetTarget(m_target.lock());
+	context->SetState(hit);
 }

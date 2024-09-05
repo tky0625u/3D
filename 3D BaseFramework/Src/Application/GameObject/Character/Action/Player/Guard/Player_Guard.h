@@ -1,9 +1,9 @@
 ﻿#pragma once
-#include"../../ActionBase.h"
+#include"../Player_ActionState.h"
 
 class CharacterBase;
 
-class Player_Guard :public ActionBase
+class Player_Guard :public Player_ActionState
 {
 public:
 	Player_Guard() { Init(); }
@@ -13,10 +13,11 @@ public:
 	void Center()   override;
 	void End()      override;
 
-	void KeyCheck(const UINT key, const UINT before) override;
-
 	void Init()     override;
-	void Reset()    override;
+
+	void Idol(std::shared_ptr<Player_ActionConText> context)          override;             //待ち
+	void GuardReaction(std::shared_ptr<Player_ActionConText> context) override;             //ガード時の反応
+	void Parry(std::shared_ptr<Player_ActionConText> context)         override;             //パリィ
 
 private:
 

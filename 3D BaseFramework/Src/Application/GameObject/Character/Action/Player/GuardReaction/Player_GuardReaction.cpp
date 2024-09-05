@@ -1,5 +1,8 @@
 ﻿#include "Player_GuardReaction.h"
 #include"../../../CharacterBase.h"
+#include"../Player_ConText.h"
+
+#include"../Guard/Player_Guard.h"
 
 void Player_GuardReaction::Start()
 {
@@ -16,10 +19,16 @@ void Player_GuardReaction::Start()
 			if (m_target.expired() == false)
 			{
 				m_target.lock()->SetNextAction("Guard");
-				m_target.lock()->ChangeAction("Guard");
 			}
-			Reset();
 			return;
 		}
 	}
+}
+
+void Player_GuardReaction::Guard(std::shared_ptr<Player_ActionConText> context)
+{
+	std::shared_ptr<Player_Guard> guard = std::make_shared<Player_Guard>();
+	if (m_target.expired())return;
+	guard->SetTarget(m_target.lock());
+	context->SetState(guard);
 }

@@ -1,5 +1,8 @@
 ﻿#include "Player_Roll.h"
 #include"../../../Player/Player.h"
+#include"../Player_ConText.h"
+
+#include"../Idol/Player_Idol.h"
 
 void Player_Roll::Start()
 {
@@ -37,7 +40,6 @@ void Player_Roll::End()
 				m_target.lock()->SetNextAction("Idol");
 				m_target.lock()->InviOFF();
 			}
-			Reset();
 			return;
 		}
 	}
@@ -65,4 +67,12 @@ void Player_Roll::Init()
 	m_ChangeFlg = true;
 	m_flow = Flow::StartType;
 	m_end = false;
+}
+
+void Player_Roll::Idol(std::shared_ptr<Player_ActionConText> context)
+{
+	std::shared_ptr<Player_Idol> idol = std::make_shared<Player_Idol>();
+	if (m_target.expired())return;
+	idol->SetTarget(m_target.lock());
+	context->SetState(idol);
 }

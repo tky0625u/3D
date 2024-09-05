@@ -50,10 +50,7 @@ public:
 
 	void Rotation(Math::Vector3 _moveDir);
 	void SetParam(int _hp, int _atk, float _speed, int _stamina, float _angle, float _size, float _atkRange, Math::Vector3 _forword);
-	void RegisterAction(std::string_view actionName, std::shared_ptr<ActionBase> action);
-	void ChangeAction(std::string_view nextAction);
 	void Attack(UINT ObjType);
-	void Hit(int Damage,bool& stumble)override;
 
 	void InviON() { m_inviFlg = true; }
 	void InviOFF() { m_inviFlg = false; }

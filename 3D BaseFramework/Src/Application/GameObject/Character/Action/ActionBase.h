@@ -20,12 +20,6 @@ public:
 	virtual void End()     {};
 
 	virtual void Event()   {};
-	virtual void KeyCheck(const UINT key, const UINT before) {};
-	virtual void Reset() {
-					m_flow = Flow::StartType;
-					m_ChangeFlg = false;
-					m_end = false;
-				 }
 
 	void SetTarget(std::shared_ptr<CharacterBase> target) { m_target = target; }
 

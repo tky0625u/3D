@@ -1,5 +1,12 @@
 ﻿#include "Player_Run.h"
 #include"../../../Player/Player.h"
+#include"../Player_ConText.h"
+
+#include"../Idol/Player_Idol.h"
+#include"../Attack/Player_Attack.h"
+#include"../Roll/Player_Roll.h"
+#include"../Guard/Player_Guard.h"
+#include"../Hit/Player_Hit.h"
 
 void Player_Run::Start()
 {
@@ -10,6 +17,8 @@ void Player_Run::Start()
 			m_target.lock()->SetAnime("IdolToRun", false, 3.0f);
 			return;
 		}
+
+		Event();
 
 		if (m_target.lock()->GetIsAnimator())
 		{
@@ -24,6 +33,8 @@ void Player_Run::Center()
 {
 	if (m_target.expired() == false)
 	{
+		Event();
+
 		if (m_target.lock()->GetAnime() != "Run")
 		{
 			m_target.lock()->SetAnime("Run", true, 1.0f);
@@ -51,48 +62,6 @@ void Player_Run::End()
 	}
 }
 
-void Player_Run::KeyCheck(UINT key, const UINT before)
-{
-	std::shared_ptr<CharacterBase> player = nullptr;
-	if (m_target.expired() == false)player = m_target.lock();
-
-	if (m_end)
-	{
-		Reset();
-		return;
-	}
-
-	if (!(key & Player::ActionType::Move))
-	{
-		m_flow = Flow::EndType;
-	}
-	else
-	{
-		Event();
-	}
-
-	if (!m_ChangeFlg)return;
-
-	if (key & Player::ActionType::Roll && !(before & Player::ActionType::Roll))
-	{
-		player->SetNextAction("Roll");
-		Reset();
-		return;
-	}
-	if (key & Player::ActionType::Guard && !(before & Player::ActionType::Guard))
-	{
-		player->SetNextAction("Guard");
-		Reset();
-		return;
-	}
-	if (key & Player::ActionType::Attack && !(before & Player::ActionType::Attack))
-	{
-		player->SetNextAction("Attack");
-		Reset();
-		return;
-	}
-}
-
 void Player_Run::Event()
 {
 	std::shared_ptr<CharacterBase> _player = nullptr;
@@ -116,4 +85,45 @@ void Player_Run::Event()
 	}
 	_player->SetMove(dir, true);
 	if (m_flow == Flow::EndType)m_flow = Flow::CenterType;
+}
+
+void Player_Run::Idol(std::shared_ptr<Player_ActionConText> context)
+{
+	std::shared_ptr<Player_Idol> idol = std::make_shared<Player_Idol>();
+	if (m_target.expired())return;
+	idol->SetTarget(m_target.lock());
+	context->SetState(idol);
+}
+
+void Player_Run::Attack(std::shared_ptr<Player_ActionConText> context)
+{
+	std::shared_ptr<Player_Attack> attack = std::make_shared<Player_Attack>();
+	if (m_target.expired())return;
+	attack->SetTarget(m_target.lock());
+	context->SetState(attack);
+}
+
+void Player_Run::Guard(std::shared_ptr<Player_ActionConText> context)
+{
+	std::shared_ptr<Player_Guard> guard = std::make_shared<Player_Guard>();
+	if (m_target.expired())return;
+	guard->SetTarget(m_target.lock());
+	context->SetState(guard);
+}
+
+void Player_Run::Roll(std::shared_ptr<Player_ActionConText> context, std::weak_ptr<CameraBase> _camera)
+{
+	std::shared_ptr<Player_Roll> roll = std::make_shared<Player_Roll>();
+	if (m_target.expired())return;
+	roll->SetTarget(m_target.lock());
+	roll->SetCamera(_camera);
+	context->SetState(roll);
+}
+
+void Player_Run::Hit(std::shared_ptr<Player_ActionConText> context)
+{
+	std::shared_ptr<Player_Hit> hit = std::make_shared<Player_Hit>();
+	if (m_target.expired())return;
+	hit->SetTarget(m_target.lock());
+	context->SetState(hit);
 }

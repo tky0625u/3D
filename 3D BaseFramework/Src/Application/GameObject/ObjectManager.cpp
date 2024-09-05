@@ -59,6 +59,8 @@ void ObjectManager::SetObjectParam()
 
 		SceneManager::Instance().AddObject(obj);
 	}
+
+	ifs.close();
 }
 
 void ObjectManager::SetPlayerParam()
@@ -119,6 +121,8 @@ void ObjectManager::SetPlayerParam()
 		camera->SetTarget(player);
 		SceneManager::Instance().AddObject(camera);
 	}
+
+	ifs.close();
 }
 
 void ObjectManager::SetWeaponParam()
@@ -158,6 +162,8 @@ void ObjectManager::SetWeaponParam()
 
 		SceneManager::Instance().AddObject(weapon);
 	}
+
+	ifs.close();
 }
 
 void ObjectManager::SetEnemyParam(std::string _StageNum)
@@ -221,4 +227,6 @@ void ObjectManager::SetEnemyParam(std::string _StageNum)
 		SceneManager::Instance().AddObject(bone);
 
 	}
+
+	ifs.close();
 }

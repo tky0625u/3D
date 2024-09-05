@@ -1,9 +1,10 @@
 ﻿#pragma once
 #include"../../ActionBase.h"
+#include"../Player_ActionState.h"
 
-class CharacterBase;
+class CameraBase;
 
-class Player_Run :public ActionBase
+class Player_Run :public Player_ActionState
 {
 public:			    
 	Player_Run()             { Init(); }
@@ -13,9 +14,16 @@ public:
 	void Center()   override;
 	void End()      override;
 
-	void KeyCheck(const UINT key, const UINT before) override;
 	void Event()override;
 
-private:
+	void SetCamera(std::weak_ptr<CameraBase> _camera) { m_camera = _camera; }
 
+	void Idol(std::shared_ptr<Player_ActionConText> context)          override;             //待ち
+	void Attack(std::shared_ptr<Player_ActionConText> context)        override;             //攻撃
+	void Guard(std::shared_ptr<Player_ActionConText> context)         override;             //ガード
+	void Roll(std::shared_ptr<Player_ActionConText> context, std::weak_ptr<CameraBase> _camera)override;//回避
+	void Hit(std::shared_ptr<Player_ActionConText> context)           override;             //被弾
+
+private:
+	std::weak_ptr<CameraBase> m_camera;
 };

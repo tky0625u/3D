@@ -1,7 +1,9 @@
 ﻿#pragma once
-#include"../../ActionBase.h"
+#include"../Player_ActionState.h"
 
-class Player_Parry :public ActionBase
+class CameraBase;
+
+class Player_Parry :public Player_ActionState
 {
 public:
 	Player_Parry() { Init(); }
@@ -9,9 +11,13 @@ public:
 
 	void Start()override;
 	void End()override;
-	void Reset();
 
-	void KeyCheck(const UINT key, const UINT before) override;
+	void Idol(std::shared_ptr<Player_ActionConText> context)          override;              //待ち
+	void Run(std::shared_ptr<Player_ActionConText> context,std::weak_ptr<CameraBase> _camera)override;   //走り
+	void Attack(std::shared_ptr<Player_ActionConText> context)        override;              //攻撃
+	void Guard(std::shared_ptr<Player_ActionConText> context)         override;              //ガード
+	void Roll(std::shared_ptr<Player_ActionConText> context, std::weak_ptr<CameraBase> _camera)override; //回避
+	void Counter(std::shared_ptr<Player_ActionConText> context)       override;              //追撃
 
 private:
 

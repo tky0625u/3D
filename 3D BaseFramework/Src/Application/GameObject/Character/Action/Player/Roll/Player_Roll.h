@@ -1,7 +1,9 @@
 ﻿#pragma once
-#include"../../ActionBase.h"
+#include"../Player_ActionState.h"
 
-class Player_Roll :public ActionBase
+class CameraBase;
+
+class Player_Roll :public Player_ActionState
 {
 public:
 	Player_Roll() {Init();}
@@ -14,6 +16,10 @@ public:
 
 	void Init()     override;
 
-private:
+	void SetCamera(std::weak_ptr<CameraBase> _camera) { m_camera = _camera; }
 
+	void Idol(std::shared_ptr<Player_ActionConText> context)          override;             //待ち
+
+private:
+	std::weak_ptr<CameraBase> m_camera;
 };

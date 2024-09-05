@@ -66,11 +66,6 @@ void Bone::Action()
 		}
 	}
 
-	if (m_NowAction != BeforeAction || m_NowAction == "Idol")
-	{
-		ChangeAction(m_NowAction);
-	}
-
 	int flow = m_action->GetFlow();
 
 	if (flow == m_action->StartType) { m_action->Start(); }
@@ -91,28 +86,28 @@ void Bone::Init()
 
 	m_animator->SetAnimation(m_model->GetData()->GetAnimation(m_anime), m_animeFlg);
 
-	std::shared_ptr<Enemy_Idol> idol = std::make_shared<Enemy_Idol>();
-	idol->SetTarget(shared_from_this());
-	RegisterAction("Idol", idol);
+	//std::shared_ptr<Enemy_Idol> idol = std::make_shared<Enemy_Idol>();
+	//idol->SetTarget(shared_from_this());
+	//RegisterAction("Idol", idol);
 
-	std::shared_ptr<Enemy_Run> run = std::make_shared<Enemy_Run>();
-	run->SetTarget(shared_from_this());
-	RegisterAction("Run", run);
+	//std::shared_ptr<Enemy_Run> run = std::make_shared<Enemy_Run>();
+	//run->SetTarget(shared_from_this());
+	//RegisterAction("Run", run);
 
-	std::shared_ptr<Enemy_Attack> attack = std::make_shared<Enemy_Attack>();
-	attack->SetTarget(shared_from_this());
-	RegisterAction("Attack", attack);
+	//std::shared_ptr<Enemy_Attack> attack = std::make_shared<Enemy_Attack>();
+	//attack->SetTarget(shared_from_this());
+	//RegisterAction("Attack", attack);
 
-	std::shared_ptr<Enemy_Stumble> stumble = std::make_shared<Enemy_Stumble>();
-	stumble->SetTarget(shared_from_this());
-	RegisterAction("Stumble", stumble);
+	//std::shared_ptr<Enemy_Stumble> stumble = std::make_shared<Enemy_Stumble>();
+	//stumble->SetTarget(shared_from_this());
+	//RegisterAction("Stumble", stumble);
 
-	std::shared_ptr<Enemy_Hit> hit = std::make_shared<Enemy_Hit>();
-	hit->SetTarget(shared_from_this());
-	RegisterAction("Hit", hit);
+	//std::shared_ptr<Enemy_Hit> hit = std::make_shared<Enemy_Hit>();
+	//hit->SetTarget(shared_from_this());
+	//RegisterAction("Hit", hit);
 
-	m_action = idol;
-	m_NowAction = "Idol";
+	//m_action = idol;
+	//m_NowAction = "Idol";
 
 	m_pCollider = std::make_unique<KdCollider>();
 	m_pCollider->RegisterCollisionShape("Bone", m_model, KdCollider::TypeDamage | KdCollider::TypeBump);

@@ -16,6 +16,6 @@ void GameScene::Init()
 
 	obj->SetPlayerParam();
 	obj->SetWeaponParam();
-	obj->SetEnemyParam("Stage1");
+	//obj->SetEnemyParam("Stage1");
 	obj->SetObjectParam();
 }

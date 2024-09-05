@@ -1,5 +1,12 @@
 ﻿#include "Player_Counter.h"
 #include"../../../Player/Player.h"
+#include"../Player_ConText.h"
+
+#include"../Idol/Player_Idol.h"
+#include"../Run/Player_Run.h"
+#include"../Attack/Player_Attack.h"
+#include"../Roll/Player_Roll.h"
+#include"../Guard/Player_Guard.h"
 
 void Player_Counter::Start()
 {
@@ -45,49 +52,44 @@ void Player_Counter::End()
 	}
 }
 
-void Player_Counter::KeyCheck(const UINT key, const UINT before)
+void Player_Counter::Idol(std::shared_ptr<Player_ActionConText> context)
 {
-	if (m_end)
-	{
-		Reset();
-		return;
-	}
+	std::shared_ptr<Player_Idol> idol = std::make_shared<Player_Idol>();
+	if (m_target.expired())return;
+	idol->SetTarget(m_target.lock());
+	context->SetState(idol);
+}
 
-	if (!m_ChangeFlg)return;
+void Player_Counter::Run(std::shared_ptr<Player_ActionConText> context, std::weak_ptr<CameraBase> _camera)
+{
+	std::shared_ptr<Player_Run> run = std::make_shared<Player_Run>();
+	if (m_target.expired())return;
+	run->SetTarget(m_target.lock());
+	run->SetCamera(_camera);
+	context->SetState(run);
+}
 
-	std::shared_ptr<CharacterBase> player = nullptr;
-	if (m_target.expired() == false)player = m_target.lock();
+void Player_Counter::Attack(std::shared_ptr<Player_ActionConText> context)
+{
+	std::shared_ptr<Player_Attack> attack = std::make_shared<Player_Attack>();
+	if (m_target.expired())return;
+	attack->SetTarget(m_target.lock());
+	context->SetState(attack);
+}
 
-	if (key & Player::ActionType::Roll && !(before & Player::ActionType::Roll))
-	{
-		player->SetNextAction("Roll");
-		Reset();
-		if (m_target.expired() == false)
-		{
-			m_target.lock()->InviOFF();
-		}
-		return;
-	}
-	if (key & Player::ActionType::Guard && !(before & Player::ActionType::Guard))
-	{
-		player->SetNextAction("Guard");
-		Reset();
-		return;
-	}
-	if (key & Player::ActionType::Attack && !(before & Player::ActionType::Attack))
-	{
-		player->SetNextAction("Attack");
-		Reset();
-		return;
-	}
-	if (key & Player::ActionType::Move && !(before & Player::ActionType::Move))
-	{
-		player->SetNextAction("Run");
-		Reset();
-		if (m_target.expired() == false)
-		{
-			m_target.lock()->InviOFF();
-		}
-		return;
-	}
+void Player_Counter::Guard(std::shared_ptr<Player_ActionConText> context)
+{
+	std::shared_ptr<Player_Guard> guard = std::make_shared<Player_Guard>();
+	if (m_target.expired())return;
+	guard->SetTarget(m_target.lock());
+	context->SetState(guard);
+}
+
+void Player_Counter::Roll(std::shared_ptr<Player_ActionConText> context, std::weak_ptr<CameraBase> _camera)
+{
+	std::shared_ptr<Player_Roll> roll = std::make_shared<Player_Roll>();
+	if (m_target.expired())return;
+	roll->SetTarget(m_target.lock());
+	roll->SetCamera(_camera);
+	context->SetState(roll);
 }

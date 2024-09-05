@@ -12,7 +12,6 @@ public:
 	~Enemy_Idol()   override {};
 
 	void Center()   override;
-	void Reset();
 
 private:
 };

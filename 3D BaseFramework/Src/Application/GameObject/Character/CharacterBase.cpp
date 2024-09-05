@@ -216,27 +216,6 @@ void CharacterBase::SetParam(int _hp, int _atk, float _speed, int _stamina, floa
 	m_param.ForwardZ = _forword.z;
 }
 
-void CharacterBase::RegisterAction(std::string_view actionName, std::shared_ptr<ActionBase> action)
-{
-	auto actionList = m_actionList.find(actionName.data());
-
-	if (actionList == m_actionList.end())
-	{
-		m_actionList[actionName.data()] = action;
-	}
-}
-
-void CharacterBase::ChangeAction(std::string_view nextAction)
-{
-	auto NextAction = m_actionList.find(nextAction.data());
-
-	if (NextAction == m_actionList.end())return;
-	if (NextAction->second == m_action)return;
-
-	m_action = NextAction->second;
-	m_NowAction = NextAction->first;
-}
-
 void CharacterBase::Attack(UINT ObjType)
 {
 	KdCollider::SphereInfo sphereInfo;
@@ -264,43 +243,4 @@ void CharacterBase::Attack(UINT ObjType)
 		}
 	}
 
-	if (stumbleFlg)
-	{
-		m_action->Reset();
-		ChangeAction("Stumble");
-	}
-}
-
-void CharacterBase::Hit(int Damage,bool& stumble)
-{
-	if (m_inviTime > 0)return;
-	if (m_inviFlg)return;
-	if (m_guardFlg == true)
-	{
-		if (m_ParryTime <= 10)
-		{
-			m_action->Reset();
-			ChangeAction("Parrying");
-			m_inviFlg = true;
-			stumble = true;
-		}
-		else if (m_NowAction != "GuardReaction")
-		{
-			ChangeAction("GuardReaction");
-		}
-		return;
-	}
-
-	m_param.Hp -= Damage;
-	m_inviTime = 60;
-	if (m_param.Hp <= 0)
-	{
-		m_param.Hp = 0;
-	}
-
-	if (m_NowAction != "Hit")
-	{
-		m_action->Reset();
-		ChangeAction("Hit");
-	}
 }

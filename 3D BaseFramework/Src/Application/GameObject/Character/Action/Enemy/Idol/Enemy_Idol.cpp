@@ -12,10 +12,3 @@ void Enemy_Idol::Center()
 		}
 	}
 }
-
-void Enemy_Idol::Reset()
-{
-	m_ChangeFlg = true;
-	m_flow = Flow::CenterType;
-	m_end = false;
-}

@@ -4,6 +4,7 @@
 
 class CameraBase;
 class ActionBase;
+class Player_ActionConText;
 
 class Player :public CharacterBase
 {
@@ -32,4 +33,5 @@ private:
 	UINT                      m_ActionType = ActionType::Idol;
 	UINT                      m_BeforeActionType = m_ActionType;
 	std::weak_ptr<CameraBase> m_camera;
+	std::shared_ptr<Player_ActionConText> m_context = nullptr;
 };
