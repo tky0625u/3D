@@ -25,7 +25,10 @@ void Player_Idol::Run(std::shared_ptr<Player_ActionConText> context, std::weak_p
 	std::shared_ptr<Player_Run> run = std::make_shared<Player_Run>();
 	if (m_target.expired())return;
 	run->SetTarget(m_target.lock());
-	run->SetCamera(_camera);
+	if (_camera.expired()==false)
+	{
+		run->SetCamera(_camera);
+	}
 	context->SetState(run);
 }
 

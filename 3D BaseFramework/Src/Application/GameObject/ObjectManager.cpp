@@ -110,10 +110,10 @@ void ObjectManager::SetPlayerParam()
 
 		std::shared_ptr<Player> player = std::make_shared<Player>();
 		std::shared_ptr<TPSCamera> camera = std::make_shared<TPSCamera>();
+		player->SetCamera(camera);
 		player->Init();
 		player->SetPos(_pos);
 		player->SetParam(_hp, _atk, _speed, _stamina, _angleY, _size, _atkRange, _forword);
-		player->SetCamera(camera);
 
 		SceneManager::Instance().AddObject(player);
 		m_player = player;

@@ -59,6 +59,7 @@ void Player_Roll::Event()
 	dir = nowVec;
 	dir.Normalize();
 
+	Rotate(dir);
 	player->SetMove(dir, true);
 }
 

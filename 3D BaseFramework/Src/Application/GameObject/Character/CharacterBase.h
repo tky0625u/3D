@@ -48,7 +48,6 @@ public:
 	virtual void Action() {}; //行動
 	virtual void CrushingAction(); //やられ演出
 
-	void Rotation(Math::Vector3 _moveDir);
 	void SetParam(int _hp, int _atk, float _speed, int _stamina, float _angle, float _size, float _atkRange, Math::Vector3 _forword);
 	void Attack(UINT ObjType);
 
@@ -67,7 +66,7 @@ public:
 												}
 	void SetNextAction(std::string next) { m_NowAction = next; }
 
-	Param GetParam() { return m_param; }
+	Param& GetParam() { return m_param; }
 	bool GetIsAnimator() { return m_animator->IsAnimationEnd(); }
 	std::string GetAnime() { return m_anime; }
 	Math::Matrix  GetWeaponMat() { return m_model->FindWorkNode("hand.R.001")->m_localTransform * m_model->FindWorkNode("hand.R")->m_worldTransform * (Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_param.Angle))*(Math::Matrix::CreateTranslation(m_mWorld.Translation()))); }

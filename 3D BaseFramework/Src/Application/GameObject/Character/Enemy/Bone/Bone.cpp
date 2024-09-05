@@ -46,7 +46,7 @@ void Bone::Action()
 		}
 		v.Normalize();
 
-		Rotation(v);
+		//Rotation(v);
 	}
 
 	std::string BeforeAction = m_NowAction;

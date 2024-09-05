@@ -1,6 +1,7 @@
 ﻿#include "Player_Run.h"
 #include"../../../Player/Player.h"
 #include"../Player_ConText.h"
+#include"../../../../Camera/CameraBase.h"
 
 #include"../Idol/Player_Idol.h"
 #include"../Attack/Player_Attack.h"
@@ -83,8 +84,22 @@ void Player_Run::Event()
 	{
 		dir.x = 1.0f;
 	}
+	CameraTransform(dir);
+	Rotate(dir);
 	_player->SetMove(dir, true);
 	if (m_flow == Flow::EndType)m_flow = Flow::CenterType;
+}
+
+void Player_Run::CameraTransform(Math::Vector3& _dir)
+{
+	Math::Matrix cameraRotYMat = Math::Matrix::Identity;
+	if (m_camera.expired() == false)
+	{
+		cameraRotYMat = m_camera.lock()->GetRotationYMatrix();
+	}
+	_dir = _dir.TransformNormal(_dir, cameraRotYMat);
+
+	_dir.Normalize(); //正規化
 }
 
 void Player_Run::Idol(std::shared_ptr<Player_ActionConText> context)

@@ -15,6 +15,7 @@ public:
 	void End()      override;
 
 	void Event()override;
+	void CameraTransform(Math::Vector3& _dir);
 
 	void SetCamera(std::weak_ptr<CameraBase> _camera) { m_camera = _camera; }
 

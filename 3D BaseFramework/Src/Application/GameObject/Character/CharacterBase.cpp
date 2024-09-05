@@ -154,54 +154,6 @@ void CharacterBase::CrushingAction()
 	if(m_animator->IsAnimationEnd() && !IsExpired())m_isExpired = true;
 }
 
-void CharacterBase::Rotation(Math::Vector3 _moveDir)
-{
-	//今の方向
-	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_param.Angle));
-	Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3(m_param.ForwardX, m_param.ForwardY, m_param.ForwardZ), nowRot);
-
-	//向きたい方向
-	Math::Vector3 toVec = _moveDir;
-	toVec.Normalize();
-
-	//内角 回転する角を求める
-	float d = nowVec.Dot(toVec);
-	d = std::clamp(d, -1.0f, 1.0f); //誤差修正
-
-	//回転角度を求める
-	float ang = DirectX::XMConvertToDegrees(acos(d));
-
-	//角度変更
-	if (ang >= 0.1f)
-	{
-		if (ang > 10)
-		{
-			ang = 10.0f; //変更角度
-		}
-
-		//外角　どっち回転かを求める
-		Math::Vector3 c = toVec.Cross(nowVec);
-		if (c.y >= 0)
-		{
-			//右回転
-			m_param.Angle -= ang;
-			if (m_param.Angle < 0.0f)
-			{
-				m_param.Angle += 360.0f;
-			}
-		}
-		else
-		{
-			//左回転
-			m_param.Angle += ang;
-			if (m_param.Angle >= 360.0f)
-			{
-				m_param.Angle -= 360.0f;
-			}
-		}
-	}
-}
-
 void CharacterBase::SetParam(int _hp, int _atk, float _speed, int _stamina, float _angle, float _size, float _atkRange, Math::Vector3 _forword)
 {
 	m_param.Hp = _hp;

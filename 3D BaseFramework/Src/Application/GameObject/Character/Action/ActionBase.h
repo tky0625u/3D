@@ -20,6 +20,7 @@ public:
 	virtual void End()     {};
 
 	virtual void Event()   {};
+	void Rotate(Math::Vector3 _moveDir);
 
 	void SetTarget(std::shared_ptr<CharacterBase> target) { m_target = target; }
 

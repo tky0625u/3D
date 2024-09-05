@@ -13,8 +13,9 @@ public:
 	{
 		m_state = _state;
 	}
-
 	void SetCamera(std::shared_ptr<CameraBase> _camera) { m_camera = _camera; }
+
+	std::shared_ptr<Player_ActionState> GetState()const { return m_state; }
 
 	void Idol() { m_state->Idol(shared_from_this()); }                   //待ち
 	void Run() { m_state->Run(shared_from_this(),m_camera); }            //走り

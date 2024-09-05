@@ -34,6 +34,7 @@ void Player::PreUpdate()
 		m_context->Roll();
 	}
 
+	m_state = m_context->GetState();
 }
 
 void Player::Action()
@@ -42,35 +43,33 @@ void Player::Action()
 	float         Move = 0.0f;
 	m_moveFlg = false;
 
-	//int flow = m_action->GetFlow();
+	if (m_state.expired() == false)
+	{
+		int flow = m_state.lock()->GetFlow();
 
-	//if(flow == m_action->StartType){ m_action->Start(); }
-	//else if(flow == m_action->CenterType){ m_action->Center(); }
-	//else if(flow == m_action->EndType){ m_action->End(); }
+		if (flow == m_state.lock()->StartType) { m_state.lock()->Start(); }
+		else if (flow == m_state.lock()->CenterType) { m_state.lock()->Center(); }
+		else if (flow == m_state.lock()->EndType) { m_state.lock()->End(); }
+	}
 
+	//回転
+	if (m_moveFlg)
+	{
+		//if (m_NowAction=="Run")
+		//{
+		//	Math::Matrix cameraRotYMat = Math::Matrix::Identity;
+		//	if (m_camera.expired() == false)
+		//	{
+		//		cameraRotYMat = m_camera.lock()->GetRotationYMatrix();
+		//	}
+		//	m_dir = m_dir.TransformNormal(m_dir, cameraRotYMat);
 
-	////回転
-	//if (m_moveFlg)
-	//{
-	//	if (m_NowAction=="Run")
-	//	{
-	//		Math::Matrix cameraRotYMat = Math::Matrix::Identity;
-	//		if (m_camera.expired() == false)
-	//		{
-	//			cameraRotYMat = m_camera.lock()->GetRotationYMatrix();
-	//		}
-	//		m_dir = m_dir.TransformNormal(m_dir, cameraRotYMat);
+		//	m_dir.Normalize(); //正規化
+		//}
+	}
 
-	//		m_dir.Normalize(); //正規化
-	//	}
-
-	//	CharacterBase::Rotation(m_dir);
-
-	//	Move = m_param.Sp * m_SpeedCorrection;
-
-	//	m_pos += Move * m_dir; //座標更新
-	//}
-
+	Move = m_param.Sp * m_SpeedCorrection;
+	m_pos += Move * m_dir; //座標更新
 	m_BeforeActionType = m_ActionType;
 }
 
@@ -89,6 +88,8 @@ void Player::Init()
 	m_ObjType = ObjType::oPlayer;
 
 	m_context = std::make_shared<Player_ActionConText>(idol);
+	if(m_camera.expired()==false)m_context->SetCamera(m_camera.lock());
+	m_state = m_context->GetState();
 }
 
 void Player::CrushingAction()
