@@ -11,6 +11,7 @@ public:
 	~Player_ActionState()override {};
 
 	void SetConText(std::shared_ptr<Player_ActionConText> _conText) { if (m_conText == nullptr)m_conText = _conText; }
+	void SetActionType(UINT _ActionType) { m_ActionType = _ActionType; }
 
 	virtual void Idol(std::shared_ptr<Player_ActionConText> context)          { return; };  //待ち
 	virtual void Run(std::shared_ptr<Player_ActionConText> context,std::weak_ptr<CameraBase> _camera)  { return; };  //走り
@@ -24,4 +25,5 @@ public:
 
 protected:
 	std::shared_ptr<Player_ActionConText> m_conText = nullptr;
+	UINT m_ActionType;
 };

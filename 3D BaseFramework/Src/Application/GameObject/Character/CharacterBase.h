@@ -60,10 +60,7 @@ public:
 																			m_animeFlg = animeFlg;
 																			m_animeSpeed = animeSpeed;
 																		  }
-	void SetMove(Math::Vector3 dir,bool moveFlg){
-													m_dir = dir;
-													m_moveFlg = moveFlg;
-												}
+	void SetMove(Math::Vector3 dir){m_dir = dir;}
 	void SetNextAction(std::string next) { m_NowAction = next; }
 
 	Param& GetParam() { return m_param; }
@@ -90,7 +87,6 @@ protected:
 	const float                  m_gravityPow      = 0.1f;
 	bool                         m_atkFlg          = false;
 	bool                         m_animeFlg        = true;
-	bool                         m_moveFlg         = false;
 	bool                         m_guardFlg        = false;
 	bool                         m_inviFlg         = false;
 };

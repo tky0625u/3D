@@ -11,7 +11,6 @@ void Bone::Action()
 {
 	m_dir = Math::Vector3::Zero; //ベクトルリセット
 	float         Move = 0.0f;
-	m_moveFlg = false;
 
 	bool chaceFlg = false;
 	if (m_NowAction != "Hit")chaceFlg = ChaceChaeck();

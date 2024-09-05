@@ -19,14 +19,20 @@ void Player_Run::Start()
 			return;
 		}
 
-		Event();
-
 		if (m_target.lock()->GetIsAnimator())
 		{
 			m_flow = Flow::CenterType;
 			m_ChangeFlg = true;
 			return;
 		}
+
+		if (!(m_ActionType & Player::ActionType::Move))
+		{
+			m_flow = Flow::EndType;
+			return;
+		}
+
+		Event();
 	}
 }
 
@@ -34,13 +40,19 @@ void Player_Run::Center()
 {
 	if (m_target.expired() == false)
 	{
-		Event();
-
 		if (m_target.lock()->GetAnime() != "Run")
 		{
 			m_target.lock()->SetAnime("Run", true, 1.0f);
 			return;
 		}
+
+		if (!(m_ActionType & Player::ActionType::Move))
+		{
+			m_flow = Flow::EndType;
+			return;
+		}
+
+		Event();
 	}
 }
 
@@ -57,6 +69,12 @@ void Player_Run::End()
 		if (m_target.lock()->GetIsAnimator())
 		{
 			Idol(m_conText);
+			return;
+		}
+
+		if (m_ActionType & Player::ActionType::Move)
+		{
+			m_flow = Flow::StartType;
 			return;
 		}
 	}
@@ -85,7 +103,7 @@ void Player_Run::Event()
 	}
 	CameraTransform(dir);
 	Rotate(dir);
-	_player->SetMove(dir, true);
+	_player->SetMove(dir);
 	if (m_flow == Flow::EndType)m_flow = Flow::CenterType;
 }
 

@@ -60,7 +60,7 @@ void Player_Roll::Event()
 	dir.Normalize();
 
 	Rotate(dir);
-	player->SetMove(dir, true);
+	player->SetMove(dir);
 }
 
 void Player_Roll::Init()

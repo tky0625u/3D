@@ -12,12 +12,20 @@ void Player::PreUpdate()
 		m_ActionType |= ActionType::Move;
 		m_context->Run();
 	}
+	else if(m_ActionType & ActionType::Move)
+	{
+		m_ActionType ^= ActionType::Move;
+	}
 
 	//攻撃
 	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 	{
 		m_ActionType |= ActionType::Attack;
-		m_context->Attack();
+		if (!(m_BeforeActionType & ActionType::Attack))m_context->Attack();
+	}
+	else if(m_ActionType & ActionType::Attack)
+	{
+		m_ActionType ^= ActionType::Attack;
 	}
 
 	//防御
@@ -26,23 +34,36 @@ void Player::PreUpdate()
 		m_ActionType |= ActionType::Guard;
 		m_context->Guard();
 	}
+	else if (m_ActionType & ActionType::Guard)
+	{
+		m_ActionType ^= ActionType::Guard;
+	}
 
 	//回避
 	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 	{
 		m_ActionType |= ActionType::Roll;
-		m_context->Roll();
+		if (!(m_BeforeActionType & ActionType::Roll))m_context->Roll();
+	}
+	else if (m_ActionType & ActionType::Roll)
+	{
+		m_ActionType ^= ActionType::Roll;
 	}
 
+	m_BeforeActionType = m_ActionType;
+
 	m_state = m_context->GetState();
-	if (m_state.expired() == false)m_state.lock()->SetConText(m_context);
+	if (m_state.expired() == false)
+	{
+		m_state.lock()->SetConText(m_context);
+		m_state.lock()->SetActionType(m_ActionType);
+	}
 }
 
 void Player::Action()
 {
 	m_dir = Math::Vector3::Zero; //ベクトルリセット
 	float         Move = 0.0f;
-	m_moveFlg = false;
 
 	if (m_state.expired() == false)
 	{
@@ -56,7 +77,7 @@ void Player::Action()
 
 	Move = m_param.Sp * m_SpeedCorrection;
 	m_pos += Move * m_dir; //座標更新
-	m_BeforeActionType = m_ActionType;
+
 }
 
 void Player::Init()

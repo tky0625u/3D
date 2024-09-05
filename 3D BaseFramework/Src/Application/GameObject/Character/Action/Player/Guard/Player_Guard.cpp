@@ -21,6 +21,12 @@ void Player_Guard::Start()
 			m_flow = Flow::CenterType;
 			return;
 		}
+
+		if (!(m_ActionType & Player::ActionType::Guard))
+		{
+			m_flow = Flow::EndType;
+			return;
+		}
 	}
 }
 
@@ -31,6 +37,12 @@ void Player_Guard::Center()
 		if (m_target.lock()->GetAnime() != "Guard")
 		{
 			m_target.lock()->SetAnime("Guard", true, 1.0f);
+			return;
+		}
+
+		if (!(m_ActionType & Player::ActionType::Guard))
+		{
+			m_flow = Flow::EndType;
 			return;
 		}
 	}
@@ -49,6 +61,12 @@ void Player_Guard::End()
 		if (m_target.lock()->GetIsAnimator())
 		{
 			Idol(m_conText);
+			return;
+		}
+
+		if (m_ActionType & Player::ActionType::Guard)
+		{
+			m_flow = Flow::StartType;
 			return;
 		}
 	}
