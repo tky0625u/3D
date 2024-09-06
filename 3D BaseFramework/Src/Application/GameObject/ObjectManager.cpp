@@ -215,14 +215,14 @@ void ObjectManager::SetEnemyParam(std::string _StageNum)
 		_chaseRange = stage["ChaseRange"];
 
 		std::shared_ptr<Bone> bone = std::make_shared<Bone>();
-		bone->Init();
-		bone->SetPos(_pos);
-		bone->SetParam(_hp, _atk, _speed, _stamina, _angleY, _size, _atkRange, _forword);
-		bone->SetChaseRange(_chaseRange);
 		if (m_player.expired() == false)
 		{
 			bone->SetPlayer(m_player.lock());
 		}
+		bone->Init();
+		bone->SetPos(_pos);
+		bone->SetParam(_hp, _atk, _speed, _stamina, _angleY, _size, _atkRange, _forword);
+		bone->SetChaseRange(_chaseRange);
 
 		SceneManager::Instance().AddObject(bone);
 

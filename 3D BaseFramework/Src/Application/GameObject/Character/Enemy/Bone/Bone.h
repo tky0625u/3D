@@ -2,6 +2,8 @@
 #include"../../CharacterBase.h"
 
 class Player;
+class Enemy_ConText;
+class Enemy_ActionState;
 
 class Bone :public CharacterBase
 {
@@ -19,5 +21,7 @@ public:
 
 private:
 	std::weak_ptr<Player> m_player;
+	std::shared_ptr<Enemy_ConText> m_conText = nullptr;
+	std::weak_ptr<Enemy_ActionState> m_state;
 	float                 m_chaceRange = 0.0f;
 };

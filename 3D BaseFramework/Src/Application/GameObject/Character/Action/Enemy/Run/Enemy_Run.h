@@ -1,9 +1,7 @@
 ﻿#pragma once
-#include"../../ActionBase.h"
+#include"../Enemy_ActionState.h"
 
-class CharacterBase;
-
-class Enemy_Run :public ActionBase
+class Enemy_Run :public Enemy_ActionState
 {
 public:
 	Enemy_Run() { Init(); }
@@ -13,7 +11,13 @@ public:
 	void Center()   override;
 	void End()      override;
 
-	void Chase();
+	void Event()override;
+	bool AttackCheck();
+
+	void Idol   (std::shared_ptr<Enemy_ConText> context)override;  //待ち
+	void Attack (std::shared_ptr<Enemy_ConText> context)override;  //攻撃
+	void Hit    (std::shared_ptr<Enemy_ConText> context)override;  //被弾
+	void Stumble(std::shared_ptr<Enemy_ConText> context)override;  //のけぞり
 
 private:
 	bool m_atkFlg = false;

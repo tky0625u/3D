@@ -160,6 +160,8 @@
     <ClInclude Include="Src\Application\GameObject\Camera\TPSCamera\TPSCamera.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\ActionBase.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Attack\Enemy_Attack.h" />
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Enemy_ActionState.h" />
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Enemy_ConText.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Hit\Enemy_Hit.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Idol\Enemy_Idol.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Run\Enemy_Run.h" />
@@ -238,6 +240,7 @@
     <ClCompile Include="Src\Application\GameObject\Camera\TPSCamera\TPSCamera.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\ActionBase.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Attack\Enemy_Attack.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Enemy_ActionState.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Hit\Enemy_Hit.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Idol\Enemy_Idol.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Run\Enemy_Run.cpp" />

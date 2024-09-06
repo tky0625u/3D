@@ -1,5 +1,10 @@
 ﻿#include "Enemy_Attack.h"
 #include"../../../CharacterBase.h"
+#include"../Enemy_ConText.h"
+
+#include"../Idol/Enemy_Idol.h"
+#include"../Hit/Enemy_Hit.h"
+#include"../Stumble/Enemy_Stumble.h"
 
 void Enemy_Attack::Start()
 {
@@ -55,4 +60,31 @@ void Enemy_Attack::End()
 			return;
 		}
 	}
+}
+
+void Enemy_Attack::Idol(std::shared_ptr<Enemy_ConText> context)
+{
+	std::shared_ptr<Enemy_Idol> idol = std::make_shared<Enemy_Idol>();
+	if (m_target.expired())return;
+	idol->SetTarget(m_target.lock());
+	if (m_player.expired() == false)idol->SetPlayer(m_player.lock());
+	context->SetState(idol);
+}
+
+void Enemy_Attack::Hit(std::shared_ptr<Enemy_ConText> context)
+{
+	std::shared_ptr<Enemy_Hit> hit = std::make_shared<Enemy_Hit>();
+	if (m_target.expired())return;
+	hit->SetTarget(m_target.lock());
+	if (m_player.expired() == false)hit->SetPlayer(m_player.lock());
+	context->SetState(hit);
+}
+
+void Enemy_Attack::Stumble(std::shared_ptr<Enemy_ConText> context)
+{
+	std::shared_ptr<Enemy_Stumble> stumble = std::make_shared<Enemy_Stumble>();
+	if (m_target.expired())return;
+	stumble->SetTarget(m_target.lock());
+	if (m_player.expired() == false)stumble->SetPlayer(m_player.lock());
+	context->SetState(stumble);
 }

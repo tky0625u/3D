@@ -1,7 +1,7 @@
 ﻿#pragma once
-#include"../../ActionBase.h"
+#include"../Enemy_ActionState.h"
 
-class Enemy_Idol :public ActionBase
+class Enemy_Idol :public Enemy_ActionState
 {
 public:
 	Enemy_Idol() {
@@ -12,6 +12,12 @@ public:
 	~Enemy_Idol()   override {};
 
 	void Center()   override;
+	void Event()    override;
+
+	void Run    (std::shared_ptr<Enemy_ConText> context)override;  //走り
+	void Attack (std::shared_ptr<Enemy_ConText> context)override;  //攻撃
+	void Hit    (std::shared_ptr<Enemy_ConText> context)override;  //被弾
+	void Stumble(std::shared_ptr<Enemy_ConText> context)override;  //のけぞり
 
 private:
 };

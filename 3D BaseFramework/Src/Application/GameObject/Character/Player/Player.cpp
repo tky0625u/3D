@@ -69,9 +69,9 @@ void Player::Action()
 	{
 		int flow = m_state.lock()->GetFlow();
 
-		if (flow == m_state.lock()->StartType) { m_state.lock()->Start(); }
-		else if (flow == m_state.lock()->CenterType) { m_state.lock()->Center(); }
-		else if (flow == m_state.lock()->EndType) { m_state.lock()->End(); }
+		     if (flow == m_state.lock()->Flow::StartType)  { m_state.lock()->Start(); }
+		else if (flow == m_state.lock()->Flow::CenterType) { m_state.lock()->Center(); }
+		else if (flow == m_state.lock()->Flow::EndType)    { m_state.lock()->End(); }
 	}
 
 

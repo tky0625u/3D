@@ -1,7 +1,7 @@
 ﻿#pragma once
-#include"../../ActionBase.h"
+#include"../Enemy_ActionState.h"
 
-class Enemy_Stumble :public ActionBase
+class Enemy_Stumble :public Enemy_ActionState
 {
 public:
 	Enemy_Stumble() { Init(); }
@@ -11,6 +11,9 @@ public:
 	void End()override;
 
 	void Stumble();
+
+	void Idol(std::shared_ptr<Enemy_ConText> context)override;  //待ち
+	void Hit (std::shared_ptr<Enemy_ConText> context)override;  //被ダメ
 
 private:
 

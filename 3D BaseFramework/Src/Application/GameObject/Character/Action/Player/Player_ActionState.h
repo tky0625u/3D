@@ -25,5 +25,5 @@ public:
 
 protected:
 	std::shared_ptr<Player_ActionConText> m_conText = nullptr;
-	UINT m_ActionType;
+	UINT m_ActionType = 0;
 };

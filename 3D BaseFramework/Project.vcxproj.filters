@@ -408,6 +408,12 @@
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\Bone\Bone.h">
       <Filter>Src\Application\GameObject\Character\Enemy\Bone</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Enemy_ConText.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Enemy_ActionState.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -627,6 +633,9 @@
       <Filter>Src\Application\GameObject\Character\Enemy\Bone</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Player_ConText.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Enemy_ActionState.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Framework\Shader\inc_KdCommon.hlsli">
