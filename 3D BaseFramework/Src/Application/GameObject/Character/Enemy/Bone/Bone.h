@@ -11,6 +11,7 @@ public:
 	Bone() {}
 	~Bone()override {};
 
+	void PreUpdate()override;
 	void Action()override;
 	void Init()override;
 

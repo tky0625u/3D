@@ -64,7 +64,6 @@ void Enemy_Stumble::Idol(std::shared_ptr<Enemy_ConText> context)
 	if (m_target.expired())return;
 	idol->SetTarget(m_target.lock());
 	idol->SetConText(context);
-	if (m_player.expired() == false)idol->SetPlayer(m_player.lock());
 	context->SetState(idol);
 }
 
@@ -74,6 +73,5 @@ void Enemy_Stumble::Hit(std::shared_ptr<Enemy_ConText> context)
 	if (m_target.expired())return;
 	hit->SetTarget(m_target.lock());
 	hit->SetConText(context);
-	if (m_player.expired() == false)hit->SetPlayer(m_player.lock());
 	context->SetState(hit);
 }

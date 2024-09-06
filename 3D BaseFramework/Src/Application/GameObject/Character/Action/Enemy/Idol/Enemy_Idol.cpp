@@ -33,6 +33,7 @@ void Enemy_Idol::Run(std::shared_ptr<Enemy_ConText> context)
 	if (m_target.expired())return;
 	run->SetTarget(m_target.lock());
 	run->SetConText(context);
+	run->SetPlayer(context->GettPlayer().lock());
 	context->SetState(run);
 }
 

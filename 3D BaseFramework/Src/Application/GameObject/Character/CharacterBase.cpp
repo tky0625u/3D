@@ -30,12 +30,12 @@ void CharacterBase::PostUpdate()
 	rayInfo.m_pos = m_pos;
 	float LitleUP = 0.1f;
 	rayInfo.m_pos.y += LitleUP;
-	rayInfo.m_dir = Math::Vector3::Down;  //↓原点が少しずれているので修正
-	rayInfo.m_range = m_gravity + LitleUP + m_param.ErrorNum;
+	rayInfo.m_dir = Math::Vector3::Down; 
+	rayInfo.m_range = m_gravity + LitleUP;
 	rayInfo.m_type = KdCollider::TypeGround;
 
 	Math::Color color = { 1,1,1,1 };
-	//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
+	m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
 
 	std::list<KdCollider::CollisionResult> retRayList;
 	for (auto& ret : SceneManager::Instance().GetObjList())
@@ -69,39 +69,43 @@ void CharacterBase::PostUpdate()
 		m_animeSpeed = 1.0f;
 	}
 
-	//KdCollider::SphereInfo sphereInfo;
-	//sphereInfo.m_sphere.Center = m_pos;
-	//sphereInfo.m_sphere.Radius = 2.0f;
-	//sphereInfo.m_type = KdCollider::TypeBump;
+	KdCollider::SphereInfo sphereInfo;
+	sphereInfo.m_sphere.Center = m_pos;
+	sphereInfo.m_sphere.Center.y = 0.5f;
+	sphereInfo.m_sphere.Radius = 2.0f;
+	sphereInfo.m_type = KdCollider::TypeBump;
 
-	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
+	m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
 
-	//std::list<KdCollider::CollisionResult>retSphereList;
-	//for (auto& ret : SceneManager::Instance().GetObjList())
-	//{
-	//	ret->Intersects(sphereInfo, &retSphereList);
-	//}
+	std::list<KdCollider::CollisionResult>retSphereList;
+	for (auto& ret : SceneManager::Instance().GetObjList())
+	{
+		if (m_id != ret->GetID())
+		{
+			ret->Intersects(sphereInfo, &retSphereList);
+		}
+	}
 
-	//Math::Vector3 HitDir = Math::Vector3::Zero;
-	//float maxOverLap = 0.0f;
-	//bool HitFlg = false;
+	Math::Vector3 HitDir = Math::Vector3::Zero;
+	float maxOverLap = 0.0f;
+	bool HitFlg = false;
 
-	//for (auto& sphere : retSphereList)
-	//{
-	//	if (maxOverLap < sphere.m_overlapDistance)
-	//	{
-	//		maxOverLap = sphere.m_overlapDistance;
-	//		HitDir = sphere.m_hitDir;
-	//		HitFlg = true;
-	//	}
-	//}
+	for (auto& sphere : retSphereList)
+	{
+		if (maxOverLap < sphere.m_overlapDistance)
+		{
+			maxOverLap = sphere.m_overlapDistance;
+			HitDir = sphere.m_hitDir;
+			HitFlg = true;
+		}
+	}
 
-	//if (HitFlg == true)
-	//{
-	//	HitDir.y = 0;
-	//	HitDir.Normalize();
-	//	m_pos += maxOverLap * HitDir;
-	//}
+	if (HitFlg == true)
+	{
+		HitDir.y = 0.0f;
+		HitDir.Normalize();
+		m_pos += maxOverLap * HitDir;
+	}
 
 	//アニメーションの更新
 	if (m_anime != m_beforeAnime)

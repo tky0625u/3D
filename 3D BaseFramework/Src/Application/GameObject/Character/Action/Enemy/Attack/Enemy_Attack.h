@@ -11,6 +11,8 @@ public:
 	void Center()   override;
 	void End()      override;
 
+	void Event()override;
+
 	void Idol   (std::shared_ptr<Enemy_ConText> context)override;  //待ち
 	void Hit    (std::shared_ptr<Enemy_ConText> context)override;  //被弾
 	void Stumble(std::shared_ptr<Enemy_ConText> context)override;  //のけぞり

@@ -7,6 +7,8 @@ public:
 	Enemy_Run() { Init(); }
 	~Enemy_Run()   override {};
 
+	void Init()override;
+
 	void Start()    override;
 	void Center()   override;
 	void End()      override;

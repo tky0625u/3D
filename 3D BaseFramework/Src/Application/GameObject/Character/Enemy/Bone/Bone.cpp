@@ -4,8 +4,16 @@
 #include"../../Action/Enemy/Enemy_ConText.h"
 #include"../../Action/Enemy/Idol/Enemy_Idol.h"
 
+void Bone::PreUpdate()
+{
+	m_state = m_conText->GetState();
+}
+
 void Bone::Action()
 {
+	m_dir = Math::Vector3::Zero;
+	float Move = 0.0f;
+
 	if (m_state.expired() == false)
 	{
 		int flow = m_state.lock()->GetFlow();
@@ -14,6 +22,9 @@ void Bone::Action()
 		else if (flow == m_state.lock()->Flow::CenterType) { m_state.lock()->Center(); }
 		else if (flow == m_state.lock()->Flow::EndType)    { m_state.lock()->End(); }
 	}
+
+	Move = m_param.Sp * m_SpeedCorrection;
+	m_pos += Move * m_dir; //座標更新
 }
 
 void Bone::Init()
@@ -27,8 +38,14 @@ void Bone::Init()
 	idol->SetTarget(shared_from_this());
 
 	m_conText = std::make_shared<Enemy_ConText>(idol);
+	m_conText->SetPlayer(m_player.lock());
+	idol->SetConText(m_conText);
 	m_state = m_conText->GetState();
-	if (m_player.expired() == false && m_state.expired() == false)m_state.lock()->SetPlayer(m_player.lock());
+	if (m_player.expired() == false)
+	{
+		m_conText->SetPlayer(m_player.lock());
+		idol->SetPlayer(m_player.lock());
+	}
 
 	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
 	m_mWorld = Trans;
@@ -49,7 +66,7 @@ bool Bone::ChaceChaeck()
 	sphereInfo.m_type = KdCollider::TypeEvent;
 
 	Math::Color color = { 0,0,1,1 };
-	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, color);
+	m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, color);
 
 	bool chaceFlg = false;
 

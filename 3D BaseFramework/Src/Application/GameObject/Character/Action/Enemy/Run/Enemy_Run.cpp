@@ -3,10 +3,16 @@
 #include"../../../../../Scene/SceneManager.h"
 #include"../Enemy_ConText.h"
 
+#include"../../../Player/Player.h"
 #include"../Idol/Enemy_Idol.h"
 #include"../Attack/Enemy_Attack.h"
 #include"../Hit/Enemy_Hit.h"
 #include"../Stumble/Enemy_Stumble.h"
+
+void Enemy_Run::Init()
+{
+	m_pDebugWire = std::make_unique<KdDebugWireFrame>();
+}
 
 void Enemy_Run::Start()
 {
@@ -71,30 +77,41 @@ void Enemy_Run::Event()
 		m_flow = Flow::EndType;
 		return;
 	}
-	if (AttackCheck())return;
+	AttackCheck();
 
-	
+	if (m_player.expired())return;
+	std::shared_ptr<Player> _player = m_player.lock();
+	Math::Vector3 _playerPos = _player->GetPos();
+	Math::Vector3 _pos = m_target.lock()->GetPos();
+	Math::Vector3 _moveDir = _playerPos - _pos;
+	float dist = _moveDir.Length();
+	_moveDir.Normalize();
+
+	Rotate(_moveDir);
+	if(dist>=m_target.lock()->GetParam().AtkRange)m_target.lock()->SetMove(_moveDir);
 }
 
 bool Enemy_Run::AttackCheck()
 {
-	KdCollider::RayInfo rayInfo;
-	Math::Matrix nowRotY = Math::Matrix::CreateRotationY(m_target.lock()->GetParam().Angle);
+	KdCollider::SphereInfo sphereInfo;
+	Math::Matrix nowRotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_target.lock()->GetParam().Angle));
 	Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3{ m_target.lock()->GetParam().ForwardX,m_target.lock()->GetParam().ForwardY,m_target.lock()->GetParam().ForwardZ }, nowRotY);
 	nowVec.Normalize();
-	rayInfo.m_dir = nowVec;
-	rayInfo.m_pos = m_target.lock()->GetPos();
-	rayInfo.m_range = m_target.lock()->GetParam().AtkRange;
-	rayInfo.m_type = KdCollider::TypeBump;
+	sphereInfo.m_sphere.Center = m_target.lock()->GetPos() + nowVec * (m_target.lock()->GetParam().AtkRange / 2.0f);
+	sphereInfo.m_sphere.Radius = m_target.lock()->GetParam().AtkRange / 2.0f;
+	sphereInfo.m_type = KdCollider::TypeBump;
 
-	std::list<KdCollider::CollisionResult> retRayList;
+	std::list<KdCollider::CollisionResult> retSphereList;
 	for (auto& ret : SceneManager::Instance().GetObjList())
 	{
 		if (ret->GetObjType() == ObjType::oPlayer)
 		{
-			m_flow = Flow::EndType;
-			m_atkFlg = true;
-			return m_atkFlg;
+			if (ret->Intersects(sphereInfo, &retSphereList))
+			{
+				m_flow = Flow::EndType;
+				m_atkFlg = true;
+				return m_atkFlg;
+			}
 		}
 	}
 

@@ -56,6 +56,9 @@ public:
 
 	void SetAngleY(float angleY);
 
+	void SetID(UINT _id) { m_id = _id; }
+	UINT GetID()const { return m_id; }
+
 	const Math::Matrix& GetMatrix() const { return m_mWorld; }
 
 	virtual bool IsExpired() const { return m_isExpired; }
@@ -105,4 +108,7 @@ protected:
 
 	// デバッグ情報クラス
 	std::unique_ptr<KdDebugWireFrame> m_pDebugWire = nullptr;
+
+	//ID
+	UINT m_id = 0;
 };

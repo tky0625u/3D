@@ -56,6 +56,8 @@ void ObjectManager::SetObjectParam()
 		obj->SetPos(_pos);
 		obj->SetScale(_size);
 		obj->SetAngleY(_angleY);
+		obj->SetID(m_id);
+		m_id++;
 
 		SceneManager::Instance().AddObject(obj);
 	}
@@ -114,11 +116,16 @@ void ObjectManager::SetPlayerParam()
 		player->Init();
 		player->SetPos(_pos);
 		player->SetParam(_hp, _atk, _speed, _stamina, _angleY, _size, _atkRange, _forword);
+		player->SetID(m_id);
+		m_id++;
 
 		SceneManager::Instance().AddObject(player);
 		m_player = player;
 
 		camera->SetTarget(player);
+		camera->SetID(m_id);
+		m_id++;
+
 		SceneManager::Instance().AddObject(camera);
 	}
 
@@ -159,6 +166,8 @@ void ObjectManager::SetWeaponParam()
 		{
 			weapon->SetTarget(m_player.lock());
 		}
+		weapon->SetID(m_id);
+		m_id++;
 
 		SceneManager::Instance().AddObject(weapon);
 	}
@@ -223,6 +232,8 @@ void ObjectManager::SetEnemyParam(std::string _StageNum)
 		bone->SetPos(_pos);
 		bone->SetParam(_hp, _atk, _speed, _stamina, _angleY, _size, _atkRange, _forword);
 		bone->SetChaseRange(_chaseRange);
+		bone->SetID(m_id);
+		m_id++;
 
 		SceneManager::Instance().AddObject(bone);
 

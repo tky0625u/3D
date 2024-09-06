@@ -28,6 +28,6 @@ void Enemy_Hit::Idol(std::shared_ptr<Enemy_ConText> context)
 	std::shared_ptr<Enemy_Idol> idol = std::make_shared<Enemy_Idol>();
 	if (m_target.expired())return;
 	idol->SetTarget(m_target.lock());
-	if (m_player.expired() == false)idol->SetPlayer(m_player.lock());
+	idol->SetConText(context);
 	context->SetState(idol);
 }

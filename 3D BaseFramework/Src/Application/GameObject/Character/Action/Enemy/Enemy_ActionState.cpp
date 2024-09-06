@@ -4,7 +4,7 @@
 
 bool Enemy_ActionState::ChaseCheck()
 {
-	if (m_target.expired())return;
+	if (m_target.expired())return false;
 
 	KdCollider::SphereInfo sphereInfo;
 	sphereInfo.m_sphere.Center = m_target.lock()->GetPos();

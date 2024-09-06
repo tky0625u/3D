@@ -15,4 +15,5 @@ public:
 
 private:
 	std::weak_ptr<Player> m_player;
+	UINT m_id = 0;
 };
