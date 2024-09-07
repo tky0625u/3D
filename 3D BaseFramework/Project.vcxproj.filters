@@ -79,12 +79,6 @@
     <Filter Include="Src\Application\GameObject\Camera\TPSCamera">
       <UniqueIdentifier>{c8cf7720-4d00-4c0b-a1cf-bc64280b295f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\GameObject\StageObject">
-      <UniqueIdentifier>{82b830cd-d621-4f56-8920-1d3ae43b1650}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\StageObject\Floor">
-      <UniqueIdentifier>{71c3e851-b2dd-42e7-b122-fb183e560b70}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Src\Application\GameObject\Character">
       <UniqueIdentifier>{ee5c1fb1-581e-4092-b586-8733c4ebbbb7}</UniqueIdentifier>
     </Filter>
@@ -156,6 +150,12 @@
     </Filter>
     <Filter Include="Src\Application\GameObject\Weapon">
       <UniqueIdentifier>{ef1aa68a-185c-4004-be5f-184c89f8530b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Stage\Ground">
+      <UniqueIdentifier>{5c55a015-8dea-4aff-9864-ca756baa22f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Stage\Wall">
+      <UniqueIdentifier>{724f80f5-7347-4e19-8442-4de4a07788a2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -330,12 +330,6 @@
     <ClInclude Include="Src\Application\GameObject\Camera\TPSCamera\TPSCamera.h">
       <Filter>Src\Application\GameObject\Camera\TPSCamera</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\StageObject\ObjectBase.h">
-      <Filter>Src\Application\GameObject\StageObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\StageObject\Floor\Floor.h">
-      <Filter>Src\Application\GameObject\StageObject\Floor</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Character\CharacterBase.h">
       <Filter>Src\Application\GameObject\Character</Filter>
     </ClInclude>
@@ -413,6 +407,15 @@
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Enemy_ActionState.h">
       <Filter>Src\Application\GameObject\Character\Action\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Stage\Ground\Ground.h">
+      <Filter>Src\Application\GameObject\Stage\Ground</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Stage\Wall\Wall.h">
+      <Filter>Src\Application\GameObject\Stage\Wall</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Enemy\EnemyBase.h">
+      <Filter>Src\Application\GameObject\Character\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -560,12 +563,6 @@
     <ClCompile Include="Src\Application\GameObject\Camera\TPSCamera\TPSCamera.cpp">
       <Filter>Src\Application\GameObject\Camera\TPSCamera</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\StageObject\ObjectBase.cpp">
-      <Filter>Src\Application\GameObject\StageObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\StageObject\Floor\Floor.cpp">
-      <Filter>Src\Application\GameObject\StageObject\Floor</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\CharacterBase.cpp">
       <Filter>Src\Application\GameObject\Character</Filter>
     </ClCompile>
@@ -632,9 +629,17 @@
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\Bone\Bone.cpp">
       <Filter>Src\Application\GameObject\Character\Enemy\Bone</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Player_ConText.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Enemy_ActionState.cpp">
       <Filter>Src\Application\GameObject\Character\Action\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Stage\Ground\Ground.cpp">
+      <Filter>Src\Application\GameObject\Stage\Ground</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Stage\Wall\Wall.cpp">
+      <Filter>Src\Application\GameObject\Stage\Wall</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Enemy\EnemyBase.cpp">
+      <Filter>Src\Application\GameObject\Character\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

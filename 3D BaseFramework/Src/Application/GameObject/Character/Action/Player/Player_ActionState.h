@@ -3,6 +3,7 @@
 
 class Player_ActionConText;
 class CameraBase;
+class Player;
 
 class Player_ActionState:public ActionBase
 {
@@ -12,6 +13,7 @@ public:
 
 	void SetConText(std::shared_ptr<Player_ActionConText> _conText) { if (m_conText == nullptr)m_conText = _conText; }
 	void SetActionType(UINT _ActionType) { m_ActionType = _ActionType; }
+	void SetTarget(std::shared_ptr<Player> target) { m_target = target; }
 
 	virtual void Idol(std::shared_ptr<Player_ActionConText> context)          { return; };  //待ち
 	virtual void Run(std::shared_ptr<Player_ActionConText> context,std::weak_ptr<CameraBase> _camera)  { return; };  //走り
@@ -24,6 +26,7 @@ public:
 	virtual void Hit(std::shared_ptr<Player_ActionConText> context)           { return; };  //被弾
 
 protected:
+	std::weak_ptr<Player> m_target;
 	std::shared_ptr<Player_ActionConText> m_conText = nullptr;
 	UINT m_ActionType = 0;
 };

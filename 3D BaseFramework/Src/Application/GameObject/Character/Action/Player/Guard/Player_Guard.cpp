@@ -22,7 +22,7 @@ void Player_Guard::Start()
 			return;
 		}
 
-		if (!(m_ActionType & Player::ActionType::Guard))
+		if (!(m_ActionType & Player::ActionType::GuardType))
 		{
 			m_flow = Flow::EndType;
 			return;
@@ -40,7 +40,7 @@ void Player_Guard::Center()
 			return;
 		}
 
-		if (!(m_ActionType & Player::ActionType::Guard))
+		if (!(m_ActionType & Player::ActionType::GuardType))
 		{
 			m_flow = Flow::EndType;
 			return;
@@ -64,7 +64,7 @@ void Player_Guard::End()
 			return;
 		}
 
-		if (m_ActionType & Player::ActionType::Guard)
+		if (m_ActionType & Player::ActionType::GuardType)
 		{
 			m_flow = Flow::StartType;
 			return;

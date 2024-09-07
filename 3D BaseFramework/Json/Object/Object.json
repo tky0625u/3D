@@ -1,13 +1,21 @@
 {
-	"0Stage": {
-		"Name": "Stage",
+	"0Ground": {
+		"Name": "Ground",
 		"PosX": 1.0,
 		"PosY": 0.0,
 		"PosZ": 0.0,
 		"Size": 10.0,
 		"Angle": 0.0
 	},
-	"1SkyBox": {
+	"1Wall": {
+		"Name": "Wall",
+		"PosX": 1.0,
+		"PosY": 0.0,
+		"PosZ": 0.0,
+		"Size": 10.0,
+		"Angle": 0.0
+	},
+	"2SkyBox": {
 		"Name": "SkyBox",
 		"PosX": 2.0,
 		"PosY": 0.0,

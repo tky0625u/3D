@@ -2,7 +2,7 @@
 
 class ActionBase;
 
-class CharacterBase :public KdGameObject, public std::enable_shared_from_this<CharacterBase>
+class CharacterBase :public KdGameObject
 {
 public:
 	 struct Param

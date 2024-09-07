@@ -1,11 +1,8 @@
 ﻿#include "ActionBase.h"
 #include"../CharacterBase.h"
 
-void ActionBase::Rotate(Math::Vector3 _moveDir)
+void ActionBase::Rotate(Math::Vector3 _moveDir, std::shared_ptr<CharacterBase> _target)
 {
-	if (m_target.expired())return;
-
-	std::shared_ptr<CharacterBase> _target = m_target.lock();
 
 	//今の方向
 	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(_target->GetParam().Angle));

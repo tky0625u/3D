@@ -26,7 +26,7 @@ void Player_Run::Start()
 			return;
 		}
 
-		if (!(m_ActionType & Player::ActionType::Move))
+		if (!(m_ActionType & Player::ActionType::MoveType))
 		{
 			m_flow = Flow::EndType;
 			return;
@@ -46,7 +46,7 @@ void Player_Run::Center()
 			return;
 		}
 
-		if (!(m_ActionType & Player::ActionType::Move))
+		if (!(m_ActionType & Player::ActionType::MoveType))
 		{
 			m_flow = Flow::EndType;
 			return;
@@ -72,7 +72,7 @@ void Player_Run::End()
 			return;
 		}
 
-		if (m_ActionType & Player::ActionType::Move)
+		if (m_ActionType & Player::ActionType::MoveType)
 		{
 			m_flow = Flow::StartType;
 			return;
@@ -102,7 +102,7 @@ void Player_Run::Event()
 		dir.x = 1.0f;
 	}
 	CameraTransform(dir);
-	Rotate(dir);
+	if(m_target.expired()==false)Rotate(dir,m_target.lock());
 	_player->SetMove(dir);
 	if (m_flow == Flow::EndType)m_flow = Flow::CenterType;
 }

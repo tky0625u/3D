@@ -1,5 +1,5 @@
 ﻿#include "Enemy_Hit.h"
-#include"../../../CharacterBase.h"
+#include"../../../Enemy/EnemyBase.h"
 #include"../Enemy_ConText.h"
 
 #include"../Idol/Enemy_Idol.h"

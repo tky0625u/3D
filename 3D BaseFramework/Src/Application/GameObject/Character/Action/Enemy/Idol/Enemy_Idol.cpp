@@ -1,6 +1,6 @@
 ﻿#include "Enemy_Idol.h"
 #include"../../../../../Scene/SceneManager.h"
-#include"../../../CharacterBase.h"
+#include"../../../Enemy/EnemyBase.h"
 #include"../Enemy_ConText.h"
 
 #include"../Run/Enemy_Run.h"

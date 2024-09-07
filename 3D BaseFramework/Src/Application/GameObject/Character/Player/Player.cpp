@@ -9,45 +9,45 @@ void Player::PreUpdate()
 	//移動
 	if (GetAsyncKeyState('W') & 0x8000 | GetAsyncKeyState('A') & 0x8000 | GetAsyncKeyState('S') & 0x8000 | GetAsyncKeyState('D') & 0x8000)
 	{
-		m_ActionType |= ActionType::Move;
+		m_ActionType |= ActionType::MoveType;
 		m_context->Run();
 	}
-	else if(m_ActionType & ActionType::Move)
+	else if(m_ActionType & ActionType::MoveType)
 	{
-		m_ActionType ^= ActionType::Move;
+		m_ActionType ^= ActionType::MoveType;
 	}
 
 	//攻撃
 	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 	{
-		m_ActionType |= ActionType::Attack;
-		if (!(m_BeforeActionType & ActionType::Attack))m_context->Attack();
+		m_ActionType |= ActionType::AttackType;
+		if (!(m_BeforeActionType & ActionType::AttackType))m_context->Attack();
 	}
-	else if(m_ActionType & ActionType::Attack)
+	else if(m_ActionType & ActionType::AttackType)
 	{
-		m_ActionType ^= ActionType::Attack;
+		m_ActionType ^= ActionType::AttackType;
 	}
 
 	//防御
 	if (GetAsyncKeyState(VK_RBUTTON) & 0x8000)
 	{
-		m_ActionType |= ActionType::Guard;
+		m_ActionType |= ActionType::GuardType;
 		m_context->Guard();
 	}
-	else if (m_ActionType & ActionType::Guard)
+	else if (m_ActionType & ActionType::GuardType)
 	{
-		m_ActionType ^= ActionType::Guard;
+		m_ActionType ^= ActionType::GuardType;
 	}
 
 	//回避
 	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 	{
-		m_ActionType |= ActionType::Roll;
-		if (!(m_BeforeActionType & ActionType::Roll))m_context->Roll();
+		m_ActionType |= ActionType::RollType;
+		if (!(m_BeforeActionType & ActionType::RollType))m_context->Roll();
 	}
-	else if (m_ActionType & ActionType::Roll)
+	else if (m_ActionType & ActionType::RollType)
 	{
-		m_ActionType ^= ActionType::Roll;
+		m_ActionType ^= ActionType::RollType;
 	}
 
 	m_BeforeActionType = m_ActionType;

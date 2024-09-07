@@ -1,5 +1,5 @@
 ﻿#include "Player_Hit.h"
-#include"../../../CharacterBase.h"
+#include"../../../Player/Player.h"
 #include"../Player_ConText.h"
 
 #include"../Idol/Player_Idol.h"

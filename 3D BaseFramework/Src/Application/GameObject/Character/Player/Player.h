@@ -7,7 +7,7 @@ class ActionBase;
 class Player_ActionConText;
 class Player_ActionState;
 
-class Player :public CharacterBase
+class Player :public CharacterBase, public std::enable_shared_from_this<Player>
 {
 public:
 	Player()                  {}
@@ -15,11 +15,11 @@ public:
 
 	enum ActionType
 	{
-		Idol   =1<<0,
-		Move   =1<<1,
-		Attack =1<<2,
-		Guard  =1<<3,
-		Roll   =1<<4,
+		IdolType   =1<<0,
+		MoveType   =1<<1,
+		AttackType =1<<2,
+		GuardType  =1<<3,
+		RollType   =1<<4,
 	};
 
 	void PreUpdate() override;
@@ -31,7 +31,7 @@ public:
 	void SetCamera(std::shared_ptr<CameraBase> a_camera) { m_camera = a_camera; }
 
 private:
-	UINT                      m_ActionType = ActionType::Idol;
+	UINT                      m_ActionType = ActionType::IdolType;
 	UINT                      m_BeforeActionType = m_ActionType;
 	std::weak_ptr<CameraBase> m_camera;
 	std::shared_ptr<Player_ActionConText> m_context = nullptr;

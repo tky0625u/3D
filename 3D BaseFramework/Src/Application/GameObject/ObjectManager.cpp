@@ -5,8 +5,10 @@
 #include<fstream>
 #include<sstream>
 
-//ステージ
-#include"../GameObject/Stage/Stage.h"
+//地面
+#include"../GameObject/Stage/Ground/Ground.h"
+//壁
+#include"../GameObject/Stage/Wall/Wall.h"
 //スカイボックス
 #include"../GameObject/SkyBox/SkyBox.h"
 //武器
@@ -44,9 +46,13 @@ void ObjectManager::SetObjectParam()
 		_angleY = stage["Angle"];
 
 		std::shared_ptr<KdGameObject> obj;
-		if (stage["Name"] == "Stage")
+		if (stage["Name"] == "Ground")
 		{
-			obj = std::make_shared<Stage>();
+			obj = std::make_shared<Ground>();
+		}
+		if (stage["Name"] == "Wall")
+		{
+			obj = std::make_shared<Wall>();
 		}
 		if (stage["Name"] == "SkyBox")
 		{

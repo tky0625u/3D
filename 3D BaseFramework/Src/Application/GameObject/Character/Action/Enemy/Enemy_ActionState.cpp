@@ -1,6 +1,6 @@
 ﻿#include "Enemy_ActionState.h"
 #include"../../../../Scene/SceneManager.h"
-#include"../../CharacterBase.h"
+#include"../../Enemy/EnemyBase.h"
 
 bool Enemy_ActionState::ChaseCheck()
 {
@@ -8,7 +8,7 @@ bool Enemy_ActionState::ChaseCheck()
 
 	KdCollider::SphereInfo sphereInfo;
 	sphereInfo.m_sphere.Center = m_target.lock()->GetPos();
-	sphereInfo.m_sphere.Radius = 20.0f;
+	sphereInfo.m_sphere.Radius = m_target.lock()->GetChaseRange();
 	sphereInfo.m_type = KdCollider::TypeEvent;
 
 	std::list<KdCollider::CollisionResult> retSphereList;

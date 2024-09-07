@@ -1,5 +1,5 @@
 ﻿#include "Player_GuardReaction.h"
-#include"../../../CharacterBase.h"
+#include"../../../Player/Player.h"
 #include"../Player_ConText.h"
 
 #include"../Guard/Player_Guard.h"

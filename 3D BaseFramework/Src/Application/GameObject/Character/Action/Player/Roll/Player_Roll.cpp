@@ -59,7 +59,7 @@ void Player_Roll::Event()
 	dir = nowVec;
 	dir.Normalize();
 
-	Rotate(dir);
+	if (m_target.expired() == false)Rotate(dir, m_target.lock());
 	player->SetMove(dir);
 }
 

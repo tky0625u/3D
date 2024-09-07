@@ -1,5 +1,5 @@
 ﻿#include "Enemy_Run.h"
-#include"../../../Enemy/Bone/Bone.h"
+#include"../../../Enemy/EnemyBase.h"
 #include"../../../../../Scene/SceneManager.h"
 #include"../Enemy_ConText.h"
 
@@ -87,7 +87,7 @@ void Enemy_Run::Event()
 	float dist = _moveDir.Length();
 	_moveDir.Normalize();
 
-	Rotate(_moveDir);
+	if (m_target.expired() == false)Rotate(_moveDir, m_target.lock());
 	if(dist>=m_target.lock()->GetParam().AtkRange)m_target.lock()->SetMove(_moveDir);
 }
 
