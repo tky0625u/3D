@@ -229,19 +229,20 @@ void ObjectManager::SetEnemyParam(std::string _StageNum)
 		float _chaseRange = 0.0f;
 		_chaseRange = stage["ChaseRange"];
 
-		std::shared_ptr<Bone> bone = std::make_shared<Bone>();
+		std::shared_ptr<EnemyBase> enemy = nullptr;
+		if(stage["Name"]=="Bone")enemy = std::make_shared<Bone>();
 		if (m_player.expired() == false)
 		{
-			bone->SetPlayer(m_player.lock());
+			enemy->SetPlayer(m_player.lock());
 		}
-		bone->Init();
-		bone->SetPos(_pos);
-		bone->SetParam(_hp, _atk, _speed, _stamina, _angleY, _size, _atkRange, _forword);
-		bone->SetChaseRange(_chaseRange);
-		bone->SetID(m_id);
+		enemy->Init();
+		enemy->SetPos(_pos);
+		enemy->SetParam(_hp, _atk, _speed, _stamina, _angleY, _size, _atkRange, _forword);
+		enemy->SetChaseRange(_chaseRange);
+		enemy->SetID(m_id);
 		m_id++;
 
-		SceneManager::Instance().AddObject(bone);
+		SceneManager::Instance().AddObject(enemy);
 
 	}
 

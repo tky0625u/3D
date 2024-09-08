@@ -35,7 +35,7 @@ void Enemy_Stumble::End()
 
 		if (m_target.lock()->GetIsAnimator())
 		{
-			Idol(m_conText);
+			m_target.lock()->GetConText()->Idol();
 			return;
 		}
 	}
@@ -63,7 +63,6 @@ void Enemy_Stumble::Idol(std::shared_ptr<Enemy_ConText> context)
 	std::shared_ptr<Enemy_Idol> idol = std::make_shared<Enemy_Idol>();
 	if (m_target.expired())return;
 	idol->SetTarget(m_target.lock());
-	idol->SetConText(context);
 	context->SetState(idol);
 }
 
@@ -72,6 +71,5 @@ void Enemy_Stumble::Hit(std::shared_ptr<Enemy_ConText> context)
 	std::shared_ptr<Enemy_Hit> hit = std::make_shared<Enemy_Hit>();
 	if (m_target.expired())return;
 	hit->SetTarget(m_target.lock());
-	hit->SetConText(context);
 	context->SetState(hit);
 }

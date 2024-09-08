@@ -27,6 +27,8 @@ void Player_Guard::Start()
 			m_flow = Flow::EndType;
 			return;
 		}
+
+		Event();
 	}
 }
 
@@ -45,6 +47,8 @@ void Player_Guard::Center()
 			m_flow = Flow::EndType;
 			return;
 		}
+
+		Event();
 	}
 }
 
@@ -77,6 +81,11 @@ void Player_Guard::Init()
 	m_ChangeFlg = true;
 }
 
+void Player_Guard::Event()
+{
+	m_guardTime++;
+}
+
 void Player_Guard::Idol(std::shared_ptr<Player_ActionConText> context)
 {
 	std::shared_ptr<Player_Idol> idol = std::make_shared<Player_Idol>();
@@ -99,4 +108,9 @@ void Player_Guard::Parry(std::shared_ptr<Player_ActionConText> context)
 	if (m_target.expired())return;
 	parry->SetTarget(m_target.lock());
 	context->SetState(parry);
+}
+
+void Player_Guard::Hit(std::shared_ptr<Player_ActionConText> context)
+{
+
 }

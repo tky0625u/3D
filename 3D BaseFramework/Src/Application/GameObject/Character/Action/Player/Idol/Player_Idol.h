@@ -15,11 +15,11 @@ public:
 
 	void Center()   override;
 
-	void Run(std::shared_ptr<Player_ActionConText> context, std::weak_ptr<CameraBase> _camera)override; //走り
-	void Attack(std::shared_ptr<Player_ActionConText> context)        override;              //攻撃
-	void Guard(std::shared_ptr<Player_ActionConText> context)         override;              //ガード
-	void Roll(std::shared_ptr<Player_ActionConText> context, std::weak_ptr<CameraBase> _camera)override;//回避
-	void Hit(std::shared_ptr<Player_ActionConText> context)           override;              //被弾
+	void Run(std::shared_ptr<Player_ActionConText> context)           override; //走り
+	void Attack(std::shared_ptr<Player_ActionConText> context)        override; //攻撃
+	void Guard(std::shared_ptr<Player_ActionConText> context)         override; //ガード
+	void Roll(std::shared_ptr<Player_ActionConText> context)          override; //回避
+	void Hit(std::shared_ptr<Player_ActionConText> context)           override; //被弾
 
 private:
 

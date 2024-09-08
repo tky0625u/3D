@@ -8,7 +8,7 @@ public:
 	~Bone()override {};
 
 	void Init()override;
-
+	
 private:
 
 };

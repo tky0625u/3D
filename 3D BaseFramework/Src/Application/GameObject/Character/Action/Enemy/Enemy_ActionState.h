@@ -12,9 +12,8 @@ public:
 	~Enemy_ActionState()override {};
 
 	bool ChaseCheck();
+	void AttackCheck(bool& _atkFlg);
 
-	void SetConText(std::shared_ptr<Enemy_ConText> _conText) { if (m_conText == nullptr)m_conText = _conText; }
-	void SetPlayer(std::shared_ptr<Player> _player) { m_player = _player; }
 	void SetTarget(std::shared_ptr<EnemyBase> target) { m_target = target; }
 
 	virtual void Idol   (std::shared_ptr<Enemy_ConText> context) { return; }  //待ち
@@ -25,6 +24,4 @@ public:
 
 protected:
 	std::weak_ptr<EnemyBase> m_target;
-	std::shared_ptr<Enemy_ConText> m_conText = nullptr;
-	std::weak_ptr<Player> m_player;
 };

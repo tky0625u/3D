@@ -20,15 +20,11 @@ void Player_Idol::Center()
 	}
 }
 
-void Player_Idol::Run(std::shared_ptr<Player_ActionConText> context, std::weak_ptr<CameraBase> _camera)
+void Player_Idol::Run(std::shared_ptr<Player_ActionConText> context)
 {
 	std::shared_ptr<Player_Run> run = std::make_shared<Player_Run>();
 	if (m_target.expired())return;
 	run->SetTarget(m_target.lock());
-	if (_camera.expired()==false)
-	{
-		run->SetCamera(_camera);
-	}
 	context->SetState(run);
 }
 
@@ -48,12 +44,11 @@ void Player_Idol::Guard(std::shared_ptr<Player_ActionConText> context)
 	context->SetState(guard);
 }
 
-void Player_Idol::Roll(std::shared_ptr<Player_ActionConText> context, std::weak_ptr<CameraBase> _camera)
+void Player_Idol::Roll(std::shared_ptr<Player_ActionConText> context)
 {
 	std::shared_ptr<Player_Roll> roll = std::make_shared<Player_Roll>();
 	if (m_target.expired())return;
 	roll->SetTarget(m_target.lock());
-	roll->SetCamera(_camera);
 	context->SetState(roll);
 }
 

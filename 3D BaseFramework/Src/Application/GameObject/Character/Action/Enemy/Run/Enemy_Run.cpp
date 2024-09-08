@@ -62,8 +62,8 @@ void Enemy_Run::End()
 		{
 			if (m_target.expired() == false)
 			{
-				if (!m_atkFlg)Idol(m_conText);
-				else{Attack(m_conText);}
+				if (!m_atkFlg)m_target.lock()->GetConText()->Idol();
+				else{ m_target.lock()->GetConText()->Attack();}
 			}
 			return;
 		}
@@ -77,10 +77,10 @@ void Enemy_Run::Event()
 		m_flow = Flow::EndType;
 		return;
 	}
-	AttackCheck();
+	AttackCheck(m_atkFlg);
 
-	if (m_player.expired())return;
-	std::shared_ptr<Player> _player = m_player.lock();
+	if (m_target.lock()->GetPlayer().expired())return;
+	std::shared_ptr<Player> _player = m_target.lock()->GetPlayer().lock();
 	Math::Vector3 _playerPos = _player->GetPos();
 	Math::Vector3 _pos = m_target.lock()->GetPos();
 	Math::Vector3 _moveDir = _playerPos - _pos;
@@ -91,40 +91,11 @@ void Enemy_Run::Event()
 	if(dist>=m_target.lock()->GetParam().AtkRange)m_target.lock()->SetMove(_moveDir);
 }
 
-bool Enemy_Run::AttackCheck()
-{
-	KdCollider::SphereInfo sphereInfo;
-	Math::Matrix nowRotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_target.lock()->GetParam().Angle));
-	Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3{ m_target.lock()->GetParam().ForwardX,m_target.lock()->GetParam().ForwardY,m_target.lock()->GetParam().ForwardZ }, nowRotY);
-	nowVec.Normalize();
-	sphereInfo.m_sphere.Center = m_target.lock()->GetPos() + nowVec * (m_target.lock()->GetParam().AtkRange / 2.0f);
-	sphereInfo.m_sphere.Radius = m_target.lock()->GetParam().AtkRange / 2.0f;
-	sphereInfo.m_type = KdCollider::TypeBump;
-
-	std::list<KdCollider::CollisionResult> retSphereList;
-	for (auto& ret : SceneManager::Instance().GetObjList())
-	{
-		if (ret->GetObjType() == ObjType::oPlayer)
-		{
-			if (ret->Intersects(sphereInfo, &retSphereList))
-			{
-				m_flow = Flow::EndType;
-				m_atkFlg = true;
-				return m_atkFlg;
-			}
-		}
-	}
-
-	m_atkFlg = false;
-	return m_atkFlg;
-}
-
 void Enemy_Run::Idol(std::shared_ptr<Enemy_ConText> context)
 {
 	std::shared_ptr<Enemy_Idol> idol = std::make_shared<Enemy_Idol>();
 	if (m_target.expired())return;
 	idol->SetTarget(m_target.lock());
-	idol->SetConText(context);
 	context->SetState(idol);
 }
 
@@ -133,7 +104,6 @@ void Enemy_Run::Attack(std::shared_ptr<Enemy_ConText> context)
 	std::shared_ptr<Enemy_Attack> attack = std::make_shared<Enemy_Attack>();
 	if (m_target.expired())return;
 	attack->SetTarget(m_target.lock());
-	attack->SetConText(context);
 	context->SetState(attack);
 }
 
@@ -142,7 +112,6 @@ void Enemy_Run::Hit(std::shared_ptr<Enemy_ConText> context)
 	std::shared_ptr<Enemy_Hit> hit = std::make_shared<Enemy_Hit>();
 	if (m_target.expired())return;
 	hit->SetTarget(m_target.lock());
-	hit->SetConText(context);
 	context->SetState(hit);
 }
 
@@ -151,6 +120,5 @@ void Enemy_Run::Stumble(std::shared_ptr<Enemy_ConText> context)
 	std::shared_ptr<Enemy_Stumble> stumble = std::make_shared<Enemy_Stumble>();
 	if (m_target.expired())return;
 	stumble->SetTarget(m_target.lock());
-	stumble->SetConText(context);
 	context->SetState(stumble);
 }

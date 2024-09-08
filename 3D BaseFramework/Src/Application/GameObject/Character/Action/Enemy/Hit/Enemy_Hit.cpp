@@ -16,7 +16,7 @@ void Enemy_Hit::Start()
 
 		if (m_target.lock()->GetIsAnimator())
 		{
-			Idol(m_conText);
+			m_target.lock()->GetConText()->Idol();
 			return;
 		}
 	}
@@ -28,6 +28,5 @@ void Enemy_Hit::Idol(std::shared_ptr<Enemy_ConText> context)
 	std::shared_ptr<Enemy_Idol> idol = std::make_shared<Enemy_Idol>();
 	if (m_target.expired())return;
 	idol->SetTarget(m_target.lock());
-	idol->SetConText(context);
 	context->SetState(idol);
 }

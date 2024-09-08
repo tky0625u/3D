@@ -110,9 +110,9 @@ void Player_Run::Event()
 void Player_Run::CameraTransform(Math::Vector3& _dir)
 {
 	Math::Matrix cameraRotYMat = Math::Matrix::Identity;
-	if (m_camera.expired() == false)
+	if (m_target.lock()->GetCamera().expired() == false)
 	{
-		cameraRotYMat = m_camera.lock()->GetRotationYMatrix();
+		cameraRotYMat = m_target.lock()->GetCamera().lock()->GetRotationYMatrix();
 	}
 	_dir = _dir.TransformNormal(_dir, cameraRotYMat);
 
@@ -143,12 +143,11 @@ void Player_Run::Guard(std::shared_ptr<Player_ActionConText> context)
 	context->SetState(guard);
 }
 
-void Player_Run::Roll(std::shared_ptr<Player_ActionConText> context, std::weak_ptr<CameraBase> _camera)
+void Player_Run::Roll(std::shared_ptr<Player_ActionConText> context)
 {
 	std::shared_ptr<Player_Roll> roll = std::make_shared<Player_Roll>();
 	if (m_target.expired())return;
 	roll->SetTarget(m_target.lock());
-	roll->SetCamera(_camera);
 	context->SetState(roll);
 }
 

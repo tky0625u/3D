@@ -18,6 +18,8 @@ public:
 	void SetPlayer(std::shared_ptr<Player> _player) { m_player = _player; }
 	void SetChaseRange(float _chaseRange) { m_chaceRange = _chaseRange; }
 	float GetChaseRange()const { return m_chaceRange; }
+	std::shared_ptr<Enemy_ConText> GetConText()const { return m_conText; }
+	std::weak_ptr<Player> GetPlayer()const { return m_player; }
 
 protected:
 	std::weak_ptr<Player> m_player;

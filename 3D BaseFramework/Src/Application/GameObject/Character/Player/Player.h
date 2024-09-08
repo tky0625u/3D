@@ -29,6 +29,8 @@ public:
 	void CrushingAction()override;
 
 	void SetCamera(std::shared_ptr<CameraBase> a_camera) { m_camera = a_camera; }
+	std::weak_ptr<CameraBase> GetCamera()const { return m_camera; }
+	std::shared_ptr<Player_ActionConText>GetConText()const { return m_context; }
 
 private:
 	UINT                      m_ActionType = ActionType::IdolType;

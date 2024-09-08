@@ -14,7 +14,6 @@ public:
 	void End()      override;
 
 	void Event()override;
-	bool AttackCheck();
 
 	void Idol   (std::shared_ptr<Enemy_ConText> context)override;  //待ち
 	void Attack (std::shared_ptr<Enemy_ConText> context)override;  //攻撃

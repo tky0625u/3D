@@ -18,4 +18,5 @@ public:
 	void Stumble(std::shared_ptr<Enemy_ConText> context)override;  //のけぞり
 
 private:
+	bool m_atkFlg = false;
 };

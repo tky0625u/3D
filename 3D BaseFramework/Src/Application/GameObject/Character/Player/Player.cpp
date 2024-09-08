@@ -90,7 +90,6 @@ void Player::Init()
 	idol->SetTarget(shared_from_this());
 
 	m_context = std::make_shared<Player_ActionConText>(idol);
-	if(m_camera.expired()==false)m_context->SetCamera(m_camera.lock());
 	m_state = m_context->GetState();
 
 	m_pCollider = std::make_unique<KdCollider>();
