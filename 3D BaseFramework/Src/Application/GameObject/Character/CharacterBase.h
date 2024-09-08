@@ -51,9 +51,6 @@ public:
 	void SetParam(int _hp, int _atk, float _speed, int _stamina, float _angle, float _size, float _atkRange, Math::Vector3 _forword);
 	void Attack(UINT ObjType);
 
-	void InviON() { m_inviFlg = true; }
-	void InviOFF() { m_inviFlg = false; }
-
 	void SetPos(Math::Vector3 a_pos) { m_pos = a_pos; }
 	void SetAnime(std::string animeName, bool animeFlg, float animeSpeed) {
 																			m_anime = animeName;
@@ -61,7 +58,6 @@ public:
 																			m_animeSpeed = animeSpeed;
 																		  }
 	void SetMove(Math::Vector3 dir){m_dir = dir;}
-	void SetNextAction(std::string next) { m_NowAction = next; }
 
 	Param& GetParam() { return m_param; }
 	bool GetIsAnimator() { return m_animator->IsAnimationEnd(); }
@@ -73,20 +69,15 @@ protected:
 	std::shared_ptr<KdModelWork> m_model           = nullptr;
 	std::shared_ptr<KdAnimator>  m_animator        = nullptr;
 	std::shared_ptr<ActionBase>  m_action          = nullptr;
-	std::string                  m_NowAction;
 	std::string                  m_anime           = "Idol";
 	std::string                  m_beforeAnime     = m_anime;
 	std::unordered_map<std::string, std::shared_ptr<ActionBase>> m_actionList;
 	Math::Vector3                m_pos             = Math::Vector3::Zero;
 	Math::Vector3                m_dir             = Math::Vector3::Zero;
-	int                          m_inviTime        = 0;
-	int                          m_ParryTime       = 0;
 	float                        m_gravity         = 0.0f;
 	float                        m_animeSpeed      = 1.0f;
 	const float                  m_SpeedCorrection = 0.2f;
 	const float                  m_gravityPow      = 0.1f;
 	bool                         m_atkFlg          = false;
 	bool                         m_animeFlg        = true;
-	bool                         m_guardFlg        = false;
-	bool                         m_inviFlg         = false;
 };

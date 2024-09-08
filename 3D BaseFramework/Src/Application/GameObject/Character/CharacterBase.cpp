@@ -116,8 +116,6 @@ void CharacterBase::PostUpdate()
 	m_animator->AdvanceTime(m_model->WorkNodes(), m_animeSpeed);
 	m_model->CalcNodeMatrices();
 
-	m_inviTime--;
-	if (m_inviTime <= 0)m_inviTime = 0;
 }
 
 void CharacterBase::GenerateDepthMapFromLight()

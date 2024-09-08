@@ -35,11 +35,7 @@ void Player_Roll::End()
 
 		if (m_target.lock()->GetIsAnimator())
 		{
-			if (m_target.expired() == false)
-			{
-				m_target.lock()->InviOFF();
-				Idol(m_conText);
-			}
+			Idol(m_conText);
 			return;
 		}
 	}
@@ -47,7 +43,7 @@ void Player_Roll::End()
 
 void Player_Roll::Event()
 {
-	if (m_target.expired() == false)m_target.lock()->InviON();
+	if (m_target.expired())return;
 
 	Math::Vector3 dir = Math::Vector3::Zero;
 	std::shared_ptr<CharacterBase> player;
