@@ -3,6 +3,7 @@
 #include"../../../Enemy/EnemyBase.h"
 #include"../../../Player/Player.h"
 #include"../Enemy_ConText.h"
+#include"../../Player/Player_ConText.h"
 
 #include"../Idol/Enemy_Idol.h"
 #include"../Hit/Enemy_Hit.h"
@@ -44,7 +45,7 @@ void Enemy_Attack::Center()
 			return;
 		}
 
-		//Event();
+		Event();
 	}
 }
 
@@ -75,11 +76,12 @@ void Enemy_Attack::Event()
 
 	KdCollider::SphereInfo sphereInfo;
 	sphereInfo.m_sphere.Center = m_target.lock()->GetWeaponMat().Translation();
-	sphereInfo.m_sphere.Radius = 1.0f;
+	sphereInfo.m_sphere.Radius = 10.0f;
 	sphereInfo.m_type = KdCollider::TypeDamage;
 	
 	if (m_target.lock()->GetPlayer().lock()->Intersects(sphereInfo, nullptr))
 	{
+		m_target.lock()->GetPlayer().lock()->GetConText()->Hit(m_target.lock()->GetParam().Atk,m_target.lock()->GetPos());
 	}
 }
 

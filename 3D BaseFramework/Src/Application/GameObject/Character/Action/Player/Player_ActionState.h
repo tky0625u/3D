@@ -22,7 +22,7 @@ public:
 	virtual void Parry(std::shared_ptr<Player_ActionConText> context)         { return; };  //パリィ
 	virtual void Counter(std::shared_ptr<Player_ActionConText> context)       { return; };  //追撃
 	virtual void Roll(std::shared_ptr<Player_ActionConText> context)          { return; };  //回避
-	virtual void Hit(std::shared_ptr<Player_ActionConText> context)           { return; };  //被弾
+	virtual void Hit(std::shared_ptr<Player_ActionConText> context,int _damage,Math::Vector3 _pos){ return; };  //被弾
 
 protected:
 	std::weak_ptr<Player> m_target;

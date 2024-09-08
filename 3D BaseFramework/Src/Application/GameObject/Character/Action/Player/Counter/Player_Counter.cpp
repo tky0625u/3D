@@ -61,6 +61,8 @@ void Player_Counter::Idol(std::shared_ptr<Player_ActionConText> context)
 
 void Player_Counter::Run(std::shared_ptr<Player_ActionConText> context)
 {
+	if (!m_target.lock()->GetIsAnimator())return;
+
 	std::shared_ptr<Player_Run> run = std::make_shared<Player_Run>();
 	if (m_target.expired())return;
 	run->SetTarget(m_target.lock());
@@ -69,6 +71,8 @@ void Player_Counter::Run(std::shared_ptr<Player_ActionConText> context)
 
 void Player_Counter::Attack(std::shared_ptr<Player_ActionConText> context)
 {
+	if (!m_target.lock()->GetIsAnimator())return;
+
 	std::shared_ptr<Player_Attack> attack = std::make_shared<Player_Attack>();
 	if (m_target.expired())return;
 	attack->SetTarget(m_target.lock());
@@ -77,6 +81,8 @@ void Player_Counter::Attack(std::shared_ptr<Player_ActionConText> context)
 
 void Player_Counter::Guard(std::shared_ptr<Player_ActionConText> context)
 {
+	if (!m_target.lock()->GetIsAnimator())return;
+
 	std::shared_ptr<Player_Guard> guard = std::make_shared<Player_Guard>();
 	if (m_target.expired())return;
 	guard->SetTarget(m_target.lock());
@@ -85,6 +91,8 @@ void Player_Counter::Guard(std::shared_ptr<Player_ActionConText> context)
 
 void Player_Counter::Roll(std::shared_ptr<Player_ActionConText> context)
 {
+	if (!m_target.lock()->GetIsAnimator())return;
+
 	std::shared_ptr<Player_Roll> roll = std::make_shared<Player_Roll>();
 	if (m_target.expired())return;
 	roll->SetTarget(m_target.lock());

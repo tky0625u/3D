@@ -67,15 +67,7 @@ void Player_Parry::Run(std::shared_ptr<Player_ActionConText> context)
 
 void Player_Parry::Attack(std::shared_ptr<Player_ActionConText> context)
 {
-	Counter(context);
-}
-
-void Player_Parry::Guard(std::shared_ptr<Player_ActionConText> context)
-{
-	std::shared_ptr<Player_Guard> guard = std::make_shared<Player_Guard>();
-	if (m_target.expired())return;
-	guard->SetTarget(m_target.lock());
-	context->SetState(guard);
+	m_target.lock()->GetConText()->Counter();
 }
 
 void Player_Parry::Roll(std::shared_ptr<Player_ActionConText> context)

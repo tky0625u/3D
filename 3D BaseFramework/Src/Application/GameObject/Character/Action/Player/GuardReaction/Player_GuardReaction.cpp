@@ -16,7 +16,7 @@ void Player_GuardReaction::Start()
 
 		if (m_target.lock()->GetIsAnimator())
 		{
-			Guard(m_conText);
+			m_target.lock()->GetConText()->Guard();
 			return;
 		}
 	}
@@ -24,8 +24,11 @@ void Player_GuardReaction::Start()
 
 void Player_GuardReaction::Guard(std::shared_ptr<Player_ActionConText> context)
 {
+	if (!m_target.lock()->GetIsAnimator())return;
+
 	std::shared_ptr<Player_Guard> guard = std::make_shared<Player_Guard>();
 	if (m_target.expired())return;
 	guard->SetTarget(m_target.lock());
+	guard->SetFlow(Flow::CenterType);
 	context->SetState(guard);
 }

@@ -25,7 +25,7 @@ public:
 	void Parry() { m_state->Parry(shared_from_this()); }                 //パリィ
 	void Counter() { m_state->Counter(shared_from_this()); }             //追撃
 	void Roll() { m_state->Roll(shared_from_this()); }          //回避
-	void Hit() {m_state->Hit(shared_from_this()); }                      //被弾
+	void Hit(int _damage,Math::Vector3 _pos) {m_state->Hit(shared_from_this(),_damage,_pos); }                      //被弾
 
 private:
 	std::shared_ptr<Player_ActionState> m_state;

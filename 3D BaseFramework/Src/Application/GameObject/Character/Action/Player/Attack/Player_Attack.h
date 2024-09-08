@@ -19,7 +19,7 @@ public:
 	void Attack(std::shared_ptr<Player_ActionConText> context)        override; //攻撃
 	void Guard(std::shared_ptr<Player_ActionConText> context)         override; //ガード
 	void Roll(std::shared_ptr<Player_ActionConText> context)          override; //回避
-	void Hit(std::shared_ptr<Player_ActionConText> context)           override; //被弾
+	void Hit(std::shared_ptr<Player_ActionConText> context,int _damage,Math::Vector3 _pos)override; //被弾
 
 private:
 	static const int AttackNUM = 3;

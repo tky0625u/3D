@@ -86,6 +86,46 @@ void Player_Guard::Event()
 	m_guardTime++;
 }
 
+void Player_Guard::GuardRotate(Math::Vector3 _pos)
+{
+	//今の方向
+	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_target.lock()->GetParam().Angle));
+	Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3(m_target.lock()->GetParam().ForwardX, m_target.lock()->GetParam().ForwardY, m_target.lock()->GetParam().ForwardZ), nowRot);
+
+	//向きたい方向
+	Math::Vector3 toVec = _pos - m_target.lock()->GetPos();
+	toVec.Normalize();
+
+	//内角 回転する角を求める
+	float d = nowVec.Dot(toVec);
+	d = std::clamp(d, -1.0f, 1.0f); //誤差修正
+
+	//回転角度を求める
+	float ang = DirectX::XMConvertToDegrees(acos(d));
+
+	//角度変更
+	//外角　どっち回転かを求める
+	Math::Vector3 c = toVec.Cross(nowVec);
+	if (c.y >= 0)
+	{
+		//右回転
+		m_target.lock()->GetParam().Angle -= ang;
+		if (m_target.lock()->GetParam().Angle < 0.0f)
+		{
+			m_target.lock()->GetParam().Angle += 360.0f;
+		}
+	}
+	else
+	{
+		//左回転
+		m_target.lock()->GetParam().Angle += ang;
+		if (m_target.lock()->GetParam().Angle >= 360.0f)
+		{
+			m_target.lock()->GetParam().Angle -= 360.0f;
+		}
+	}
+}
+
 void Player_Guard::Idol(std::shared_ptr<Player_ActionConText> context)
 {
 	std::shared_ptr<Player_Idol> idol = std::make_shared<Player_Idol>();
@@ -110,7 +150,12 @@ void Player_Guard::Parry(std::shared_ptr<Player_ActionConText> context)
 	context->SetState(parry);
 }
 
-void Player_Guard::Hit(std::shared_ptr<Player_ActionConText> context)
+void Player_Guard::Hit(std::shared_ptr<Player_ActionConText> context,int _damage,Math::Vector3 _pos)
 {
+	if (m_target.expired())return;
 
+	GuardRotate(_pos);
+
+	if (m_guardTime <= 30)m_target.lock()->GetConText()->Parry();
+	else { m_target.lock()->GetConText()->GuardReaction(); }
 }
