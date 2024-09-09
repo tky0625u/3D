@@ -1,4 +1,7 @@
 ﻿#include "Player_Guard.h"
+#include"../../../../ObjectManager.h"
+#include"../../../Enemy/EnemyBase.h"
+#include"../../Enemy/Enemy_ConText.h"
 #include"../../../Player/Player.h"
 #include"../Player_ConText.h"
 
@@ -142,20 +145,22 @@ void Player_Guard::GuardReaction(std::shared_ptr<Player_ActionConText> context)
 	context->SetState(guardReaction);
 }
 
-void Player_Guard::Parry(std::shared_ptr<Player_ActionConText> context)
+void Player_Guard::Parry(std::shared_ptr<Player_ActionConText> context, std::shared_ptr<EnemyBase> _enemy)
 {
 	std::shared_ptr<Player_Parry> parry = std::make_shared<Player_Parry>();
 	if (m_target.expired())return;
 	parry->SetTarget(m_target.lock());
 	context->SetState(parry);
+
+	_enemy->GetConText()->Stumble();
 }
 
-void Player_Guard::Hit(std::shared_ptr<Player_ActionConText> context,int _damage,Math::Vector3 _pos)
+void Player_Guard::Hit(std::shared_ptr<Player_ActionConText> context, int _damage, std::shared_ptr<EnemyBase> _enemy)
 {
 	if (m_target.expired())return;
 
-	GuardRotate(_pos);
+	GuardRotate(_enemy->GetPos());
 
-	if (m_guardTime <= 30)m_target.lock()->GetConText()->Parry();
+	if (m_guardTime <= 30)m_target.lock()->GetConText()->Parry(_enemy);
 	else { m_target.lock()->GetConText()->GuardReaction(); }
 }

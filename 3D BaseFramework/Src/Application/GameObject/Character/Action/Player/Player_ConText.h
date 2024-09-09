@@ -3,6 +3,7 @@
 #include"../../../Camera/CameraBase.h"
 
 class CameraBase;
+class EnemyBase;
 
 class Player_ActionConText:public std::enable_shared_from_this<Player_ActionConText>
 {
@@ -22,10 +23,10 @@ public:
 	void Attack() {m_state->Attack(shared_from_this()); }                //攻撃
 	void Guard() {m_state->Guard(shared_from_this()); }                  //ガード
 	void GuardReaction() {m_state->GuardReaction(shared_from_this()); }  //ガード時の反応
-	void Parry() { m_state->Parry(shared_from_this()); }                 //パリィ
+	void Parry(std::shared_ptr<EnemyBase> _enemy) { m_state->Parry(shared_from_this(),_enemy); }//パリィ
 	void Counter() { m_state->Counter(shared_from_this()); }             //追撃
 	void Roll() { m_state->Roll(shared_from_this()); }          //回避
-	void Hit(int _damage,Math::Vector3 _pos) {m_state->Hit(shared_from_this(),_damage,_pos); }                      //被弾
+	void Hit(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr) { m_state->Hit(shared_from_this(), _damage, _enemy); } //被弾
 
 private:
 	std::shared_ptr<Player_ActionState> m_state;

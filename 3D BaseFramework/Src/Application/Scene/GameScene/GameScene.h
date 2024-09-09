@@ -2,8 +2,6 @@
 
 #include"../BaseScene/BaseScene.h"
 
-class CharacterBase;
-
 class GameScene : public BaseScene
 {
 public :
@@ -16,7 +14,4 @@ public :
 private:
 
 	void Event() override;
-	
-
-	std::shared_ptr<CharacterBase> m_player;
 };

@@ -16,7 +16,7 @@ public:
 	void Idol()   { m_state->Idol(shared_from_this()); }    //待ち
 	void Run()    { m_state->Run(shared_from_this()); }     //走り
 	void Attack() { m_state->Attack(shared_from_this()); }  //攻撃
-	void Hit()    { m_state->Hit(shared_from_this()); }     //被弾
+	void Hit(int _damage)    { m_state->Hit(shared_from_this(),_damage); }     //被弾
 	void Stumble(){ m_state->Stumble(shared_from_this()); } //のけぞり
 
 private:

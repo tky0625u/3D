@@ -12,10 +12,8 @@ void GameScene::Event()
 void GameScene::Init()
 {
 	//オブジェクトマネジャ
-	std::shared_ptr<ObjectManager> obj = std::make_shared<ObjectManager>();
-
-	obj->SetPlayerParam();
-	obj->SetWeaponParam();
-	obj->SetEnemyParam("Stage1");
-	obj->SetObjectParam();
+	ObjectManager::Instance().SetPlayerParam();
+	ObjectManager::Instance().SetWeaponParam();
+	ObjectManager::Instance().SetEnemyParam("Stage1");
+	ObjectManager::Instance().SetObjectParam();
 }

@@ -13,7 +13,7 @@ public:
 	void Stumble();
 
 	void Idol(std::shared_ptr<Enemy_ConText> context)override;  //待ち
-	void Hit (std::shared_ptr<Enemy_ConText> context)override;  //被ダメ
+	void Hit (std::shared_ptr<Enemy_ConText> context,int _damage)override;  //被ダメ
 
 private:
 

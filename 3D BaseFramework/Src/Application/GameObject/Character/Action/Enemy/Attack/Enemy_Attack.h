@@ -14,7 +14,7 @@ public:
 	void Event()override;
 
 	void Idol   (std::shared_ptr<Enemy_ConText> context)override;  //待ち
-	void Hit    (std::shared_ptr<Enemy_ConText> context)override;  //被弾
+	void Hit    (std::shared_ptr<Enemy_ConText> context,int _damage)override;  //被弾
 	void Stumble(std::shared_ptr<Enemy_ConText> context)override;  //のけぞり
 
 private:

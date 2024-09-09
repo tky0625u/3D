@@ -26,6 +26,8 @@ void Player_Counter::Start()
 			m_ChangeFlg = true;
 			return;
 		}
+
+		Event();
 	}
 }
 
@@ -45,6 +47,11 @@ void Player_Counter::End()
 			return;
 		}
 	}
+}
+
+void Player_Counter::Event()
+{
+	AttackDamage();
 }
 
 void Player_Counter::Idol(std::shared_ptr<Player_ActionConText> context)

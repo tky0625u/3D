@@ -81,7 +81,7 @@ void Enemy_Attack::Event()
 	
 	if (m_target.lock()->GetPlayer().lock()->Intersects(sphereInfo, nullptr))
 	{
-		m_target.lock()->GetPlayer().lock()->GetConText()->Hit(m_target.lock()->GetParam().Atk,m_target.lock()->GetPos());
+		m_target.lock()->GetPlayer().lock()->GetConText()->Hit(m_target.lock()->GetParam().Atk,m_target.lock());
 	}
 }
 
@@ -93,12 +93,13 @@ void Enemy_Attack::Idol(std::shared_ptr<Enemy_ConText> context)
 	context->SetState(idol);
 }
 
-void Enemy_Attack::Hit(std::shared_ptr<Enemy_ConText> context)
+void Enemy_Attack::Hit(std::shared_ptr<Enemy_ConText> context,int _damage)
 {
 	std::shared_ptr<Enemy_Hit> hit = std::make_shared<Enemy_Hit>();
 	if (m_target.expired())return;
 	hit->SetTarget(m_target.lock());
 	context->SetState(hit);
+	m_target.lock()->GetParam().Hp -= _damage;
 }
 
 void Enemy_Attack::Stumble(std::shared_ptr<Enemy_ConText> context)

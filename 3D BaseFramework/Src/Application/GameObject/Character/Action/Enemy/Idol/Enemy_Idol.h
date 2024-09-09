@@ -16,7 +16,7 @@ public:
 
 	void Run    (std::shared_ptr<Enemy_ConText> context)override;  //走り
 	void Attack (std::shared_ptr<Enemy_ConText> context)override;  //攻撃
-	void Hit    (std::shared_ptr<Enemy_ConText> context)override;  //被弾
+	void Hit    (std::shared_ptr<Enemy_ConText> context,int _damage)override;  //被弾
 	void Stumble(std::shared_ptr<Enemy_ConText> context)override;  //のけぞり
 
 private:

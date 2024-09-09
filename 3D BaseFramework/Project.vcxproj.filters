@@ -641,6 +641,9 @@
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\EnemyBase.cpp">
       <Filter>Src\Application\GameObject\Character\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Player_ActionState.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Framework\Shader\inc_KdCommon.hlsli">

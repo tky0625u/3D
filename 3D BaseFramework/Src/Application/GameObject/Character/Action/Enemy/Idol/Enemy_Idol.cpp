@@ -43,12 +43,13 @@ void Enemy_Idol::Attack(std::shared_ptr<Enemy_ConText> context)
 	context->SetState(attack);
 }
 
-void Enemy_Idol::Hit(std::shared_ptr<Enemy_ConText> context)
+void Enemy_Idol::Hit(std::shared_ptr<Enemy_ConText> context,int _damage)
 {
 	std::shared_ptr<Enemy_Hit> hit = std::make_shared<Enemy_Hit>();
 	if (m_target.expired())return;
 	hit->SetTarget(m_target.lock());
 	context->SetState(hit);
+	m_target.lock()->GetParam().Hp -= _damage;
 }
 
 void Enemy_Idol::Stumble(std::shared_ptr<Enemy_ConText> context)

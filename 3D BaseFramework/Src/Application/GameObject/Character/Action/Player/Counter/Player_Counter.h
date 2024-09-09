@@ -12,6 +12,8 @@ public:
 	void Start()override;
 	void End()override;
 
+	void Event() override;
+
 	void SetTargetPos(Math::Vector3 targetPos) { m_targetPos = targetPos; }
 
 	void Idol(std::shared_ptr<Player_ActionConText> context)          override; //待ち

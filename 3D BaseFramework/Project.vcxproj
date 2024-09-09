@@ -253,6 +253,7 @@
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Hit\Player_Hit.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Idol\Player_Idol.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Parry\Player_Parry.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Player_ActionState.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Roll\Player_Roll.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Run\Player_Run.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\CharacterBase.cpp" />

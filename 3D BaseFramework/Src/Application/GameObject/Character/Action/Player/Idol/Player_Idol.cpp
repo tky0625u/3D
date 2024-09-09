@@ -52,7 +52,7 @@ void Player_Idol::Roll(std::shared_ptr<Player_ActionConText> context)
 	context->SetState(roll);
 }
 
-void Player_Idol::Hit(std::shared_ptr<Player_ActionConText> context,int _damage,Math::Vector3 _pos)
+void Player_Idol::Hit(std::shared_ptr<Player_ActionConText> context, int _damage, std::shared_ptr<EnemyBase> _enemy)
 {
 	std::shared_ptr<Player_Hit> hit = std::make_shared<Player_Hit>();
 	if (m_target.expired())return;

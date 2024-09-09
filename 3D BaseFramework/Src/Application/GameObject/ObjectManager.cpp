@@ -243,7 +243,7 @@ void ObjectManager::SetEnemyParam(std::string _StageNum)
 		m_id++;
 
 		SceneManager::Instance().AddObject(enemy);
-
+		m_EnemyList.push_back(enemy);
 	}
 
 	ifs.close();

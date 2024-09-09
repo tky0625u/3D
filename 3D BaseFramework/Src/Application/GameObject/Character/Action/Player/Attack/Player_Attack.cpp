@@ -1,4 +1,7 @@
 ﻿#include "Player_Attack.h"
+#include"../../../../ObjectManager.h"
+#include"../../../Enemy/EnemyBase.h"
+#include"../../Enemy/Enemy_ConText.h"
 #include"../../../Player/Player.h"
 #include"../Player_ConText.h"
 
@@ -46,6 +49,8 @@ void Player_Attack::Center()
 			m_ChangeFlg = true;
 			return;
 		}
+
+		Event();
 	}
 }
 
@@ -93,6 +98,11 @@ void Player_Attack::Init()
 	m_flow = Flow::CenterType;
 }
 
+void Player_Attack::Event()
+{
+	AttackDamage();
+}
+
 void Player_Attack::Idol(std::shared_ptr<Player_ActionConText> context)
 {
 	std::shared_ptr<Player_Idol> idol = std::make_shared<Player_Idol>();
@@ -131,7 +141,7 @@ void Player_Attack::Roll(std::shared_ptr<Player_ActionConText> context)
 	context->SetState(roll);
 }
 
-void Player_Attack::Hit(std::shared_ptr<Player_ActionConText> context, int _damage, Math::Vector3 _pos)
+void Player_Attack::Hit(std::shared_ptr<Player_ActionConText> context, int _damage, std::shared_ptr<EnemyBase> _enemy)
 {
 	std::shared_ptr<Player_Hit> hit = std::make_shared<Player_Hit>();
 	if (m_target.expired())return;
