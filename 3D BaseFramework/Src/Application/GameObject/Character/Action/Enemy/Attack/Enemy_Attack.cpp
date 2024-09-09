@@ -31,8 +31,6 @@ void Enemy_Attack::Center()
 {
 	if (m_target.expired() == false)
 	{
-		m_target.lock()->Attack(m_target.lock()->GetObjType());
-
 		if (m_target.lock()->GetAnime() != "Attack")
 		{
 			m_target.lock()->SetAnime("Attack", false, 1.5f);

@@ -15,7 +15,6 @@ void Player_Attack::Center()
 {
 	if (m_target.expired() == false)
 	{
-		m_target.lock()->Attack(m_target.lock()->GetObjType());
 		switch (m_atkNum)
 		{
 		case 1:

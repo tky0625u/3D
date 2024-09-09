@@ -15,7 +15,7 @@ public:
 		 float  Angle    = 0.0f; //角度
 		 float  Size     = 1.0f; //大きさ
 		 float  ErrorNum = 0.0f; //モデルの原点の誤差
-		 float  AtkRange; //攻撃範囲
+		 float  AtkRange = 0.0f; //攻撃範囲
 		 float  ForwardX = 0.0f; //前方方向X
 		 float  ForwardY = 0.0f; //前方方向Y
 		 float  ForwardZ = 0.0f; //前方方向Z
@@ -49,7 +49,6 @@ public:
 	virtual void CrushingAction(); //やられ演出
 
 	void SetParam(int _hp, int _atk, float _speed, int _stamina, float _angle, float _size, float _atkRange, Math::Vector3 _forword);
-	void Attack(UINT ObjType);
 
 	void SetPos(Math::Vector3 a_pos) { m_pos = a_pos; }
 	void SetAnime(std::string animeName, bool animeFlg, float animeSpeed) {

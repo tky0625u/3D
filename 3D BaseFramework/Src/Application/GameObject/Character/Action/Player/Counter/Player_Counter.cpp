@@ -12,8 +12,6 @@ void Player_Counter::Start()
 {
 	if (m_target.expired() == false)
 	{
-		m_target.lock()->Attack(m_target.lock()->GetObjType());
-
 		if (m_target.lock()->GetAnime() != "Counter")
 		{
 			m_target.lock()->SetAnime("Counter", false, 1.5f);

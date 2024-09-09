@@ -169,32 +169,3 @@ void CharacterBase::SetParam(int _hp, int _atk, float _speed, int _stamina, floa
 	m_param.ForwardY = _forword.y;
 	m_param.ForwardZ = _forword.z;
 }
-
-void CharacterBase::Attack(UINT ObjType)
-{
-	KdCollider::SphereInfo sphereInfo;
-
-	Math::Matrix nowRotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_param.Angle));
-	Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3{ m_param.ForwardX,m_param.ForwardY,m_param.ForwardZ }, nowRotY);
-	nowVec.Normalize();
-	sphereInfo.m_sphere.Center = m_pos + nowVec * m_param.AtkRange / 2.0f;
-	sphereInfo.m_sphere.Center.y += 1.0f;
-	sphereInfo.m_sphere.Radius = m_param.AtkRange / 2.0f;
-	sphereInfo.m_type = KdCollider::TypeDamage;
-
-	Math::Color color = { 1,0,0,1 };
-	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, color);
-
-	bool stumbleFlg = false;
-
-	std::list<KdCollider::CollisionResult> retSphereList;
-	for (auto& sphere : SceneManager::Instance().GetObjList())
-	{
-		if (sphere->Intersects(sphereInfo, &retSphereList))
-		{
-			if (sphere->GetObjType()==m_ObjType)continue;
-			sphere->Hit(m_param.Atk,stumbleFlg);
-		}
-	}
-
-}
