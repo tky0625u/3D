@@ -1,5 +1,6 @@
 ﻿#include "SceneManager.h"
 
+#include"../GameObject/ObjectManager.h"
 #include "BaseScene/BaseScene.h"
 #include "TitleScene/TitleScene.h"
 #include "GameScene/GameScene.h"
@@ -68,6 +69,9 @@ void SceneManager::ChangeScene(SceneType sceneType)
 		m_currentScene->Init();
 		break;
 	}
+
+	//エネミーリスト削除
+	if (m_currentSceneType == SceneType::Game)ObjectManager::Instance().DeleteEnemyList();
 
 	// 現在のシーン情報を更新
 	m_currentSceneType = sceneType;

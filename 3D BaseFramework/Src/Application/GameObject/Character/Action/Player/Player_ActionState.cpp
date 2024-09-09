@@ -15,9 +15,11 @@ void Player_ActionState::AttackDamage()
 
 	for (auto& sphere : ObjectManager::Instance().GetEnemyList())
 	{
-		if (sphere->Intersects(sphereInfo, nullptr))
+		if (sphere.expired())continue;
+
+		if (sphere.lock()->Intersects(sphereInfo, nullptr))
 		{
-			sphere->GetConText()->Hit(m_target.lock()->GetParam().Atk);
+			sphere.lock()->GetConText()->Hit(m_target.lock()->GetParam().Atk);
 		}
 	}
 }
