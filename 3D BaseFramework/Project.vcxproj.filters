@@ -157,6 +157,12 @@
     <Filter Include="Src\Application\GameObject\Stage\Wall">
       <UniqueIdentifier>{724f80f5-7347-4e19-8442-4de4a07788a2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\Weapon\Sword">
+      <UniqueIdentifier>{86b2871a-7685-47af-a2b7-7b6b78d3c87c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Weapon\Shield">
+      <UniqueIdentifier>{3aae3733-8ab8-4995-bfe1-c58e0e7eef89}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -372,9 +378,6 @@
     <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Counter\Player_Counter.h">
       <Filter>Src\Application\GameObject\Character\Action\Player\Counter</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Weapon\Weapon.h">
-      <Filter>Src\Application\GameObject\Weapon</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\ObjectManager.h">
       <Filter>Src\Application\GameObject</Filter>
     </ClInclude>
@@ -416,6 +419,15 @@
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\EnemyBase.h">
       <Filter>Src\Application\GameObject\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Weapon\WeaponBase.h">
+      <Filter>Src\Application\GameObject\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Weapon\Sword\Sword.h">
+      <Filter>Src\Application\GameObject\Weapon\Sword</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Weapon\Shield\Shield.h">
+      <Filter>Src\Application\GameObject\Weapon\Shield</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -605,9 +617,6 @@
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Counter\Player_Counter.cpp">
       <Filter>Src\Application\GameObject\Character\Action\Player\Counter</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Weapon\Weapon.cpp">
-      <Filter>Src\Application\GameObject\Weapon</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\GameObject\ObjectManager.cpp">
       <Filter>Src\Application\GameObject</Filter>
     </ClCompile>
@@ -643,6 +652,15 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Player_ActionState.cpp">
       <Filter>Src\Application\GameObject\Character\Action\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Weapon\WeaponBase.cpp">
+      <Filter>Src\Application\GameObject\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Weapon\Sword\Sword.cpp">
+      <Filter>Src\Application\GameObject\Weapon\Sword</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Weapon\Shield\Shield.cpp">
+      <Filter>Src\Application\GameObject\Weapon\Shield</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

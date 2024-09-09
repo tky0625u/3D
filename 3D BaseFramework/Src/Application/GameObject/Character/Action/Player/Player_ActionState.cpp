@@ -6,20 +6,20 @@
 
 void Player_ActionState::AttackDamage()
 {
-	if (m_target.expired())return;
+	//if (m_target.expired())return;
 
-	KdCollider::SphereInfo sphereInfo;
-	sphereInfo.m_sphere.Center = m_target.lock()->GetWeaponMat().Translation();
-	sphereInfo.m_sphere.Radius = 10.0f;
-	sphereInfo.m_type = KdCollider::TypeDamage;
+	//KdCollider::SphereInfo sphereInfo;
+	//sphereInfo.m_sphere.Center = m_target.lock()->GetWeaponMat().Translation();
+	//sphereInfo.m_sphere.Radius = 10.0f;
+	//sphereInfo.m_type = KdCollider::TypeDamage;
 
-	for (auto& sphere : ObjectManager::Instance().GetEnemyList())
-	{
-		if (sphere.expired())continue;
+	//for (auto& sphere : ObjectManager::Instance().GetEnemyList())
+	//{
+	//	if (sphere.expired())continue;
 
-		if (sphere.lock()->Intersects(sphereInfo, nullptr))
-		{
-			sphere.lock()->GetConText()->Hit(m_target.lock()->GetParam().Atk);
-		}
-	}
+	//	if (sphere.lock()->Intersects(sphereInfo, nullptr))
+	//	{
+	//		sphere.lock()->GetConText()->Hit(m_target.lock()->GetParam().Atk);
+	//	}
+	//}
 }

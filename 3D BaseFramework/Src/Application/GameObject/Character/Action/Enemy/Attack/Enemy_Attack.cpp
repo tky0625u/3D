@@ -69,18 +69,18 @@ void Enemy_Attack::End()
 
 void Enemy_Attack::Event()
 {
-	if (m_target.expired())return;
-	if (m_target.lock()->GetPlayer().expired())return;
+	//if (m_target.expired())return;
+	//if (m_target.lock()->GetPlayer().expired())return;
 
-	KdCollider::SphereInfo sphereInfo;
-	sphereInfo.m_sphere.Center = m_target.lock()->GetWeaponMat().Translation();
-	sphereInfo.m_sphere.Radius = 10.0f;
-	sphereInfo.m_type = KdCollider::TypeDamage;
-	
-	if (m_target.lock()->GetPlayer().lock()->Intersects(sphereInfo, nullptr))
-	{
-		m_target.lock()->GetPlayer().lock()->GetConText()->Hit(m_target.lock()->GetParam().Atk,m_target.lock());
-	}
+	//KdCollider::SphereInfo sphereInfo;
+	//sphereInfo.m_sphere.Center = m_target.lock()->GetWeaponMat().Translation();
+	//sphereInfo.m_sphere.Radius = 10.0f;
+	//sphereInfo.m_type = KdCollider::TypeDamage;
+	//
+	//if (m_target.lock()->GetPlayer().lock()->Intersects(sphereInfo, nullptr))
+	//{
+	//	m_target.lock()->GetPlayer().lock()->GetConText()->Hit(m_target.lock()->GetParam().Atk,m_target.lock());
+	//}
 }
 
 void Enemy_Attack::Idol(std::shared_ptr<Enemy_ConText> context)

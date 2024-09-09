@@ -2,20 +2,19 @@
 
 class CharacterBase;
 
-class Weapon :public KdGameObject
+class WeaponBase :public KdGameObject
 {
 public:
-	Weapon() { Init(); }
-	~Weapon()override {};
+	WeaponBase() { Init(); }
+	~WeaponBase()override {};
 
-	void Update()override;
-	void GenerateDepthMapFromLight()override;
-	void DrawLit()override;
-	void Init()override;
+	virtual void GenerateDepthMapFromLight()override;
+	virtual void DrawLit()override;
+	virtual void Init()override;
 
 	void SetTarget(std::shared_ptr<CharacterBase> _target) { m_target = _target; }
 
-private:
+protected:
 	std::weak_ptr<CharacterBase> m_target;
 	std::shared_ptr<KdModelWork> m_spModel = nullptr;
 	Math::Vector3 m_pos = Math::Vector3::Zero;

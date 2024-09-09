@@ -11,8 +11,10 @@
 #include"../GameObject/Stage/Wall/Wall.h"
 //スカイボックス
 #include"../GameObject/SkyBox/SkyBox.h"
-//武器
-#include"../GameObject/Weapon/Weapon.h"
+//剣
+#include"../GameObject/Weapon/Sword/Sword.h"
+//盾
+#include"../GameObject/Weapon/Shield/Shield.h"
 //プレイヤー
 #include"../GameObject/Character/Player/Player.h"
 //カメラ
@@ -180,7 +182,9 @@ void ObjectManager::SetWeaponParam()
 		float _angleY = 0.0f;
 		_angleY = stage["Angle"];
 
-		std::shared_ptr<Weapon> weapon = std::make_shared<Weapon>();
+		std::shared_ptr<WeaponBase> weapon = nullptr;
+		if (stage["Name"] == "Sword")weapon = std::make_shared<Sword>();
+		else if (stage["Name"] == "Shield")weapon = std::make_shared<Shield>();
 
 		weapon->SetPos(_pos);
 		weapon->SetScale(_size);
