@@ -4,11 +4,10 @@
 class Sword :public WeaponBase
 {
 public:
-	Sword() { Init(); }
+	Sword() {}
 	~Sword()override {};
 
 	void Update()override;
-	void Init()override;
 
 private:
 

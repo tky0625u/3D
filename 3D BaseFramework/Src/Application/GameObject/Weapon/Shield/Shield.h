@@ -4,11 +4,10 @@
 class Shield :public WeaponBase
 {
 public:
-	Shield() { Init(); }
+	Shield() {}
 	~Shield()override {};
 
 	void Update()override;
-	void Init()override;
 
 private:
 

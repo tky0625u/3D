@@ -10,9 +10,3 @@ void Shield::Update()
 	Math::Matrix _targetMat = _target->GetShieldMat();
 	m_mWorld = _trans * _targetMat;
 }
-
-void Shield::Init()
-{
-	m_spModel = std::make_shared<KdModelWork>();
-	m_spModel->SetModelData("Asset/Models/Weapon/shield/Shield.gltf");
-}

@@ -1,0 +1,12 @@
+{
+	"Sword": {
+		"Name": "Sword",
+		"ATK": 10,
+		"PosX": 1.0,
+		"PosY": 0.0,
+		"PosZ": 0.0,
+		"Size": 1.0,
+		"Angle": 0.0,
+		"Path": "Asset/Models/Weapon/sword/Sword.gltf"
+	}
+}

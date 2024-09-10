@@ -13,4 +13,5 @@ void WeaponBase::DrawLit()
 void WeaponBase::Init()
 {
 	m_spModel = std::make_shared<KdModelWork>();
+	m_spModel->SetModelData(m_modelPath);
 }

@@ -147,6 +147,9 @@ void ObjectManager::SetPlayerParam()
 		SceneManager::Instance().AddObject(player);
 		m_player = player;
 
+		if (stage["Sword"])SetWeaponParam("Json/Weapon/Sword/Sword.json", stage["SwordID"]);
+		if (stage["Shield"])SetWeaponParam("Json/Weapon/Shield/Shield.json", stage["ShieldID"]);
+
 		camera->SetTarget(player);
 		camera->SetID(m_id);
 		m_id++;
@@ -157,10 +160,10 @@ void ObjectManager::SetPlayerParam()
 	ifs.close();
 }
 
-void ObjectManager::SetWeaponParam()
+void ObjectManager::SetWeaponParam(std::string _filePath,int _id)
 {
 	//jsonファイル
-	std::string fileName = "Json/Weapon/Weapon.json";
+	std::string fileName = _filePath;
 
 	std::ifstream ifs(fileName.c_str());
 	nlohmann::json _json;
@@ -169,8 +172,16 @@ void ObjectManager::SetWeaponParam()
 		ifs >> _json;
 	}
 
+	int weaponID = 0;
+
 	for (auto& stage : _json)
 	{
+		if (weaponID != _id)
+		{
+			weaponID++;
+			continue;
+		}
+
 		Math::Vector3 _pos = Math::Vector3::Zero;
 		_pos.x = stage["PosX"];
 		_pos.y = stage["PosY"];
@@ -183,15 +194,26 @@ void ObjectManager::SetWeaponParam()
 		_angleY = stage["Angle"];
 
 		std::shared_ptr<WeaponBase> weapon = nullptr;
-		if (stage["Name"] == "Sword")weapon = std::make_shared<Sword>();
+		int weaponATK = 0;
+		if (stage["Name"] == "Sword")
+		{
+			weapon = std::make_shared<Sword>();
+			weaponATK = stage["ATK"];
+		}
 		else if (stage["Name"] == "Shield")weapon = std::make_shared<Shield>();
 
+		std::string _modelPath;
+		_modelPath = stage["Path"];
+
+		weapon->SetModelPath(_modelPath);
+		weapon->Init();
 		weapon->SetPos(_pos);
 		weapon->SetScale(_size);
 		weapon->SetAngleY(_angleY);
 		if (m_player.expired() == false)
 		{
 			weapon->SetTarget(m_player.lock());
+			if (weaponATK != 0)m_player.lock()->GetParam().Atk = stage["ATK"];
 		}
 		weapon->SetID(m_id);
 		m_id++;

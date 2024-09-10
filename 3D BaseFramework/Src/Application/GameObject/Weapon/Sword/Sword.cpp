@@ -10,9 +10,3 @@ void Sword::Update()
 	Math::Matrix _targetMat = _target->GetSwordMat();
 	m_mWorld = _trans * _targetMat;
 }
-
-void Sword::Init()
-{
-	WeaponBase::Init();
-	m_spModel->SetModelData("Asset/Models/Weapon/sword/Sword.gltf");
-}

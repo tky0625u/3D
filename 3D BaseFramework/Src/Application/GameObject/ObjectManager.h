@@ -11,7 +11,7 @@ public:
 
 	void SetObjectParam();
 	void SetPlayerParam();
-	void SetWeaponParam();
+	void SetWeaponParam(std::string _filePath, int _id);
 	void SetEnemyParam(std::string _StageNum);
 
 	std::vector<std::weak_ptr<EnemyBase>> GetEnemyList()const { return m_EnemyList; }

@@ -15,7 +15,6 @@ void GameScene::Init()
 {
 	//オブジェクトマネジャ
 	ObjectManager::Instance().SetPlayerParam();
-	ObjectManager::Instance().SetWeaponParam();
 	ObjectManager::Instance().SetEnemyParam("Stage1");
 	ObjectManager::Instance().SetObjectParam();
 }
