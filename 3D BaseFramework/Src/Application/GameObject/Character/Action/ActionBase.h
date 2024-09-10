@@ -15,6 +15,13 @@ public:
 	ActionBase()           {};
 	~ActionBase()override  {};
 
+	virtual void Update()override
+	{
+		if (m_flow == Flow::StartType) { Start(); }
+		else if (m_flow == Flow::CenterType) { Center(); }
+		else if (m_flow == Flow::EndType) { End(); }
+	}
+
 	virtual void Start()   {};
 	virtual void Center()  {};
 	virtual void End()     {};
@@ -22,11 +29,6 @@ public:
 	virtual void Event()   {};
 	void Rotate(Math::Vector3 _moveDir, std::shared_ptr<CharacterBase> _target);
 
-	UINT GetFlow() { return m_flow; }
-	bool GetIsEnd() { return m_end; }
-
 protected:
 	UINT m_flow      = Flow::StartType;
-	bool m_ChangeFlg = false;
-	bool m_end       = false;
 };

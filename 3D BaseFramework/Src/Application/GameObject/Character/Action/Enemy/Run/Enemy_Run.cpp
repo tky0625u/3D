@@ -2,12 +2,7 @@
 #include"../../../Enemy/EnemyBase.h"
 #include"../../../../../Scene/SceneManager.h"
 #include"../Enemy_ConText.h"
-
 #include"../../../Player/Player.h"
-#include"../Idol/Enemy_Idol.h"
-#include"../Attack/Enemy_Attack.h"
-#include"../Hit/Enemy_Hit.h"
-#include"../Stumble/Enemy_Stumble.h"
 
 void Enemy_Run::Init()
 {
@@ -89,37 +84,4 @@ void Enemy_Run::Event()
 
 	if (m_target.expired() == false)Rotate(_moveDir, m_target.lock());
 	if(dist>=m_target.lock()->GetParam().AtkRange)m_target.lock()->SetMove(_moveDir);
-}
-
-void Enemy_Run::Idol(std::shared_ptr<Enemy_ConText> context)
-{
-	std::shared_ptr<Enemy_Idol> idol = std::make_shared<Enemy_Idol>();
-	if (m_target.expired())return;
-	idol->SetTarget(m_target.lock());
-	context->SetState(idol);
-}
-
-void Enemy_Run::Attack(std::shared_ptr<Enemy_ConText> context)
-{
-	std::shared_ptr<Enemy_Attack> attack = std::make_shared<Enemy_Attack>();
-	if (m_target.expired())return;
-	attack->SetTarget(m_target.lock());
-	context->SetState(attack);
-}
-
-void Enemy_Run::Hit(std::shared_ptr<Enemy_ConText> context,int _damage)
-{
-	std::shared_ptr<Enemy_Hit> hit = std::make_shared<Enemy_Hit>();
-	if (m_target.expired())return;
-	hit->SetTarget(m_target.lock());
-	context->SetState(hit);
-	m_target.lock()->GetParam().Hp -= _damage;
-}
-
-void Enemy_Run::Stumble(std::shared_ptr<Enemy_ConText> context)
-{
-	std::shared_ptr<Enemy_Stumble> stumble = std::make_shared<Enemy_Stumble>();
-	if (m_target.expired())return;
-	stumble->SetTarget(m_target.lock());
-	context->SetState(stumble);
 }

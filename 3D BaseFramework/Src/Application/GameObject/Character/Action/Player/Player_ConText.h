@@ -11,12 +11,20 @@ public:
 	Player_ActionConText(std::shared_ptr<Player_ActionState> initialState):m_state(initialState){}
 	~Player_ActionConText() {};
 
-	void SetState(std::shared_ptr<Player_ActionState> _state)
+	enum ActionType
 	{
-		m_state = _state;
-	}
+		IdolType = 1 << 0,
+		MoveType = 1 << 1,
+		AttackType = 1 << 2,
+		GuardType = 1 << 3,
+		RollType = 1 << 4,
+	};
+
+	void SetState(std::shared_ptr<Player_ActionState> _state) { m_state = _state; }
+	void SetBeforeActionType(UINT _ActionType) { m_BeforeActionType = _ActionType; }
 
 	std::shared_ptr<Player_ActionState> GetState()const { return m_state; }
+	UINT GetBeforeActionType()const { return m_BeforeActionType; }
 
 	void Idol() { m_state->Idol(shared_from_this()); }                   //待ち
 	void Run() { m_state->Run(shared_from_this()); }            //走り
@@ -30,4 +38,5 @@ public:
 
 private:
 	std::shared_ptr<Player_ActionState> m_state;
+	UINT m_BeforeActionType = 0;
 };

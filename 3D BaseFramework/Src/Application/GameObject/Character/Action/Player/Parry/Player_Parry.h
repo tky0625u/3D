@@ -2,6 +2,7 @@
 #include"../Player_ActionState.h"
 
 class CameraBase;
+class EnemyBase;
 
 class Player_Parry :public Player_ActionState
 {
@@ -12,11 +13,8 @@ public:
 	void Start()override;
 	void End()override;
 
-	void Idol(std::shared_ptr<Player_ActionConText> context)    override; //待ち
-	void Run(std::shared_ptr<Player_ActionConText> context)     override; //走り
-	void Attack(std::shared_ptr<Player_ActionConText> context)  override; //攻撃
-	void Roll(std::shared_ptr<Player_ActionConText> context)    override; //回避
-	void Counter(std::shared_ptr<Player_ActionConText> context) override; //追撃
+	void ChangeAction()override;
+	void Hit(std::shared_ptr<Player_ActionConText> context, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)override { return; }
 
 private:
 

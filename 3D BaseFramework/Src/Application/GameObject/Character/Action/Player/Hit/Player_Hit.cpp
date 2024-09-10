@@ -2,8 +2,6 @@
 #include"../../../Player/Player.h"
 #include"../Player_ConText.h"
 
-#include"../Idol/Player_Idol.h"
-
 void Player_Hit::Start()
 {
 	if (m_target.expired() == false)
@@ -16,16 +14,8 @@ void Player_Hit::Start()
 
 		if (m_target.lock()->GetIsAnimator())
 		{
-			Idol(m_conText);
+			m_target.lock()->GetConText()->Idol();
 			return;
 		}
 	}
-}
-
-void Player_Hit::Idol(std::shared_ptr<Player_ActionConText> context)
-{
-	std::shared_ptr<Player_Idol> idol = std::make_shared<Player_Idol>();
-	if (m_target.expired())return;
-	idol->SetTarget(m_target.lock());
-	context->SetState(idol);
 }

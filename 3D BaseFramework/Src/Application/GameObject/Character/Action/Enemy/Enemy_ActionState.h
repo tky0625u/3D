@@ -16,11 +16,11 @@ public:
 
 	void SetTarget(std::shared_ptr<EnemyBase> target) { m_target = target; }
 
-	virtual void Idol   (std::shared_ptr<Enemy_ConText> context) { return; }  //待ち
-	virtual void Run    (std::shared_ptr<Enemy_ConText> context) { return; }  //走り
-	virtual void Attack (std::shared_ptr<Enemy_ConText> context) { return; }  //攻撃
-	virtual void Hit    (std::shared_ptr<Enemy_ConText> context,int _damage) { return; }  //被弾
-	virtual void Stumble(std::shared_ptr<Enemy_ConText> context) { return; }  //のけぞり
+	virtual void Idol(std::shared_ptr<Enemy_ConText> context); //待ち
+	virtual void Run(std::shared_ptr<Enemy_ConText> context);//走り
+	virtual void Attack(std::shared_ptr<Enemy_ConText> context);//攻撃
+	virtual void Hit(std::shared_ptr<Enemy_ConText> context, int _damage);//被弾
+	virtual void Stumble(std::shared_ptr<Enemy_ConText> context);//のけぞり
 
 protected:
 	std::weak_ptr<EnemyBase> m_target;

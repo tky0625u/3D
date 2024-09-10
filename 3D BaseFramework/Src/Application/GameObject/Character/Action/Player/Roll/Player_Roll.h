@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include"../Player_ActionState.h"
 
+class EnemyBase;
+
 class Player_Roll :public Player_ActionState
 {
 public:
@@ -14,7 +16,7 @@ public:
 
 	void Init()     override;
 
-	void Idol(std::shared_ptr<Player_ActionConText> context)          override;             //待ち
+	void Hit(std::shared_ptr<Player_ActionConText> context, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)override { return; }
 
 private:
 };

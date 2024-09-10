@@ -2,8 +2,6 @@
 #include"../../../Enemy/EnemyBase.h"
 #include"../Enemy_ConText.h"
 
-#include"../Idol/Enemy_Idol.h"
-
 void Enemy_Hit::Start()
 {
 	if (m_target.expired() == false)
@@ -21,12 +19,4 @@ void Enemy_Hit::Start()
 		}
 	}
 
-}
-
-void Enemy_Hit::Idol(std::shared_ptr<Enemy_ConText> context)
-{
-	std::shared_ptr<Enemy_Idol> idol = std::make_shared<Enemy_Idol>();
-	if (m_target.expired())return;
-	idol->SetTarget(m_target.lock());
-	context->SetState(idol);
 }

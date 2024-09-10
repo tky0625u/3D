@@ -3,6 +3,17 @@
 #include"../../Enemy/EnemyBase.h"
 #include"../Enemy/Enemy_ConText.h"
 #include"../../Player/Player.h"
+#include"Player_ConText.h"
+
+#include"Idol/Player_Idol.h"
+#include"Run/Player_Run.h"
+#include"Attack/Player_Attack.h"
+#include"Roll/Player_Roll.h"
+#include"Guard/Player_Guard.h"
+#include"GuardReaction/Player_GuardReaction.h"
+#include"Parry/Player_Parry.h"
+#include"Counter/Player_Counter.h"
+#include"Hit/Player_Hit.h"
 
 void Player_ActionState::AttackDamage()
 {
@@ -22,4 +33,133 @@ void Player_ActionState::AttackDamage()
 	//		sphere.lock()->GetConText()->Hit(m_target.lock()->GetParam().Atk);
 	//	}
 	//}
+}
+
+void Player_ActionState::Update()
+{
+	ActionBase::Update();
+	KeyCheck();
+	ChangeAction();
+	m_target.lock()->GetConText()->SetBeforeActionType(m_ActionType);
+}
+
+void Player_ActionState::KeyCheck()
+{
+	std::shared_ptr<Player_ActionConText> _context = nullptr;
+	if (m_target.expired() == false)_context = m_target.lock()->GetConText();
+
+	//移動
+	if (GetAsyncKeyState('W') & 0x8000 | GetAsyncKeyState('A') & 0x8000 | GetAsyncKeyState('S') & 0x8000 | GetAsyncKeyState('D') & 0x8000)
+	{
+		m_ActionType |= Player_ActionConText::ActionType::MoveType;
+	}
+	else if (m_ActionType & Player_ActionConText::ActionType::MoveType)
+	{
+		m_ActionType ^= Player_ActionConText::ActionType::MoveType;
+	}
+
+	//攻撃
+	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+	{
+		m_ActionType |= Player_ActionConText::ActionType::AttackType;
+	}
+	else if (m_ActionType & Player_ActionConText::ActionType::AttackType)
+	{
+		m_ActionType ^= Player_ActionConText::ActionType::AttackType;
+	}
+
+	//防御
+	if (GetAsyncKeyState(VK_RBUTTON) & 0x8000)
+	{
+		m_ActionType |= Player_ActionConText::ActionType::GuardType;
+	}
+	else if (m_ActionType & Player_ActionConText::ActionType::GuardType)
+	{
+		m_ActionType ^= Player_ActionConText::ActionType::GuardType;
+	}
+
+	//回避
+	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+	{
+		m_ActionType |= Player_ActionConText::ActionType::RollType;
+	}
+	else if (m_ActionType & Player_ActionConText::ActionType::RollType)
+	{
+		m_ActionType ^= Player_ActionConText::ActionType::RollType;
+	}
+}
+
+void Player_ActionState::Idol(std::shared_ptr<Player_ActionConText> context)
+{
+	std::shared_ptr<Player_Idol> idol = std::make_shared<Player_Idol>();
+	if (m_target.expired())return;
+	idol->SetTarget(m_target.lock());
+	context->SetState(idol);
+}
+
+void Player_ActionState::Run(std::shared_ptr<Player_ActionConText> context)
+{
+	std::shared_ptr<Player_Run> run = std::make_shared<Player_Run>();
+	if (m_target.expired())return;
+	run->SetTarget(m_target.lock());
+	context->SetState(run);
+}
+
+void Player_ActionState::Attack(std::shared_ptr<Player_ActionConText> context)
+{
+	std::shared_ptr<Player_Attack> attack = std::make_shared<Player_Attack>();
+	if (m_target.expired())return;
+	attack->SetTarget(m_target.lock());
+	context->SetState(attack);
+}
+
+void Player_ActionState::Guard(std::shared_ptr<Player_ActionConText> context)
+{
+	std::shared_ptr<Player_Guard> guard = std::make_shared<Player_Guard>();
+	if (m_target.expired())return;
+	guard->SetTarget(m_target.lock());
+	context->SetState(guard);
+}
+
+void Player_ActionState::GuardReaction(std::shared_ptr<Player_ActionConText> context)
+{
+	std::shared_ptr<Player_GuardReaction> guardReaction = std::make_shared<Player_GuardReaction>();
+	if (m_target.expired())return;
+	guardReaction->SetTarget(m_target.lock());
+	context->SetState(guardReaction);
+}
+
+void Player_ActionState::Parry(std::shared_ptr<Player_ActionConText> context, std::shared_ptr<EnemyBase> _enemy)
+{
+	std::shared_ptr<Player_Parry> parry = std::make_shared<Player_Parry>();
+	if (m_target.expired())return;
+	parry->SetTarget(m_target.lock());
+	context->SetState(parry);
+	_enemy->GetConText()->Stumble();
+}
+
+void Player_ActionState::Counter(std::shared_ptr<Player_ActionConText> context)
+{
+	std::shared_ptr<Player_Counter> counter = std::make_shared<Player_Counter>();
+	if (m_target.expired())return;
+	counter->SetTarget(m_target.lock());
+	context->SetState(counter);
+}
+
+void Player_ActionState::Roll(std::shared_ptr<Player_ActionConText> context)
+{
+	std::shared_ptr<Player_Roll> roll = std::make_shared<Player_Roll>();
+	if (m_target.expired())return;
+	roll->SetTarget(m_target.lock());
+	context->SetState(roll);
+}
+
+void Player_ActionState::Hit(std::shared_ptr<Player_ActionConText> context, int _damage, std::shared_ptr<EnemyBase> _enemy)
+{
+	std::shared_ptr<Player_Hit> hit = std::make_shared<Player_Hit>();
+	if (m_target.expired())return;
+	hit->SetTarget(m_target.lock());
+	context->SetState(hit);
+	m_target.lock()->GetParam().Hp -= _damage;
+	if (m_target.lock()->GetParam().Hp <= 0)m_target.lock()->GetParam().Hp = 0;
 }

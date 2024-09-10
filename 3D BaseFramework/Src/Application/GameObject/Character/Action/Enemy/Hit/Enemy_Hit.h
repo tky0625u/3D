@@ -9,8 +9,6 @@ public:
 
 	void Start()override;
 
-	void Idol   (std::shared_ptr<Enemy_ConText> context)override;  //待ち
-
 private:
 
 };
