@@ -14,7 +14,7 @@ void Bone::Init()
 	idol->SetTarget(shared_from_this());
 
 	m_conText = std::make_shared<Enemy_ConText>(idol);
-	m_state = m_conText->GetState();
+	m_state = idol;
 
 	m_animator->SetAnimation(m_model->GetData()->GetAnimation(m_anime), m_animeFlg);
 }

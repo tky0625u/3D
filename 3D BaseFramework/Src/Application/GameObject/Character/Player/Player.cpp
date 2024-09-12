@@ -4,16 +4,16 @@
 #include"Application/main.h"
 #include"../Action/Player/Player_ConText.h"
 
-void Player::PreUpdate()
-{
-	m_state = m_context->GetState();
-}
-
 void Player::Action()
 {
 	m_dir = Math::Vector3::Zero; //ベクトルリセット
 	float         Move = 0.0f;
 	
+	if (m_NextState.expired() == false)
+	{
+		m_state = m_NextState.lock();
+		m_NextState.reset();
+	}
 	m_state.lock()->Update();
 
 	Move = m_param.Sp * m_SpeedCorrection;

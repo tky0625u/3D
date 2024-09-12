@@ -10,3 +10,8 @@ void Sword::Update()
 	Math::Matrix _targetMat = _target->GetSwordMat();
 	m_mWorld = _trans * _targetMat;
 }
+
+void Sword::PostUpdate()
+{
+
+}

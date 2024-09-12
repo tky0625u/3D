@@ -29,4 +29,5 @@ void Player_GuardReaction::Guard(std::shared_ptr<Player_ActionConText> context)
 	guard->SetTarget(m_target.lock());
 	guard->SetFlow(Flow::CenterType);
 	context->SetState(guard);
+	m_target.lock()->SetNextState(guard);
 }

@@ -4,6 +4,7 @@
 #include"../Enemy/Enemy_ConText.h"
 #include"../../Player/Player.h"
 #include"Player_ConText.h"
+#include"../../../Weapon/Sword/Sword.h"
 
 #include"Idol/Player_Idol.h"
 #include"Run/Player_Run.h"
@@ -17,22 +18,46 @@
 
 void Player_ActionState::AttackDamage()
 {
-	//if (m_target.expired())return;
+	if (m_target.expired())return;
 
-	//KdCollider::SphereInfo sphereInfo;
-	//sphereInfo.m_sphere.Center = m_target.lock()->GetWeaponMat().Translation();
-	//sphereInfo.m_sphere.Radius = 10.0f;
-	//sphereInfo.m_type = KdCollider::TypeDamage;
+	std::vector<KdCollider::SphereInfo> sphereInfoList;
+	KdCollider::SphereInfo sphereInfo;
 
-	//for (auto& sphere : ObjectManager::Instance().GetEnemyList())
-	//{
-	//	if (sphere.expired())continue;
+	if (m_target.lock()->GetSword().expired() == false)
+	{
+		sphereInfo.m_sphere.Center = m_target.lock()->GetSword().lock()->GetModelTop().Translation();
+		sphereInfoList.push_back(sphereInfo);
 
-	//	if (sphere.lock()->Intersects(sphereInfo, nullptr))
-	//	{
-	//		sphere.lock()->GetConText()->Hit(m_target.lock()->GetParam().Atk);
-	//	}
-	//}
+		sphereInfo.m_sphere.Center = m_target.lock()->GetSword().lock()->GetModelCenter().Translation();
+		sphereInfoList.push_back(sphereInfo);
+
+		sphereInfo.m_sphere.Center = m_target.lock()->GetSword().lock()->GetModelBottom().Translation();
+		sphereInfoList.push_back(sphereInfo);
+	}
+	else
+	{
+		sphereInfo.m_sphere.Center = m_target.lock()->GetSwordMat().Translation();
+		sphereInfoList.push_back(sphereInfo);
+	}
+
+	for (int i = 0; i < sphereInfoList.size(); ++i)
+	{
+		sphereInfoList[i].m_sphere.Radius = 0.8f;
+		sphereInfoList[i].m_type = KdCollider::TypeDamage;
+	}
+
+	for (auto& sphere : ObjectManager::Instance().GetEnemyList())
+	{
+		if (sphere.expired())continue;
+
+		for (int i = 0; i < sphereInfoList.size(); ++i)
+		{
+			if (sphere.lock()->Intersects(sphereInfoList[i], nullptr))
+			{
+				sphere.lock()->GetConText()->Hit(m_target.lock()->GetParam().Atk);
+			}
+		}
+	}
 }
 
 void Player_ActionState::Update()
@@ -95,6 +120,7 @@ void Player_ActionState::Idol(std::shared_ptr<Player_ActionConText> context)
 	if (m_target.expired())return;
 	idol->SetTarget(m_target.lock());
 	context->SetState(idol);
+	m_target.lock()->SetNextState(idol);
 }
 
 void Player_ActionState::Run(std::shared_ptr<Player_ActionConText> context)
@@ -103,6 +129,7 @@ void Player_ActionState::Run(std::shared_ptr<Player_ActionConText> context)
 	if (m_target.expired())return;
 	run->SetTarget(m_target.lock());
 	context->SetState(run);
+	m_target.lock()->SetNextState(run);
 }
 
 void Player_ActionState::Attack(std::shared_ptr<Player_ActionConText> context)
@@ -111,6 +138,7 @@ void Player_ActionState::Attack(std::shared_ptr<Player_ActionConText> context)
 	if (m_target.expired())return;
 	attack->SetTarget(m_target.lock());
 	context->SetState(attack);
+	m_target.lock()->SetNextState(attack);
 }
 
 void Player_ActionState::Guard(std::shared_ptr<Player_ActionConText> context)
@@ -119,6 +147,7 @@ void Player_ActionState::Guard(std::shared_ptr<Player_ActionConText> context)
 	if (m_target.expired())return;
 	guard->SetTarget(m_target.lock());
 	context->SetState(guard);
+	m_target.lock()->SetNextState(guard);
 }
 
 void Player_ActionState::GuardReaction(std::shared_ptr<Player_ActionConText> context)
@@ -127,6 +156,7 @@ void Player_ActionState::GuardReaction(std::shared_ptr<Player_ActionConText> con
 	if (m_target.expired())return;
 	guardReaction->SetTarget(m_target.lock());
 	context->SetState(guardReaction);
+	m_target.lock()->SetNextState(guardReaction);
 }
 
 void Player_ActionState::Parry(std::shared_ptr<Player_ActionConText> context, std::shared_ptr<EnemyBase> _enemy)
@@ -135,6 +165,7 @@ void Player_ActionState::Parry(std::shared_ptr<Player_ActionConText> context, st
 	if (m_target.expired())return;
 	parry->SetTarget(m_target.lock());
 	context->SetState(parry);
+	m_target.lock()->SetNextState(parry);
 	_enemy->GetConText()->Stumble();
 }
 
@@ -144,6 +175,7 @@ void Player_ActionState::Counter(std::shared_ptr<Player_ActionConText> context)
 	if (m_target.expired())return;
 	counter->SetTarget(m_target.lock());
 	context->SetState(counter);
+	m_target.lock()->SetNextState(counter);
 }
 
 void Player_ActionState::Roll(std::shared_ptr<Player_ActionConText> context)
@@ -152,6 +184,7 @@ void Player_ActionState::Roll(std::shared_ptr<Player_ActionConText> context)
 	if (m_target.expired())return;
 	roll->SetTarget(m_target.lock());
 	context->SetState(roll);
+	m_target.lock()->SetNextState(roll);
 }
 
 void Player_ActionState::Hit(std::shared_ptr<Player_ActionConText> context, int _damage, std::shared_ptr<EnemyBase> _enemy)
@@ -160,6 +193,7 @@ void Player_ActionState::Hit(std::shared_ptr<Player_ActionConText> context, int 
 	if (m_target.expired())return;
 	hit->SetTarget(m_target.lock());
 	context->SetState(hit);
+	m_target.lock()->SetNextState(hit);
 	m_target.lock()->GetParam().Hp -= _damage;
 	if (m_target.lock()->GetParam().Hp <= 0)m_target.lock()->GetParam().Hp = 0;
 }

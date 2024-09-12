@@ -147,7 +147,7 @@ void ObjectManager::SetPlayerParam()
 		SceneManager::Instance().AddObject(player);
 		m_player = player;
 
-		if (stage["Sword"])SetWeaponParam("Json/Weapon/Sword/Sword.json", stage["SwordID"]);
+		//if (stage["Sword"])SetWeaponParam("Json/Weapon/Sword/Sword.json", stage["SwordID"]);
 		if (stage["Shield"])SetWeaponParam("Json/Weapon/Shield/Shield.json", stage["ShieldID"]);
 
 		camera->SetTarget(player);
@@ -197,8 +197,10 @@ void ObjectManager::SetWeaponParam(std::string _filePath,int _id)
 		int weaponATK = 0;
 		if (stage["Name"] == "Sword")
 		{
-			weapon = std::make_shared<Sword>();
+			std::shared_ptr<Sword> sword = std::make_shared<Sword>();
+			m_player.lock()->SetSword(sword);
 			weaponATK = stage["ATK"];
+			weapon = sword;
 		}
 		else if (stage["Name"] == "Shield")weapon = std::make_shared<Shield>();
 

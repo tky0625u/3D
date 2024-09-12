@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 class ActionBase;
+class Sword;
 
 class CharacterBase :public KdGameObject
 {
@@ -57,18 +58,21 @@ public:
 																			m_animeSpeed = animeSpeed;
 																		  }
 	void SetMove(Math::Vector3 dir){m_dir = dir;}
+	void SetSword(std::shared_ptr<Sword> _sword) { m_sword = _sword; }
 
 	Param& GetParam() { return m_param; }
 	bool GetIsAnimator() { return m_animator->IsAnimationEnd(); }
 	std::string GetAnime() { return m_anime; }
 	Math::Matrix GetSwordMat() { return m_model->FindWorkNode("sword.R")->m_localTransform * m_model->FindWorkNode("hand.R")->m_worldTransform * (Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_param.Angle))*(Math::Matrix::CreateTranslation(m_mWorld.Translation()))); }
 	Math::Matrix GetShieldMat() { return m_model->FindWorkNode("shield.L")->m_localTransform * m_model->FindWorkNode("forearm.L")->m_worldTransform * (Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_param.Angle)) * (Math::Matrix::CreateTranslation(m_mWorld.Translation()))); }
+	std::weak_ptr<Sword> GetSword() { return m_sword; }
 
 protected:
 	Param                        m_param;
 	std::shared_ptr<KdModelWork> m_model           = nullptr;
 	std::shared_ptr<KdAnimator>  m_animator        = nullptr;
 	std::shared_ptr<ActionBase>  m_action          = nullptr;
+	std::weak_ptr<Sword>         m_sword;
 	std::string                  m_anime           = "Idol";
 	std::string                  m_beforeAnime     = m_anime;
 	std::unordered_map<std::string, std::shared_ptr<ActionBase>> m_actionList;
