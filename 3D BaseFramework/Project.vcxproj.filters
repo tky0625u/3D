@@ -163,6 +163,9 @@
     <Filter Include="Src\Application\GameObject\Weapon\Shield">
       <UniqueIdentifier>{3aae3733-8ab8-4995-bfe1-c58e0e7eef89}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Attack\Bone">
+      <UniqueIdentifier>{39568722-133f-4819-9124-75b35627e6d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -429,6 +432,9 @@
     <ClInclude Include="Src\Application\GameObject\Weapon\Shield\Shield.h">
       <Filter>Src\Application\GameObject\Weapon\Shield</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Attack\Bone\Bone_Attack.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Attack\Bone</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -661,6 +667,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Weapon\Shield\Shield.cpp">
       <Filter>Src\Application\GameObject\Weapon\Shield</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Attack\Bone\Bone_Attack.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Attack\Bone</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

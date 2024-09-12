@@ -25,7 +25,7 @@ void Enemy_Run::Start()
 			return;
 		}
 
-		Event();
+		Chace();
 	}
 }
 
@@ -39,7 +39,7 @@ void Enemy_Run::Center()
 			return;
 		}
 
-		Event();
+		Chace();
 	}
 }
 
@@ -65,7 +65,7 @@ void Enemy_Run::End()
 	}
 }
 
-void Enemy_Run::Event()
+void Enemy_Run::Chace()
 {
 	if (!ChaseCheck())
 	{
@@ -83,5 +83,5 @@ void Enemy_Run::Event()
 	_moveDir.Normalize();
 
 	if (m_target.expired() == false)Rotate(_moveDir, m_target.lock());
-	if(dist>=m_target.lock()->GetParam().AtkRange)m_target.lock()->SetMove(_moveDir);
+	if (dist >= m_target.lock()->GetParam().AtkRange)m_target.lock()->SetMove(_moveDir);
 }

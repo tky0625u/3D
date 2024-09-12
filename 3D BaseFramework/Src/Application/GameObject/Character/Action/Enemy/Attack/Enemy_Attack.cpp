@@ -3,6 +3,7 @@
 #include"../../../Player/Player.h"
 #include"../Enemy_ConText.h"
 #include"../../Player/Player_ConText.h"
+#include"../../../../Weapon/Sword/Sword.h"
 
 void Enemy_Attack::Start()
 {
@@ -38,7 +39,7 @@ void Enemy_Attack::Center()
 			return;
 		}
 
-		Event();
+		Attack();
 	}
 }
 
@@ -62,24 +63,37 @@ void Enemy_Attack::End()
 	}
 }
 
-void Enemy_Attack::Event()
+void Enemy_Attack::Attack()
 {
 	if (m_target.expired())return;
-	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_target.lock()->GetParam().Angle));
-	Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3(m_target.lock()->GetParam().ForwardX, m_target.lock()->GetParam().ForwardY, m_target.lock()->GetParam().ForwardZ), nowRot);
-	nowVec.Normalize();
-
-	m_target.lock()->SetMove(nowVec);
-
 	if (m_target.lock()->GetPlayer().expired())return;
 
+	std::vector<KdCollider::SphereInfo> sphereInfoList;
 	KdCollider::SphereInfo sphereInfo;
-	sphereInfo.m_sphere.Center = m_target.lock()->GetPos();
-	sphereInfo.m_sphere.Radius = 100.0f;
-	sphereInfo.m_type = KdCollider::TypeDamage;
-	
-	if (m_target.lock()->GetPlayer().lock()->Intersects(sphereInfo, nullptr))
+	if (m_target.lock()->GetSword().expired() == false)
 	{
-		m_target.lock()->GetPlayer().lock()->GetConText()->Hit(m_target.lock()->GetParam().Atk,m_target.lock());
+		sphereInfo.m_sphere.Center = m_target.lock()->GetSword().lock()->GetModelTop().Translation();
+		sphereInfoList.push_back(sphereInfo);
+
+		sphereInfo.m_sphere.Center = m_target.lock()->GetSword().lock()->GetModelCenter().Translation();
+		sphereInfoList.push_back(sphereInfo);
+
+		sphereInfo.m_sphere.Center = m_target.lock()->GetSword().lock()->GetModelBottom().Translation();
+		sphereInfoList.push_back(sphereInfo);
+	}
+	else
+	{
+		sphereInfo.m_sphere.Center = m_target.lock()->GetSwordMat().Translation();
+		sphereInfoList.push_back(sphereInfo);
+	}
+	sphereInfo.m_sphere.Radius = 0.8f;
+	sphereInfo.m_type = KdCollider::TypeDamage;
+
+	for (int i = 0; i < sphereInfoList.size(); ++i)
+	{
+		if (m_target.lock()->GetPlayer().lock()->Intersects(sphereInfo, nullptr))
+		{
+			m_target.lock()->GetPlayer().lock()->GetConText()->Hit(m_target.lock()->GetParam().Atk, m_target.lock());
+		}
 	}
 }

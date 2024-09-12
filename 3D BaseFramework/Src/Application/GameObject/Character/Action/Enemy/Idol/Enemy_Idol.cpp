@@ -13,11 +13,6 @@ void Enemy_Idol::Center()
 			return;
 		}
 
-		Event();
+		if (ChaseCheck())m_target.lock()->GetConText()->Run();
 	}
-}
-
-void Enemy_Idol::Event()
-{
-	if (ChaseCheck())m_target.lock()->GetConText()->Run();
 }

@@ -7,6 +7,24 @@ void Player_Counter::Start()
 {
 	if (m_target.expired() == false)
 	{
+		if (m_target.lock()->GetAnime() != "ParryingToCounter")
+		{
+			m_target.lock()->SetAnime("ParryingToCounter", false, 1.5f);
+			return;
+		}
+
+		if (m_target.lock()->GetIsAnimator())
+		{
+			m_flow = Flow::CenterType;
+			return;
+		}
+	}
+}
+
+void Player_Counter::Center()
+{
+	if (m_target.expired() == false)
+	{
 		if (m_target.lock()->GetAnime() != "Counter")
 		{
 			m_target.lock()->SetAnime("Counter", false, 1.5f);

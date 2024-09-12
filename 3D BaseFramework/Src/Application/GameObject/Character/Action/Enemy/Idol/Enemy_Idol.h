@@ -9,8 +9,7 @@ public:
 	}
 	~Enemy_Idol()   override {};
 
-	void Center()   override;
-	void Event()    override;
+	virtual void Center()   override;
 
-private:
+protected:
 };

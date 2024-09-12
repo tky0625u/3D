@@ -7,12 +7,12 @@ public:
 	Enemy_Attack() { Init(); }
 	~Enemy_Attack()   override {};
 
-	void Start()    override;
-	void Center()   override;
-	void End()      override;
+	virtual void Start()    override;
+	virtual void Center()   override;
+	virtual void End()      override;
 
-	void Event()override;
+	void Attack();
 
-private:
+protected:
 	bool m_atkFlg = false;
 };

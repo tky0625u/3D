@@ -7,13 +7,13 @@ public:
 	Enemy_Run() { Init(); }
 	~Enemy_Run()   override {};
 
-	void Init()override;
+	virtual void Init()override;
 
-	void Start()    override;
-	void Center()   override;
-	void End()      override;
+	virtual void Start()    override;
+	virtual void Center()   override;
+	virtual void End()      override;
 
-	void Event()override;
-private:
+	void Chace();
+protected:
 	bool m_atkFlg = false;
 };

@@ -7,10 +7,10 @@ public:
 	Enemy_Hit() { Init(); }
 	~Enemy_Hit()override {};
 
-	void Start()override;
+	virtual void Start()override;
 
 	void Hit(std::shared_ptr<Enemy_ConText> context, int _damage)override { return; }
 
-private:
+protected:
 
 };

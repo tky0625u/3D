@@ -11,6 +11,7 @@ public:
 	~Player_Counter()override {};
 
 	void Start()override;
+	void Center()override;
 	void End()override;
 
 	void Event() override;

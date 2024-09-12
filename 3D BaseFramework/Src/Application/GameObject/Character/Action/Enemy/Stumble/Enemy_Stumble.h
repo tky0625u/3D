@@ -7,9 +7,9 @@ public:
 	Enemy_Stumble() { Init(); }
 	~Enemy_Stumble()override {};
 
-	void Start()override;
-	void End()override;
+	virtual void Start()override;
+	virtual void End()override;
 
-private:
+protected:
 
 };
