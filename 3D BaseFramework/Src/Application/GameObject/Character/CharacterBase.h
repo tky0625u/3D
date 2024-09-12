@@ -59,6 +59,7 @@ public:
 																		  }
 	void SetMove(Math::Vector3 dir){m_dir = dir;}
 	void SetSword(std::shared_ptr<Sword> _sword) { m_sword = _sword; }
+	void SetStopTime(int _stopTime) { m_StopTime = _stopTime; }
 
 	Param& GetParam() { return m_param; }
 	bool GetIsAnimator() { return m_animator->IsAnimationEnd(); }
@@ -84,4 +85,5 @@ protected:
 	const float                  m_gravityPow      = 0.1f;
 	bool                         m_atkFlg          = false;
 	bool                         m_animeFlg        = true;
+	int                          m_StopTime        = 0;
 };

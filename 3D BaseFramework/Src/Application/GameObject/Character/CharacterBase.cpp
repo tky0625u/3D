@@ -7,6 +7,12 @@ void CharacterBase::Update()
 	if (m_param.Hp <= 0)
 	{
 		CrushingAction();
+		m_StopTime = 0;
+	}
+	else if (m_StopTime > 0)
+	{
+		m_StopTime--;
+		return;
 	}
 	else
 	{
@@ -25,6 +31,7 @@ void CharacterBase::Update()
 
 void CharacterBase::PostUpdate()
 {
+	if (m_StopTime > 0)return;
 
 	KdCollider::RayInfo rayInfo;
 	rayInfo.m_pos = m_pos;
@@ -35,7 +42,7 @@ void CharacterBase::PostUpdate()
 	rayInfo.m_type = KdCollider::TypeGround;
 
 	Math::Color color = { 1,1,1,1 };
-	m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
+	//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
 
 	std::list<KdCollider::CollisionResult> retRayList;
 	for (auto& ret : SceneManager::Instance().GetObjList())
@@ -75,7 +82,7 @@ void CharacterBase::PostUpdate()
 	sphereInfo.m_sphere.Radius = 2.0f;
 	sphereInfo.m_type = KdCollider::TypeBump;
 
-	m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
+	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
 
 	std::list<KdCollider::CollisionResult>retSphereList;
 	for (auto& ret : SceneManager::Instance().GetObjList())

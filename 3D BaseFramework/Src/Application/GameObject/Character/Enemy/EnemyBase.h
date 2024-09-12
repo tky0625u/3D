@@ -20,6 +20,7 @@ public:
 	float GetChaseRange()const { return m_chaceRange; }
 	std::shared_ptr<Enemy_ConText> GetConText()const { return m_conText; }
 	std::weak_ptr<Player> GetPlayer()const { return m_player; }
+	int GetStopTime()const { return m_StopTime; }
 
 protected:
 	std::weak_ptr<Player> m_player;

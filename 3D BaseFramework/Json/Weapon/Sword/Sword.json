@@ -1,5 +1,5 @@
 {
-	"Sword": {
+	"0Sword": {
 		"Name": "Sword",
 		"ATK": 10,
 		"PosX": 1.0,
@@ -8,5 +8,15 @@
 		"Size": 1.0,
 		"Angle": 0.0,
 		"Path": "Asset/Models/Weapon/sword/Sword.gltf"
+	},
+	"1Wood": {
+		"Name": "Sword",
+		"ATK": 1,
+		"PosX": 1.0,
+		"PosY": 0.0,
+		"PosZ": 0.0,
+		"Size": 1.0,
+		"Angle": 0.0,
+		"Path": "Asset/Models/Weapon/sword/Wood/Wood.gltf"
 	}
 }

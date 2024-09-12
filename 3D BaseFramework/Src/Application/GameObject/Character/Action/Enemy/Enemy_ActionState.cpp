@@ -86,6 +86,9 @@ void Enemy_ActionState::Hit(std::shared_ptr<Enemy_ConText> context, int _damage)
 	context->SetState(hit);
 	m_target.lock()->SetNextState(hit);
 	m_target.lock()->GetParam().Hp -= _damage;
+	if (m_target.lock()->GetParam().Hp <= 0)return;
+	m_target.lock()->SetStopTime(10);
+	m_target.lock()->GetPlayer().lock()->SetStopTime(m_target.lock()->GetStopTime());
 }
 
 void Enemy_ActionState::Stumble(std::shared_ptr<Enemy_ConText> context)
