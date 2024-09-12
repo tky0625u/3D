@@ -24,5 +24,4 @@ public:
 
 protected:
 	std::weak_ptr<EnemyBase> m_target;
-	std::weak_ptr<Enemy_ActionState> m_nextAction;
 };
