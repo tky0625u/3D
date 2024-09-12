@@ -166,6 +166,24 @@
     <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Attack\Bone">
       <UniqueIdentifier>{39568722-133f-4819-9124-75b35627e6d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Bone">
+      <UniqueIdentifier>{d8f610a8-eb6e-4bde-b870-5150be66c92e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Attack">
+      <UniqueIdentifier>{63bfe2fe-306d-475a-b6cb-293509b1a824}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Idol">
+      <UniqueIdentifier>{91f97e2b-e61a-490d-997d-ee9a593983e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Run">
+      <UniqueIdentifier>{a77dc544-b3f4-4a08-989c-d6cdfebec175}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Hit">
+      <UniqueIdentifier>{78be2900-b1ca-40d5-aca2-87507d39fde9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble">
+      <UniqueIdentifier>{a7b7cb83-188e-459a-a859-82a367eeae2f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -435,6 +453,9 @@
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Attack\Bone\Bone_Attack.h">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Attack\Bone</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Bone_ActionState.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -670,6 +691,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Attack\Bone\Bone_Attack.cpp">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Attack\Bone</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Bone_ActionState.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
