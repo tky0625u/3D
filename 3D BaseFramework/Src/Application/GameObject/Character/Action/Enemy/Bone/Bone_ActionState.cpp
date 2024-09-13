@@ -38,15 +38,15 @@ void Bone_ActionState::Attack(std::shared_ptr<Enemy_ConText> context)
 
 void Bone_ActionState::Hit(std::shared_ptr<Enemy_ConText> context, int _damage)
 {
-	std::shared_ptr<Bone_Hit> hit = std::make_shared<Bone_Hit>();
 	if (m_target.expired())return;
-	hit->SetTarget(m_target.lock());
-	context->SetState(hit);
-	m_target.lock()->SetNextState(hit);
 	m_target.lock()->GetParam().Hp -= _damage;
 	if (m_target.lock()->GetParam().Hp <= 0)return;
+	std::shared_ptr<Bone_Hit> hit = std::make_shared<Bone_Hit>();
+	hit->SetTarget(m_target.lock());
 	m_target.lock()->SetStopTime(10);
 	m_target.lock()->GetPlayer().lock()->SetStopTime(m_target.lock()->GetStopTime());
+	context->SetState(hit);
+	m_target.lock()->SetNextState(hit);
 }
 
 void Bone_ActionState::Stumble(std::shared_ptr<Enemy_ConText> context)

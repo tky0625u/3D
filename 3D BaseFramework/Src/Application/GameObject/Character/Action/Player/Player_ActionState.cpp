@@ -192,8 +192,8 @@ void Player_ActionState::Hit(std::shared_ptr<Player_ActionConText> context, int 
 	std::shared_ptr<Player_Hit> hit = std::make_shared<Player_Hit>();
 	if (m_target.expired())return;
 	hit->SetTarget(m_target.lock());
-	context->SetState(hit);
-	m_target.lock()->SetNextState(hit);
 	m_target.lock()->GetParam().Hp -= _damage;
 	if (m_target.lock()->GetParam().Hp <= 0)m_target.lock()->GetParam().Hp = 0;
+	context->SetState(hit);
+	m_target.lock()->SetNextState(hit);
 }

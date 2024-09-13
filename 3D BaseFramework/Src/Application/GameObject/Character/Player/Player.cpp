@@ -9,9 +9,9 @@ void Player::Action()
 	m_dir = Math::Vector3::Zero; //ベクトルリセット
 	float         Move = 0.0f;
 	
-	if (m_NextState.expired() == false)
+	if (m_NextState != nullptr)
 	{
-		m_state = m_NextState.lock();
+		m_state = m_NextState;
 		m_NextState.reset();
 	}
 	m_state.lock()->Update();

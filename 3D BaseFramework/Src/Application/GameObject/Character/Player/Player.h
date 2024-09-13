@@ -27,5 +27,5 @@ private:
 	std::weak_ptr<CameraBase> m_camera;
 	std::shared_ptr<Player_ActionConText> m_context = nullptr;
 	std::weak_ptr<Player_ActionState> m_state;
-	std::weak_ptr<Player_ActionState> m_NextState;
+	std::shared_ptr<Player_ActionState> m_NextState;
 };

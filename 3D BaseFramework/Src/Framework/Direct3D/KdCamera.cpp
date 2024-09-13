@@ -101,7 +101,7 @@ void KdCamera::GenerateRayInfoFromClientPos(const POINT& clientPos, Math::Vector
 }
 
 // ワールド座標(3D座標)をスクリーン座標(2D座標)に変換する
-void KdCamera::ConvertWorldToScreenDetail(const Math::Vector3& pos, Math::Vector3& result)
+void KdCamera::ConvertWorldToScreenDetail(const Math::Vector3& pos, Math::Vector2& result)
 {
 	// ビューポートを取得する
 	Math::Viewport vp;
@@ -114,14 +114,15 @@ void KdCamera::ConvertWorldToScreenDetail(const Math::Vector3& pos, Math::Vector
 	// ②奥行情報(w = ._44で割る必要がある)
 	wvp._41 /= wvp._44;
 	wvp._42 /= wvp._44;
-	wvp._43 /= wvp._44;
+	//wvp._43 /= wvp._44;
 
 	// 射影行列系での2D(みたいな)座標
 	// ↑-1~1の範囲の座標の事
-	Math::Vector3 localPos = wvp.Translation();
+	//Math::Vector3 localPos = wvp.Translation();
+	Math::Vector2 localPos = Math::Vector2{ wvp.Translation() };
 
 	// ここで幅や高さを考慮して計算する(これで正確なスクリーン座標になる)
 	result.x = localPos.x * (vp.width * 0.5f);
 	result.y = localPos.y * (vp.height * 0.5f);
-	result.z = wvp._44;
+	//result.z = wvp._44;
 }

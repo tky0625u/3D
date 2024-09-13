@@ -166,6 +166,15 @@
     <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble">
       <UniqueIdentifier>{a7b7cb83-188e-459a-a859-82a367eeae2f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\UI">
+      <UniqueIdentifier>{fef6b53d-8960-497a-ad8d-b9810d35e485}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\UI\Player">
+      <UniqueIdentifier>{52845784-c664-4a81-853c-f0b7c47e1a9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\UI\Enemy">
+      <UniqueIdentifier>{24af49a0-c4e0-4162-ac13-55d83ea7945b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -435,6 +444,9 @@
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble\Bone_Stumble.h">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\UI\Enemy\Enemy_UI.h">
+      <Filter>Src\Application\GameObject\UI\Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -670,6 +682,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble\Bone_Stumble.cpp">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\UI\Enemy\Enemy_UI.cpp">
+      <Filter>Src\Application\GameObject\UI\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
