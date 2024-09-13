@@ -1,8 +1,8 @@
-﻿#include "Enemy_Stumble.h"
-#include"../../../Enemy/EnemyBase.h"
-#include"../Enemy_ConText.h"
+﻿#include "Bone_Stumble.h"
+#include"../../../../Enemy/Bone/Bone.h"
+#include"../../Enemy_ConText.h"
 
-void Enemy_Stumble::Start()
+void Bone_Stumble::Start()
 {
 	if (m_target.expired() == false)
 	{
@@ -20,7 +20,7 @@ void Enemy_Stumble::Start()
 	}
 }
 
-void Enemy_Stumble::End()
+void Bone_Stumble::End()
 {
 	if (m_target.expired() == false)
 	{

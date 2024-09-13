@@ -1,11 +1,11 @@
-﻿#include "Enemy_Attack.h"
-#include"../../../Enemy/EnemyBase.h"
-#include"../../../Player/Player.h"
-#include"../Enemy_ConText.h"
-#include"../../Player/Player_ConText.h"
-#include"../../../../Weapon/Sword/Sword.h"
+﻿#include"Bone_Attack.h"
+#include"../../Enemy_ConText.h"
+#include"../../../../Enemy/Bone/Bone.h"
+#include"../../../../Player/Player.h"
+#include"../../../Player/Player_ConText.h"
+#include"../../../../../Weapon/Sword/Sword.h"
 
-void Enemy_Attack::Start()
+void Bone_Attack::Start()
 {
 	if (m_target.expired() == false)
 	{
@@ -23,7 +23,7 @@ void Enemy_Attack::Start()
 	}
 }
 
-void Enemy_Attack::Center()
+void Bone_Attack::Center()
 {
 	if (m_target.expired() == false)
 	{
@@ -40,10 +40,10 @@ void Enemy_Attack::Center()
 		}
 
 		Attack();
+		MoveForward();
 	}
 }
-
-void Enemy_Attack::End()
+void Bone_Attack::End()
 {
 	if (m_target.expired() == false)
 	{
@@ -55,7 +55,7 @@ void Enemy_Attack::End()
 
 		if (m_target.lock()->GetIsAnimator())
 		{
-			AttackCheck(m_atkFlg);
+			//AttackCheck(m_atkFlg);
 			if (m_atkFlg) { m_flow = Flow::StartType; }
 			else { m_target.lock()->GetConText()->Idol(); }
 			return;
@@ -63,7 +63,7 @@ void Enemy_Attack::End()
 	}
 }
 
-void Enemy_Attack::Attack()
+void Bone_Attack::Attack()
 {
 	if (m_target.expired())return;
 	if (m_target.lock()->GetPlayer().expired())return;
@@ -96,4 +96,14 @@ void Enemy_Attack::Attack()
 			m_target.lock()->GetPlayer().lock()->GetConText()->Hit(m_target.lock()->GetParam().Atk, m_target.lock());
 		}
 	}
+}
+
+void Bone_Attack::MoveForward()
+{
+	if (m_target.expired())return;
+	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_target.lock()->GetParam().Angle));
+	Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3(m_target.lock()->GetParam().ForwardX, m_target.lock()->GetParam().ForwardY, m_target.lock()->GetParam().ForwardZ), nowRot);
+	nowVec.Normalize();
+
+	m_target.lock()->SetMove(nowVec);
 }

@@ -1,9 +1,8 @@
-﻿#include "Enemy_Idol.h"
-#include"../../../../../Scene/SceneManager.h"
-#include"../../../Enemy/EnemyBase.h"
-#include"../Enemy_ConText.h"
+﻿#include "Bone_Idol.h"
+#include"../../../../Enemy/Bone/Bone.h"
+#include"../../Enemy_ConText.h"
 
-void Enemy_Idol::Center()
+void Bone_Idol::Center()
 {
 	if (m_target.expired() == false)
 	{
@@ -15,4 +14,9 @@ void Enemy_Idol::Center()
 
 		if (ChaseCheck())m_target.lock()->GetConText()->Run();
 	}
+}
+
+void Bone_Idol::Init()
+{
+	m_flow = Flow::CenterType;
 }

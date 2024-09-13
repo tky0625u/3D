@@ -1,8 +1,8 @@
-﻿#include "Enemy_Hit.h"
-#include"../../../Enemy/EnemyBase.h"
-#include"../Enemy_ConText.h"
+﻿#include "Bone_Hit.h"
+#include"../../../../Enemy/Bone/Bone.h"
+#include"../../Enemy_ConText.h"
 
-void Enemy_Hit::Start()
+void Bone_Hit::Start()
 {
 	if (m_target.expired() == false)
 	{
@@ -18,5 +18,4 @@ void Enemy_Hit::Start()
 			return;
 		}
 	}
-
 }

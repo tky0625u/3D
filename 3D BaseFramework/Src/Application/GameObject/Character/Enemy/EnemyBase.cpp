@@ -13,7 +13,7 @@ void EnemyBase::Action()
 		m_state = m_NextState.lock();
 		m_NextState.reset();
 	}
-	m_state.lock()->Update();
+	if (m_state.expired() == false)m_state.lock()->Update();
 
 	Move = m_param.Sp * m_SpeedCorrection;
 	m_pos += Move * m_dir; //座標更新

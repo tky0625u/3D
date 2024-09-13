@@ -1,7 +1,7 @@
 ﻿#include "Bone.h"
 #include"../EnemyBase.h"
 #include"../../Action/Enemy/Enemy_ConText.h"
-#include"../../Action/Enemy/Idol/Enemy_Idol.h"
+#include"../../Action/Enemy/Bone/Idol/Bone_Idol.h"
 
 void Bone::Init()
 {
@@ -10,7 +10,7 @@ void Bone::Init()
 	m_model->SetModelData("Asset/Models/Character/Enemy/Bone/Bone.gltf");
 	m_pos = { 0.0f,0.0f,20.0f };
 
-	std::shared_ptr<Enemy_Idol> idol = std::make_shared<Enemy_Idol>();
+	std::shared_ptr<Bone_Idol> idol = std::make_shared<Bone_Idol>();
 	idol->SetTarget(shared_from_this());
 
 	m_conText = std::make_shared<Enemy_ConText>(idol);

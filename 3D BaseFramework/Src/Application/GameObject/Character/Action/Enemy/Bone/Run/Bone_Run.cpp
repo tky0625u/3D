@@ -1,15 +1,9 @@
-﻿#include "Enemy_Run.h"
-#include"../../../Enemy/EnemyBase.h"
-#include"../../../../../Scene/SceneManager.h"
-#include"../Enemy_ConText.h"
-#include"../../../Player/Player.h"
+﻿#include "Bone_Run.h"
+#include"../../Enemy_ConText.h"
+#include"../../../../Enemy/Bone/Bone.h"
+#include"../../../../Player/Player.h"
 
-void Enemy_Run::Init()
-{
-	m_pDebugWire = std::make_unique<KdDebugWireFrame>();
-}
-
-void Enemy_Run::Start()
+void Bone_Run::Start()
 {
 	if (m_target.expired() == false)
 	{
@@ -29,7 +23,7 @@ void Enemy_Run::Start()
 	}
 }
 
-void Enemy_Run::Center()
+void Bone_Run::Center()
 {
 	if (m_target.expired() == false)
 	{
@@ -43,7 +37,7 @@ void Enemy_Run::Center()
 	}
 }
 
-void Enemy_Run::End()
+void Bone_Run::End()
 {
 	if (m_target.expired() == false)
 	{
@@ -58,20 +52,15 @@ void Enemy_Run::End()
 			if (m_target.expired() == false)
 			{
 				if (!m_atkFlg)m_target.lock()->GetConText()->Idol();
-				else{ m_target.lock()->GetConText()->Attack();}
+				else { m_target.lock()->GetConText()->Attack(); }
 			}
 			return;
 		}
 	}
 }
 
-void Enemy_Run::Chace()
+void Bone_Run::Chace()
 {
-	if (!ChaseCheck())
-	{
-		m_flow = Flow::EndType;
-		return;
-	}
 	AttackCheck(m_atkFlg);
 
 	if (m_target.lock()->GetPlayer().expired())return;
@@ -82,6 +71,12 @@ void Enemy_Run::Chace()
 	float dist = _moveDir.Length();
 	_moveDir.Normalize();
 
+	float _beforeAngle = m_target.lock()->GetParam().Angle;
 	if (m_target.expired() == false)Rotate(_moveDir, m_target.lock());
+	if (_beforeAngle == m_target.lock()->GetParam().Angle && m_atkFlg)
+	{
+		m_flow = Flow::EndType;
+	}
+
 	if (dist >= m_target.lock()->GetParam().AtkRange)m_target.lock()->SetMove(_moveDir);
 }

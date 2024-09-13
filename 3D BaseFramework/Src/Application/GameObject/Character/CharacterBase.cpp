@@ -160,7 +160,7 @@ void CharacterBase::CrushingAction()
 		m_animeFlg = false;
 		m_animeSpeed = 1.0f;
 	}
-	if(m_animator->IsAnimationEnd() && !IsExpired())m_isExpired = true;
+	else if(m_animator->IsAnimationEnd() && !IsExpired())m_isExpired = true;
 }
 
 void CharacterBase::SetParam(int _hp, int _atk, float _speed, int _stamina, float _angle, float _size, float _atkRange, Math::Vector3 _forword)

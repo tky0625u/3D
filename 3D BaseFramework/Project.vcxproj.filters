@@ -121,15 +121,6 @@
     <Filter Include="Src\Application\GameObject\Character\Action\Enemy">
       <UniqueIdentifier>{0bec7508-9c7b-4041-92fa-0c008727e956}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Idol">
-      <UniqueIdentifier>{055ecc30-6e8c-4df1-bf9b-de0e234265b3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Run">
-      <UniqueIdentifier>{114858be-3c1a-43be-af6f-d16dafb82aea}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Attack">
-      <UniqueIdentifier>{14de5f19-ae70-4de4-b690-40bf0d4ce28e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Src\Application\GameObject\Character\Action\Player\Hit">
       <UniqueIdentifier>{27422866-6bd7-470e-884a-d1f82839bc63}</UniqueIdentifier>
     </Filter>
@@ -141,12 +132,6 @@
     </Filter>
     <Filter Include="Src\Application\GameObject\Character\Action\Player\Counter">
       <UniqueIdentifier>{bbb0e903-43a8-483e-ab36-5f02c98d19f6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Stumble">
-      <UniqueIdentifier>{dad5e448-46fb-4f32-8828-2103f9ab20fd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Hit">
-      <UniqueIdentifier>{c4b2560b-287f-44d3-9cf0-b38ead125dab}</UniqueIdentifier>
     </Filter>
     <Filter Include="Src\Application\GameObject\Weapon">
       <UniqueIdentifier>{ef1aa68a-185c-4004-be5f-184c89f8530b}</UniqueIdentifier>
@@ -162,9 +147,6 @@
     </Filter>
     <Filter Include="Src\Application\GameObject\Weapon\Shield">
       <UniqueIdentifier>{3aae3733-8ab8-4995-bfe1-c58e0e7eef89}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Attack\Bone">
-      <UniqueIdentifier>{39568722-133f-4819-9124-75b35627e6d3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Bone">
       <UniqueIdentifier>{d8f610a8-eb6e-4bde-b870-5150be66c92e}</UniqueIdentifier>
@@ -408,21 +390,6 @@
     <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Player_ConText.h">
       <Filter>Src\Application\GameObject\Character\Action\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Attack\Enemy_Attack.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Hit\Enemy_Hit.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Hit</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Idol\Enemy_Idol.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Idol</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Run\Enemy_Run.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Run</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Stumble\Enemy_Stumble.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Stumble</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\Bone\Bone.h">
       <Filter>Src\Application\GameObject\Character\Enemy\Bone</Filter>
     </ClInclude>
@@ -450,11 +417,23 @@
     <ClInclude Include="Src\Application\GameObject\Weapon\Shield\Shield.h">
       <Filter>Src\Application\GameObject\Weapon\Shield</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Attack\Bone\Bone_Attack.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Attack\Bone</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Bone_ActionState.h">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Idol\Bone_Idol.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Idol</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Run\Bone_Run.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Hit\Bone_Hit.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Hit</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Attack\Bone_Attack.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble\Bone_Stumble.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -647,21 +626,6 @@
     <ClCompile Include="Src\Application\GameObject\ObjectManager.cpp">
       <Filter>Src\Application\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Attack\Enemy_Attack.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Attack</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Hit\Enemy_Hit.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Hit</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Idol\Enemy_Idol.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Idol</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Run\Enemy_Run.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Run</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Stumble\Enemy_Stumble.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Stumble</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\Bone\Bone.cpp">
       <Filter>Src\Application\GameObject\Character\Enemy\Bone</Filter>
     </ClCompile>
@@ -689,11 +653,23 @@
     <ClCompile Include="Src\Application\GameObject\Weapon\Shield\Shield.cpp">
       <Filter>Src\Application\GameObject\Weapon\Shield</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Attack\Bone\Bone_Attack.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Attack\Bone</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Bone_ActionState.cpp">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Idol\Bone_Idol.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Idol</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Run\Bone_Run.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Run</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Hit\Bone_Hit.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Hit</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Attack\Bone_Attack.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble\Bone_Stumble.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

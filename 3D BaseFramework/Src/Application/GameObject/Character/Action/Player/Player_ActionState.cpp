@@ -52,7 +52,7 @@ void Player_ActionState::AttackDamage()
 
 		for (int i = 0; i < sphereInfoList.size(); ++i)
 		{
-			if (sphere.lock()->Intersects(sphereInfoList[i], nullptr))
+			if (sphere.lock()->Intersects(sphereInfoList[i], nullptr) && sphere.lock()->GetParam().Hp > 0)
 			{
 				sphere.lock()->GetConText()->Hit(m_target.lock()->GetParam().Atk);
 			}
