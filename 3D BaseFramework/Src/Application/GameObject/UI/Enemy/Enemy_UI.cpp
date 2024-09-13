@@ -7,29 +7,59 @@ void Enemy_UI::Update()
 	if (m_camera.expired())return;
 	if (m_target.expired())return;
 
-	m_rect = { 0,0,(200 / m_MaxHP) * m_target.lock()->GetParam().Hp,10 };
-
-	m_camera.lock()->WorkCamera()->ConvertWorldToScreenDetail(m_target.lock()->GetMatrix().Translation(), m_pos);
-
-	if (m_target.lock()->GetParam().Hp<=0)
+	//HP減少
+	if (m_target.lock()->GetParam().Hp != m_beforeHP)
 	{
-		int a;
+		m_HpRect = { 0,0,(m_MaxWidth / m_MaxHP) * m_target.lock()->GetParam().Hp,10 };
+		m_beforeHP = m_target.lock()->GetParam().Hp;
+		m_DownTime = 120;
 	}
+
+	if (m_DownTime > 0)m_DownTime--;
+	else
+	{
+		m_DownTime = 0;
+		if (m_HpDownRect.width != m_HpRect.width)m_HpDownRect.width--; //現在のHPまで徐々に減少
+	}
+
+	//座標変換
+	m_camera.lock()->WorkCamera()->ConvertWorldToScreenDetail(m_target.lock()->GetHPMat().Translation(), m_pos);
+
 }
 
 void Enemy_UI::DrawSprite()
 {
-	KdShaderManager::Instance().m_spriteShader.DrawTex(m_tex, m_pos.x - (200 / 2), m_pos.y, &m_rect, &m_color, m_pivot);
+	//HPボックス
+	KdShaderManager::Instance().m_spriteShader.DrawTex(m_HpBoxTex, (int)(m_pos.x - (m_MaxWidth / 2)), (int)m_pos.y, (int)m_HpBoxRect.width, (int)m_HpBoxRect.height, &m_HpBoxRect, &m_color, m_pivot);
+	
+	//HP減少ゲージ
+	KdShaderManager::Instance().m_spriteShader.DrawTex(m_HpDownTex, (int)(m_pos.x - (m_MaxWidth / 2)), (int)m_pos.y, (int)m_HpDownRect.width, (int)m_HpDownRect.height, &m_HpDownRect, &m_color, m_pivot);
+
+	//HPバー
+	KdShaderManager::Instance().m_spriteShader.DrawTex(m_HpTex, (int)(m_pos.x - (m_MaxWidth / 2)), (int)m_pos.y, (int)m_HpRect.width, (int)m_HpRect.height, &m_HpRect, &m_color, m_pivot);
 }
 
 void Enemy_UI::Init()
 {
-	m_pos = Math::Vector2::Zero;
-	m_pivot = { 0.0f,0.5f };
-	m_rect = { 0,0,200,10 };
-	m_color = { 1,1,1,1 };
-	m_tex = std::make_shared<KdTexture>();
-	m_tex->Load("Asset/Textures/UI/Enemy/Enemy_HP.png");
+	//HPバー
+	m_pos       = Math::Vector2::Zero;
+	m_pivot     = { 0.0f,0.5f };
+	m_MaxWidth  = 200;
+	m_HpRect    = { 0,0,m_MaxWidth,10 };
+	m_color     = { 1,1,1,1 };
+	m_HpTex     = std::make_shared<KdTexture>();
+	m_HpTex->Load("Asset/Textures/UI/Enemy/Enemy_HP.png");
 	if (m_target.expired())return;
-	m_MaxHP = m_target.lock()->GetParam().Hp;
+	m_MaxHP     = m_target.lock()->GetParam().Hp;
+	m_beforeHP  = m_MaxHP;
+
+	//HPボックス
+	m_HpBoxTex  = std::make_shared<KdTexture>();
+	m_HpBoxTex->Load("Asset/Textures/UI/Enemy/Enemy_HPBox.png");
+	m_HpBoxRect = m_HpRect;
+
+	//HP減少ゲージ
+	m_HpDownTex = std::make_shared<KdTexture>();
+	m_HpDownTex->Load("Asset/Textures/UI/Enemy/Enemy_HPDown.png");
+	m_HpDownRect = m_HpRect;
 }

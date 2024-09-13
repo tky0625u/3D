@@ -24,6 +24,7 @@ public:
 	std::shared_ptr<Enemy_ConText> GetConText()const { return m_conText; }
 	std::weak_ptr<Player> GetPlayer()const { return m_player; }
 	int GetStopTime()const { return m_StopTime; }
+	Math::Matrix GetHPMat()const { return m_model->FindWorkNode("HP")->m_worldTransform * m_mWorld; }
 
 protected:
 	std::shared_ptr<Enemy_UI>      m_ui = nullptr;

@@ -281,9 +281,9 @@ void ObjectManager::SetEnemyParam(std::string _StageNum)
 		{
 			enemy->SetPlayer(m_player.lock());
 		}
+		enemy->SetParam(_hp, _atk, _speed, _stamina, _angleY, _size, _atkRange, _forword);
 		enemy->Init();
 		enemy->SetPos(_pos);
-		enemy->SetParam(_hp, _atk, _speed, _stamina, _angleY, _size, _atkRange, _forword);
 		enemy->SetChaseRange(_chaseRange);
 		enemy->SetID(m_id);
 		m_id++;

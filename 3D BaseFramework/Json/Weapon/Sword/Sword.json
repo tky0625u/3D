@@ -11,7 +11,7 @@
 	},
 	"1Wood": {
 		"Name": "Sword",
-		"ATK": 0,
+		"ATK": 1,
 		"PosX": 1.0,
 		"PosY": 0.0,
 		"PosZ": 0.0,
