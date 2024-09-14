@@ -23,8 +23,12 @@ void Enemy_UI::Update()
 	}
 
 	//座標変換
-	m_camera.lock()->WorkCamera()->ConvertWorldToScreenDetail(m_target.lock()->GetHPMat().Translation(), m_pos);
-
+	Math::Vector3 _pos = { m_pos.x,m_pos.y,0.0f };
+	m_camera.lock()->WorkCamera()->ConvertWorldToScreenDetail(m_target.lock()->GetHPMat().Translation(), _pos);
+	if (_pos.z >= 0.0f)
+	{
+	m_pos = { _pos.x,_pos.y };
+	}
 }
 
 void Enemy_UI::DrawSprite()

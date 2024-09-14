@@ -40,7 +40,7 @@ public:
 	void GenerateRayInfoFromClientPos(const POINT& clientPos, Math::Vector3& rayPos, Math::Vector3& rayDir, float& rayRange);
 	
 	// ワールド座標(3D座標)をスクリーン座標(2D座標)に変換する
-	void ConvertWorldToScreenDetail(const Math::Vector3& pos, Math::Vector2& result);
+	void ConvertWorldToScreenDetail(const Math::Vector3& pos, Math::Vector3& result);
 
 protected:
 
