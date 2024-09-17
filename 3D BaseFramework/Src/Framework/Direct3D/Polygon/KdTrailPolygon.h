@@ -71,6 +71,11 @@ public:
 		GenerateVertices();
 	}
 
+	inline std::deque<Math::Matrix> GetPointsList()
+	{
+		return m_pointList;
+	}
+
 	// 帯状ポリゴンの長さを設定
 	inline void SetLength(UINT length) { m_length = length; }
 

@@ -22,7 +22,7 @@ void Sword::PostUpdate()
 
 	while (traje != m_trajectList.end())
 	{
-		if (traje->m_trajectPolyGon->GetNumPoints() == 20)
+		if (traje->m_trajectPolyGon->GetNumPoints() == 20 && traje->m_trajectPolyGon->GetTopPoint()->Translation() == traje->m_trajectPolyGon->GetPointsList()[traje->m_trajectPolyGon->GetNumPoints() - 1].Translation())
 		{
 			traje = m_trajectList.erase(traje);
 		}
@@ -62,5 +62,5 @@ void Sword::MakeTraject()
 
 void Sword::SetTrajectMat()
 {
-	m_trajectList[m_trajectList.size() - 1].m_trajectMat = GetModelTop();
+	if (m_trajectList.size() != 0)m_trajectList[m_trajectList.size() - 1].m_trajectMat = GetModelTop();
 }
