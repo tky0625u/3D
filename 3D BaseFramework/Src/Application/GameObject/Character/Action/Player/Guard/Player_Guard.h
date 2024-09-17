@@ -14,7 +14,6 @@ public:
 	void Center()   override;
 	void End()      override;
 
-	void Event()    override;
 	void GuardRotate(Math::Vector3 _pos);
 
 	void SetFlow(Flow _flow) { m_flow = _flow; }

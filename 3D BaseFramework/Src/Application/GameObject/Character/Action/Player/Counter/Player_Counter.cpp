@@ -2,6 +2,7 @@
 #include"../../../Player/Player.h"
 #include"../Player_ConText.h"
 #include"../Player_ActionState.h"
+#include"../../../../Weapon/Sword/Sword.h"
 
 void Player_Counter::Start()
 {
@@ -16,6 +17,10 @@ void Player_Counter::Start()
 		if (m_target.lock()->GetIsAnimator())
 		{
 			m_flow = Flow::CenterType;
+			if (m_target.lock()->GetSword().expired() == false)
+			{
+				m_target.lock()->GetSword().lock()->MakeTraject();
+			}
 			return;
 		}
 	}
@@ -37,7 +42,11 @@ void Player_Counter::Center()
 			return;
 		}
 
-		Event();
+		if (m_target.lock()->GetSword().expired() == false)
+		{
+			m_target.lock()->GetSword().lock()->SetTrajectMat();
+		}
+		AttackDamage();
 	}
 }
 
@@ -57,11 +66,6 @@ void Player_Counter::End()
 			return;
 		}
 	}
-}
-
-void Player_Counter::Event()
-{
-	AttackDamage();
 }
 
 void Player_Counter::ChangeAction()

@@ -15,7 +15,6 @@ public:
 
 	void ChangeAction()   override;
 	void Init()     override;
-	void Event()    override;
 
 private:
 	static const int AttackNUM = 3;

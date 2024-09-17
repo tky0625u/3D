@@ -7,7 +7,7 @@ void Player_Roll::Start()
 {
 	if (m_target.expired() == false)
 	{
-		Event();
+		Roll();
 		if (m_target.lock()->GetAnime() != "Roll")
 		{
 			m_target.lock()->SetAnime("Roll", false, 1.2f);
@@ -40,7 +40,12 @@ void Player_Roll::End()
 	}
 }
 
-void Player_Roll::Event()
+void Player_Roll::Init()
+{
+	m_flow = Flow::StartType;
+}
+
+void Player_Roll::Roll()
 {
 	if (m_target.expired())return;
 
@@ -55,9 +60,4 @@ void Player_Roll::Event()
 	dir.Normalize();
 
 	player->SetMove(dir);
-}
-
-void Player_Roll::Init()
-{
-	m_flow = Flow::StartType;
 }

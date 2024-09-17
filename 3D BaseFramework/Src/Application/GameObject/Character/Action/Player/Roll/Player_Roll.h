@@ -12,9 +12,9 @@ public:
 	void Start()    override;
 	void End()      override;
 
-	void Event()    override;
-
 	void Init()     override;
+
+	void Roll();
 
 	void Hit(std::shared_ptr<Player_ActionConText> context, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)override { return; }
 

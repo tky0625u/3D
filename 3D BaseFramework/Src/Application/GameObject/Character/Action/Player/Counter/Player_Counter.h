@@ -14,8 +14,6 @@ public:
 	void Center()override;
 	void End()override;
 
-	void Event() override;
-
 	void ChangeAction()override;
 
 	void SetTargetPos(Math::Vector3 targetPos) { m_targetPos = targetPos; }

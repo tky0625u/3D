@@ -26,7 +26,7 @@ void Player_Run::Start()
 			return;
 		}
 
-		Event();
+		Run();
 	}
 }
 
@@ -46,7 +46,7 @@ void Player_Run::Center()
 			return;
 		}
 
-		Event();
+		Run();
 	}
 }
 
@@ -74,7 +74,7 @@ void Player_Run::End()
 	}
 }
 
-void Player_Run::Event()
+void Player_Run::Run()
 {
 	std::shared_ptr<CharacterBase> _player = nullptr;
 	if (m_target.expired() == false)_player = m_target.lock();
@@ -96,7 +96,7 @@ void Player_Run::Event()
 		dir.x = 1.0f;
 	}
 	CameraTransform(dir);
-	if(m_target.expired()==false)Rotate(dir,m_target.lock());
+	if (m_target.expired() == false)Rotate(dir, m_target.lock());
 	_player->SetMove(dir);
 	if (m_flow == Flow::EndType)m_flow = Flow::CenterType;
 }

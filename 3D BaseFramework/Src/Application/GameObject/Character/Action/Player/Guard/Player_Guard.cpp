@@ -28,7 +28,7 @@ void Player_Guard::Start()
 			return;
 		}
 
-		Event();
+		m_guardTime++;
 	}
 }
 
@@ -48,7 +48,7 @@ void Player_Guard::Center()
 			return;
 		}
 
-		Event();
+		m_guardTime++;
 	}
 }
 
@@ -74,11 +74,6 @@ void Player_Guard::End()
 			return;
 		}
 	}
-}
-
-void Player_Guard::Event()
-{
-	m_guardTime++;
 }
 
 void Player_Guard::GuardRotate(Math::Vector3 _pos)

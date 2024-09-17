@@ -26,7 +26,6 @@ public:
 	virtual void Center()  {};
 	virtual void End()     {};
 
-	virtual void Event()   {};
 	void Rotate(Math::Vector3 _moveDir, std::shared_ptr<CharacterBase> _target);
 
 protected:

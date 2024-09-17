@@ -12,7 +12,7 @@ public:
 	void Center()   override;
 	void End()      override;
 
-	void Event()override;
+	void Run();
 	void CameraTransform(Math::Vector3& _dir);
 
 	void ChangeAction()override;

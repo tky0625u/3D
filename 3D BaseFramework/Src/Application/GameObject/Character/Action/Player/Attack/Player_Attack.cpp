@@ -43,7 +43,7 @@ void Player_Attack::Center()
 			return;
 		}
 
-		Event();
+		AttackDamage();
 	}
 }
 
@@ -112,9 +112,4 @@ void Player_Attack::ChangeAction()
 void Player_Attack::Init()
 {
 	m_flow = Flow::CenterType;
-}
-
-void Player_Attack::Event()
-{
-	AttackDamage();
 }
