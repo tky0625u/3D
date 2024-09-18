@@ -5,7 +5,7 @@
 class Player_Run :public Player_ActionState
 {
 public:			    
-	Player_Run()             { Init(); }
+	Player_Run()             {}
 	~Player_Run()   override {};
 				    
 	void Start()    override;

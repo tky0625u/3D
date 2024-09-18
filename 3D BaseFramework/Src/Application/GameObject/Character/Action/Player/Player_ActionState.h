@@ -32,5 +32,5 @@ public:
 
 protected:
 	std::weak_ptr<Player> m_target;
-	UINT m_ActionType = 0;
+	UINT                  m_ActionType = 0;
 };

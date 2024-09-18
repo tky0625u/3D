@@ -17,9 +17,9 @@ public:
 
 	virtual void Update()override
 	{
-		if (m_flow == Flow::StartType) { Start(); }
+		     if (m_flow == Flow::StartType)  { Start(); }
 		else if (m_flow == Flow::CenterType) { Center(); }
-		else if (m_flow == Flow::EndType) { End(); }
+		else if (m_flow == Flow::EndType)    { End(); }
 	}
 
 	virtual void Start()   {};

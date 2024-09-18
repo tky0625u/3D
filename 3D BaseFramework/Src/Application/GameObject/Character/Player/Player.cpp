@@ -1,4 +1,5 @@
 ﻿#include "Player.h"
+#include"../../ObjectManager.h"
 #include"../../Camera/CameraBase.h"
 #include"../Action/Player/Idol/Player_Idol.h"
 #include"Application/main.h"
@@ -16,9 +17,21 @@ void Player::Action()
 	}
 	m_state.lock()->Update();
 
-	Move = m_param.Sp * m_SpeedCorrection;
-	m_pos += Move * m_dir; //座標更新
+	float _slow = 1.0f;
+	if (m_ObjManager.expired() == false)
+	{
+		_slow = m_ObjManager.lock()->GetSlow();
+	}
 
+	Move = m_param.Sp * m_SpeedCorrection * _slow;
+	m_pos += Move * m_dir; //座標更新
+}
+
+void Player::PostUpdate()
+{
+	CharacterBase::PostUpdate();
+	m_camera.lock()->SlowChange(m_ObjManager.lock()->GetSlowFlg());
+	//m_camera.lock()->WorkCamera()->SetFocus(8, 5, 10);
 }
 
 void Player::Init()

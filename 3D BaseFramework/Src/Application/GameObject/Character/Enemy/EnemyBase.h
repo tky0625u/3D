@@ -14,8 +14,12 @@ public:
 
 	void Update()        override;
 	virtual void Action()override;
+	void GenerateDepthMapFromLight() override;
+	void DrawLit()       override;
 	void DrawSprite()    override;
 	virtual void Init()  override;
+
+	void CrushingAction()override;
 
 	void SetPlayer(std::shared_ptr<Player> _player) { m_player = _player; }
 	void SetChaseRange(float _chaseRange) { m_chaceRange = _chaseRange; }
@@ -33,4 +37,5 @@ protected:
 	std::weak_ptr<Enemy_ActionState> m_state;
 	std::shared_ptr<Enemy_ActionState> m_NextState;
 	float                 m_chaceRange = 0.0f;
+	float                 m_dossolve = 0.0f;
 };

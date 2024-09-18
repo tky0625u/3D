@@ -1,4 +1,5 @@
 ﻿#include "CharacterBase.h"
+#include"../ObjectManager.h"
 #include"../../Scene/SceneManager.h"
 #include"Action/ActionBase.h"
 
@@ -19,7 +20,12 @@ void CharacterBase::Update()
 		Action();
 	}
 
-	m_gravity += m_gravityPow;
+	float _slow = 1.0f;
+	if (m_ObjManager.expired() == false)
+	{
+		_slow = m_ObjManager.lock()->GetSlow();
+	}
+	m_gravity += m_gravityPow * _slow;
 	m_pos.y -= m_gravity;
 
 	//ワールド行列更新
@@ -35,14 +41,14 @@ void CharacterBase::PostUpdate()
 
 	KdCollider::RayInfo rayInfo;
 	rayInfo.m_pos = m_pos;
-	float LitleUP = 0.1f;
+	float LitleUP = 0.3f;
 	rayInfo.m_pos.y += LitleUP;
 	rayInfo.m_dir = Math::Vector3::Down; 
 	rayInfo.m_range = m_gravity + LitleUP;
 	rayInfo.m_type = KdCollider::TypeGround;
 
 	Math::Color color = { 1,1,1,1 };
-	//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
+	m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
 
 	std::list<KdCollider::CollisionResult> retRayList;
 	for (auto& ret : SceneManager::Instance().GetObjList())
@@ -120,7 +126,12 @@ void CharacterBase::PostUpdate()
 		m_animator->SetAnimation(m_model->GetData()->GetAnimation(m_anime), m_animeFlg);
 		m_beforeAnime = m_anime;
 	}
-	m_animator->AdvanceTime(m_model->WorkNodes(), m_animeSpeed);
+	float _slow = 1.0f;
+	if (m_ObjManager.expired() == false)
+	{
+		_slow = m_ObjManager.lock()->GetSlow();
+	}
+	m_animator->AdvanceTime(m_model->WorkNodes(), m_animeSpeed * _slow);
 	m_model->CalcNodeMatrices();
 
 }

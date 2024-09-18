@@ -39,6 +39,20 @@ void ObjectManager::DeleteEnemyList()
 	}
 }
 
+void ObjectManager::SlowChange()
+{
+	if (m_slowFlg)
+	{
+		m_slowFlg = false;
+		m_slow = 1.0f;
+	}
+	else
+	{
+		m_slowFlg = true;
+		m_slow = 0.5f;
+	}
+}
+
 void ObjectManager::SetObjectParam()
 {
 	//jsonファイル
@@ -142,6 +156,7 @@ void ObjectManager::SetPlayerParam()
 		player->SetPos(_pos);
 		player->SetParam(_hp, _atk, _speed, _stamina, _angleY, _size, _atkRange, _forword);
 		player->SetID(m_id);
+		player->SetObjManager(shared_from_this());
 		m_id++;
 
 		SceneManager::Instance().AddObject(player);
@@ -200,6 +215,7 @@ void ObjectManager::SetWeaponParam(std::string _filePath,int _id)
 			std::shared_ptr<Sword> sword = std::make_shared<Sword>();
 			m_player.lock()->SetSword(sword);
 			weaponATK = stage["ATK"];
+			sword->SetTrajectPointNUM(stage["Traject"]);
 			weapon = sword;
 		}
 		else if (stage["Name"] == "Shield")weapon = std::make_shared<Shield>();
@@ -286,6 +302,7 @@ void ObjectManager::SetEnemyParam(std::string _StageNum)
 		enemy->SetPos(_pos);
 		enemy->SetChaseRange(_chaseRange);
 		enemy->SetID(m_id);
+		enemy->SetObjManager(shared_from_this());
 		m_id++;
 
 		SceneManager::Instance().AddObject(enemy);

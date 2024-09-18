@@ -14,6 +14,7 @@ public:
 	~Player()        override {};
 
 	void Action()    override;
+	void PostUpdate()override;
 	void Init()      override;
 
 	void CrushingAction()override;

@@ -1,4 +1,5 @@
 ﻿#include "EnemyBase.h"
+#include"../../ObjectManager.h"
 #include"../../../Scene/SceneManager.h"
 #include"../Player/Player.h"
 #include"../Action/Enemy/Enemy_ConText.h"
@@ -23,8 +24,25 @@ void EnemyBase::Action()
 	}
 	if (m_state.expired() == false)m_state.lock()->Update();
 
-	Move = m_param.Sp * m_SpeedCorrection;
+	float _slow = 1.0f;
+	if (m_ObjManager.expired() == false)
+	{
+		_slow = m_ObjManager.lock()->GetSlow();
+	}
+	Move = m_param.Sp * m_SpeedCorrection * _slow;
 	m_pos += Move * m_dir; //座標更新
+}
+
+void EnemyBase::GenerateDepthMapFromLight()
+{
+	KdShaderManager::Instance().m_StandardShader.SetDissolve(m_dossolve);
+	CharacterBase::GenerateDepthMapFromLight();
+}
+
+void EnemyBase::DrawLit()
+{
+	KdShaderManager::Instance().m_StandardShader.SetDissolve(m_dossolve);
+	CharacterBase::DrawLit();
 }
 
 void EnemyBase::DrawSprite()
@@ -48,4 +66,20 @@ void EnemyBase::Init()
 	m_ui->SetTarget(shared_from_this());
 	m_ui->SetCamera(m_player.lock()->GetCamera().lock());
 	m_ui->Init();
+}
+
+void EnemyBase::CrushingAction()
+{
+	if (m_anime != "Death")
+	{
+		m_anime = "Death";
+		m_animeFlg = false;
+		m_animeSpeed = 1.0f;
+	}
+
+	m_dossolve+=0.01f;
+	if (m_dossolve >= 1.0f)
+	{
+		m_isExpired = true;
+	}
 }

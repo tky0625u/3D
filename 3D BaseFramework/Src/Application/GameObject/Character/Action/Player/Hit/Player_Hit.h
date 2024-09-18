@@ -6,10 +6,10 @@ class EnemyBase;
 class Player_Hit :public Player_ActionState
 {
 public:
-	Player_Hit() { Init(); }
+	Player_Hit()          {}
 	~Player_Hit()override {};
 
-	void Start()override;
+	void Start() override;
 
 	void Hit(std::shared_ptr<Player_ActionConText> context, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)override { return; }
 

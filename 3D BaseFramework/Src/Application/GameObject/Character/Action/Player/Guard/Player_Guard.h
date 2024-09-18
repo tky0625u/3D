@@ -7,8 +7,8 @@ class EnemyBase;
 class Player_Guard :public Player_ActionState
 {
 public:
-	Player_Guard() { Init(); }
-	~Player_Guard()   override {};
+	Player_Guard()           {}
+	~Player_Guard() override {};
 
 	void Start()    override;
 	void Center()   override;

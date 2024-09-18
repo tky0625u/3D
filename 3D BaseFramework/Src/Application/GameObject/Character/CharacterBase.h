@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+class ObjectManager;
 class ActionBase;
 class Sword;
 
@@ -60,6 +61,7 @@ public:
 	void SetMove(Math::Vector3 dir){m_dir = dir;}
 	void SetSword(std::shared_ptr<Sword> _sword) { m_sword = _sword; }
 	void SetStopTime(int _stopTime) { m_StopTime = _stopTime; }
+	void SetObjManager(std::shared_ptr<ObjectManager> _ObjManager) { m_ObjManager = _ObjManager; }
 
 	Param& GetParam() { return m_param; }
 	bool GetIsAnimator() { return m_animator->IsAnimationEnd(); }
@@ -67,6 +69,7 @@ public:
 	Math::Matrix GetSwordMat() { return m_model->FindWorkNode("sword.R")->m_localTransform * m_model->FindWorkNode("hand.R")->m_worldTransform * (Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_param.Angle))*(Math::Matrix::CreateTranslation(m_mWorld.Translation()))); }
 	Math::Matrix GetShieldMat() { return m_model->FindWorkNode("shield.L")->m_localTransform * m_model->FindWorkNode("forearm.L")->m_worldTransform * (Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_param.Angle)) * (Math::Matrix::CreateTranslation(m_mWorld.Translation()))); }
 	std::weak_ptr<Sword> GetSword() { return m_sword; }
+	std::weak_ptr<ObjectManager> GetObjManager() { return m_ObjManager; }
 
 protected:
 	Param                        m_param;
@@ -74,6 +77,7 @@ protected:
 	std::shared_ptr<KdAnimator>  m_animator        = nullptr;
 	std::shared_ptr<ActionBase>  m_action          = nullptr;
 	std::weak_ptr<Sword>         m_sword;
+	std::weak_ptr<ObjectManager> m_ObjManager;
 	std::string                  m_anime           = "Idol";
 	std::string                  m_beforeAnime     = m_anime;
 	std::unordered_map<std::string, std::shared_ptr<ActionBase>> m_actionList;

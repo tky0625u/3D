@@ -14,6 +14,7 @@ public:
 
 	void MakeTraject();
 	void SetTrajectMat();
+	void SetTrajectPointNUM(int _pointNUM) { m_trajePointNUM = _pointNUM; }
 
 	Math::Matrix GetModelTop()    { return m_spModel->FindWorkNode("sword.Top")->m_worldTransform * m_mWorld; }
 	Math::Matrix GetModelCenter() { return m_spModel->FindWorkNode("sword.Center")->m_localTransform * m_spModel->FindWorkNode("sword.Top")->m_worldTransform * m_mWorld; }
@@ -27,5 +28,6 @@ private:
 	};
 
 	std::vector<Traject>        m_trajectList;
-	std::shared_ptr<KdTexture>  m_trajeTex  = nullptr;
+	std::shared_ptr<KdTexture>  m_trajeTex      = nullptr;
+	int                         m_trajePointNUM = 0;
 };

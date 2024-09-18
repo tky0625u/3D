@@ -7,12 +7,12 @@ class EnemyBase;
 class Player_Idol :public Player_ActionState
 {
 public:
-	Player_Idol() 	{ 
-						m_flow = Flow::CenterType;
-					}
-	~Player_Idol()   override {};
+	Player_Idol()               { Init(); }
+	~Player_Idol()     override {};
 
-	void Center()   override;
+	void Center()      override;
+
+	void Init()        override;
 
 	void ChangeAction()override;
 

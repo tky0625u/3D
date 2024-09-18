@@ -7,6 +7,7 @@
 		"PosZ": 0.0,
 		"Size": 1.0,
 		"Angle": 0.0,
+		"Traject": 10,
 		"Path": "Asset/Models/Weapon/sword/Sword.gltf"
 	},
 	"1Wood": {
@@ -17,6 +18,7 @@
 		"PosZ": 0.0,
 		"Size": 1.0,
 		"Angle": 0.0,
+		"Traject": 10,
 		"Path": "Asset/Models/Weapon/sword/Wood/Wood.gltf"
 	}
 }

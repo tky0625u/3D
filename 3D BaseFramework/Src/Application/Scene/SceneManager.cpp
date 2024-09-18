@@ -70,9 +70,6 @@ void SceneManager::ChangeScene(SceneType sceneType)
 		break;
 	}
 
-	//エネミーリスト削除
-	if (m_currentSceneType == SceneType::Game)ObjectManager::Instance().DeleteEnemyList();
-
 	// 現在のシーン情報を更新
 	m_currentSceneType = sceneType;
 }

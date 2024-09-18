@@ -7,12 +7,12 @@ class EnemyBase;
 class Player_Counter :public Player_ActionState
 {
 public:
-	Player_Counter() { Init(); }
-	~Player_Counter()override {};
+	Player_Counter()            {}
+	~Player_Counter()  override {};
 
-	void Start()override;
-	void Center()override;
-	void End()override;
+	void Start()       override;
+	void Center()      override;
+	void End()         override;
 
 	void ChangeAction()override;
 

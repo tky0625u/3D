@@ -10,6 +10,8 @@ public:
 	void PostUpdate()       override;
 	void PreDraw()			override;
 
+	void SlowChange(bool _slowFlg);
+
 	void SetTarget(const std::shared_ptr<KdGameObject>& target);
 
 	// 「絶対変更しません！見るだけ！」な書き方

@@ -2,6 +2,8 @@
 
 #include"../BaseScene/BaseScene.h"
 
+class ObjectManager;
+
 class GameScene : public BaseScene
 {
 public :
@@ -14,4 +16,6 @@ public :
 private:
 
 	void Event() override;
+
+	std::shared_ptr<ObjectManager> m_ObjManager = nullptr;
 };

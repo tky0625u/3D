@@ -22,7 +22,7 @@ void Sword::PostUpdate()
 
 	while (traje != m_trajectList.end())
 	{
-		if (traje->m_trajectPolyGon->GetNumPoints() == 20 && traje->m_trajectPolyGon->GetTopPoint()->Translation() == traje->m_trajectPolyGon->GetPointsList()[traje->m_trajectPolyGon->GetNumPoints() - 1].Translation())
+		if (traje->m_trajectPolyGon->GetNumPoints() == m_trajePointNUM && traje->m_trajectPolyGon->GetTopPoint()->Translation() == traje->m_trajectPolyGon->GetPointsList()[traje->m_trajectPolyGon->GetNumPoints() - 1].Translation())
 		{
 			traje = m_trajectList.erase(traje);
 		}
@@ -37,7 +37,7 @@ void Sword::DrawUnLit()
 {
 	for (auto& traje : m_trajectList)
 	{
-		if (traje.m_trajectPolyGon != nullptr)KdShaderManager::Instance().m_StandardShader.DrawPolygon(*traje.m_trajectPolyGon);
+		if (traje.m_trajectPolyGon != nullptr)KdShaderManager::Instance().m_StandardShader.DrawPolygon(*traje.m_trajectPolyGon);;
 	}
 }
 
@@ -55,8 +55,9 @@ void Sword::MakeTraject()
 
 	std::shared_ptr<KdTrailPolygon> _trajePoly = std::make_shared<KdTrailPolygon>();
 	_trajePoly->SetMaterial(m_trajeTex);
+	_trajePoly->SetLength(m_trajePointNUM);
 	_traject.m_trajectPolyGon = _trajePoly;
-	_traject.m_trajectMat = GetModelTop();
+	_traject.m_trajectMat     = GetModelTop();
 	m_trajectList.push_back(_traject);
 }
 

@@ -19,6 +19,7 @@
 void Player_ActionState::AttackDamage()
 {
 	if (m_target.expired())return;
+	if (m_target.lock()->GetObjManager().expired())return;
 
 	std::vector<KdCollider::SphereInfo> sphereInfoList;
 	KdCollider::SphereInfo sphereInfo;
@@ -46,7 +47,7 @@ void Player_ActionState::AttackDamage()
 		sphereInfoList[i].m_type = KdCollider::TypeDamage;
 	}
 
-	for (auto& sphere : ObjectManager::Instance().GetEnemyList())
+	for (auto& sphere : m_target.lock()->GetObjManager().lock()->GetEnemyList())
 	{
 		if (sphere.expired())continue;
 

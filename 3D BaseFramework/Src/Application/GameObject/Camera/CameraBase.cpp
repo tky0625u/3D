@@ -23,6 +23,7 @@ void CameraBase::PostUpdate()
 	if (!m_spCamera) { return; }
 
 	m_spCamera->SetCameraMatrix(m_mWorld);
+	m_spCamera->SetProjectionMatrix(m_ViewingAngle);
 }
 
 void CameraBase::PreDraw()
@@ -30,6 +31,24 @@ void CameraBase::PreDraw()
 	if (!m_spCamera) { return; }
 
 	m_spCamera->SetToShader();
+}
+
+void CameraBase::SlowChange(bool _slowFlg)
+{
+	if (_slowFlg)
+	{
+		if (m_ViewingAngle != 40)
+		{
+			m_ViewingAngle -= 5;
+		}
+	}
+	else
+	{
+		if (m_ViewingAngle != 60)
+		{
+			m_ViewingAngle += 5;
+		}
+	}
 }
 
 void CameraBase::SetTarget(const std::shared_ptr<KdGameObject>& target)

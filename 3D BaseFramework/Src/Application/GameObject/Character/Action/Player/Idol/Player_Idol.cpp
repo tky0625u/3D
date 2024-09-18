@@ -14,6 +14,11 @@ void Player_Idol::Center()
 	}
 }
 
+void Player_Idol::Init()
+{
+	m_flow = Flow::CenterType;
+}
+
 void Player_Idol::ChangeAction()
 {
 	if (m_ActionType & Player_ActionConText::ActionType::MoveType)

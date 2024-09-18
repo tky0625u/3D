@@ -6,7 +6,7 @@ class EnemyBase;
 class Player_Roll :public Player_ActionState
 {
 public:
-	Player_Roll() {Init();}
+	Player_Roll()            { Init(); }
 	~Player_Roll()  override {};
 
 	void Start()    override;
