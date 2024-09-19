@@ -22,6 +22,11 @@ void Player_GuardReaction::Start()
 	}
 }
 
+void Player_GuardReaction::Init()
+{
+	m_staminaRecoveryFlg = false;
+}
+
 void Player_GuardReaction::Guard(std::shared_ptr<Player_ActionConText> context)
 {
 	std::shared_ptr<Player_Guard> guard = std::make_shared<Player_Guard>();

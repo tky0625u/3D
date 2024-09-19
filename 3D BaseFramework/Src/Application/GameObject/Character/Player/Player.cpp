@@ -7,36 +7,36 @@
 
 void Player::Action()
 {
-	m_dir = Math::Vector3::Zero; //ベクトルリセット
-	float         Move = 0.0f;
-	
 	if (m_NextState != nullptr)
 	{
 		m_state = m_NextState;
 		m_NextState.reset();
 	}
 	m_state.lock()->Update();
-
-	float _slow = 1.0f;
-	if (m_ObjManager.expired() == false)
-	{
-		_slow = m_ObjManager.lock()->GetSlow();
-	}
-
-	Move = m_param.Sp * m_SpeedCorrection * _slow;
-	m_pos += Move * m_dir; //座標更新
 }
 
 void Player::PostUpdate()
 {
 	CharacterBase::PostUpdate();
 	m_camera.lock()->SlowChange(m_ObjManager.lock()->GetSlowFlg());
-	//m_camera.lock()->WorkCamera()->SetFocus(8, 5, 10);
+
+	if (m_ObjManager.lock()->GetSlowFlg())
+	{
+		if (m_FocusBackRange != 10.0f)m_FocusBackRange = 10.0f;
+	}
+	else
+	{
+		if (m_FocusBackRange != 2000.0f)m_FocusBackRange = 2000.0f;
+	}
+
+	m_camera.lock()->WorkCamera()->SetFocus(8, 5, m_FocusBackRange);
 }
 
 void Player::Init()
 {
 	CharacterBase::Init();
+	m_MaxStamina = m_param.Sm;
+
 	m_model->SetModelData("Asset/Models/Character/Player/Player.gltf");
 	m_animator->SetAnimation(m_model->GetData()->GetAnimation(m_anime), m_animeFlg);
 

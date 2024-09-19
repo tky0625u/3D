@@ -21,12 +21,16 @@ public:
 
 	void SetCamera(std::shared_ptr<CameraBase> a_camera) { m_camera = a_camera; }
 	void SetNextState(std::shared_ptr<Player_ActionState> _next) { m_NextState = _next; }
+
 	std::weak_ptr<CameraBase> GetCamera()const { return m_camera; }
 	std::shared_ptr<Player_ActionConText>GetConText()const { return m_context; }
+	int GetMaxStamina()const { return m_MaxStamina; }
 
 private:
-	std::weak_ptr<CameraBase> m_camera;
-	std::shared_ptr<Player_ActionConText> m_context = nullptr;
-	std::weak_ptr<Player_ActionState> m_state;
-	std::shared_ptr<Player_ActionState> m_NextState;
+	std::weak_ptr<CameraBase>             m_camera;
+	std::shared_ptr<Player_ActionConText> m_context        = nullptr;
+	std::weak_ptr<Player_ActionState>     m_state;
+	std::shared_ptr<Player_ActionState>   m_NextState;
+	float                                 m_FocusBackRange = 2000.0f;
+	int                                   m_MaxStamina     = 0;
 };

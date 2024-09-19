@@ -9,7 +9,7 @@
 		"HP": 10,
 		"ATK": 2,
 		"Speed": 2.0,
-		"Stamina": 50,
+		"Stamina": 5,
 		"ATKRange": 3.0,
 		"ForwordX": 0.0,
 		"ForwordY": 0.0,

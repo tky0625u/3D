@@ -14,23 +14,12 @@ void EnemyBase::Update()
 
 void EnemyBase::Action()
 {
-	m_dir = Math::Vector3::Zero;
-	float Move = 0.0f;
-
 	if (m_NextState != nullptr)
 	{
 		m_state = m_NextState;
 		m_NextState.reset();
 	}
 	if (m_state.expired() == false)m_state.lock()->Update();
-
-	float _slow = 1.0f;
-	if (m_ObjManager.expired() == false)
-	{
-		_slow = m_ObjManager.lock()->GetSlow();
-	}
-	Move = m_param.Sp * m_SpeedCorrection * _slow;
-	m_pos += Move * m_dir; //座標更新
 }
 
 void EnemyBase::GenerateDepthMapFromLight()

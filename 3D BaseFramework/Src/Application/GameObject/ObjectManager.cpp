@@ -152,9 +152,9 @@ void ObjectManager::SetPlayerParam()
 		std::shared_ptr<Player> player = std::make_shared<Player>();
 		std::shared_ptr<TPSCamera> camera = std::make_shared<TPSCamera>();
 		player->SetCamera(camera);
+		player->SetParam(_hp, _atk, _speed, _stamina, _angleY, _size, _atkRange, _forword);
 		player->Init();
 		player->SetPos(_pos);
-		player->SetParam(_hp, _atk, _speed, _stamina, _angleY, _size, _atkRange, _forword);
 		player->SetID(m_id);
 		player->SetObjManager(shared_from_this());
 		m_id++;

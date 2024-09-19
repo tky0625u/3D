@@ -5,6 +5,9 @@
 
 void CharacterBase::Update()
 {
+	m_dir = Math::Vector3::Zero;
+	float Move = 0.0f;
+
 	if (m_param.Hp <= 0)
 	{
 		CrushingAction();
@@ -27,6 +30,8 @@ void CharacterBase::Update()
 	}
 	m_gravity += m_gravityPow * _slow;
 	m_pos.y -= m_gravity;
+	Move = m_param.Sp * m_SpeedCorrection * _slow;
+	m_pos += Move * m_dir; //座標更新
 
 	//ワールド行列更新
 	Math::Matrix Scale = Math::Matrix::CreateScale(m_param.Size);
@@ -47,6 +52,7 @@ void CharacterBase::PostUpdate()
 	rayInfo.m_range = m_gravity + LitleUP;
 	rayInfo.m_type = KdCollider::TypeGround;
 
+	//デバッグ用
 	Math::Color color = { 1,1,1,1 };
 	m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
 
@@ -88,6 +94,7 @@ void CharacterBase::PostUpdate()
 	sphereInfo.m_sphere.Radius = 2.0f;
 	sphereInfo.m_type = KdCollider::TypeBump;
 
+	//デバッグ用
 	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
 
 	std::list<KdCollider::CollisionResult>retSphereList;

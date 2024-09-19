@@ -19,3 +19,8 @@ void Player_Hit::Start()
 		}
 	}
 }
+
+void Player_Hit::Init()
+{
+	m_staminaRecoveryFlg = false;
+}

@@ -43,7 +43,7 @@ void Player_Parry::End()
 
 void Player_Parry::ChangeAction()
 {
-	if (m_flow != Flow::EndType)return;
+	//if (m_flow != Flow::EndType)return;
 
 	if (m_ActionType & Player_ActionConText::ActionType::AttackType && !(m_target.lock()->GetConText()->GetBeforeActionType() & Player_ActionConText::ActionType::AttackType))
 	{

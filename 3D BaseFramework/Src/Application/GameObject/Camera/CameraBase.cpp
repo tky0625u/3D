@@ -37,16 +37,24 @@ void CameraBase::SlowChange(bool _slowFlg)
 {
 	if (_slowFlg)
 	{
-		if (m_ViewingAngle != 40)
+		if (m_ViewingAngle > 45)
 		{
-			m_ViewingAngle -= 5;
+			m_ViewingAngle -= 2;
+		}
+		else
+		{
+			m_ViewingAngle = 45;
 		}
 	}
 	else
 	{
-		if (m_ViewingAngle != 60)
+		if (m_ViewingAngle < 60)
 		{
-			m_ViewingAngle += 5;
+			m_ViewingAngle += 2;
+		}
+		else
+		{
+			m_ViewingAngle = 60;
 		}
 	}
 }

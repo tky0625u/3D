@@ -64,6 +64,7 @@ void Player_ActionState::AttackDamage()
 void Player_ActionState::Update()
 {
 	ActionBase::Update();
+	if (m_staminaRecoveryFlg)StaminaRecovery();
 	KeyCheck();
 	ChangeAction();
 	m_target.lock()->GetConText()->SetBeforeActionType(m_ActionType);
@@ -112,6 +113,18 @@ void Player_ActionState::KeyCheck()
 	else if (m_ActionType & Player_ActionConText::ActionType::RollType)
 	{
 		m_ActionType ^= Player_ActionConText::ActionType::RollType;
+	}
+}
+
+void Player_ActionState::StaminaRecovery()
+{
+	if (m_target.lock()->GetParam().Sm < m_target.lock()->GetMaxStamina())
+	{
+		m_target.lock()->GetParam().Sm++;
+	}
+	else
+	{
+		m_target.lock()->GetParam().Sm = m_target.lock()->GetMaxStamina();
 	}
 }
 

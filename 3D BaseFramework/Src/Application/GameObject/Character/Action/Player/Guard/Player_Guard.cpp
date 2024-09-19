@@ -127,5 +127,17 @@ void Player_Guard::Hit(std::shared_ptr<Player_ActionConText> context, int _damag
 		m_target.lock()->GetConText()->Parry(_enemy);
 		m_target.lock()->GetObjManager().lock()->SlowChange();
 	}
-	else { m_target.lock()->GetConText()->GuardReaction(); }
+	else 
+	{
+		m_target.lock()->GetParam().Sm -= _damage;
+		if (m_target.lock()->GetParam().Sm < 0)
+		{
+			m_target.lock()->GetParam().Sm = 0;
+			Player_ActionState::Hit(context);
+		}
+		else
+		{
+		m_target.lock()->GetConText()->GuardReaction();
+		}
+	}
 }

@@ -16,6 +16,7 @@ public:
 	void Update()override;
 	virtual void KeyCheck();
 	virtual void ChangeAction() {};
+	virtual void StaminaRecovery();
 
 	void SetActionType(UINT _ActionType) { m_ActionType = _ActionType; }
 	void SetTarget(std::shared_ptr<Player> target) { m_target = target; }
@@ -33,4 +34,5 @@ public:
 protected:
 	std::weak_ptr<Player> m_target;
 	UINT                  m_ActionType = 0;
+	bool                  m_staminaRecoveryFlg = true;
 };
