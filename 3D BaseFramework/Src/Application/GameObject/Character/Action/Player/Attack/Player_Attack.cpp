@@ -15,7 +15,7 @@ void Player_Attack::Center()
 		case 1:
 			if (m_target.lock()->GetAnime() != "Attack1")
 			{
-				m_target.lock()->SetAnime("Attack1", false, 1.5f);
+				m_target.lock()->SetAnime("Attack1", false, 0.1f);
 				return;
 			}
 			break;
@@ -97,6 +97,7 @@ void Player_Attack::ChangeAction()
 	else if (m_ActionType & Player_ActionConText::ActionType::AttackType && !(m_target.lock()->GetConText()->GetBeforeActionType() & Player_ActionConText::ActionType::AttackType))
 	{
 		m_atkNum++;
+		m_flow = Flow::CenterType;
 		if (m_atkNum > 3)m_atkNum = 1;
 	}
 	else if (m_ActionType & Player_ActionConText::ActionType::GuardType)
