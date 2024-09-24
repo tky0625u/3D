@@ -13,10 +13,15 @@ public:
 	void Center()      override;
 	void End()         override;
 
+	void Attack1();
+	void Attack2();
+	void Attack3();
+	void AttackDirCheck();
 	void ChangeAction()override;
 	void Init()        override;
 
 private:
+	Math::Vector3    m_AttackDir = Math::Vector3::Zero;
 	static const int AttackNUM = 3;
-	int m_atkNum = 1;
+	int              m_atkNum = 1;
 };

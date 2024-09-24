@@ -15,7 +15,7 @@ void Player_Attack::Center()
 		case 1:
 			if (m_target.lock()->GetAnime() != "Attack1")
 			{
-				m_target.lock()->SetAnime("Attack1", false, 0.1f);
+				m_target.lock()->SetAnime("Attack1", false, 1.5f);
 				return;
 			}
 			break;
@@ -25,6 +25,9 @@ void Player_Attack::Center()
 				m_target.lock()->SetAnime("Attack2", false, 1.5f);
 				return;
 			}
+
+			Attack2();
+
 			break;
 		case 3:
 			if (m_target.lock()->GetAnime() != "Attack3")
@@ -86,19 +89,72 @@ void Player_Attack::End()
 	}
 }
 
+void Player_Attack::Attack1()
+{
+}
+
+void Player_Attack::Attack2()
+{
+	if (m_target.expired() == false)Rotate(m_AttackDir, m_target.lock());
+	m_target.lock()->SetMove(m_AttackDir);
+}
+
+void Player_Attack::Attack3()
+{
+}
+
+void Player_Attack::AttackDirCheck()
+{
+	std::shared_ptr<CharacterBase> _player = nullptr;
+	if (m_target.expired() == false)_player = m_target.lock();
+	m_AttackDir = Math::Vector3::Zero;
+	if (GetAsyncKeyState('W') & 0x8000)
+	{
+		m_AttackDir.z = 1.0f;
+	}
+	if (GetAsyncKeyState('S') & 0x8000)
+	{
+		m_AttackDir.z = -1.0f;
+	}
+	if (GetAsyncKeyState('A') & 0x8000)
+	{
+		m_AttackDir.x = -1.0f;
+	}
+	if (GetAsyncKeyState('D') & 0x8000)
+	{
+		m_AttackDir.x = 1.0f;
+	}
+
+	if (m_AttackDir == Math::Vector3::Zero)
+	{
+		//今の方向
+		Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(_player->GetParam().Angle));
+		Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3(_player->GetParam().ForwardX, _player->GetParam().ForwardY, _player->GetParam().ForwardZ), nowRot);
+		m_AttackDir = nowVec;
+	}
+	else
+	{
+		Math::Matrix cameraRotYMat = Math::Matrix::Identity;
+		if (m_target.lock()->GetCamera().expired() == false)
+		{
+			cameraRotYMat = m_target.lock()->GetCamera().lock()->GetRotationYMatrix();
+		}
+		m_AttackDir = m_AttackDir.TransformNormal(m_AttackDir, cameraRotYMat);
+	}
+
+	m_AttackDir.Normalize(); //正規化
+}
+
 void Player_Attack::ChangeAction()
 {
 	if (m_flow != Flow::EndType)return;
 
-	if (m_ActionType & Player_ActionConText::ActionType::MoveType)
-	{
-		m_target.lock()->GetConText()->Run();
-	}
-	else if (m_ActionType & Player_ActionConText::ActionType::AttackType && !(m_target.lock()->GetConText()->GetBeforeActionType() & Player_ActionConText::ActionType::AttackType))
+	if (m_ActionType & Player_ActionConText::ActionType::AttackType && !(m_target.lock()->GetConText()->GetBeforeActionType() & Player_ActionConText::ActionType::AttackType))
 	{
 		m_atkNum++;
 		m_flow = Flow::CenterType;
 		if (m_atkNum > 3)m_atkNum = 1;
+		AttackDirCheck();
 	}
 	else if (m_ActionType & Player_ActionConText::ActionType::GuardType)
 	{
