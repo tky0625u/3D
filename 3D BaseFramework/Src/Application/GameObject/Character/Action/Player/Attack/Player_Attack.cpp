@@ -5,6 +5,24 @@
 #include"../../../Player/Player.h"
 #include"../Player_ConText.h"
 #include"../Player_ActionState.h"
+#include"../../../../Weapon/Sword/Sword.h"
+
+void Player_Attack::Start()
+{
+	if (m_target.expired())return;
+	if (m_target.lock()->GetSword().expired())return;
+
+	if (m_atkNum == 1 || m_atkNum == 2)
+	{
+		if (!AttackRangeCheck())
+		{
+			if (m_target.expired() == false)Rotate(m_AttackDir, m_target.lock(), 360.0f);
+		}
+	}
+
+	m_target.lock()->GetSword().lock()->MakeTraject();
+	m_flow = Flow::CenterType;
+}
 
 void Player_Attack::Center()
 {
@@ -18,6 +36,9 @@ void Player_Attack::Center()
 				m_target.lock()->SetAnime("Attack1", false, 1.5f);
 				return;
 			}
+
+			Attack1();
+
 			break;
 		case 2:
 			if (m_target.lock()->GetAnime() != "Attack2")
@@ -35,9 +56,27 @@ void Player_Attack::Center()
 				m_target.lock()->SetAnime("Attack3", false, 1.5f);
 				return;
 			}
+
+			Attack3();
+
+			break;
+		case 4:
+			if (m_target.lock()->GetAnime() != "Attack4")
+			{
+				m_target.lock()->SetAnime("Attack4", false, 2.0f);
+				return;
+			}
+
+			Attack4();
+
 			break;
 		default:
 			break;
+		}
+
+		if (m_target.lock()->GetSword().expired() == false)
+		{
+			m_target.lock()->GetSword().lock()->SetTrajectMat();
 		}
 
 		if (m_target.lock()->GetIsAnimator())
@@ -77,6 +116,13 @@ void Player_Attack::End()
 				return;
 			}
 			break;
+		case 4:
+			if (m_target.lock()->GetAnime() != "Attack4ToIdol")
+			{
+				m_target.lock()->SetAnime("Attack4ToIdol", false, 1.5f);
+				return;
+			}
+			break;
 		default:
 			break;
 		}
@@ -91,16 +137,24 @@ void Player_Attack::End()
 
 void Player_Attack::Attack1()
 {
+
 }
 
 void Player_Attack::Attack2()
 {
-	if (m_target.expired() == false)Rotate(m_AttackDir, m_target.lock());
-	m_target.lock()->SetMove(m_AttackDir);
+
 }
 
 void Player_Attack::Attack3()
 {
+	if (m_target.expired() == false)Rotate(m_AttackDir, m_target.lock());
+	m_target.lock()->SetMove(m_AttackDir, 2.5f);
+}
+
+void Player_Attack::Attack4()
+{
+	if (m_target.expired() == false)Rotate(m_AttackDir, m_target.lock());
+	m_target.lock()->SetMove(m_AttackDir, 2.5f);
 }
 
 void Player_Attack::AttackDirCheck()
@@ -152,8 +206,8 @@ void Player_Attack::ChangeAction()
 	if (m_ActionType & Player_ActionConText::ActionType::AttackType && !(m_target.lock()->GetConText()->GetBeforeActionType() & Player_ActionConText::ActionType::AttackType))
 	{
 		m_atkNum++;
-		m_flow = Flow::CenterType;
-		if (m_atkNum > 3)m_atkNum = 1;
+		m_flow = Flow::StartType;
+		if (m_atkNum > AttackNUM)m_atkNum = 1;
 		AttackDirCheck();
 	}
 	else if (m_ActionType & Player_ActionConText::ActionType::GuardType)
@@ -166,7 +220,45 @@ void Player_Attack::ChangeAction()
 	}
 }
 
-void Player_Attack::Init()
+bool Player_Attack::AttackRangeCheck()
 {
-	m_flow = Flow::CenterType;
+	if (m_target.expired())return false;
+
+	KdCollider::SphereInfo sphere;
+	sphere.m_sphere.Center = m_target.lock()->GetPos();
+	sphere.m_sphere.Radius = m_target.lock()->GetParam().AtkRange;
+	sphere.m_type = KdCollider::TypeSight;
+
+	std::shared_ptr<EnemyBase> _target = nullptr;
+	std::list<KdCollider::CollisionResult> retSphereList;
+	for (auto ret : m_target.lock()->GetObjManager().lock()->GetEnemyList())
+	{
+		if (ret.lock()->Intersects(sphere, &retSphereList));
+	}
+
+	bool          isHit      = false;
+	Math::Vector3 hitPos     = Math::Vector3::Zero;
+	float         maxOverLap = 0.0f;
+
+	for (auto& ret : retSphereList)
+	{
+		if (maxOverLap < ret.m_overlapDistance)
+		{
+			maxOverLap = ret.m_overlapDistance;
+			hitPos     = ret.m_hitPos;
+			isHit      = true;
+		}
+	}
+
+	if (isHit)
+	{
+		Math::Vector3 dir = hitPos - m_target.lock()->GetPos();
+		dir.y = 0.0f;
+		dir.Normalize();
+		Rotate(dir, m_target.lock(), 360.0f);
+		Math::Vector3 pos = hitPos - (dir * 4.0f);
+		m_target.lock()->SetPos(pos);
+	}
+
+	return isHit;
 }

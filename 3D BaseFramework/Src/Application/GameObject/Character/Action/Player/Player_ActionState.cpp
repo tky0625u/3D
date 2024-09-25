@@ -151,6 +151,8 @@ void Player_ActionState::Attack(std::shared_ptr<Player_ActionConText> context)
 	std::shared_ptr<Player_Attack> attack = std::make_shared<Player_Attack>();
 	if (m_target.expired())return;
 	attack->SetTarget(m_target.lock());
+	attack->AttackDirCheck();
+	attack->AttackRangeCheck();
 	context->SetState(attack);
 	m_target.lock()->SetNextState(attack);
 }

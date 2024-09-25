@@ -6,6 +6,7 @@ class CameraBase;
 class ActionBase;
 class Player_ActionConText;
 class Player_ActionState;
+class Player_UI_Manager;
 
 class Player :public CharacterBase, public std::enable_shared_from_this<Player>
 {
@@ -14,7 +15,9 @@ public:
 	~Player()        override {};
 
 	void Action()    override;
+	void Update()    override;
 	void PostUpdate()override;
+	void DrawSprite()override;
 	void Init()      override;
 
 	void CrushingAction()override;
@@ -31,6 +34,7 @@ private:
 	std::shared_ptr<Player_ActionConText> m_context        = nullptr;
 	std::weak_ptr<Player_ActionState>     m_state;
 	std::shared_ptr<Player_ActionState>   m_NextState;
+	std::shared_ptr<Player_UI_Manager>    m_ui             = nullptr;
 	float                                 m_FocusBackRange = 2000.0f;
 	int                                   m_MaxStamina     = 0;
 };

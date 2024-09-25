@@ -14,8 +14,6 @@ public:
 
 	void Update()        override;
 	virtual void Action()override;
-	void GenerateDepthMapFromLight() override;
-	void DrawLit()       override;
 	void DrawSprite()    override;
 	virtual void Init()  override;
 
@@ -37,5 +35,4 @@ protected:
 	std::weak_ptr<Enemy_ActionState> m_state;
 	std::shared_ptr<Enemy_ActionState> m_NextState;
 	float                 m_chaceRange = 0.0f;
-	float                 m_dossolve = 0.0f;
 };

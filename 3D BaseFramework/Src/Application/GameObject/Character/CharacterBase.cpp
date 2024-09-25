@@ -7,6 +7,7 @@ void CharacterBase::Update()
 {
 	m_dir = Math::Vector3::Zero;
 	float Move = 0.0f;
+	m_MoveSpeed = 0.0f;
 
 	if (m_param.Hp <= 0)
 	{
@@ -28,9 +29,13 @@ void CharacterBase::Update()
 	{
 		_slow = m_ObjManager.lock()->GetSlow();
 	}
+	if (m_MoveSpeed == 0.0f)
+	{
+		m_MoveSpeed = m_param.Sp;
+	}
 	m_gravity += m_gravityPow * _slow;
 	m_pos.y -= m_gravity;
-	Move = m_param.Sp * m_SpeedCorrection * _slow;
+	Move = m_MoveSpeed * m_SpeedCorrection * _slow;
 	m_pos += Move * m_dir; //座標更新
 
 	//ワールド行列更新
@@ -145,11 +150,16 @@ void CharacterBase::PostUpdate()
 
 void CharacterBase::GenerateDepthMapFromLight()
 {
+	KdShaderManager::Instance().m_StandardShader.SetDissolve(m_dossolve);
+
 	KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
 }
 
 void CharacterBase::DrawLit()
 {
+	Math::Vector3 _color = { 1,0.5f,0 };
+	KdShaderManager::Instance().m_StandardShader.SetDissolve(m_dossolve, nullptr, &_color);
+
 	//オブジェクトを裏返す==========================================================
 	KdShaderManager::Instance().ChangeRasterizerState(KdRasterizerState::CullNone);
 
@@ -178,7 +188,8 @@ void CharacterBase::CrushingAction()
 		m_animeFlg = false;
 		m_animeSpeed = 1.0f;
 	}
-	else if(m_animator->IsAnimationEnd() && !IsExpired())m_isExpired = true;
+
+	m_dossolve += 0.01f;
 }
 
 void CharacterBase::SetParam(int _hp, int _atk, float _speed, int _stamina, float _angle, float _size, float _atkRange, Math::Vector3 _forword)

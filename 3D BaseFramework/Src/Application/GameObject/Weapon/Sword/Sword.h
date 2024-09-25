@@ -27,7 +27,7 @@ private:
 		Math::Matrix                    m_trajectMat;
 	};
 
-	std::vector<Traject>        m_trajectList;
+	std::vector<std::vector<Traject>> m_trajectList;
 	std::shared_ptr<KdTexture>  m_trajeTex      = nullptr;
 	int                         m_trajePointNUM = 0;
 };

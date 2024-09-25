@@ -58,7 +58,11 @@ public:
 																			m_animeFlg = animeFlg;
 																			m_animeSpeed = animeSpeed;
 																		  }
-	void SetMove(Math::Vector3 dir){m_dir = dir;}
+	void SetMove(Math::Vector3 dir,float _moveSpeed=0.0f)
+	{
+		m_dir = dir;
+		m_MoveSpeed = _moveSpeed;
+	}
 	void SetSword(std::shared_ptr<Sword> _sword) { m_sword = _sword; }
 	void SetStopTime(int _stopTime) { m_StopTime = _stopTime; }
 	void SetObjManager(std::shared_ptr<ObjectManager> _ObjManager) { m_ObjManager = _ObjManager; }
@@ -85,6 +89,8 @@ protected:
 	Math::Vector3                m_dir             = Math::Vector3::Zero;
 	float                        m_gravity         = 0.0f;
 	float                        m_animeSpeed      = 1.0f;
+	float                        m_MoveSpeed       = 0.0f;
+	float                        m_dossolve        = 0.0f;
 	const float                  m_SpeedCorrection = 0.2f;
 	const float                  m_gravityPow      = 0.1f;
 	bool                         m_atkFlg          = false;

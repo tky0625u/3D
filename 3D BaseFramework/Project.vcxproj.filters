@@ -175,6 +175,12 @@
     <Filter Include="Src\Application\GameObject\UI\Enemy">
       <UniqueIdentifier>{24af49a0-c4e0-4162-ac13-55d83ea7945b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\UI\Player\HP">
+      <UniqueIdentifier>{e84682f5-b9d5-4399-b9ab-3bb67718f1ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\UI\Player\Stamina">
+      <UniqueIdentifier>{e31ca73f-9dfb-441d-8ba2-4c4d81cb70ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -447,6 +453,18 @@
     <ClInclude Include="Src\Application\GameObject\UI\Enemy\Enemy_UI.h">
       <Filter>Src\Application\GameObject\UI\Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\UI\Player\Player_UI_Manager.h">
+      <Filter>Src\Application\GameObject\UI\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\UI\UIBase.h">
+      <Filter>Src\Application\GameObject\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\UI\Player\HP\Player_HP.h">
+      <Filter>Src\Application\GameObject\UI\Player\HP</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\UI\Player\Stamina\Player_Stamina.h">
+      <Filter>Src\Application\GameObject\UI\Player\Stamina</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -685,6 +703,18 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\UI\Enemy\Enemy_UI.cpp">
       <Filter>Src\Application\GameObject\UI\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\UI\Player\Player_UI_Manager.cpp">
+      <Filter>Src\Application\GameObject\UI\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\UI\UIBase.cpp">
+      <Filter>Src\Application\GameObject\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\UI\Player\HP\Player_HP.cpp">
+      <Filter>Src\Application\GameObject\UI\Player\HP</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\UI\Player\Stamina\Player_Stamina.cpp">
+      <Filter>Src\Application\GameObject\UI\Player\Stamina</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

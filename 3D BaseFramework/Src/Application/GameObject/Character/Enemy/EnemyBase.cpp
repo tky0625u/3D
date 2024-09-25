@@ -22,18 +22,6 @@ void EnemyBase::Action()
 	if (m_state.expired() == false)m_state.lock()->Update();
 }
 
-void EnemyBase::GenerateDepthMapFromLight()
-{
-	KdShaderManager::Instance().m_StandardShader.SetDissolve(m_dossolve);
-	CharacterBase::GenerateDepthMapFromLight();
-}
-
-void EnemyBase::DrawLit()
-{
-	KdShaderManager::Instance().m_StandardShader.SetDissolve(m_dossolve);
-	CharacterBase::DrawLit();
-}
-
 void EnemyBase::DrawSprite()
 {
 	m_ui->DrawSprite();
@@ -47,7 +35,7 @@ void EnemyBase::Init()
 	m_mWorld = Trans;
 
 	m_pCollider = std::make_unique<KdCollider>();
-	m_pCollider->RegisterCollisionShape("Enemy", m_model, KdCollider::TypeDamage | KdCollider::TypeBump);
+	m_pCollider->RegisterCollisionShape("Enemy", m_model, KdCollider::TypeDamage | KdCollider::TypeBump | KdCollider::TypeSight);
 
 	m_ObjType = ObjType::oEnemy;
 
@@ -59,14 +47,8 @@ void EnemyBase::Init()
 
 void EnemyBase::CrushingAction()
 {
-	if (m_anime != "Death")
-	{
-		m_anime = "Death";
-		m_animeFlg = false;
-		m_animeSpeed = 1.0f;
-	}
+	CharacterBase::CrushingAction();
 
-	m_dossolve+=0.01f;
 	if (m_dossolve >= 1.0f)
 	{
 		m_isExpired = true;

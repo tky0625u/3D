@@ -26,7 +26,7 @@ public:
 	virtual void Center()  {};
 	virtual void End()     {};
 
-	void Rotate(Math::Vector3 _moveDir, std::shared_ptr<CharacterBase> _target);
+	void Rotate(Math::Vector3 _moveDir, std::shared_ptr<CharacterBase> _target, float _angChange = 10.0f);
 
 protected:
 	UINT m_flow      = Flow::StartType;

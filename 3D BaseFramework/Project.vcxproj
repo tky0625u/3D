@@ -188,6 +188,10 @@
     <ClInclude Include="Src\Application\GameObject\Stage\Stage.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Wall\Wall.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Enemy\Enemy_UI.h" />
+    <ClInclude Include="Src\Application\GameObject\UI\Player\HP\Player_HP.h" />
+    <ClInclude Include="Src\Application\GameObject\UI\Player\Player_UI_Manager.h" />
+    <ClInclude Include="Src\Application\GameObject\UI\Player\Stamina\Player_Stamina.h" />
+    <ClInclude Include="Src\Application\GameObject\UI\UIBase.h" />
     <ClInclude Include="Src\Application\GameObject\Weapon\Shield\Shield.h" />
     <ClInclude Include="Src\Application\GameObject\Weapon\Sword\Sword.h" />
     <ClInclude Include="Src\Application\GameObject\Weapon\WeaponBase.h" />
@@ -271,6 +275,10 @@
     <ClCompile Include="Src\Application\GameObject\Stage\Stage.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Wall\Wall.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Enemy\Enemy_UI.cpp" />
+    <ClCompile Include="Src\Application\GameObject\UI\Player\HP\Player_HP.cpp" />
+    <ClCompile Include="Src\Application\GameObject\UI\Player\Player_UI_Manager.cpp" />
+    <ClCompile Include="Src\Application\GameObject\UI\Player\Stamina\Player_Stamina.cpp" />
+    <ClCompile Include="Src\Application\GameObject\UI\UIBase.cpp" />
     <ClCompile Include="Src\Application\GameObject\Weapon\Shield\Shield.cpp" />
     <ClCompile Include="Src\Application\GameObject\Weapon\Sword\Sword.cpp" />
     <ClCompile Include="Src\Application\GameObject\Weapon\WeaponBase.cpp" />

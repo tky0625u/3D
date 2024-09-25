@@ -59,5 +59,5 @@ void Player_Roll::Roll()
 	dir = nowVec;
 	dir.Normalize();
 
-	player->SetMove(dir);
+	player->SetMove(dir, 2.5f);
 }

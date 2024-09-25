@@ -1,7 +1,7 @@
 ﻿#include "ActionBase.h"
 #include"../CharacterBase.h"
 
-void ActionBase::Rotate(Math::Vector3 _moveDir, std::shared_ptr<CharacterBase> _target)
+void ActionBase::Rotate(Math::Vector3 _moveDir, std::shared_ptr<CharacterBase> _target, float _angChange)
 {
 
 	//今の方向
@@ -22,9 +22,9 @@ void ActionBase::Rotate(Math::Vector3 _moveDir, std::shared_ptr<CharacterBase> _
 	//角度変更
 	if (ang >= 0.1f)
 	{
-		if (ang > 10)
+		if (ang > _angChange)
 		{
-			ang = 10.0f; //変更角度
+			ang = _angChange; //変更角度
 		}
 
 		//外角　どっち回転かを求める
