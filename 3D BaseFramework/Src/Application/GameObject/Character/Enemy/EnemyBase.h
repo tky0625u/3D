@@ -35,4 +35,5 @@ protected:
 	std::weak_ptr<Enemy_ActionState> m_state;
 	std::shared_ptr<Enemy_ActionState> m_NextState;
 	float                 m_chaceRange = 0.0f;
+	bool                  m_EffectFlg = false;
 };

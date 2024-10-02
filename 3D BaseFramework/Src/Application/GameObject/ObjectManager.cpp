@@ -170,6 +170,7 @@ void ObjectManager::SetPlayerParam()
 		m_id++;
 
 		SceneManager::Instance().AddObject(camera);
+		KdEffekseerManager::GetInstance().SetCamera(camera->GetCamera());
 	}
 
 	ifs.close();

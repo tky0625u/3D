@@ -26,4 +26,6 @@ void GameScene::Init()
 	m_ObjManager->SetObjectParam();
 	m_ObjManager->SetPlayerParam();
 	m_ObjManager->SetEnemyParam("Stage1");
+
+	KdEffekseerManager::GetInstance().Create(1280, 720);
 }
