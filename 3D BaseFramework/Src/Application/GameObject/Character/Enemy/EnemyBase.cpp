@@ -10,12 +10,6 @@ void EnemyBase::Update()
 	CharacterBase::Update();
 
 	m_ui->Update();
-	
-	if (!m_EffectFlg)
-	{
-		KdEffekseerManager::GetInstance().Play("Enemy/MagicDrak.efkefc", GetPos(), 3.0f, 1.0f, true);
-		m_EffectFlg = true;
-	}
 }
 
 void EnemyBase::Action()

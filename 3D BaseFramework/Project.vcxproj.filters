@@ -181,6 +181,9 @@
     <Filter Include="Src\Application\GameObject\UI\Player\Stamina">
       <UniqueIdentifier>{e31ca73f-9dfb-441d-8ba2-4c4d81cb70ff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal">
+      <UniqueIdentifier>{a335f648-2bb7-4090-b39d-d6bacf9e2a72}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -465,6 +468,9 @@
     <ClInclude Include="Src\Application\GameObject\UI\Player\Stamina\Player_Stamina.h">
       <Filter>Src\Application\GameObject\UI\Player\Stamina</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal\Bone_Appeal.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -715,6 +721,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\UI\Player\Stamina\Player_Stamina.cpp">
       <Filter>Src\Application\GameObject\UI\Player\Stamina</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal\Bone_Appeal.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

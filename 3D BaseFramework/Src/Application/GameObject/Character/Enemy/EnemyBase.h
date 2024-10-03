@@ -29,11 +29,11 @@ public:
 	Math::Matrix GetHPMat()const { return m_model->FindWorkNode("HP")->m_worldTransform * m_mWorld; }
 
 protected:
-	std::shared_ptr<Enemy_UI>      m_ui = nullptr;
-	std::shared_ptr<Enemy_ConText> m_conText = nullptr;
+	std::shared_ptr<Enemy_UI>          m_ui = nullptr;
+	std::shared_ptr<Enemy_ConText>     m_conText = nullptr;
 	std::weak_ptr<Player> m_player;
-	std::weak_ptr<Enemy_ActionState> m_state;
+	std::weak_ptr<Enemy_ActionState>   m_state;
 	std::shared_ptr<Enemy_ActionState> m_NextState;
-	float                 m_chaceRange = 0.0f;
-	bool                  m_EffectFlg = false;
+	std::weak_ptr<KdEffekseerObject>   m_Effect;
+	float                              m_chaceRange = 0.0f;
 };

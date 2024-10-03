@@ -74,6 +74,7 @@ public:
 	Math::Matrix GetShieldMat() { return m_model->FindWorkNode("shield.L")->m_localTransform * m_model->FindWorkNode("forearm.L")->m_worldTransform * (Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_param.Angle)) * (Math::Matrix::CreateTranslation(m_mWorld.Translation()))); }
 	std::weak_ptr<Sword> GetSword() { return m_sword; }
 	std::weak_ptr<ObjectManager> GetObjManager() { return m_ObjManager; }
+	Math::Vector3 GetPos()const override { return m_pos; }
 
 protected:
 	Param                        m_param;

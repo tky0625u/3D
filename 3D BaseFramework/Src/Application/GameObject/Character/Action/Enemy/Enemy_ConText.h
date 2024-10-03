@@ -1,8 +1,6 @@
 ﻿#pragma once
 #include"Enemy_ActionState.h"
 
-class Player;
-
 class Enemy_ConText :public std::enable_shared_from_this<Enemy_ConText>
 {
 public:
@@ -13,6 +11,7 @@ public:
 
 	std::shared_ptr<Enemy_ActionState> GetState()const { return m_state; }
 
+	void Appeal() { m_state->Appeal(shared_from_this()); }  //アピール
 	void Idol()   { m_state->Idol(shared_from_this()); }    //待ち
 	void Run()    { m_state->Run(shared_from_this()); }     //走り
 	void Attack() { m_state->Attack(shared_from_this()); }  //攻撃

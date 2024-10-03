@@ -159,6 +159,7 @@
     <ClInclude Include="Src\Application\GameObject\Camera\CameraBase.h" />
     <ClInclude Include="Src\Application\GameObject\Camera\TPSCamera\TPSCamera.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\ActionBase.h" />
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal\Bone_Appeal.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Attack\Bone_Attack.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Bone_ActionState.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Hit\Bone_Hit.h" />
@@ -248,6 +249,7 @@
     <ClCompile Include="Src\Application\GameObject\Camera\CameraBase.cpp" />
     <ClCompile Include="Src\Application\GameObject\Camera\TPSCamera\TPSCamera.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\ActionBase.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal\Bone_Appeal.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Attack\Bone_Attack.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Bone_ActionState.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Hit\Bone_Hit.cpp" />
