@@ -13,9 +13,7 @@ void Bone_Appeal::Start()
 			return;
 		}
 
-		if (m_Effect.expired())return;
-
-		if (m_target.lock()->GetIsAnimator() && !m_Effect.lock()->IsPlaying())
+		if (m_target.lock()->GetIsAnimator() && (m_Effect.expired() || !m_Effect.lock()->IsPlaying()))
 		{
 			m_target.lock()->GetConText()->Idol();
 			return;
