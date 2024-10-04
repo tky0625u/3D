@@ -86,7 +86,7 @@ void Bone_Attack::Attack()
 		sphereInfo.m_sphere.Center = m_target.lock()->GetSwordMat().Translation();
 		sphereInfoList.push_back(sphereInfo);
 	}
-	sphereInfo.m_sphere.Radius = 0.8f;
+	sphereInfo.m_sphere.Radius = 1.0f;
 	sphereInfo.m_type = KdCollider::TypeDamage;
 
 	for (int i = 0; i < sphereInfoList.size(); ++i)

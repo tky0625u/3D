@@ -17,6 +17,9 @@ public:
 	void SetWeaponParam(std::string _filePath, int _id);
 	void SetEnemyParam(std::string _StageNum);
 
+	// デバッグ
+	void AddBone();
+
 	std::vector<std::weak_ptr<EnemyBase>> GetEnemyList()const { return m_EnemyList; }
 	float GetSlow()const { return m_slow; }
 	bool GetSlowFlg()const { return m_slowFlg; }

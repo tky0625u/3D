@@ -312,3 +312,50 @@ void ObjectManager::SetEnemyParam(std::string _StageNum)
 
 	ifs.close();
 }
+
+void ObjectManager::AddBone()
+{
+
+		//Math::Vector3 _pos = Math::Vector3::Zero;
+		//float _size = 0.0f;
+		//float _angleY = 0.0f;
+		//int _hp = 1;
+
+		//int _atk = 0;
+		//_atk = stage["ATK"];
+
+		//float _speed = 0.0f;
+		//_speed = stage["Speed"];
+
+		//int _stamina = 0;
+		//_stamina = stage["Stamina"];
+
+		//float _atkRange = 0.0f;
+		//_atkRange = stage["ATKRange"];
+
+		//Math::Vector3 _forword = Math::Vector3::Zero;
+		//_forword.x = stage["ForwordX"];
+		//_forword.y = stage["ForwordY"];
+		//_forword.z = stage["ForwordZ"];
+
+		//float _chaseRange = 0.0f;
+		//_chaseRange = stage["ChaseRange"];
+
+		//std::shared_ptr<EnemyBase> enemy = nullptr;
+		//if (stage["Name"] == "Bone")enemy = std::make_shared<Bone>();
+		//if (m_player.expired() == false)
+		//{
+		//	enemy->SetPlayer(m_player.lock());
+		//}
+		//enemy->SetParam(_hp, _atk, _speed, _stamina, _angleY, _size, _atkRange, _forword);
+		//enemy->Init();
+		//enemy->SetPos(_pos);
+		//enemy->SetChaseRange(_chaseRange);
+		//enemy->SetID(m_id);
+		//enemy->SetObjManager(shared_from_this());
+		//m_id++;
+
+		//SceneManager::Instance().AddObject(enemy);
+		//m_EnemyList.push_back(enemy);
+
+}

@@ -16,7 +16,7 @@ void GameScene::Event()
 	m_ObjManager->DeleteEnemyList();
 
 	//デバッグ用
-	Application::Instance().m_log.AddLog("m_EnemyList=%d\n", m_ObjManager->GetEnemyList().size());
+	//Application::Instance().m_log.AddLog("m_EnemyList=%d\n", m_ObjManager->GetEnemyList().size());
 }
 
 void GameScene::Init()

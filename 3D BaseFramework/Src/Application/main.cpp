@@ -358,7 +358,7 @@ void Application::ImGuiInit()
 
 void Application::ImGuiProcess()
 {
-	return;
+	//return;
 
 	//===========================================================
 	// ImGui開始
@@ -372,12 +372,27 @@ void Application::ImGuiProcess()
 	//===========================================================
 
 	// デバッグウィンドウ
-	//if (ImGui::Begin("Debug Window"))
-	//{
-	//	// FPS
-	//	ImGui::Text("FPS : %d", m_fpsController.m_nowfps);
-	//}
-	//ImGui::End();
+	if (ImGui::Begin("Debug Window"))
+	{
+		// FPS
+		//ImGui::Text("FPS : %d", m_fpsController.m_nowfps);
+
+		if (ImGui::TreeNode("Enemy"))
+		{
+			if (ImGui::TreeNode("Bone"))
+			{
+				if (ImGui::Button((const char*)u8"Bone追加"))
+				{
+
+				}
+
+				ImGui::TreePop();
+			}
+
+			ImGui::TreePop();
+		}
+	}
+	ImGui::End();
 
 	// ログウィンドウ
 	m_log.Draw("Log Window");

@@ -17,13 +17,12 @@ public:
 	void Attack1();
 	void Attack2();
 	void Attack3();
-	void Attack4();
 	void AttackDirCheck();
 	void ChangeAction()override;
 	bool AttackRangeCheck();
 
 private:
 	Math::Vector3    m_AttackDir = Math::Vector3::Zero;
-	static const int AttackNUM = 4;
+	static const int AttackNUM = 3;
 	int              m_atkNum = 1;
 };

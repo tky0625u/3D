@@ -43,7 +43,7 @@ void Player_Attack::Center()
 		case 2:
 			if (m_target.lock()->GetAnime() != "Attack2")
 			{
-				m_target.lock()->SetAnime("Attack2", false, 1.5f);
+				m_target.lock()->SetAnime("Attack2", false, 2.5f);
 				return;
 			}
 
@@ -58,16 +58,6 @@ void Player_Attack::Center()
 			}
 
 			Attack3();
-
-			break;
-		case 4:
-			if (m_target.lock()->GetAnime() != "Attack4")
-			{
-				m_target.lock()->SetAnime("Attack4", false, 2.0f);
-				return;
-			}
-
-			Attack4();
 
 			break;
 		default:
@@ -98,28 +88,21 @@ void Player_Attack::End()
 		case 1:
 			if (m_target.lock()->GetAnime() != "Attack1ToIdol")
 			{
-				m_target.lock()->SetAnime("Attack1ToIdol", false, 1.5f);
+				m_target.lock()->SetAnime("Attack1ToIdol", false, 1.0f);
 				return;
 			}
 			break;
 		case 2:
 			if (m_target.lock()->GetAnime() != "Attack2ToIdol")
 			{
-				m_target.lock()->SetAnime("Attack2ToIdol", false, 1.5f);
+				m_target.lock()->SetAnime("Attack2ToIdol", false, 1.0f);
 				return;
 			}
 			break;
 		case 3:
 			if (m_target.lock()->GetAnime() != "Attack3ToIdol")
 			{
-				m_target.lock()->SetAnime("Attack3ToIdol", false, 1.5f);
-				return;
-			}
-			break;
-		case 4:
-			if (m_target.lock()->GetAnime() != "Attack4ToIdol")
-			{
-				m_target.lock()->SetAnime("Attack4ToIdol", false, 1.5f);
+				m_target.lock()->SetAnime("Attack3ToIdol", false, 1.0f);
 				return;
 			}
 			break;
@@ -137,24 +120,18 @@ void Player_Attack::End()
 
 void Player_Attack::Attack1()
 {
-
+	
 }
 
 void Player_Attack::Attack2()
 {
-
+	m_target.lock()->SetMove(m_AttackDir, 1.0f);
 }
 
 void Player_Attack::Attack3()
 {
 	if (m_target.expired() == false)Rotate(m_AttackDir, m_target.lock());
-	m_target.lock()->SetMove(m_AttackDir, 2.5f);
-}
-
-void Player_Attack::Attack4()
-{
-	if (m_target.expired() == false)Rotate(m_AttackDir, m_target.lock());
-	m_target.lock()->SetMove(m_AttackDir, 2.5f);
+	m_target.lock()->SetMove(m_AttackDir, 1.5f);
 }
 
 void Player_Attack::AttackDirCheck()
@@ -257,6 +234,7 @@ bool Player_Attack::AttackRangeCheck()
 		dir.Normalize();
 		Rotate(dir, m_target.lock(), 360.0f);
 		Math::Vector3 pos = hitPos - (dir * 4.0f);
+		pos.y = 0.0f;
 		m_target.lock()->SetPos(pos);
 	}
 

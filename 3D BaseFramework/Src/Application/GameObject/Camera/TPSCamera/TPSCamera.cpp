@@ -23,7 +23,17 @@ void TPSCamera::PostUpdate()
 		m_targetPos = _targetMat.Translation();
 	}
 
-	UpdateRotateByMouse();
+	// デバッグ
+	if (!(GetAsyncKeyState(VK_LSHIFT) & 0x8000))
+	{
+		UpdateRotateByMouse();
+		ShowCursor(false);
+	}
+	else
+	{
+		ShowCursor(true);
+	}
+
 	m_mRotation = GetRotationMatrix();
 	m_mWorld = m_mLocalPos * m_mRotation * _targetMat;
 
