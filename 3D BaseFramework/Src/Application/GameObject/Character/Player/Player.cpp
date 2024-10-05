@@ -25,9 +25,9 @@ void Player::Update()
 void Player::PostUpdate()
 {
 	CharacterBase::PostUpdate();
-	m_camera.lock()->SlowChange(m_ObjManager.lock()->GetSlowFlg());
+	m_camera.lock()->SlowChange(ObjectManager::Instance().GetSlowFlg());
 
-	if (m_ObjManager.lock()->GetSlowFlg())
+	if (ObjectManager::Instance().GetSlowFlg())
 	{
 		if (m_FocusBackRange != 10.0f)m_FocusBackRange = 10.0f;
 	}

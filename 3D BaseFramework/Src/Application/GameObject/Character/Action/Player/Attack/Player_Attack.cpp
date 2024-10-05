@@ -208,7 +208,7 @@ bool Player_Attack::AttackRangeCheck()
 
 	std::shared_ptr<EnemyBase> _target = nullptr;
 	std::list<KdCollider::CollisionResult> retSphereList;
-	for (auto ret : m_target.lock()->GetObjManager().lock()->GetEnemyList())
+	for (auto ret : ObjectManager::Instance().GetEnemyList())
 	{
 		if (ret.lock()->Intersects(sphere, &retSphereList));
 	}

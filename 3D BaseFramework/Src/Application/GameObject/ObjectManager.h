@@ -6,8 +6,6 @@ class EnemyBase;
 class ObjectManager:public std::enable_shared_from_this<ObjectManager>
 {
 public:
-	ObjectManager() {};
-	~ObjectManager() {};
 
 	void DeleteEnemyList();
 	void SlowChange();
@@ -30,4 +28,15 @@ private:
 	float                                 m_slow = 1.0f;
 	bool                                  m_slowFlg = false;
 	std::vector<std::weak_ptr<EnemyBase>> m_EnemyList;
+
+private:
+	ObjectManager() {};
+	~ObjectManager() {};
+
+public:
+	static ObjectManager& Instance()
+	{
+		static ObjectManager instance;
+		return instance;
+	}
 };

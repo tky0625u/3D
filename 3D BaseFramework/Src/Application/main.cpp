@@ -1,6 +1,7 @@
 ﻿#include "main.h"
 
 #include "Scene/SceneManager.h"
+#include"GameObject/ObjectManager.h"
 
 // ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
 // エントリーポイント
@@ -232,6 +233,7 @@ void Application::Execute()
 	SceneManager::Instance();
 	SceneManager::Instance().Init();
 
+	ObjectManager::Instance();
 
 	// ループ
 	while (1)
@@ -383,10 +385,24 @@ void Application::ImGuiProcess()
 			{
 				if (ImGui::Button((const char*)u8"Bone追加"))
 				{
-
+					ObjectManager::Instance().AddBone();
 				}
 
 				ImGui::TreePop();
+			}
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNode((const char*)u8"シーン切替"))
+		{
+			if (ImGui::Button("Title"))
+			{
+				SceneManager::Instance().SetNextScene(SceneManager::SceneType::Title);
+			}
+			if (ImGui::Button("Game"))
+			{
+				SceneManager::Instance().SetNextScene(SceneManager::SceneType::Game);
 			}
 
 			ImGui::TreePop();
@@ -396,6 +412,7 @@ void Application::ImGuiProcess()
 
 	// ログウィンドウ
 	m_log.Draw("Log Window");
+	m_log.AddLog("m_EnemyList=%d\n", ObjectManager::Instance().GetEnemyList().size());
 
 	//=====================================================
 	// ログ出力 ・・・ AddLog("～") で追加

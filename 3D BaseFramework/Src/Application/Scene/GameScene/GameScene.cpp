@@ -10,10 +10,10 @@ void GameScene::Event()
 	//デバッグ用
 	if (GetAsyncKeyState('E') & 0x8000)
 	{
-		m_ObjManager->SetEnemyParam("Stage1");
+		ObjectManager::Instance().AddBone();
 	}
 
-	m_ObjManager->DeleteEnemyList();
+	ObjectManager::Instance().DeleteEnemyList();
 
 	//デバッグ用
 	//Application::Instance().m_log.AddLog("m_EnemyList=%d\n", m_ObjManager->GetEnemyList().size());
@@ -22,10 +22,9 @@ void GameScene::Event()
 void GameScene::Init()
 {
 	//オブジェクトマネジャ
-	m_ObjManager = std::make_shared<ObjectManager>();
-	m_ObjManager->SetObjectParam();
-	m_ObjManager->SetPlayerParam();
-	m_ObjManager->SetEnemyParam("Stage1");
+	ObjectManager::Instance().SetObjectParam();
+	ObjectManager::Instance().SetPlayerParam();
+	ObjectManager::Instance().SetEnemyParam("Stage1");
 
 	KdEffekseerManager::GetInstance().Create(1280, 720);
 }

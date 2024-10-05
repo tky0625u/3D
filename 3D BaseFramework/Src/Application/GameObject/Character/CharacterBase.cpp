@@ -25,10 +25,8 @@ void CharacterBase::Update()
 	}
 
 	float _slow = 1.0f;
-	if (m_ObjManager.expired() == false)
-	{
-		_slow = m_ObjManager.lock()->GetSlow();
-	}
+
+	_slow = ObjectManager::Instance().GetSlow();
 	if (m_MoveSpeed == 0.0f)
 	{
 		m_MoveSpeed = m_param.Sp;
@@ -139,10 +137,7 @@ void CharacterBase::PostUpdate()
 		m_beforeAnime = m_anime;
 	}
 	float _slow = 1.0f;
-	if (m_ObjManager.expired() == false)
-	{
-		_slow = m_ObjManager.lock()->GetSlow();
-	}
+	_slow = ObjectManager::Instance().GetSlow();
 	m_animator->AdvanceTime(m_model->WorkNodes(), m_animeSpeed * _slow);
 	m_model->CalcNodeMatrices();
 
