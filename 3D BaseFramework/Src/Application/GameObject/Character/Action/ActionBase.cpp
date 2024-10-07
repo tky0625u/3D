@@ -29,23 +29,28 @@ void ActionBase::Rotate(Math::Vector3 _moveDir, std::shared_ptr<CharacterBase> _
 
 		//外角　どっち回転かを求める
 		Math::Vector3 c = toVec.Cross(nowVec);
+		float angle = _target->GetParam().Angle;
 		if (c.y >= 0)
 		{
 			//右回転
-			_target->GetParam().Angle -= ang;
-			if (_target->GetParam().Angle < 0.0f)
+			angle -= ang;
+			if (angle < 0.0f)
 			{
-				_target->GetParam().Angle += 360.0f;
+				angle += 360.0f;
 			}
+
+			_target->SetAngle(angle);
 		}
 		else
 		{
 			//左回転
-			_target->GetParam().Angle += ang;
+			angle += ang;
 			if (_target->GetParam().Angle >= 360.0f)
 			{
-				_target->GetParam().Angle -= 360.0f;
+				angle -= 360.0f;
 			}
+
+			_target->SetAngle(angle);
 		}
 	}
 }

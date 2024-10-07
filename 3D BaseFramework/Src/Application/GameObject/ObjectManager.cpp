@@ -123,6 +123,11 @@ void ObjectManager::SetPlayerParam()
 		_pos.y = stage["PosY"];
 		_pos.z = stage["PosZ"];
 
+		Math::Vector3 _dir = Math::Vector3::Zero;
+		_dir.x = stage["DirX"];
+		_dir.y = stage["DirY"];
+		_dir.z = stage["DirZ"];
+
 		float _size = 0.0f;
 		_size = stage["Size"];
 
@@ -152,7 +157,7 @@ void ObjectManager::SetPlayerParam()
 		std::shared_ptr<Player> player = std::make_shared<Player>();
 		std::shared_ptr<TPSCamera> camera = std::make_shared<TPSCamera>();
 		player->SetCamera(camera);
-		player->SetParam(_hp, _atk, _speed, _stamina, _angleY, _size, _atkRange, _forword);
+		player->SetParam(_hp, _atk, _speed, _stamina, _pos, _dir, _angleY, _size, _atkRange, _forword);
 		player->Init();
 		player->SetPos(_pos);
 		player->SetID(m_id);
@@ -231,7 +236,7 @@ void ObjectManager::SetWeaponParam(std::string _filePath,int _id)
 		if (m_player.expired() == false)
 		{
 			weapon->SetTarget(m_player.lock());
-			if (weaponATK != 0)m_player.lock()->GetParam().Atk = stage["ATK"];
+			if (weaponATK != 0)m_player.lock()->SetATK(stage["ATK"]);
 		}
 		weapon->SetID(m_id);
 		m_id++;
@@ -261,6 +266,11 @@ void ObjectManager::SetEnemyParam(std::string _StageNum)
 		_pos.x = stage["PosX"];
 		_pos.y = stage["PosY"];
 		_pos.z = stage["PosZ"];
+
+		Math::Vector3 _dir = Math::Vector3::Zero;
+		_dir.x = stage["DirX"];
+		_dir.y = stage["DirY"];
+		_dir.z = stage["DirZ"];
 
 		float _size = 0.0f;
 		_size = stage["Size"];
@@ -297,7 +307,7 @@ void ObjectManager::SetEnemyParam(std::string _StageNum)
 		{
 			enemy->SetPlayer(m_player.lock());
 		}
-		enemy->SetParam(_hp, _atk, _speed, _stamina, _angleY, _size, _atkRange, _forword);
+		enemy->SetParam(_hp, _atk, _speed, _stamina, _pos, _dir, _angleY, _size, _atkRange, _forword);
 		enemy->Init();
 		enemy->SetPos(_pos);
 		enemy->SetChaseRange(_chaseRange);
@@ -314,6 +324,7 @@ void ObjectManager::SetEnemyParam(std::string _StageNum)
 void ObjectManager::AddBone()
 {
 		Math::Vector3 _pos = Math::Vector3::Zero;
+		Math::Vector3 _dir = Math::Vector3::Zero;
 		float _size = 1.5f;
 		float _angleY = 180.0f;
 		int _hp = 10;
@@ -331,9 +342,8 @@ void ObjectManager::AddBone()
 		{
 			enemy->SetPlayer(m_player.lock());
 		}
-		enemy->SetParam(_hp, _atk, _speed, _stamina, _angleY, _size, _atkRange, _forword);
+		enemy->SetParam(_hp, _atk, _speed, _stamina, _pos, _dir, _angleY, _size, _atkRange, _forword);
 		enemy->Init();
-		enemy->SetPos(_pos);
 		enemy->SetChaseRange(_chaseRange);
 		enemy->SetID(m_id);
 		m_id++;

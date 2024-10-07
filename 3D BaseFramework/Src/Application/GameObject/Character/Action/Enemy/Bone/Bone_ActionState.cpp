@@ -49,7 +49,7 @@ void Bone_ActionState::Attack(std::shared_ptr<Enemy_ConText> context)
 void Bone_ActionState::Hit(std::shared_ptr<Enemy_ConText> context, int _damage)
 {
 	if (m_target.expired())return;
-	m_target.lock()->GetParam().Hp -= _damage;
+	m_target.lock()->Hit(_damage);
 	if (m_target.lock()->GetParam().Hp <= 0)return;
 	std::shared_ptr<Bone_Hit> hit = std::make_shared<Bone_Hit>();
 	hit->SetTarget(m_target.lock());

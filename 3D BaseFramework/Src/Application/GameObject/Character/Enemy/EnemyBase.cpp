@@ -31,7 +31,7 @@ void EnemyBase::Init()
 {
 	CharacterBase::Init();
 
-	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
+	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_param.Pos);
 	m_mWorld = Trans;
 
 	m_pCollider = std::make_unique<KdCollider>();

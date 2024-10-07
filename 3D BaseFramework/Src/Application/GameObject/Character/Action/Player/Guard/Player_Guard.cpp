@@ -96,23 +96,28 @@ void Player_Guard::GuardRotate(Math::Vector3 _pos)
 	//角度変更
 	//外角　どっち回転かを求める
 	Math::Vector3 c = toVec.Cross(nowVec);
+	float angle = m_target.lock()->GetParam().Angle;
 	if (c.y >= 0)
 	{
 		//右回転
-		m_target.lock()->GetParam().Angle -= ang;
-		if (m_target.lock()->GetParam().Angle < 0.0f)
+		angle -= ang;
+		if (angle < 0.0f)
 		{
-			m_target.lock()->GetParam().Angle += 360.0f;
+			angle += 360.0f;
 		}
+
+		m_target.lock()->SetAngle(angle);
 	}
 	else
 	{
 		//左回転
-		m_target.lock()->GetParam().Angle += ang;
+		angle += ang;
 		if (m_target.lock()->GetParam().Angle >= 360.0f)
 		{
-			m_target.lock()->GetParam().Angle -= 360.0f;
+			angle -= 360.0f;
 		}
+
+		m_target.lock()->SetAngle(angle);
 	}
 }
 
@@ -129,15 +134,17 @@ void Player_Guard::Hit(std::shared_ptr<Player_ActionConText> context, int _damag
 	}
 	else 
 	{
-		m_target.lock()->GetParam().Sm -= _damage;
-		if (m_target.lock()->GetParam().Sm < 0)
+		int stamina = m_target.lock()->GetParam().Sm;
+		 stamina -= _damage;
+		if (stamina < 0)
 		{
-			m_target.lock()->GetParam().Sm = 0;
+			stamina = 0;
+			m_target.lock()->SetStamina(stamina);
 			Player_ActionState::Hit(context);
 		}
 		else
 		{
-		m_target.lock()->GetConText()->GuardReaction();
+			m_target.lock()->GetConText()->GuardReaction();
 		}
 	}
 }

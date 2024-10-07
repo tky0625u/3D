@@ -22,6 +22,11 @@ public:
 
 	void CrushingAction()override;
 
+	void StaminaRecovery() { 
+		m_param.Sm++;
+		if (m_param.Sm >= m_MaxStamina)m_param.Sm = m_MaxStamina;
+	}
+
 	void SetCamera(std::shared_ptr<CameraBase> a_camera) { m_camera = a_camera; }
 	void SetNextState(std::shared_ptr<Player_ActionState> _next) { m_NextState = _next; }
 

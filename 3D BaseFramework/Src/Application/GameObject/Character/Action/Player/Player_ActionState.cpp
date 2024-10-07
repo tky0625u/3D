@@ -119,11 +119,7 @@ void Player_ActionState::StaminaRecovery()
 {
 	if (m_target.lock()->GetParam().Sm < m_target.lock()->GetMaxStamina())
 	{
-		m_target.lock()->GetParam().Sm++;
-	}
-	else
-	{
-		m_target.lock()->GetParam().Sm = m_target.lock()->GetMaxStamina();
+		m_target.lock()->StaminaRecovery();
 	}
 }
 
@@ -207,8 +203,7 @@ void Player_ActionState::Hit(std::shared_ptr<Player_ActionConText> context, int 
 	std::shared_ptr<Player_Hit> hit = std::make_shared<Player_Hit>();
 	if (m_target.expired())return;
 	hit->SetTarget(m_target.lock());
-	m_target.lock()->GetParam().Hp -= _damage;
-	if (m_target.lock()->GetParam().Hp <= 0)m_target.lock()->GetParam().Hp = 0;
+	m_target.lock()->Hit(_damage);
 	context->SetState(hit);
 	m_target.lock()->SetNextState(hit);
 }
