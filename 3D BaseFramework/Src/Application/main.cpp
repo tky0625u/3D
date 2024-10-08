@@ -2,6 +2,7 @@
 
 #include "Scene/SceneManager.h"
 #include"GameObject/ObjectManager.h"
+#include"GameObject/Character/Enemy/Bone/Bone.h"
 
 // ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
 // エントリーポイント
@@ -386,6 +387,38 @@ void Application::ImGuiProcess()
 				if (ImGui::Button((const char*)u8"Bone追加"))
 				{
 					ObjectManager::Instance().AddBone();
+				}
+
+				if (ImGui::TreeNode("Bone"))
+				{
+					int enemy = 1;
+					for (auto& bone : ObjectManager::Instance().GetBoneList())
+					{
+						ImGui::Text((const char*)u8"%d体目", enemy);
+						// 体力
+						ImGui::Text((const char*)u8"　体力 　　HP=%d",bone.lock()->GetParam().Hp);
+						// 攻撃力
+						ImGui::Text((const char*)u8"　攻撃力 　ATK=%d",bone.lock()->GetParam().Atk);
+						// 素早さ
+						ImGui::Text((const char*)u8"　素早さ 　SP=%.2f",bone.lock()->GetParam().Sp);
+						// スタミナ
+						ImGui::Text((const char*)u8"　スタミナ SM=%d",bone.lock()->GetParam().Sm);
+						// 位置
+						ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f",bone.lock()->GetParam().Pos.x, bone.lock()->GetParam().Pos.y, bone.lock()->GetParam().Pos.z);
+						// 方向
+						ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f",bone.lock()->GetParam().Dir.x, bone.lock()->GetParam().Dir.y, bone.lock()->GetParam().Dir.z);
+						// 角度
+						ImGui::Text((const char*)u8"　角度 　　Angle=%.2f",bone.lock()->GetParam().Angle);
+						// 大きさ
+						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f,y=%.2f,z=%.2f",bone.lock()->GetParam().Size);
+						// 攻撃範囲
+						ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f",bone.lock()->GetParam().AtkRange);
+						// 前方方向
+						ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f",bone.lock()->GetParam().ForwardX, bone.lock()->GetParam().ForwardY, bone.lock()->GetParam().ForwardZ);
+						enemy++;
+					}
+
+					ImGui::TreePop();
 				}
 
 				ImGui::TreePop();

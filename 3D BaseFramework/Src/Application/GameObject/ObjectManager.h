@@ -2,6 +2,7 @@
 
 class Player;
 class EnemyBase;
+class Bone;
 
 class ObjectManager:public std::enable_shared_from_this<ObjectManager>
 {
@@ -21,6 +22,7 @@ public:
 	void AddBone();
 
 	std::vector<std::weak_ptr<EnemyBase>> GetEnemyList()const { return m_EnemyList; }
+	std::vector<std::weak_ptr<Bone>> GetBoneList()const       { return m_BoneList; }
 	int GetStopTime()const { return m_stopTime; }
 	float GetSlow()const { return m_slow; }
 	bool GetSlowFlg()const { return m_slowFlg; }
@@ -32,6 +34,7 @@ private:
 	float                                 m_slow     = 1.0f;
 	bool                                  m_slowFlg  = false;
 	std::vector<std::weak_ptr<EnemyBase>> m_EnemyList;
+	std::vector<std::weak_ptr<Bone>>      m_BoneList;
 
 private:
 	ObjectManager() {};

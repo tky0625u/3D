@@ -210,7 +210,7 @@ bool Player_Attack::AttackRangeCheck()
 	std::list<KdCollider::CollisionResult> retSphereList;
 	for (auto ret : ObjectManager::Instance().GetEnemyList())
 	{
-		if (ret.lock()->Intersects(sphere, &retSphereList));
+		ret.lock()->Intersects(sphere, &retSphereList);
 	}
 
 	bool          isHit      = false;

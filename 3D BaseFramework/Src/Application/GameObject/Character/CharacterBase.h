@@ -18,7 +18,6 @@ public:
 		 Math::Vector3 Dir = Math::Vector3::Zero; //方向
 		 float  Angle    = 0.0f; //角度
 		 float  Size     = 1.0f; //大きさ
-		 float  ErrorNum = 0.0f; //モデルの原点の誤差
 		 float  AtkRange = 0.0f; //攻撃範囲
 		 float  ForwardX = 0.0f; //前方方向X
 		 float  ForwardY = 0.0f; //前方方向Y

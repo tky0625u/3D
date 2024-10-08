@@ -24,6 +24,20 @@
 
 void ObjectManager::DeleteEnemyList()
 {
+	auto bone = m_BoneList.begin();
+
+	while (bone != m_BoneList.end())
+	{
+		if (bone->expired())
+		{
+			bone = m_BoneList.erase(bone);
+		}
+		else
+		{
+			++bone;
+		}
+	}
+
 	auto enemy = m_EnemyList.begin();
 
 	while (enemy != m_EnemyList.end())
@@ -310,7 +324,12 @@ void ObjectManager::SetEnemyParam(std::string _StageNum)
 		_chaseRange = stage["ChaseRange"];
 
 		std::shared_ptr<EnemyBase> enemy = nullptr;
-		if(stage["Name"]=="Bone")enemy = std::make_shared<Bone>();
+		if (stage["Name"] == "Bone")
+		{
+			std::shared_ptr<Bone> bone = std::make_shared<Bone>();
+			m_BoneList.push_back(bone);
+			enemy =bone;
+		}
 		if (m_player.expired() == false)
 		{
 			enemy->SetPlayer(m_player.lock());
@@ -344,8 +363,9 @@ void ObjectManager::AddBone()
 		_forword.z = 1.0f;
 		float _chaseRange = 1000.0f;
 
-		std::shared_ptr<EnemyBase> enemy = nullptr;
+		std::shared_ptr<Bone> enemy = nullptr;
 		enemy = std::make_shared<Bone>();
+		m_BoneList.push_back(enemy);
 		if (m_player.expired() == false)
 		{
 			enemy->SetPlayer(m_player.lock());
