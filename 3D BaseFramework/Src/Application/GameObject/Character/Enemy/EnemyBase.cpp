@@ -16,9 +16,9 @@ void EnemyBase::PostUpdate()
 {
 	CharacterBase::PostUpdate();
 
-	if (m_stopTime > 0 && ObjectManager::Instance().GetStopTime() == 0)
+	if (m_inviTime > 0 && ObjectManager::Instance().GetStopTime() == 0)
 	{
-		m_stopTime--;
+		m_inviTime--;
 	}
 }
 

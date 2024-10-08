@@ -56,7 +56,7 @@ public:
 		m_MoveSpeed = _moveSpeed;
 	}
 	void SetSword(std::shared_ptr<Sword> _sword) { m_sword = _sword; }
-	void SetStopTime(int _stopTime) { m_stopTime = _stopTime; }
+	void SetStopTime(int _stopTime) { m_inviTime = _stopTime; }
 
 	Param GetParam() { return m_param; }
 	bool GetIsAnimator() { return m_animator->IsAnimationEnd(); }
@@ -65,7 +65,7 @@ public:
 	Math::Matrix GetShieldMat() { return m_model->FindWorkNode("shield.L")->m_localTransform * m_model->FindWorkNode("forearm.L")->m_worldTransform * (Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_param.Angle)) * (Math::Matrix::CreateTranslation(m_mWorld.Translation()))); }
 	std::weak_ptr<Sword> GetSword() { return m_sword; }
 	Math::Vector3 GetPos()const override { return m_param.Pos; }
-	int GetStopTime()const { return m_stopTime; }
+	int GetinviTime()const { return m_inviTime; }
 
 protected:
 	Param                        m_param;
@@ -76,7 +76,7 @@ protected:
 	std::string                  m_anime           = "Idol";
 	std::string                  m_beforeAnime     = m_anime;
 	std::unordered_map<std::string, std::shared_ptr<ActionBase>> m_actionList;
-	int                          m_stopTime        = 0;
+	int                          m_inviTime        = 0;
 	float                        m_gravity         = 0.0f;
 	float                        m_animeSpeed      = 1.0f;
 	float                        m_MoveSpeed       = 0.0f;
