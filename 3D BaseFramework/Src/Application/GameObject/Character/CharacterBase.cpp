@@ -25,10 +25,15 @@ void CharacterBase::Update()
 	{
 		m_MoveSpeed = m_param.Sp;
 	}
-	m_gravity += m_gravityPow * _slow;
-	m_param.Pos.y -= m_gravity;
-	Move = m_MoveSpeed * m_SpeedCorrection * _slow;
-	m_param.Pos += Move * m_param.Dir; //座標更新
+
+	// デバッグ
+	if (!SceneManager::Instance().m_stop)
+	{
+		m_gravity += m_gravityPow * _slow;
+		m_param.Pos.y -= m_gravity;
+		Move = m_MoveSpeed * m_SpeedCorrection * _slow;
+		m_param.Pos += Move * m_param.Dir; //座標更新
+	}
 
 	//ワールド行列更新
 	Math::Matrix Scale = Math::Matrix::CreateScale(m_param.Size);

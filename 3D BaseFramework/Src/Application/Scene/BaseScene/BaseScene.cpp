@@ -1,5 +1,5 @@
 ﻿#include "BaseScene.h"
-#include"../../GameObject/ObjectManager.h"
+#include"../SceneManager.h"
 
 void BaseScene::PreUpdate()
 {
@@ -22,6 +22,8 @@ void BaseScene::PreUpdate()
 
 	// ↑の後には有効なオブジェクトだけのリストになっている
 
+
+	if (SceneManager::Instance().m_stop)return;
 	for (auto& obj : m_objList)
 	{
 		obj->PreUpdate();
@@ -42,6 +44,7 @@ void BaseScene::Update()
 
 void BaseScene::PostUpdate()
 {
+	if (SceneManager::Instance().m_stop)return;
 	for (auto& obj : m_objList)
 	{
 		obj->PostUpdate();

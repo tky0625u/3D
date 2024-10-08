@@ -8,7 +8,6 @@ void Bone::Init()
 	EnemyBase::Init();
 
 	m_model->SetModelData("Asset/Models/Character/Enemy/Bone/Bone.gltf");
-	m_param.Pos = { 0.0f,0.0f,20.0f };
 
 	std::shared_ptr<Bone_Appeal> appeal = std::make_shared<Bone_Appeal>();
 	appeal->SetTarget(shared_from_this());

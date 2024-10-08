@@ -380,6 +380,10 @@ void Application::ImGuiProcess()
 		// FPS
 		//ImGui::Text("FPS : %d", m_fpsController.m_nowfps);
 
+		static bool stop = false;
+		ImGui::Checkbox((const char*)u8"ストップ", &stop);
+		SceneManager::Instance().m_stop = stop;
+
 		if (ImGui::TreeNode("Enemy"))
 		{
 			if (ImGui::TreeNode("Bone"))
@@ -397,48 +401,68 @@ void Application::ImGuiProcess()
 					ImGui::Text((const char*)u8"ボーン:%d体", _boneList.size());
 					for (int bone=0;bone<ObjectManager::Instance().GetBoneList().size();++bone)
 					{
-						if (operation != -1 && operation != bone)continue;
 
 						ImGui::Text((const char*)u8"%d体目", bone + 1);
 						// 体力
 						ImGui::Text((const char*)u8"　体力 　　HP=%d",_boneList[bone].lock()->GetParam().Hp);
 						int hp = _boneList[bone].lock()->GetParam().Hp;
-						if (ImGui::SliderInt("HP", &hp, 1, 100) && bone==1)
+						if (operation == -1 || operation == bone)
 						{
-							operation = bone;
+							if (ImGui::SliderInt("HP", &hp, 1, 100))operation = bone;
 						}
 						// 攻撃力
 						ImGui::Text((const char*)u8"　攻撃力 　ATK=%d",_boneList[bone].lock()->GetParam().Atk);
 						int atk = _boneList[bone].lock()->GetParam().Atk;
-						if(ImGui::SliderInt("ATK", &atk, 1, 100))operation = bone;
+						if (operation == -1 || operation == bone)
+						{
+							if (ImGui::SliderInt("ATK", &atk, 1, 100))operation = bone;
+						}
 						// 素早さ
 						ImGui::Text((const char*)u8"　素早さ 　SP=%.2f", _boneList[bone].lock()->GetParam().Sp);
 						float speed = _boneList[bone].lock()->GetParam().Sp;
-						if(ImGui::SliderFloat("Speed", &speed, 1, 100))operation = bone;
+						if (operation == -1 || operation == bone)
+						{
+							if (ImGui::SliderFloat("Speed", &speed, 1, 100))operation = bone;
+						}
 						// スタミナ
 						ImGui::Text((const char*)u8"　スタミナ SM=%d",_boneList[bone].lock()->GetParam().Sm);
 						int stamina = _boneList[bone].lock()->GetParam().Sm;
-						if(ImGui::SliderInt("Stamina", &stamina, 1, 100))operation = bone;
+						if (operation == -1 || operation == bone)
+						{
+							if (ImGui::SliderInt("Stamina", &stamina, 1, 100))operation = bone;
+						}
 						// 位置
 						ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f",_boneList[bone].lock()->GetParam().Pos.x, _boneList[bone].lock()->GetParam().Pos.y, _boneList[bone].lock()->GetParam().Pos.z);
 						Math::Vector3 pos = _boneList[bone].lock()->GetParam().Pos;
-						if(ImGui::SliderFloat("PosX", &pos.x, 1, 100))operation = bone;
-						if(ImGui::SliderFloat("PosY", &pos.y, 1, 100))operation = bone;
-						if(ImGui::SliderFloat("PosZ", &pos.z, 1, 100))operation = bone;
+						if (operation == -1 || operation == bone)
+						{
+							if (ImGui::SliderFloat("PosX", &pos.x, -100, 100))operation = bone;
+							if (ImGui::SliderFloat("PosY", &pos.y, 0, 100))operation = bone;
+							if (ImGui::SliderFloat("PosZ", &pos.z, -100, 100))operation = bone;
+						}
 						// 方向
 						ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f",_boneList[bone].lock()->GetParam().Dir.x, _boneList[bone].lock()->GetParam().Dir.y, _boneList[bone].lock()->GetParam().Dir.z);
 						// 角度
 						ImGui::Text((const char*)u8"　角度 　　Angle=%.2f",_boneList[bone].lock()->GetParam().Angle);
 						float angle = _boneList[bone].lock()->GetParam().Angle;
-						if(ImGui::SliderFloat("Angle", &angle, 1, 100))operation = bone;
+						if (operation == -1 || operation == bone)
+						{
+							if (ImGui::SliderFloat("Angle", &angle, 0, 360))operation = bone;
+						}
 						// 大きさ
 						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f,y=%.2f,z=%.2f",_boneList[bone].lock()->GetParam().Size);
 						float size = _boneList[bone].lock()->GetParam().Size;
-						if(ImGui::SliderFloat("Size", &size, 1, 100))operation = bone;
+						if (operation == -1 || operation == bone)
+						{
+							if (ImGui::SliderFloat("Size", &size, 1, 100))operation = bone;
+						}
 						// 攻撃範囲
 						ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f",_boneList[bone].lock()->GetParam().AtkRange);
 						float range = _boneList[bone].lock()->GetParam().AtkRange;
-						if(ImGui::SliderFloat("ATKRange", &range, 1, 100))operation = bone;
+						if (operation == -1 || operation == bone)
+						{
+							if (ImGui::SliderFloat("ATKRange", &range, 1, 100))operation = bone;
+						}
 						// 前方方向
 						ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f",_boneList[bone].lock()->GetParam().ForwardX, _boneList[bone].lock()->GetParam().ForwardY, _boneList[bone].lock()->GetParam().ForwardZ);
 

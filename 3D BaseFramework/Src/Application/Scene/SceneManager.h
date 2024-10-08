@@ -44,6 +44,8 @@ public :
 		ChangeScene(m_currentSceneType);
 	}
 
+	bool m_stop = false;
+
 private:
 
 	// シーン切り替え関数
