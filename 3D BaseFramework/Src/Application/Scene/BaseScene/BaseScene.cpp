@@ -1,4 +1,5 @@
 ﻿#include "BaseScene.h"
+#include"../../GameObject/ObjectManager.h"
 
 void BaseScene::PreUpdate()
 {
@@ -37,8 +38,6 @@ void BaseScene::Update()
 
 	// シーン毎のイベント処理
 	Event();
-
-	KdEffekseerManager::GetInstance().Update();
 }
 
 void BaseScene::PostUpdate()
@@ -46,6 +45,11 @@ void BaseScene::PostUpdate()
 	for (auto& obj : m_objList)
 	{
 		obj->PostUpdate();
+	}
+
+	if (ObjectManager::Instance().GetStopTime() > 0)
+	{
+		ObjectManager::Instance().StopTimeMinus();
 	}
 }
 

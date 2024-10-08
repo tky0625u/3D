@@ -12,12 +12,6 @@ void CharacterBase::Update()
 	if (m_param.Hp <= 0)
 	{
 		CrushingAction();
-		m_StopTime = 0;
-	}
-	else if (m_StopTime > 0)
-	{
-		m_StopTime--;
-		return;
 	}
 	else
 	{
@@ -45,8 +39,6 @@ void CharacterBase::Update()
 
 void CharacterBase::PostUpdate()
 {
-	if (m_StopTime > 0)return;
-
 	KdCollider::RayInfo rayInfo;
 	rayInfo.m_pos = m_param.Pos;
 	float LitleUP = 0.3f;
@@ -91,6 +83,7 @@ void CharacterBase::PostUpdate()
 		m_animeSpeed = 1.0f;
 	}
 
+	if (ObjectManager::Instance().GetStopTime() > 0)return;
 	KdCollider::SphereInfo sphereInfo;
 	Math::Matrix _mat = m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(m_mWorld.Translation()));
 	sphereInfo.m_sphere.Center = _mat.Translation();
@@ -98,7 +91,7 @@ void CharacterBase::PostUpdate()
 	sphereInfo.m_type = KdCollider::TypeBump;
 
 	//デバッグ用
-	m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
+	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
 
 	std::list<KdCollider::CollisionResult>retSphereList;
 	for (auto& ret : SceneManager::Instance().GetObjList())

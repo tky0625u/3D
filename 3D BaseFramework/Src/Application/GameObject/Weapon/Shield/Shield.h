@@ -9,6 +9,8 @@ public:
 
 	void Update()override;
 
+	Math::Matrix GetParryPoint() { return m_spModel->FindWorkNode("ParryPoint")->m_worldTransform * m_mWorld; }
+
 private:
 
 };

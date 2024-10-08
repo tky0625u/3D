@@ -8,7 +8,7 @@ public :
 	virtual ~BaseScene() {}
 
 	void PreUpdate();
-	void Update();
+	virtual void Update();
 	void PostUpdate();
 
 	void PreDraw();

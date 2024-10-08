@@ -55,6 +55,8 @@ public:
 		m_wpCamera = camera;
 	}
 
+	std::list<std::shared_ptr<KdEffekseerObject>> GetnowEffectPlayList()const { return m_nowEffectPlayList; }
+
 private:
 
 	const Effekseer::Vector3D GetEfkVec3D(const Math::Vector3& vec) const

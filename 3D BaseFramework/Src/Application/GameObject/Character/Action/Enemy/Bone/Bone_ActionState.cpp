@@ -2,6 +2,7 @@
 #include"../Enemy_ConText.h"
 #include"../../../Enemy/Bone/Bone.h"
 #include"../../../Player/Player.h"
+#include"../../../../ObjectManager.h"
 
 #include"Appeal/Bone_Appeal.h"
 #include"Idol/Bone_Idol.h"
@@ -25,7 +26,7 @@ void Bone_ActionState::Idol(std::shared_ptr<Enemy_ConText> context)
 	if (m_target.expired())return;
 	idol->SetTarget(m_target.lock());
 	context->SetState(idol);
-	m_target.lock()->SetNextState(idol);
+	m_target.lock()->SetNextAction(idol, m_target.lock()->Action::IdolType);
 }
 
 void Bone_ActionState::Run(std::shared_ptr<Enemy_ConText> context)
@@ -34,7 +35,7 @@ void Bone_ActionState::Run(std::shared_ptr<Enemy_ConText> context)
 	if (m_target.expired())return;
 	run->SetTarget(m_target.lock());
 	context->SetState(run);
-	m_target.lock()->SetNextState(run);
+	m_target.lock()->SetNextAction(run, m_target.lock()->Action::RunType);
 }
 
 void Bone_ActionState::Attack(std::shared_ptr<Enemy_ConText> context)
@@ -43,7 +44,7 @@ void Bone_ActionState::Attack(std::shared_ptr<Enemy_ConText> context)
 	if (m_target.expired())return;
 	attack->SetTarget(m_target.lock());
 	context->SetState(attack);
-	m_target.lock()->SetNextState(attack);
+	m_target.lock()->SetNextAction(attack, m_target.lock()->Action::AttackType);
 }
 
 void Bone_ActionState::Hit(std::shared_ptr<Enemy_ConText> context, int _damage)
@@ -53,10 +54,9 @@ void Bone_ActionState::Hit(std::shared_ptr<Enemy_ConText> context, int _damage)
 	if (m_target.lock()->GetParam().Hp <= 0)return;
 	std::shared_ptr<Bone_Hit> hit = std::make_shared<Bone_Hit>();
 	hit->SetTarget(m_target.lock());
-	m_target.lock()->SetStopTime(10);
-	m_target.lock()->GetPlayer().lock()->SetStopTime(m_target.lock()->GetStopTime());
+	ObjectManager::Instance().SetStopTime(10);
 	context->SetState(hit);
-	m_target.lock()->SetNextState(hit);
+	m_target.lock()->SetNextAction(hit, m_target.lock()->Action::HitType);
 }
 
 void Bone_ActionState::Stumble(std::shared_ptr<Enemy_ConText> context)
@@ -65,5 +65,5 @@ void Bone_ActionState::Stumble(std::shared_ptr<Enemy_ConText> context)
 	if (m_target.expired())return;
 	stumble->SetTarget(m_target.lock());
 	context->SetState(stumble);
-	m_target.lock()->SetNextState(stumble);
+	m_target.lock()->SetNextAction(stumble, m_target.lock()->Action::StumbleType);
 }

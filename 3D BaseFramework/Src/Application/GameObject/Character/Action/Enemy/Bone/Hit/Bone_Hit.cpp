@@ -1,6 +1,7 @@
 ﻿#include "Bone_Hit.h"
 #include"../../../../Enemy/Bone/Bone.h"
 #include"../../Enemy_ConText.h"
+#include"../../../../../ObjectManager.h"
 
 void Bone_Hit::Start()
 {
@@ -18,4 +19,12 @@ void Bone_Hit::Start()
 			return;
 		}
 	}
+}
+
+void Bone_Hit::Hit(std::shared_ptr<Enemy_ConText> context, int _damage)
+{
+	if (m_target.expired())return;
+	m_target.lock()->Hit(_damage);
+	if (m_target.lock()->GetParam().Hp <= 0)return;
+	ObjectManager::Instance().SetStopTime(10);
 }

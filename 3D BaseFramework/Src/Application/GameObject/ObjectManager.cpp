@@ -223,7 +223,12 @@ void ObjectManager::SetWeaponParam(std::string _filePath,int _id)
 			sword->SetTrajectPointNUM(stage["Traject"]);
 			weapon = sword;
 		}
-		else if (stage["Name"] == "Shield")weapon = std::make_shared<Shield>();
+		else if (stage["Name"] == "Shield")
+		{
+			std::shared_ptr<Shield> shield = std::make_shared<Shield>();
+			m_player.lock()->SetShield(shield);
+			weapon = shield;
+		}
 
 		std::string _modelPath;
 		_modelPath = stage["Path"];

@@ -46,17 +46,31 @@ void Player_ActionState::AttackDamage()
 		sphereInfoList[i].m_type = KdCollider::TypeDamage;
 	}
 
+	std::list<KdCollider::CollisionResult> retSphereList;
+	std::vector<std::shared_ptr<EnemyBase>> hitEnemyList;
+
 	for (auto& sphere : ObjectManager::Instance().GetEnemyList())
 	{
 		if (sphere.expired())continue;
 
 		for (int i = 0; i < sphereInfoList.size(); ++i)
 		{
-			if (sphere.lock()->Intersects(sphereInfoList[i], nullptr) && sphere.lock()->GetParam().Hp > 0)
+			if (sphere.lock()->Intersects(sphereInfoList[i], &retSphereList))
 			{
-				sphere.lock()->GetConText()->Hit(m_target.lock()->GetParam().Atk);
+				hitEnemyList.push_back(sphere.lock());
 			}
 		}
+	}
+
+	int enemy = 0;
+	for (auto& ret : retSphereList)
+	{
+		if (hitEnemyList[enemy]->GetParam().Hp > 0 && hitEnemyList[enemy]->GetActionType() != EnemyBase::Action::AppealType)
+		{
+			hitEnemyList[enemy]->GetConText()->Hit(m_target.lock()->GetParam().Atk);
+			KdEffekseerManager::GetInstance().Play("hit_eff.efkefc", ret.m_hitPos, 0.4f, 0.8f, false);
+		}
+		enemy++;
 	}
 }
 

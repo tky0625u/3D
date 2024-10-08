@@ -19,6 +19,19 @@ void GameScene::Event()
 	//Application::Instance().m_log.AddLog("m_EnemyList=%d\n", m_ObjManager->GetEnemyList().size());
 }
 
+void GameScene::Update()
+{
+	if (ObjectManager::Instance().GetStopTime() > 0)return;
+
+	BaseScene::Update();
+	for (auto& effect : KdEffekseerManager::GetInstance().GetnowEffectPlayList())
+	{
+		float speed = effect->GetSpeed() * ObjectManager::Instance().GetSlow();
+		KdEffekseerManager::GetInstance().SetSpeed(effect->GetHandle(), speed);
+	}
+	KdEffekseerManager::GetInstance().Update();
+}
+
 void GameScene::Init()
 {
 	//オブジェクトマネジャ
