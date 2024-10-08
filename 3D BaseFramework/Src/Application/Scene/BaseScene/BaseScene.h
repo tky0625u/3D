@@ -9,7 +9,7 @@ public :
 
 	void PreUpdate();
 	virtual void Update();
-	void PostUpdate();
+	virtual void PostUpdate();
 
 	void PreDraw();
 	void Draw();

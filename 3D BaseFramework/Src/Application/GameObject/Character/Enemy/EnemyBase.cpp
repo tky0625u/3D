@@ -12,6 +12,16 @@ void EnemyBase::Update()
 	m_ui->Update();
 }
 
+void EnemyBase::PostUpdate()
+{
+	CharacterBase::PostUpdate();
+
+	if (m_stopTime > 0 && ObjectManager::Instance().GetStopTime() == 0)
+	{
+		m_stopTime--;
+	}
+}
+
 void EnemyBase::Action()
 {
 	if (m_NextState != nullptr)

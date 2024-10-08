@@ -46,11 +46,6 @@ void BaseScene::PostUpdate()
 	{
 		obj->PostUpdate();
 	}
-
-	if (ObjectManager::Instance().GetStopTime() > 0)
-	{
-		ObjectManager::Instance().StopTimeMinus();
-	}
 }
 
 void BaseScene::PreDraw()

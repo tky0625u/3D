@@ -27,10 +27,10 @@ public:
 
 private:
 	std::weak_ptr<Player>                 m_player;
-	UINT                                  m_id   = 0;
-	int                                   m_stopTime;
-	float                                 m_slow = 1.0f;
-	bool                                  m_slowFlg = false;
+	UINT                                  m_id       = 0;
+	int                                   m_stopTime = 0;
+	float                                 m_slow     = 1.0f;
+	bool                                  m_slowFlg  = false;
 	std::vector<std::weak_ptr<EnemyBase>> m_EnemyList;
 
 private:

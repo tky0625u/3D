@@ -23,6 +23,7 @@ public:
 	~EnemyBase()override {};
 
 	void Update()        override;
+	void PostUpdate()    override;
 	virtual void Action()override;
 	void DrawSprite()    override;
 	virtual void Init()  override;

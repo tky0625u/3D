@@ -154,12 +154,15 @@ void ObjectManager::SetPlayerParam()
 		_forword.y = stage["ForwordY"];
 		_forword.z = stage["ForwordZ"];
 
+		int _stopTime = 0;
+		_stopTime = stage["StopTime"];
+
 		std::shared_ptr<Player> player = std::make_shared<Player>();
 		std::shared_ptr<TPSCamera> camera = std::make_shared<TPSCamera>();
 		player->SetCamera(camera);
 		player->SetParam(_hp, _atk, _speed, _stamina, _pos, _dir, _angleY, _size, _atkRange, _forword);
 		player->Init();
-		player->SetPos(_pos);
+		player->SetStopTime(_stopTime);
 		player->SetID(m_id);
 		m_id++;
 

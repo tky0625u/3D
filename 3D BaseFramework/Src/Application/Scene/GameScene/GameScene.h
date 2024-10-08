@@ -9,8 +9,9 @@ public :
 	GameScene() {}
 	~GameScene() {}
 
-	void Update()override;
-	void Init()  override;
+	void Update()    override;
+	void PostUpdate()override;
+	void Init()      override;
 
 private:
 

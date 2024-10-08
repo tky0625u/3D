@@ -32,6 +32,16 @@ void GameScene::Update()
 	KdEffekseerManager::GetInstance().Update();
 }
 
+void GameScene::PostUpdate()
+{
+	BaseScene::PostUpdate();
+	
+	if (ObjectManager::Instance().GetStopTime() > 0)
+	{
+		ObjectManager::Instance().StopTimeMinus();
+	}
+}
+
 void GameScene::Init()
 {
 	//オブジェクトマネジャ
