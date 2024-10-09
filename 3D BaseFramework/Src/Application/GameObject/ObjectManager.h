@@ -21,6 +21,7 @@ public:
 	// デバッグ
 	void AddBone();
 
+	std::weak_ptr<Player> GetPlayer()const { return m_player; }
 	std::vector<std::weak_ptr<EnemyBase>> GetEnemyList()const { return m_EnemyList; }
 	std::vector<std::weak_ptr<Bone>> GetBoneList()const       { return m_BoneList; }
 	int GetStopTime()const { return m_stopTime; }

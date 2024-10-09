@@ -30,6 +30,9 @@ public:
 
 	void CrushingAction()override;
 
+	// デバッグ
+	void Expired() { m_isExpired = true; }
+
 	void SetPlayer(std::shared_ptr<Player> _player) { m_player = _player; }
 	void SetChaseRange(float _chaseRange) { m_chaceRange = _chaseRange; }
 	void SetNextAction(std::shared_ptr<Enemy_ActionState> _action,UINT _actionType) { 

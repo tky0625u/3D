@@ -68,7 +68,7 @@ void Player_ActionState::AttackDamage()
 		if (hitEnemyList[enemy]->GetParam().Hp > 0 && hitEnemyList[enemy]->GetActionType() != EnemyBase::Action::AppealType && hitEnemyList[enemy]->GetinviTime() == 0)
 		{
 			hitEnemyList[enemy]->GetConText()->Hit(m_target.lock()->GetParam().Atk);
-			hitEnemyList[enemy]->SetStopTime(m_target.lock()->GetinviTime());
+			hitEnemyList[enemy]->SetInviTime(m_target.lock()->GetinviTime());
 			KdEffekseerManager::GetInstance().Play("hit_eff.efkefc", ret.m_hitPos, 0.4f, 0.8f, false);
 		}
 		enemy++;

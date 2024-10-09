@@ -7,16 +7,7 @@
 
 void GameScene::Event()
 {
-	//デバッグ用
-	if (GetAsyncKeyState('E') & 0x8000)
-	{
-		ObjectManager::Instance().AddBone();
-	}
-
 	ObjectManager::Instance().DeleteEnemyList();
-
-	//デバッグ用
-	//Application::Instance().m_log.AddLog("m_EnemyList=%d\n", m_ObjManager->GetEnemyList().size());
 }
 
 void GameScene::Update()

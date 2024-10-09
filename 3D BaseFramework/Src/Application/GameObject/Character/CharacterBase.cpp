@@ -5,30 +5,31 @@
 
 void CharacterBase::Update()
 {
-	m_param.Dir = Math::Vector3::Zero;
-	float Move = 0.0f;
-	m_MoveSpeed = 0.0f;
-
-	if (m_param.Hp <= 0)
-	{
-		CrushingAction();
-	}
-	else
-	{
-		Action();
-	}
-
-	float _slow = 1.0f;
-
-	_slow = ObjectManager::Instance().GetSlow();
-	if (m_MoveSpeed == 0.0f)
-	{
-		m_MoveSpeed = m_param.Sp;
-	}
-
 	// デバッグ
 	if (!SceneManager::Instance().m_stop)
 	{
+		m_param.Dir = Math::Vector3::Zero;
+		float Move = 0.0f;
+		m_MoveSpeed = 0.0f;
+
+		if (m_param.Hp <= 0)
+		{
+			CrushingAction();
+		}
+		else
+		{
+			Action();
+		}
+
+		float _slow = 1.0f;
+
+		_slow = ObjectManager::Instance().GetSlow();
+		if (m_MoveSpeed == 0.0f)
+		{
+			m_MoveSpeed = m_param.Sp;
+		}
+
+
 		m_gravity += m_gravityPow * _slow;
 		m_param.Pos.y -= m_gravity;
 		Move = m_MoveSpeed * m_SpeedCorrection * _slow;

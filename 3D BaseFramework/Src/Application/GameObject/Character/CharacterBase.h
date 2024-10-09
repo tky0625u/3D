@@ -55,7 +55,7 @@ public:
 		m_MoveSpeed = _moveSpeed;
 	}
 	void SetSword(std::shared_ptr<Sword> _sword) { m_sword = _sword; }
-	void SetStopTime(int _stopTime) { m_inviTime = _stopTime; }
+	void SetInviTime(int _inviTime) { m_inviTime = _inviTime; }
 
 	Param GetParam() { return m_param; }
 	bool GetIsAnimator() { return m_animator->IsAnimationEnd(); }
