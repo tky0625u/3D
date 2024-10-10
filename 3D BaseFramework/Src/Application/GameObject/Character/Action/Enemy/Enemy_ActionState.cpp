@@ -4,24 +4,6 @@
 #include"../../Player/Player.h"
 #include"Enemy_ConText.h"
 
-bool Enemy_ActionState::ChaseCheck()
-{
-	if (m_target.expired())return false;
-	if (m_target.lock()->GetPlayer().expired())return false;
-
-	KdCollider::SphereInfo sphereInfo;
-	sphereInfo.m_sphere.Center = m_target.lock()->GetPos();
-	sphereInfo.m_sphere.Radius = m_target.lock()->GetChaseRange();
-	sphereInfo.m_type = KdCollider::TypeEvent;
-
-	if (m_target.lock()->GetPlayer().lock()->Intersects(sphereInfo, nullptr))
-	{
-		return true;
-	}
-
-	return false;
-}
-
 void Enemy_ActionState::AttackCheck(bool& _atkFlg)
 {
 	if (m_target.expired())return;

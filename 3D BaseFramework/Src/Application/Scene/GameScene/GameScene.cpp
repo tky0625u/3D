@@ -38,7 +38,7 @@ void GameScene::Init()
 	//オブジェクトマネジャ
 	ObjectManager::Instance().SetObjectParam();
 	ObjectManager::Instance().SetPlayerParam();
-	ObjectManager::Instance().SetEnemyParam("Stage1");
+	ObjectManager::Instance().SetEnemyParam();
 
 	KdEffekseerManager::GetInstance().Create(1280, 720);
 }

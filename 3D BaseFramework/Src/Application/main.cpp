@@ -347,17 +347,17 @@ void Application::ImGuiInit()
 	// ImGui::StyleColorsDark();
 	ImGui::StyleColorsClassic();
 	// Setup Platform/Renderer bindings
-	ImGui_ImplWin32_Init(m_window.GetWndHandle());
-	ImGui_ImplDX11_Init(
-		KdDirect3D::Instance().WorkDev(), KdDirect3D::Instance().WorkDevContext());
+ImGui_ImplWin32_Init(m_window.GetWndHandle());
+ImGui_ImplDX11_Init(
+	KdDirect3D::Instance().WorkDev(), KdDirect3D::Instance().WorkDevContext());
 
 #include "imgui/ja_glyph_ranges.h"
-	ImGuiIO& io = ImGui::GetIO();
-	ImFontConfig config;
-	config.MergeMode = true;
-	io.Fonts->AddFontDefault();
-	// 日本語対応
-	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 13.0f, &config, glyphRangesJapanese);
+ImGuiIO& io = ImGui::GetIO();
+ImFontConfig config;
+config.MergeMode = true;
+io.Fonts->AddFontDefault();
+// 日本語対応
+io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 13.0f, &config, glyphRangesJapanese);
 }
 
 void Application::ImGuiProcess()
@@ -445,6 +445,11 @@ void Application::ImGuiProcess()
 
 		if (ImGui::TreeNode("Enemy"))
 		{
+			if (ImGui::Button((const char*)u8"Enemy保存"))
+			{
+				ObjectManager::Instance().EnemyWrite();
+			}
+
 			if (ImGui::TreeNode("Bone"))
 			{
 				if (ImGui::Button((const char*)u8"Bone追加"))
@@ -499,7 +504,7 @@ void Application::ImGuiProcess()
 						float angle = _boneList[operation].lock()->GetParam().Angle;
 						ImGui::SliderFloat("Angle", &angle, 0, 360);
 						// 大きさ
-						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetParam().Size);
+						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _boneList[operation].lock()->GetParam().Size);
 						float size = _boneList[operation].lock()->GetParam().Size;
 						ImGui::SliderFloat("Size", &size, 1, 100);
 						// 攻撃範囲

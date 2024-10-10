@@ -12,10 +12,12 @@ public:
 	void StopTimeMinus() { if (m_stopTime > 0)m_stopTime--; }
 	void SlowChange();
 
+	void EnemyWrite();
+
 	void SetObjectParam();
 	void SetPlayerParam();
 	void SetWeaponParam(std::string _filePath, int _id);
-	void SetEnemyParam(std::string _StageNum);
+	void SetEnemyParam();
 	void SetStopTime(int _stopTime) { m_stopTime = _stopTime; }
 
 	// デバッグ

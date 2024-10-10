@@ -10,7 +10,6 @@ public:
 	Enemy_ActionState() {};
 	~Enemy_ActionState()override {};
 
-	bool ChaseCheck();
 	void AttackCheck(bool& _atkFlg);
 
 	void SetTarget(std::shared_ptr<EnemyBase> target) { m_target = target; }

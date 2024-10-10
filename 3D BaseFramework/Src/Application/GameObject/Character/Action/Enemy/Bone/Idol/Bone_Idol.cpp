@@ -12,7 +12,7 @@ void Bone_Idol::Center()
 			return;
 		}
 
-		if (ChaseCheck())m_target.lock()->GetConText()->Run();
+		m_target.lock()->GetConText()->Run();
 	}
 }
 

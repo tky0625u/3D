@@ -34,12 +34,10 @@ public:
 	void Expired() { m_isExpired = true; }
 
 	void SetPlayer(std::shared_ptr<Player> _player) { m_player = _player; }
-	void SetChaseRange(float _chaseRange) { m_chaceRange = _chaseRange; }
 	void SetNextAction(std::shared_ptr<Enemy_ActionState> _action,UINT _actionType) { 
 		m_NextState = _action;
 		m_actionType = _actionType;
 	}
-	float GetChaseRange()const { return m_chaceRange; }
 	std::shared_ptr<Enemy_ConText> GetConText()const { return m_conText; }
 	std::weak_ptr<Player> GetPlayer()const { return m_player; }
 	Math::Matrix GetHPMat()const { return m_model->FindWorkNode("HP")->m_worldTransform * m_mWorld; }
@@ -53,5 +51,4 @@ protected:
 	std::shared_ptr<Enemy_ActionState> m_NextState;
 	std::weak_ptr<KdEffekseerObject>   m_Effect;
 	UINT                               m_actionType = Action::AppealType;
-	float                              m_chaceRange = 0.0f;
 };

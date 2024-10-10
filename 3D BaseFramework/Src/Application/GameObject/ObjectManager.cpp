@@ -2,6 +2,7 @@
 #include"../Scene/SceneManager.h"
 #include"../tinygltf/json.hpp"
 #include"Character/CharacterBase.h"
+#include"Character/Enemy/Bone/Bone.h"
 #include<fstream>
 #include<sstream>
 
@@ -64,6 +65,40 @@ void ObjectManager::SlowChange()
 	{
 		m_slowFlg = true;
 		m_slow = 0.5f;
+	}
+}
+
+void ObjectManager::EnemyWrite()
+{
+	nlohmann::json _json;
+	for (int bone = 0; bone < m_BoneList.size(); ++bone)
+	{
+		std::string name = (std::to_string(bone).c_str());
+		name += "Bone";
+		_json[name]["Name"] = "Bone";
+		 _json[name]["PosX"] = m_BoneList[bone].lock()->GetParam().Pos.x;
+		_json[name]["PosY"] = m_BoneList[bone].lock()->GetParam().Pos.y;
+		_json[name]["PosZ"] = m_BoneList[bone].lock()->GetParam().Pos.z;
+		_json[name]["DirX"] = m_BoneList[bone].lock()->GetParam().Dir.x;
+		_json[name]["DirY"] = m_BoneList[bone].lock()->GetParam().Dir.y;
+		_json[name]["DirZ"] = m_BoneList[bone].lock()->GetParam().Dir.z;
+		_json[name]["Size"] = m_BoneList[bone].lock()->GetParam().Size;
+		_json[name]["Angle"] = m_BoneList[bone].lock()->GetParam().Angle;
+		_json[name]["HP"] = m_BoneList[bone].lock()->GetParam().Hp;
+		_json[name]["ATK"] = m_BoneList[bone].lock()->GetParam().Atk;
+		_json[name]["Speed"] = m_BoneList[bone].lock()->GetParam().Sp;
+		_json[name]["Stamina"] = m_BoneList[bone].lock()->GetParam().Sm;
+		_json[name]["ATKRange"] = m_BoneList[bone].lock()->GetParam().AtkRange;
+		_json[name]["ForwardX"] = m_BoneList[bone].lock()->GetParam().ForwardX;
+		_json[name]["ForwardY"] = m_BoneList[bone].lock()->GetParam().ForwardY;
+		_json[name]["ForwardZ"] = m_BoneList[bone].lock()->GetParam().ForwardZ;
+	}
+
+	std::ofstream _file("Json/Enemy/Enemy.json");
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
 	}
 }
 
@@ -270,7 +305,7 @@ void ObjectManager::SetWeaponParam(std::string _filePath,int _id)
 	ifs.close();
 }
 
-void ObjectManager::SetEnemyParam(std::string _StageNum)
+void ObjectManager::SetEnemyParam()
 {
 	//jsonファイル
 	std::string fileName = "Json/Enemy/Enemy.json";
@@ -282,7 +317,7 @@ void ObjectManager::SetEnemyParam(std::string _StageNum)
 		ifs >> _json;
 	}
 
-	for (auto& stage : _json[_StageNum])
+	for (auto& stage : _json)
 	{
 		Math::Vector3 _pos = Math::Vector3::Zero;
 		_pos.x = stage["PosX"];
@@ -316,12 +351,9 @@ void ObjectManager::SetEnemyParam(std::string _StageNum)
 		_atkRange = stage["ATKRange"];
 
 		Math::Vector3 _forword = Math::Vector3::Zero;
-		_forword.x = stage["ForwordX"];
-		_forword.y = stage["ForwordY"];
-		_forword.z = stage["ForwordZ"];
-
-		float _chaseRange = 0.0f;
-		_chaseRange = stage["ChaseRange"];
+		_forword.x = stage["ForwardX"];
+		_forword.y = stage["ForwardY"];
+		_forword.z = stage["ForwardZ"];
 
 		std::shared_ptr<EnemyBase> enemy = nullptr;
 		if (stage["Name"] == "Bone")
@@ -337,7 +369,6 @@ void ObjectManager::SetEnemyParam(std::string _StageNum)
 		enemy->SetParam(_hp, _atk, _speed, _stamina, _pos, _dir, _angleY, _size, _atkRange, _forword);
 		enemy->Init();
 		enemy->SetPos(_pos);
-		enemy->SetChaseRange(_chaseRange);
 		enemy->SetID(m_id);
 		m_id++;
 
@@ -372,7 +403,6 @@ void ObjectManager::AddBone()
 		}
 		enemy->SetParam(_hp, _atk, _speed, _stamina, _pos, _dir, _angleY, _size, _atkRange, _forword);
 		enemy->Init();
-		enemy->SetChaseRange(_chaseRange);
 		enemy->SetID(m_id);
 		m_id++;
 
