@@ -14,5 +14,5 @@ public:
 	void Chace();
 
 private:
-	bool m_atkFlg = false;
+
 };

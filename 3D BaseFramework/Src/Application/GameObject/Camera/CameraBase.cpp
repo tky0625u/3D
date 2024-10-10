@@ -7,7 +7,7 @@ void CameraBase::Init()
 		m_spCamera = std::make_shared<KdCamera>();
 	}
 
-	ShowCursor(false);
+	//ShowCursor(false);
 
 	// ↓画面中央座標
 	m_FixMousePos.x = 640;

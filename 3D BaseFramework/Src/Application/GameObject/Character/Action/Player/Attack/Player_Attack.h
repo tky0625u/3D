@@ -19,7 +19,6 @@ public:
 	void Attack3();
 	void AttackDirCheck();
 	void ChangeAction()override;
-	bool AttackRangeCheck();
 
 private:
 	Math::Vector3    m_AttackDir = Math::Vector3::Zero;

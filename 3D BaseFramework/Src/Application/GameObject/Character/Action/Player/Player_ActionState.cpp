@@ -162,7 +162,6 @@ void Player_ActionState::Attack(std::shared_ptr<Player_ActionConText> context)
 	if (m_target.expired())return;
 	attack->SetTarget(m_target.lock());
 	attack->AttackDirCheck();
-	attack->AttackRangeCheck();
 	context->SetState(attack);
 	m_target.lock()->SetNextState(attack);
 }

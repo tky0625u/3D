@@ -14,10 +14,7 @@ void Player_Attack::Start()
 
 	if (m_atkNum == 1 || m_atkNum == 2)
 	{
-		if (!AttackRangeCheck())
-		{
-			if (m_target.expired() == false)Rotate(m_AttackDir, m_target.lock(), 360.0f);
-		}
+		if (m_target.expired() == false)Rotate(m_AttackDir, m_target.lock(), 360.0f);
 	}
 
 	m_target.lock()->GetSword().lock()->MakeTraject();
@@ -195,48 +192,4 @@ void Player_Attack::ChangeAction()
 	{
 		m_target.lock()->GetConText()->Roll();
 	}
-}
-
-bool Player_Attack::AttackRangeCheck()
-{
-	if (m_target.expired())return false;
-
-	KdCollider::SphereInfo sphere;
-	sphere.m_sphere.Center = m_target.lock()->GetPos();
-	sphere.m_sphere.Radius = m_target.lock()->GetParam().AtkRange;
-	sphere.m_type = KdCollider::TypeSight;
-
-	std::shared_ptr<EnemyBase> _target = nullptr;
-	std::list<KdCollider::CollisionResult> retSphereList;
-	for (auto ret : ObjectManager::Instance().GetEnemyList())
-	{
-		ret.lock()->Intersects(sphere, &retSphereList);
-	}
-
-	bool          isHit      = false;
-	Math::Vector3 hitPos     = Math::Vector3::Zero;
-	float         maxOverLap = 0.0f;
-
-	for (auto& ret : retSphereList)
-	{
-		if (maxOverLap < ret.m_overlapDistance)
-		{
-			maxOverLap = ret.m_overlapDistance;
-			hitPos     = ret.m_hitPos;
-			isHit      = true;
-		}
-	}
-
-	if (isHit)
-	{
-		Math::Vector3 dir = hitPos - m_target.lock()->GetPos();
-		dir.y = 0.0f;
-		dir.Normalize();
-		Rotate(dir, m_target.lock(), 360.0f);
-		Math::Vector3 pos = hitPos - (dir * 4.0f);
-		pos.y = 0.0f;
-		m_target.lock()->SetPos(pos);
-	}
-
-	return isHit;
 }

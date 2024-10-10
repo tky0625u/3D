@@ -27,7 +27,7 @@ void TPSCamera::PostUpdate()
 	if (!(GetAsyncKeyState(VK_LSHIFT) & 0x8000))
 	{
 		UpdateRotateByMouse();
-		ShowCursor(false);
+		//ShowCursor(false);
 	}
 	else
 	{

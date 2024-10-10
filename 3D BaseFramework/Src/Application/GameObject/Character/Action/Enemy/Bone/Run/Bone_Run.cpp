@@ -51,8 +51,7 @@ void Bone_Run::End()
 		{
 			if (m_target.expired() == false)
 			{
-				if (!m_atkFlg)m_target.lock()->GetConText()->Idol();
-				else { m_target.lock()->GetConText()->Attack(); }
+				m_target.lock()->GetConText()->Attack();
 			}
 			return;
 		}
@@ -61,8 +60,6 @@ void Bone_Run::End()
 
 void Bone_Run::Chace()
 {
-	AttackCheck(m_atkFlg);
-
 	if (m_target.lock()->GetPlayer().expired())return;
 	std::shared_ptr<Player> _player = m_target.lock()->GetPlayer().lock();
 	Math::Vector3 _playerPos = _player->GetPos();
@@ -73,7 +70,7 @@ void Bone_Run::Chace()
 
 	float _beforeAngle = m_target.lock()->GetParam().Angle;
 	if (m_target.expired() == false)Rotate(_moveDir, m_target.lock());
-	if (_beforeAngle == m_target.lock()->GetParam().Angle && m_atkFlg)
+	if (AttackCheck() && (m_target.lock()->GetParam().Angle - _beforeAngle) >= -30.0f && (m_target.lock()->GetParam().Angle - _beforeAngle) <= 30.0f)
 	{
 		m_flow = Flow::EndType;
 	}
