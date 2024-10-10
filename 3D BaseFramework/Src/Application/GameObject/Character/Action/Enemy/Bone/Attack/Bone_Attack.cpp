@@ -9,7 +9,7 @@ void Bone_Attack::Start()
 {
 	if (m_target.expired() == false)
 	{
-		if (m_target.lock()->GetAnime() != "IdolTOAttack")
+		if (m_target.lock()->GetAnime() != "IdolTOAttack" && m_target.lock()->GetAnime() !="AttackStart")
 		{
 			m_target.lock()->SetAnime("IdolTOAttack", false, 0.5f);
 			return;
@@ -17,6 +17,12 @@ void Bone_Attack::Start()
 
 		if (m_target.lock()->GetIsAnimator())
 		{
+			if (m_target.lock()->GetAnime() == "IdolTOAttack")
+			{
+				m_target.lock()->SetAnime("AttackStart", false, 0.5f);
+				KdEffekseerManager::GetInstance().Play("Enemy/BloodLance.efkefc", m_target.lock()->GetAttackStartPointMat().Translation(), 0.3f, 2.0f, false);
+				return;
+			}
 			m_flow = Flow::CenterType;
 			return;
 		}

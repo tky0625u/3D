@@ -41,6 +41,7 @@ public:
 	std::shared_ptr<Enemy_ConText> GetConText()const { return m_conText; }
 	std::weak_ptr<Player> GetPlayer()const { return m_player; }
 	Math::Matrix GetHPMat()const { return m_model->FindWorkNode("HP")->m_worldTransform * m_mWorld; }
+	Math::Matrix GetAttackStartPointMat()const { return m_model->FindWorkNode("AttackStartPoint")->m_worldTransform * m_mWorld; }
 	UINT GetActionType()const { return m_actionType; }
 
 protected:

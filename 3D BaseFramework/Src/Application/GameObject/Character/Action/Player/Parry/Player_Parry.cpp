@@ -11,7 +11,7 @@ void Player_Parry::Start()
 	{
 		if (m_target.lock()->GetAnime() != "Parrying")
 		{
-			m_target.lock()->SetAnime("Parrying", false, 1.5f);
+			m_target.lock()->SetAnime("Parrying", false, 1.0f);
 			KdEffekseerManager::GetInstance().Play("Player/hit_hanmado_0409.efkefc", m_target.lock()->GetShield().lock()->GetParryPoint().Translation(), 0.5f, 0.5f, false);
 			return;
 		}
