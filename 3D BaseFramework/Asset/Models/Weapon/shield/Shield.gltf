@@ -1,6 +1,6 @@
 {
 	"asset":{
-		"generator":"Khronos glTF Blender I/O v4.1.62",
+		"generator":"Khronos glTF Blender I/O v4.1.63",
 		"version":"2.0"
 	},
 	"extensionsUsed":[
@@ -72,9 +72,12 @@
 				}
 			},
 			"name":"DefaultMaterial.002",
+			"normalTexture":{
+				"index":0
+			},
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
-					"index":0
+					"index":1
 				},
 				"roughnessFactor":0.5527864098548889
 			}
@@ -114,9 +117,18 @@
 		{
 			"sampler":0,
 			"source":0
+		},
+		{
+			"sampler":0,
+			"source":1
 		}
 	],
 	"images":[
+		{
+			"mimeType":"image/png",
+			"name":"DivineShield_Normal",
+			"uri":"DivineShield_Normal.png"
+		},
 		{
 			"mimeType":"image/png",
 			"name":"DivineShield_AlbedoTransparency",

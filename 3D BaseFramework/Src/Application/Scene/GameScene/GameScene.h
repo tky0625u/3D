@@ -16,4 +16,6 @@ public :
 private:
 
 	void Event() override;
+
+	bool loop = true;
 };

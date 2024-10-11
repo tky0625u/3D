@@ -10,6 +10,8 @@ public:
 	void Start()   override;
 	void End()     override;
 
+	void Stumble();
+
 private:
 
 };

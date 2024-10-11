@@ -4,7 +4,7 @@
 class Player;
 class Enemy_ConText;
 class Enemy_ActionState;
-class Enemy_UI;
+class Enemy_HP;
 
 class EnemyBase :public CharacterBase, public std::enable_shared_from_this<EnemyBase>
 {
@@ -45,7 +45,7 @@ public:
 	UINT GetActionType()const { return m_actionType; }
 
 protected:
-	std::shared_ptr<Enemy_UI>          m_ui         = nullptr;
+	std::shared_ptr<Enemy_HP>          m_hp         = nullptr;
 	std::shared_ptr<Enemy_ConText>     m_conText    = nullptr;
 	std::weak_ptr<Player> m_player;
 	std::weak_ptr<Enemy_ActionState>   m_state;

@@ -14,7 +14,6 @@ public:
 
 	void SetTarget(std::shared_ptr<EnemyBase> target) { m_target = target; }
 
-	virtual void Appeal (std::shared_ptr<Enemy_ConText> context) = 0;              //アピール
 	virtual void Idol   (std::shared_ptr<Enemy_ConText> context) = 0;              //待ち
 	virtual void Run    (std::shared_ptr<Enemy_ConText> context) = 0;              //走り
 	virtual void Attack (std::shared_ptr<Enemy_ConText> context) = 0;              //攻撃

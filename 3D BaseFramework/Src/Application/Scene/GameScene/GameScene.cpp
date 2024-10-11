@@ -8,6 +8,8 @@
 void GameScene::Event()
 {
 	ObjectManager::Instance().DeleteEnemyList();
+
+	KdShaderManager::Instance().WorkAmbientController().SetDirLight(Math::Vector3{ 0.0f,-1.0f,0.0f }, Math::Vector3{ 1.5f,1.5f,1.3f });
 }
 
 void GameScene::Update()

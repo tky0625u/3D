@@ -184,6 +184,12 @@
     <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal">
       <UniqueIdentifier>{a335f648-2bb7-4090-b39d-d6bacf9e2a72}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\UI\Enemy\HP">
+      <UniqueIdentifier>{620356b5-12c6-443d-acc3-dfe6ba4f1402}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Loading">
+      <UniqueIdentifier>{2952061d-de44-4de2-80ad-a73bb15af75d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -453,9 +459,6 @@
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble\Bone_Stumble.h">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\UI\Enemy\Enemy_UI.h">
-      <Filter>Src\Application\GameObject\UI\Enemy</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\UI\Player\Player_UI_Manager.h">
       <Filter>Src\Application\GameObject\UI\Player</Filter>
     </ClInclude>
@@ -470,6 +473,12 @@
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal\Bone_Appeal.h">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\UI\Enemy\HP\Enemy_HP.h">
+      <Filter>Src\Application\GameObject\UI\Enemy\HP</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Loading\Loading.h">
+      <Filter>Src\Application\GameObject\Loading</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -707,9 +716,6 @@
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble\Bone_Stumble.cpp">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\UI\Enemy\Enemy_UI.cpp">
-      <Filter>Src\Application\GameObject\UI\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\GameObject\UI\Player\Player_UI_Manager.cpp">
       <Filter>Src\Application\GameObject\UI\Player</Filter>
     </ClCompile>
@@ -724,6 +730,12 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal\Bone_Appeal.cpp">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\UI\Enemy\HP\Enemy_HP.cpp">
+      <Filter>Src\Application\GameObject\UI\Enemy\HP</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Loading\Loading.cpp">
+      <Filter>Src\Application\GameObject\Loading</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

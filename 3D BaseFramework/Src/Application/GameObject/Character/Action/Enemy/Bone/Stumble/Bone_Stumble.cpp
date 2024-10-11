@@ -17,6 +17,8 @@ void Bone_Stumble::Start()
 			m_flow = Flow::EndType;
 			return;
 		}
+
+		Stumble();
 	}
 }
 
@@ -36,4 +38,14 @@ void Bone_Stumble::End()
 			return;
 		}
 	}
+}
+
+void Bone_Stumble::Stumble()
+{
+	Math::Matrix _nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_target.lock()->GetParam().Angle));
+	Math::Vector3 _nowVec = Math::Vector3::TransformNormal(Math::Vector3{ m_target.lock()->GetParam().ForwardX, m_target.lock()->GetParam().ForwardY, m_target.lock()->GetParam().ForwardZ }, _nowRot);
+	_nowVec.y = 0.0f;
+	_nowVec *= -1.0f;
+	_nowVec.Normalize();
+	m_target.lock()->SetMove(_nowVec, 0.1f);
 }

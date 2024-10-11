@@ -7,7 +7,6 @@ public:
 	Bone_ActionState()                                                         { Init(); }
 	~Bone_ActionState()                                               override {};
 
-	void Appeal (std::shared_ptr<Enemy_ConText> context)              override; //アピール
 	void Idol   (std::shared_ptr<Enemy_ConText> context)              override; //待ち
 	void Run    (std::shared_ptr<Enemy_ConText> context)              override; //走り
 	void Attack (std::shared_ptr<Enemy_ConText> context)              override; //攻撃

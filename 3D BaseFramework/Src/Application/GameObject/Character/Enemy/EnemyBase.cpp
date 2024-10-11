@@ -3,13 +3,13 @@
 #include"../../../Scene/SceneManager.h"
 #include"../Player/Player.h"
 #include"../Action/Enemy/Enemy_ConText.h"
-#include"../../UI/Enemy/Enemy_UI.h"
+#include"../../UI/Enemy/HP/Enemy_HP.h"
 
 void EnemyBase::Update()
 {
 	CharacterBase::Update();
 
-	m_ui->Update();
+	m_hp->Update();
 }
 
 void EnemyBase::PostUpdate()
@@ -34,7 +34,7 @@ void EnemyBase::Action()
 
 void EnemyBase::DrawSprite()
 {
-	m_ui->DrawSprite();
+	m_hp->DrawSprite();
 }
 
 void EnemyBase::Init()
@@ -49,10 +49,10 @@ void EnemyBase::Init()
 
 	m_ObjType = ObjType::oEnemy;
 
-	m_ui = std::make_shared<Enemy_UI>();
-	m_ui->SetTarget(shared_from_this());
-	m_ui->SetCamera(m_player.lock()->GetCamera().lock());
-	m_ui->Init();
+	m_hp = std::make_shared<Enemy_HP>();
+	m_hp->SetTarget(shared_from_this());
+	m_hp->SetCamera(m_player.lock()->GetCamera().lock());
+	m_hp->Init();
 }
 
 void EnemyBase::CrushingAction()

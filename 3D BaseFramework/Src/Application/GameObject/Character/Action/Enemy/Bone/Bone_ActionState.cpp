@@ -11,15 +11,6 @@
 #include"Hit/Bone_Hit.h"
 #include"Stumble/Bone_Stumble.h"
 
-void Bone_ActionState::Appeal(std::shared_ptr<Enemy_ConText> context)
-{
-	//std::shared_ptr<Bone_Appeal> appeal = std::make_shared<Bone_Appeal>();
-	//if (m_target.expired())return;
-	//appeal->SetTarget(m_target.lock());
-	//context->SetState(appeal);
-	//m_target.lock()->SetNextState(appeal);
-}
-
 void Bone_ActionState::Idol(std::shared_ptr<Enemy_ConText> context)
 {
 	std::shared_ptr<Bone_Idol> idol = std::make_shared<Bone_Idol>();
