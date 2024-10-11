@@ -23,7 +23,10 @@ public:
 
 	// デバッグ
 	void AddBone();
+	void AddWeapon(std::string _filePath,std::string _weaponName);
 	void ChangeWeapon(std::string _swordName, std::string _shieldName);
+	const std::vector<std::string> GetSwordNameList() const { return m_swordNameList; }
+	const std::vector<std::string> GetShieldNameList() const { return m_shieldNameList; }
 
 	std::weak_ptr<Player> GetPlayer()const { return m_player; }
 	std::vector<std::weak_ptr<EnemyBase>> GetEnemyList()const { return m_EnemyList; }
@@ -40,6 +43,10 @@ private:
 	bool                                  m_slowFlg  = false;
 	std::vector<std::weak_ptr<EnemyBase>> m_EnemyList;
 	std::vector<std::weak_ptr<Bone>>      m_BoneList;
+
+	//デバッグ
+	std::vector<std::string>              m_swordNameList;
+	std::vector<std::string>              m_shieldNameList;
 
 private:
 	ObjectManager() {};

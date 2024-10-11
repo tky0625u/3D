@@ -401,7 +401,7 @@ void Application::ImGuiProcess()
 				// 体力
 				ImGui::Text((const char*)u8"　体力 　　HP=%d", _player->GetParam().Hp);
 				int hp = _player->GetParam().Hp;
-				ImGui::SliderInt("HP%d", &hp, 1, 100);
+				ImGui::SliderInt("HP", &hp, 1, 100);
 				// 攻撃力
 				ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _player->GetParam().Atk);
 				int atk = _player->GetParam().Atk;
@@ -427,7 +427,7 @@ void Application::ImGuiProcess()
 				float angle = _player->GetParam().Angle;
 				ImGui::SliderFloat("Angle", &angle, 0, 360);
 				// 大きさ
-				ImGui::Text((const char*)u8"　大きさ 　Size=%.2f,y=%.2f,z=%.2f", _player->GetParam().Size);
+				ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _player->GetParam().Size);
 				float size = _player->GetParam().Size;
 				ImGui::SliderFloat("Size", &size, 1, 100);
 				// 攻撃範囲
@@ -441,13 +441,29 @@ void Application::ImGuiProcess()
 				int _inviTime = _player->GetinviTime();
 				ImGui::SliderInt("InviTIme", &_inviTime, 0, 300);
 				// 剣
-				ImGui::Text((const char*)u8"　剣 Sword=%c", _player->GetSword().lock()->GetWeaponName());
+				ImGui::Text((const char*)u8"　剣 Sword=%s", _player->GetSword().lock()->GetWeaponName().c_str());
+				static std::string _swordName = _player->GetSword().lock()->GetWeaponName().c_str();
+				for (auto& sword : ObjectManager::Instance().GetSwordNameList())
+				{
+					if (ImGui::Button(sword.c_str()))
+					{
+						_swordName = sword;
+					}
+				}
 				// 盾
-				ImGui::Text((const char*)u8"　盾 Shield=%c", _player->GetShield().lock()->GetWeaponName());
-				
+				ImGui::Text((const char*)u8"　盾 Shield=%s", _player->GetShield().lock()->GetWeaponName().c_str());
+				static std::string _shieldName = _player->GetShield().lock()->GetWeaponName().c_str();
+				for (auto& shield : ObjectManager::Instance().GetShieldNameList())
+				{
+					if (ImGui::Button(shield.c_str()))
+					{
+						_shieldName = shield;
+					}
+				}
+
 				_player->SetParam(hp, atk, speed, stamina, pos, _player->GetParam().Dir, angle, size, range, Math::Vector3{ _player->GetParam().ForwardX, _player->GetParam().ForwardY, _player->GetParam().ForwardZ });
 				_player->SetInviTime(_inviTime);
-				ObjectManager::Instance().ChangeWeapon(_player->GetSword().lock()->GetWeaponName(), _player->GetShield().lock()->GetWeaponName());
+				ObjectManager::Instance().ChangeWeapon(_swordName, _shieldName);
 
 				ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
@@ -490,7 +506,7 @@ void Application::ImGuiProcess()
 						// 体力
 						ImGui::Text((const char*)u8"　体力 　　HP=%d", _boneList[operation].lock()->GetParam().Hp);
 						int hp = _boneList[operation].lock()->GetParam().Hp;
-						ImGui::SliderInt("HP%d", &hp, 1, 100);
+						ImGui::SliderInt("HP", &hp, 1, 100);
 						// 攻撃力
 						ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _boneList[operation].lock()->GetParam().Atk);
 						int atk = _boneList[operation].lock()->GetParam().Atk;

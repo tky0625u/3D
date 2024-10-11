@@ -72,29 +72,29 @@ void ObjectManager::PlayerWrite()
 {
 	nlohmann::json _json;
 
-	_json["Name"] = "Player";
-	_json["PosX"] = m_player.lock()->GetParam().Pos.x;
-	_json["PosY"] = m_player.lock()->GetParam().Pos.y;
-	_json["PosZ"] = m_player.lock()->GetParam().Pos.z;
-	_json["DirX"] = m_player.lock()->GetParam().Dir.x;
-	_json["DirY"] = m_player.lock()->GetParam().Dir.y;
-	_json["DirZ"] = m_player.lock()->GetParam().Dir.z;
-	_json["Size"] = m_player.lock()->GetParam().Size;
-	_json["Angle"] = m_player.lock()->GetParam().Angle;
-	_json["HP"] = m_player.lock()->GetParam().Hp;
-	_json["ATK"] = m_player.lock()->GetParam().Atk;
-	_json["Speed"] = m_player.lock()->GetParam().Sp;
-	_json["Stamina"] = m_player.lock()->GetParam().Sm;
-	_json["ATKRange"] = m_player.lock()->GetParam().AtkRange;
-	_json["ForwardX"] = m_player.lock()->GetParam().ForwardX;
-	_json["ForwardY"] = m_player.lock()->GetParam().ForwardY;
-	_json["ForwardZ"] = m_player.lock()->GetParam().ForwardZ;
-	_json["InviTime"] = m_player.lock()->GetinviTime();
-	_json["SwordName"] = m_player.lock()->GetSword().lock()->GetWeaponName();
-	_json["ShieldName"]= m_player.lock()->GetShield().lock()->GetWeaponName();
+	_json["Player"]["Name"] = "Player";
+	_json["Player"]["PosX"] = m_player.lock()->GetParam().Pos.x;
+	_json["Player"]["PosY"] = m_player.lock()->GetParam().Pos.y;
+	_json["Player"]["PosZ"] = m_player.lock()->GetParam().Pos.z;
+	_json["Player"]["DirX"] = m_player.lock()->GetParam().Dir.x;
+	_json["Player"]["DirY"] = m_player.lock()->GetParam().Dir.y;
+	_json["Player"]["DirZ"] = m_player.lock()->GetParam().Dir.z;
+	_json["Player"]["Size"] = m_player.lock()->GetParam().Size;
+	_json["Player"]["Angle"] = m_player.lock()->GetParam().Angle;
+	_json["Player"]["HP"] = m_player.lock()->GetParam().Hp;
+	_json["Player"]["ATK"] = m_player.lock()->GetParam().Atk;
+	_json["Player"]["Speed"] = m_player.lock()->GetParam().Sp;
+	_json["Player"]["Stamina"] = m_player.lock()->GetParam().Sm;
+	_json["Player"]["ATKRange"] = m_player.lock()->GetParam().AtkRange;
+	_json["Player"]["ForwardX"] = m_player.lock()->GetParam().ForwardX;
+	_json["Player"]["ForwardY"] = m_player.lock()->GetParam().ForwardY;
+	_json["Player"]["ForwardZ"] = m_player.lock()->GetParam().ForwardZ;
+	_json["Player"]["InviTime"] = m_player.lock()->GetinviTime();
+	_json["Player"]["SwordName"] = m_player.lock()->GetSword().lock()->GetWeaponName();
+	_json["Player"]["ShieldName"]= m_player.lock()->GetShield().lock()->GetWeaponName();
 	
 
-	std::ofstream _file("Json/Player_Player.json");
+	std::ofstream _file("Json/Player/Player.json");
 	if (_file.is_open())
 	{
 		_file << _json.dump();
@@ -233,9 +233,9 @@ void ObjectManager::SetPlayerParam()
 		_atkRange = stage["ATKRange"];
 
 		Math::Vector3 _forword = Math::Vector3::Zero;
-		_forword.x = stage["ForwordX"];
-		_forword.y = stage["ForwordY"];
-		_forword.z = stage["ForwordZ"];
+		_forword.x = stage["ForwardX"];
+		_forword.y = stage["ForwardY"];
+		_forword.z = stage["ForwardZ"];
 
 		int _inviTime = 0;
 		_inviTime = stage["InviTime"];
@@ -280,6 +280,15 @@ void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponNam
 
 	for (auto& stage : _json)
 	{
+		if (stage["ObjectName"] == "Sword")
+		{
+			m_swordNameList.push_back(stage["Name"]);
+		}
+		else if (stage["ObjectName"] == "Shield")
+		{
+			m_shieldNameList.push_back(stage["Name"]);
+		}
+
 		if (stage["Name"] != _weaponName)continue;
 
 		Math::Vector3 _pos = Math::Vector3::Zero;
@@ -328,7 +337,9 @@ void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponNam
 		m_id++;
 
 		SceneManager::Instance().AddObject(weapon);
-		break;
+		
+		//デバッグ
+		//break;
 	}
 
 	ifs.close();
@@ -439,19 +450,89 @@ void ObjectManager::AddBone()
 		m_EnemyList.push_back(enemy);
 }
 
+void ObjectManager::AddWeapon(std::string _filePath,std::string _weaponName)
+{
+	//jsonファイル
+	std::string fileName = _filePath;
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& stage : _json)
+	{
+
+		if (stage["Name"] != _weaponName)continue;
+
+		Math::Vector3 _pos = Math::Vector3::Zero;
+		_pos.x = stage["PosX"];
+		_pos.y = stage["PosY"];
+		_pos.z = stage["PosZ"];
+
+		float _size = 0.0f;
+		_size = stage["Size"];
+
+		float _angleY = 0.0f;
+		_angleY = stage["Angle"];
+
+		std::shared_ptr<WeaponBase> weapon = nullptr;
+		int weaponATK = 0;
+		if (stage["ObjectName"] == "Sword")
+		{
+			std::shared_ptr<Sword> sword = std::make_shared<Sword>();
+			m_player.lock()->SetSword(sword);
+			weaponATK = stage["ATK"];
+			sword->SetTrajectPointNUM(stage["Traject"]);
+			weapon = sword;
+		}
+		else if (stage["ObjectName"] == "Shield")
+		{
+			std::shared_ptr<Shield> shield = std::make_shared<Shield>();
+			m_player.lock()->SetShield(shield);
+			weapon = shield;
+		}
+
+		std::string _modelPath;
+		_modelPath = stage["Path"];
+
+		weapon->SetModelPath(_modelPath);
+		weapon->Init();
+		weapon->SetPos(_pos);
+		weapon->SetScale(_size);
+		weapon->SetAngleY(_angleY);
+		if (m_player.expired() == false)
+		{
+			weapon->SetTarget(m_player.lock());
+			if (weaponATK != 0)m_player.lock()->SetATK(stage["ATK"]);
+		}
+		weapon->SetWeaponName(_weaponName);
+		weapon->SetID(m_id);
+		m_id++;
+
+		SceneManager::Instance().AddObject(weapon);
+
+		break;
+	}
+
+	ifs.close();
+}
+
 void ObjectManager::ChangeWeapon(std::string _swordName, std::string _shieldName)
 {
 	if (m_player.lock()->GetSword().lock()->GetWeaponName() != _swordName)
 	{
 		m_player.lock()->GetSword().lock()->Expired();
 
-		SetWeaponParam("Json/Weapon/Sword/Sword.json", _swordName);
+		AddWeapon("Json/Weapon/Sword/Sword.json", _swordName);
 	}
 
 	if (m_player.lock()->GetShield().lock()->GetWeaponName() != _shieldName)
 	{
 		m_player.lock()->GetShield().lock()->Expired();
 
-		SetWeaponParam("Json/Weapon/Shield/Shield.json", _shieldName);
+		AddWeapon("Json/Weapon/Shield/Shield", _shieldName);
 	}
 }
