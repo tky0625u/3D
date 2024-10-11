@@ -12,16 +12,18 @@ public:
 	void StopTimeMinus() { if (m_stopTime > 0)m_stopTime--; }
 	void SlowChange();
 
+	void PlayerWrite();
 	void EnemyWrite();
 
 	void SetObjectParam();
 	void SetPlayerParam();
-	void SetWeaponParam(std::string _filePath, int _id);
+	void SetWeaponParam(std::string _filePath, std::string _weaponName);
 	void SetEnemyParam();
 	void SetStopTime(int _stopTime) { m_stopTime = _stopTime; }
 
 	// デバッグ
 	void AddBone();
+	void ChangeWeapon(std::string _swordName, std::string _shieldName);
 
 	std::weak_ptr<Player> GetPlayer()const { return m_player; }
 	std::vector<std::weak_ptr<EnemyBase>> GetEnemyList()const { return m_EnemyList; }

@@ -1,5 +1,6 @@
 {
 	"0Shield": {
+		"ObjectName":"Shield",
 		"Name": "Shield",
 		"PosX": 1.0,
 		"PosY": 0.0,

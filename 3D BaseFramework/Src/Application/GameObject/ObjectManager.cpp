@@ -68,6 +68,40 @@ void ObjectManager::SlowChange()
 	}
 }
 
+void ObjectManager::PlayerWrite()
+{
+	nlohmann::json _json;
+
+	_json["Name"] = "Player";
+	_json["PosX"] = m_player.lock()->GetParam().Pos.x;
+	_json["PosY"] = m_player.lock()->GetParam().Pos.y;
+	_json["PosZ"] = m_player.lock()->GetParam().Pos.z;
+	_json["DirX"] = m_player.lock()->GetParam().Dir.x;
+	_json["DirY"] = m_player.lock()->GetParam().Dir.y;
+	_json["DirZ"] = m_player.lock()->GetParam().Dir.z;
+	_json["Size"] = m_player.lock()->GetParam().Size;
+	_json["Angle"] = m_player.lock()->GetParam().Angle;
+	_json["HP"] = m_player.lock()->GetParam().Hp;
+	_json["ATK"] = m_player.lock()->GetParam().Atk;
+	_json["Speed"] = m_player.lock()->GetParam().Sp;
+	_json["Stamina"] = m_player.lock()->GetParam().Sm;
+	_json["ATKRange"] = m_player.lock()->GetParam().AtkRange;
+	_json["ForwardX"] = m_player.lock()->GetParam().ForwardX;
+	_json["ForwardY"] = m_player.lock()->GetParam().ForwardY;
+	_json["ForwardZ"] = m_player.lock()->GetParam().ForwardZ;
+	_json["InviTime"] = m_player.lock()->GetinviTime();
+	_json["SwordName"] = m_player.lock()->GetSword().lock()->GetWeaponName();
+	_json["ShieldName"]= m_player.lock()->GetShield().lock()->GetWeaponName();
+	
+
+	std::ofstream _file("Json/Player_Player.json");
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
+	}
+}
+
 void ObjectManager::EnemyWrite()
 {
 	nlohmann::json _json;
@@ -218,8 +252,8 @@ void ObjectManager::SetPlayerParam()
 		SceneManager::Instance().AddObject(player);
 		m_player = player;
 
-		if (stage["Sword"])SetWeaponParam("Json/Weapon/Sword/Sword.json", stage["SwordID"]);
-		if (stage["Shield"])SetWeaponParam("Json/Weapon/Shield/Shield.json", stage["ShieldID"]);
+		SetWeaponParam("Json/Weapon/Sword/Sword.json", stage["SwordName"]);
+		SetWeaponParam("Json/Weapon/Shield/Shield.json", stage["ShieldName"]);
 
 		camera->SetTarget(player);
 		camera->SetID(m_id);
@@ -232,7 +266,7 @@ void ObjectManager::SetPlayerParam()
 	ifs.close();
 }
 
-void ObjectManager::SetWeaponParam(std::string _filePath,int _id)
+void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponName)
 {
 	//jsonファイル
 	std::string fileName = _filePath;
@@ -244,15 +278,9 @@ void ObjectManager::SetWeaponParam(std::string _filePath,int _id)
 		ifs >> _json;
 	}
 
-	int weaponID = 0;
-
 	for (auto& stage : _json)
 	{
-		if (weaponID != _id)
-		{
-			weaponID++;
-			continue;
-		}
+		if (stage["Name"] != _weaponName)continue;
 
 		Math::Vector3 _pos = Math::Vector3::Zero;
 		_pos.x = stage["PosX"];
@@ -267,7 +295,7 @@ void ObjectManager::SetWeaponParam(std::string _filePath,int _id)
 
 		std::shared_ptr<WeaponBase> weapon = nullptr;
 		int weaponATK = 0;
-		if (stage["Name"] == "Sword")
+		if (stage["ObjectName"] == "Sword")
 		{
 			std::shared_ptr<Sword> sword = std::make_shared<Sword>();
 			m_player.lock()->SetSword(sword);
@@ -275,7 +303,7 @@ void ObjectManager::SetWeaponParam(std::string _filePath,int _id)
 			sword->SetTrajectPointNUM(stage["Traject"]);
 			weapon = sword;
 		}
-		else if (stage["Name"] == "Shield")
+		else if (stage["ObjectName"] == "Shield")
 		{
 			std::shared_ptr<Shield> shield = std::make_shared<Shield>();
 			m_player.lock()->SetShield(shield);
@@ -295,6 +323,7 @@ void ObjectManager::SetWeaponParam(std::string _filePath,int _id)
 			weapon->SetTarget(m_player.lock());
 			if (weaponATK != 0)m_player.lock()->SetATK(stage["ATK"]);
 		}
+		weapon->SetWeaponName(_weaponName);
 		weapon->SetID(m_id);
 		m_id++;
 
@@ -408,4 +437,21 @@ void ObjectManager::AddBone()
 
 		SceneManager::Instance().AddObject(enemy);
 		m_EnemyList.push_back(enemy);
+}
+
+void ObjectManager::ChangeWeapon(std::string _swordName, std::string _shieldName)
+{
+	if (m_player.lock()->GetSword().lock()->GetWeaponName() != _swordName)
+	{
+		m_player.lock()->GetSword().lock()->Expired();
+
+		SetWeaponParam("Json/Weapon/Sword/Sword.json", _swordName);
+	}
+
+	if (m_player.lock()->GetShield().lock()->GetWeaponName() != _shieldName)
+	{
+		m_player.lock()->GetShield().lock()->Expired();
+
+		SetWeaponParam("Json/Weapon/Shield/Shield.json", _shieldName);
+	}
 }

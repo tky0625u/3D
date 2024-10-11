@@ -1,5 +1,6 @@
 {
 	"0Sword": {
+		"ObjectName": "Sword",
 		"Name": "Sword",
 		"ATK": 10,
 		"PosX": 1.0,
@@ -10,8 +11,9 @@
 		"Traject": 10,
 		"Path": "Asset/Models/Weapon/sword/Sword.gltf"
 	},
-	"1Wood": {
-		"Name": "Sword",
+	"1Sword": {
+		"ObjectName": "Sword",
+		"Name": "Wood",
 		"ATK": 1,
 		"PosX": 1.0,
 		"PosY": 0.0,

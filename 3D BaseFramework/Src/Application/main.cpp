@@ -4,6 +4,8 @@
 #include"GameObject/ObjectManager.h"
 #include"GameObject/Character/Enemy/Bone/Bone.h"
 #include"GameObject/Character/Player/Player.h"
+#include"GameObject/Weapon/Sword/Sword.h"
+#include"GameObject/Weapon/Shield/Shield.h"
 
 // ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
 // エントリーポイント
@@ -387,6 +389,11 @@ void Application::ImGuiProcess()
 
 		if (ImGui::TreeNode("Player"))
 		{
+			if (ImGui::Button((const char*)u8"Player保存"))
+			{
+				ObjectManager::Instance().PlayerWrite();
+			}
+
 			if (ObjectManager::Instance().GetPlayer().expired() == false)
 			{
 				std::shared_ptr<Player> _player = ObjectManager::Instance().GetPlayer().lock();
@@ -433,9 +440,14 @@ void Application::ImGuiProcess()
 				ImGui::Text((const char*)u8"　無敵付与時間 InviTime=%d", _player->GetinviTime());
 				int _inviTime = _player->GetinviTime();
 				ImGui::SliderInt("InviTIme", &_inviTime, 0, 300);
-
+				// 剣
+				ImGui::Text((const char*)u8"　剣 Sword=%c", _player->GetSword().lock()->GetWeaponName());
+				// 盾
+				ImGui::Text((const char*)u8"　盾 Shield=%c", _player->GetShield().lock()->GetWeaponName());
+				
 				_player->SetParam(hp, atk, speed, stamina, pos, _player->GetParam().Dir, angle, size, range, Math::Vector3{ _player->GetParam().ForwardX, _player->GetParam().ForwardY, _player->GetParam().ForwardZ });
 				_player->SetInviTime(_inviTime);
+				ObjectManager::Instance().ChangeWeapon(_player->GetSword().lock()->GetWeaponName(), _player->GetShield().lock()->GetWeaponName());
 
 				ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
