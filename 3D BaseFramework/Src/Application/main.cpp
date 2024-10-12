@@ -473,9 +473,19 @@ void Application::ImGuiProcess()
 
 		if (ImGui::TreeNode("Enemy"))
 		{
+			static int _wave = ObjectManager::Instance().GetMaxWave();
+			ImGui::Text((const char*)u8"ウェーブ数 : %d", _wave);
+			static int _nowWave = ObjectManager::Instance().GetnowWave();
+			ImGui::SliderInt((const char*)u8"ウェーブ", &_nowWave, 1, _wave);
+
 			if (ImGui::Button((const char*)u8"Enemy保存"))
 			{
-				ObjectManager::Instance().EnemyWrite();
+				ObjectManager::Instance().EnemyWrite(_nowWave);
+				if (_nowWave == _wave)
+				{
+					_wave++;
+					_nowWave = _wave;
+				}
 			}
 
 			if (ImGui::TreeNode("Bone"))

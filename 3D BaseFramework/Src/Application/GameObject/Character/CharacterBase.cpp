@@ -55,7 +55,7 @@ void CharacterBase::PostUpdate()
 
 	//デバッグ用
 	Math::Color color = { 1,1,1,1 };
-	m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
+	//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
 
 	std::list<KdCollider::CollisionResult> retRayList;
 	for (auto& ret : SceneManager::Instance().GetObjList())
@@ -93,11 +93,11 @@ void CharacterBase::PostUpdate()
 	KdCollider::SphereInfo sphereInfo;
 	Math::Matrix _mat = m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(m_mWorld.Translation()));
 	sphereInfo.m_sphere.Center = _mat.Translation();
-	sphereInfo.m_sphere.Radius = 2.0f;
+	sphereInfo.m_sphere.Radius = 1.0f;
 	sphereInfo.m_type = KdCollider::TypeBump;
 
 	//デバッグ用
-	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
+	m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
 
 	std::list<KdCollider::CollisionResult>retSphereList;
 	for (auto& ret : SceneManager::Instance().GetObjList())

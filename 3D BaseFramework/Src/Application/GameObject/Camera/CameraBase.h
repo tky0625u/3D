@@ -57,4 +57,7 @@ protected:
 
 	// カメラ回転用マウス座標の差分
 	POINT						m_FixMousePos{};
+
+	// デバッグ
+	Math::Vector3               m_pos = Math::Vector3::Zero;
 };

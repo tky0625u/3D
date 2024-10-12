@@ -12,6 +12,45 @@ void TPSCamera::Init()
 	//SetCursorPos(m_FixMousePos.x, m_FixMousePos.y);
 }
 
+void TPSCamera::Update()
+{
+	CameraBase::Update();
+
+	// デバッグ
+	if (SceneManager::Instance().m_stop)
+	{
+		Math::Vector3 dir = Math::Vector3::Zero;
+		if (GetAsyncKeyState('W') & 0x8000)dir.z = 1.0f;
+		if (GetAsyncKeyState('A') & 0x8000)dir.x = -1.0f;
+		if (GetAsyncKeyState('S') & 0x8000)dir.z = -1.0f;
+		if (GetAsyncKeyState('D') & 0x8000)dir.x = 1.0f;
+		if (GetAsyncKeyState('E') & 0x8000)dir.y = 1.0f;
+		if (GetAsyncKeyState('Q') & 0x8000)dir.y = -1.0f;
+		dir.Normalize();
+		Math::Matrix cameraRotYMat =GetRotationYMatrix();
+		dir = Math::Vector3::TransformNormal(dir, cameraRotYMat);
+		dir.Normalize();
+
+		m_pos += dir * 1.0f;
+
+		if (!(GetAsyncKeyState(VK_LSHIFT) & 0x8000))
+		{
+			UpdateRotateByMouse();
+			//ShowCursor(false);
+		}
+		else
+		{
+			ShowCursor(true);
+		}
+
+		m_mRotation = GetRotationMatrix();
+		Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
+		m_mWorld = m_mRotation * Trans;
+		CameraBase::PostUpdate();
+		return;
+	}
+}
+
 void TPSCamera::PostUpdate()
 {
 	// ターゲットの行列(有効な場合利用する)

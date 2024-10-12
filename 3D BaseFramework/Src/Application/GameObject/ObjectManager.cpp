@@ -68,6 +68,12 @@ void ObjectManager::SlowChange()
 	}
 }
 
+bool ObjectManager::IsWaveMax()
+{
+	if (m_nowWave == m_MaxWave)return true;
+	return false;
+}
+
 void ObjectManager::PlayerWrite()
 {
 	nlohmann::json _json;
@@ -102,37 +108,47 @@ void ObjectManager::PlayerWrite()
 	}
 }
 
-void ObjectManager::EnemyWrite()
+void ObjectManager::EnemyWrite(int _waveNum)
 {
 	nlohmann::json _json;
+	std::ifstream _oldFile("Json/Enemy/Enemy.json");
+	if (_oldFile.is_open())
+	{
+		_oldFile >> _json;
+		_oldFile.close();
+	}
+
+	std::string wave = (std::to_string(_waveNum).c_str()) + ((std::string)"Wave");
+	_json[wave].clear();
+
 	for (int bone = 0; bone < m_BoneList.size(); ++bone)
 	{
 		std::string name = (std::to_string(bone).c_str());
 		name += "Bone";
-		_json[name]["Name"] = "Bone";
-		 _json[name]["PosX"] = m_BoneList[bone].lock()->GetParam().Pos.x;
-		_json[name]["PosY"] = m_BoneList[bone].lock()->GetParam().Pos.y;
-		_json[name]["PosZ"] = m_BoneList[bone].lock()->GetParam().Pos.z;
-		_json[name]["DirX"] = m_BoneList[bone].lock()->GetParam().Dir.x;
-		_json[name]["DirY"] = m_BoneList[bone].lock()->GetParam().Dir.y;
-		_json[name]["DirZ"] = m_BoneList[bone].lock()->GetParam().Dir.z;
-		_json[name]["Size"] = m_BoneList[bone].lock()->GetParam().Size;
-		_json[name]["Angle"] = m_BoneList[bone].lock()->GetParam().Angle;
-		_json[name]["HP"] = m_BoneList[bone].lock()->GetParam().Hp;
-		_json[name]["ATK"] = m_BoneList[bone].lock()->GetParam().Atk;
-		_json[name]["Speed"] = m_BoneList[bone].lock()->GetParam().Sp;
-		_json[name]["Stamina"] = m_BoneList[bone].lock()->GetParam().Sm;
-		_json[name]["ATKRange"] = m_BoneList[bone].lock()->GetParam().AtkRange;
-		_json[name]["ForwardX"] = m_BoneList[bone].lock()->GetParam().ForwardX;
-		_json[name]["ForwardY"] = m_BoneList[bone].lock()->GetParam().ForwardY;
-		_json[name]["ForwardZ"] = m_BoneList[bone].lock()->GetParam().ForwardZ;
+		_json[wave][name]["Name"] = "Bone";
+		_json[wave][name]["PosX"] = m_BoneList[bone].lock()->GetParam().Pos.x;
+		_json[wave][name]["PosY"] = m_BoneList[bone].lock()->GetParam().Pos.y;
+		_json[wave][name]["PosZ"] = m_BoneList[bone].lock()->GetParam().Pos.z;
+		_json[wave][name]["DirX"] = m_BoneList[bone].lock()->GetParam().Dir.x;
+		_json[wave][name]["DirY"] = m_BoneList[bone].lock()->GetParam().Dir.y;
+		_json[wave][name]["DirZ"] = m_BoneList[bone].lock()->GetParam().Dir.z;
+		_json[wave][name]["Size"] = m_BoneList[bone].lock()->GetParam().Size;
+		_json[wave][name]["Angle"] = m_BoneList[bone].lock()->GetParam().Angle;
+		_json[wave][name]["HP"] = m_BoneList[bone].lock()->GetParam().Hp;
+		_json[wave][name]["ATK"] = m_BoneList[bone].lock()->GetParam().Atk;
+		_json[wave][name]["Speed"] = m_BoneList[bone].lock()->GetParam().Sp;
+		_json[wave][name]["Stamina"] = m_BoneList[bone].lock()->GetParam().Sm;
+		_json[wave][name]["ATKRange"] = m_BoneList[bone].lock()->GetParam().AtkRange;
+		_json[wave][name]["ForwardX"] = m_BoneList[bone].lock()->GetParam().ForwardX;
+		_json[wave][name]["ForwardY"] = m_BoneList[bone].lock()->GetParam().ForwardY;
+		_json[wave][name]["ForwardZ"] = m_BoneList[bone].lock()->GetParam().ForwardZ;
 	}
 
-	std::ofstream _file("Json/Enemy/Enemy.json");
-	if (_file.is_open())
+	std::ofstream _newFile("Json/Enemy/Enemy.json");
+	if (_newFile.is_open())
 	{
-		_file << _json.dump();
-		_file.close();
+		_newFile << _json.dump();
+		_newFile.close();
 	}
 }
 
@@ -345,19 +361,26 @@ void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponNam
 	ifs.close();
 }
 
-void ObjectManager::SetEnemyParam()
+void ObjectManager::SetEnemyParam(std::string _filePath)
 {
-	//jsonファイル
-	std::string fileName = "Json/Enemy/Enemy.json";
-
-	std::ifstream ifs(fileName.c_str());
-	nlohmann::json _json;
-	if (ifs.is_open())
+	if (m_nowWave == 0)
 	{
-		ifs >> _json;
-	}
+		//jsonファイル
+		std::string fileName = _filePath;
 
-	for (auto& stage : _json)
+		std::ifstream ifs(fileName.c_str());
+		if (ifs.is_open())
+		{
+			ifs >> m_EnemyJson;
+			ifs.close();
+		}
+
+		m_MaxWave = m_EnemyJson.size();
+	}
+	m_nowWave++;
+
+	std::string wave = std::to_string(m_nowWave).c_str() + ((std::string)"Wave");
+	for (auto& stage : m_EnemyJson[wave])
 	{
 		Math::Vector3 _pos = Math::Vector3::Zero;
 		_pos.x = stage["PosX"];
@@ -400,7 +423,7 @@ void ObjectManager::SetEnemyParam()
 		{
 			std::shared_ptr<Bone> bone = std::make_shared<Bone>();
 			m_BoneList.push_back(bone);
-			enemy =bone;
+			enemy = bone;
 		}
 		if (m_player.expired() == false)
 		{
@@ -415,8 +438,6 @@ void ObjectManager::SetEnemyParam()
 		SceneManager::Instance().AddObject(enemy);
 		m_EnemyList.push_back(enemy);
 	}
-
-	ifs.close();
 }
 
 void ObjectManager::AddBone()

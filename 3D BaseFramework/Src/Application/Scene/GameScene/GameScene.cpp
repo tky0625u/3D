@@ -8,6 +8,7 @@
 void GameScene::Event()
 {
 	ObjectManager::Instance().DeleteEnemyList();
+	if(ObjectManager::Instance().GetEnemyList().size()==0 && !ObjectManager::Instance().IsWaveMax())ObjectManager::Instance().SetEnemyParam();
 
 	KdShaderManager::Instance().WorkAmbientController().SetDirLight(Math::Vector3{ 0.0f,-1.0f,0.0f }, Math::Vector3{ 1.5f,1.5f,1.3f });
 }
@@ -40,7 +41,7 @@ void GameScene::Init()
 	//オブジェクトマネジャ
 	ObjectManager::Instance().SetObjectParam();
 	ObjectManager::Instance().SetPlayerParam();
-	ObjectManager::Instance().SetEnemyParam();
+	ObjectManager::Instance().SetEnemyParam("Json/Enemy/Enemy.json");
 
 	KdEffekseerManager::GetInstance().Create(1280, 720);
 }
