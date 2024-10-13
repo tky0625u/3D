@@ -13,11 +13,15 @@ public:
 	virtual void DrawLit()                  override;
 	virtual void Init()                     override;
 
+	void SetPos(Math::Vector3 _pos) { m_pos = _pos; }
+	void SetSize(float _size) { m_size = _size; }
 	void SetTarget(std::shared_ptr<CharacterBase> _target) { m_target = _target; }
 	void SetModelPath(std::string _modelPath) { m_modelPath = _modelPath; }
 	void SetWeaponName(std::string _weaponName) { m_weaponName = _weaponName; }
 
 	const std::string GetWeaponName() const { return m_weaponName; }
+	const float GetSize()const { return m_size; }
+	const Math::Vector3 GetPos(){ return m_pos; }
 
 	// デバッグ
 	void Expired() { m_isExpired = true; }
@@ -28,6 +32,7 @@ protected:
 	std::string                  m_modelPath;
 	std::string                  m_weaponName;
 	Math::Vector3                m_pos      = Math::Vector3::Zero;
+	float                        m_size     = 1.0f;
 	float                        m_dossolve = 0.0f;
 
 };

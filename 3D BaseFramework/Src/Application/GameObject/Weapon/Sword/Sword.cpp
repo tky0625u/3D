@@ -2,10 +2,7 @@
 #include"../../Character/CharacterBase.h"
 
 void Sword::Update()
-{
-	std::shared_ptr<CharacterBase> _target = nullptr;
-	if (m_target.expired() == false)_target = m_target.lock();
-	
+{	
 	for (int t1 = 0; t1 < m_trajectList.size(); ++t1)
 	{
 		for (int t2 = 0; t2 < m_trajectList[t1].size(); ++t2)
@@ -16,9 +13,12 @@ void Sword::Update()
 
 	WeaponBase::Update();
 
+	std::shared_ptr<CharacterBase> _target = nullptr;
+	if (m_target.expired() == false)_target = m_target.lock();
+	Math::Matrix _scale = Math::Matrix::CreateScale(m_size);
 	Math::Matrix _trans = Math::Matrix::CreateTranslation(m_pos);
 	Math::Matrix _targetMat = _target->GetSwordMat();
-	m_mWorld = _trans * _targetMat;
+	m_mWorld = _scale * _trans * _targetMat;
 }
 
 void Sword::PostUpdate()

@@ -59,5 +59,5 @@ protected:
 	POINT						m_FixMousePos{};
 
 	// デバッグ
-	Math::Vector3               m_pos = Math::Vector3::Zero;
+	Math::Vector3               m_pos = {0.0f,50.0f,-80.0f};
 };

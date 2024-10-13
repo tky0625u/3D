@@ -189,7 +189,7 @@ void CharacterBase::CrushingAction()
 void CharacterBase::Hit(int _damege)
 {
 	m_param.Hp -= _damege;
-	if (m_param.Hp <= 0)m_param.Hp;
+	if (m_param.Hp <= 0)m_param.Hp = 0;
 }
 
 void CharacterBase::SetParam(int _hp, int _atk, float _speed, int _stamina, Math::Vector3 _pos, Math::Vector3 _dir, float _angle, float _size, float _atkRange, Math::Vector3 _forword)

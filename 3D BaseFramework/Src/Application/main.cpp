@@ -404,8 +404,6 @@ void Application::ImGuiProcess()
 				ImGui::SliderInt("HP", &hp, 1, 100);
 				// 攻撃力
 				ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _player->GetParam().Atk);
-				int atk = _player->GetParam().Atk;
-				ImGui::SliderInt("ATK", &atk, 1, 100);
 				// 素早さ
 				ImGui::Text((const char*)u8"　素早さ 　SP=%.2f", _player->GetParam().Sp);
 				float speed = _player->GetParam().Sp;
@@ -440,30 +438,112 @@ void Application::ImGuiProcess()
 				ImGui::Text((const char*)u8"　無敵付与時間 InviTime=%d", _player->GetinviTime());
 				int _inviTime = _player->GetinviTime();
 				ImGui::SliderInt("InviTIme", &_inviTime, 0, 300);
-				// 剣
-				ImGui::Text((const char*)u8"　剣 Sword=%s", _player->GetSword().lock()->GetWeaponName().c_str());
+
+				// 武器
 				static std::string _swordName = _player->GetSword().lock()->GetWeaponName().c_str();
-				for (auto& sword : ObjectManager::Instance().GetSwordNameList())
-				{
-					if (ImGui::Button(sword.c_str()))
-					{
-						_swordName = sword;
-					}
-				}
-				// 盾
-				ImGui::Text((const char*)u8"　盾 Shield=%s", _player->GetShield().lock()->GetWeaponName().c_str());
 				static std::string _shieldName = _player->GetShield().lock()->GetWeaponName().c_str();
-				for (auto& shield : ObjectManager::Instance().GetShieldNameList())
+				if (ImGui::TreeNode("Weapon"))
 				{
-					if (ImGui::Button(shield.c_str()))
+					// 剣
+					if (_player->GetSword().expired() == false)
 					{
-						_shieldName = shield;
+						std::shared_ptr<Sword> _sword = _player->GetSword().lock();
+						static Math::Vector3 swordPos = _sword->GetPos();
+						static int swordAtk = _sword->GetATK();
+						static float swordSize = _sword->GetSize();
+						static int traje = _sword->GetTraject();
+						if (ImGui::TreeNode("Sword"))
+						{
+							if (ImGui::Button((const char*)u8"Sword保存"))
+							{
+								ObjectManager::Instance().SwordWrite(_swordName, swordPos, swordAtk, swordSize, traje);
+							}
+
+							ImGui::Text((const char*)u8"　剣 Sword=%s", _player->GetSword().lock()->GetWeaponName().c_str());
+							for (auto& sword : ObjectManager::Instance().GetSwordNameList())
+							{
+								if (ImGui::Button(sword.c_str()))
+								{
+									_swordName = sword;
+								}
+							}
+
+							// 位置
+							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _sword->GetPos().x, _sword->GetPos().y, _sword->GetPos().z);
+							swordPos = _sword->GetPos();
+							ImGui::SliderFloat("PosX", & swordPos.x, -0.5, 0.5);
+							ImGui::SliderFloat("PosY", & swordPos.y, -0.5, 0.5);
+							ImGui::SliderFloat("PosZ", & swordPos.z, -0.5, 0.5);
+							// 攻撃力
+							ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _sword->GetATK());
+							swordAtk = _sword->GetATK();
+							ImGui::SliderInt("ATK", &swordAtk, 1, 100);
+							// 大きさ
+							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _sword->GetSize());
+							swordSize = _sword->GetSize();
+							ImGui::SliderFloat("Size", &swordSize, 1, 100);
+							// トレイルポリゴン
+							ImGui::Text((const char*)u8"　トレイルポリゴン　Traject=%d", _sword->GetTraject());
+							traje = _sword->GetTraject();
+							ImGui::SliderInt("Traject", &traje, 1, 100);
+
+							_sword->SetPos(swordPos);
+							_sword->SetATK(swordAtk);
+							_sword->SetSize(swordSize);
+							_sword->SetTrajectPointNUM(traje);
+
+							ImGui::TreePop();
+						}
 					}
+
+					// 盾
+					if (_player->GetShield().expired() == false)
+					{
+						if (ImGui::TreeNode("Shield"))
+						{
+							std::shared_ptr<Shield> _shield = _player->GetShield().lock();
+							static Math::Vector3 shieldPos = _shield->GetPos();
+							static float shieldSize = _shield->GetSize();
+							if (ImGui::Button((const char*)u8"Shield保存"))
+							{
+								ObjectManager::Instance().ShieldWrite(_shieldName, shieldPos, shieldSize);
+							}
+
+							ImGui::Text((const char*)u8"　盾 Shield=%s", _player->GetShield().lock()->GetWeaponName().c_str());
+							for (auto& shield : ObjectManager::Instance().GetShieldNameList())
+							{
+								if (ImGui::Button(shield.c_str()))
+								{
+									_shieldName = shield;
+								}
+							}
+
+							// 位置
+							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _shield->GetPos().x, _shield->GetPos().y, _shield->GetPos().z);
+							shieldPos = _shield->GetPos();
+							ImGui::SliderFloat("PosX", &shieldPos.x, -0.5, 0.5);
+							ImGui::SliderFloat("PosY", &shieldPos.y, -0.5, 0.5);
+							ImGui::SliderFloat("PosZ", &shieldPos.z, -0.5, 0.5);
+
+							// 大きさ
+							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _shield->GetSize());
+							shieldSize = _shield->GetSize();
+							ImGui::SliderFloat("Size", &shieldSize, 1, 100);
+
+							_shield->SetPos(shieldPos);
+							_shield->SetSize(shieldSize);
+
+							ImGui::TreePop();
+						}
+					}
+
+					ImGui::TreePop();
+
+					ObjectManager::Instance().ChangeWeapon(_swordName, _shieldName);
 				}
 
-				_player->SetParam(hp, atk, speed, stamina, pos, _player->GetParam().Dir, angle, size, range, Math::Vector3{ _player->GetParam().ForwardX, _player->GetParam().ForwardY, _player->GetParam().ForwardZ });
+				_player->SetParam(hp, _player->GetSword().lock()->GetATK(), speed, stamina, pos, _player->GetParam().Dir, angle, size, range, Math::Vector3{_player->GetParam().ForwardX, _player->GetParam().ForwardY, _player->GetParam().ForwardZ});
 				_player->SetInviTime(_inviTime);
-				ObjectManager::Instance().ChangeWeapon(_swordName, _shieldName);
 
 				ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 

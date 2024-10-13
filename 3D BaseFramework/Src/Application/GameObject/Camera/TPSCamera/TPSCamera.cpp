@@ -41,6 +41,7 @@ void TPSCamera::Update()
 		else
 		{
 			ShowCursor(true);
+
 		}
 
 		m_mRotation = GetRotationMatrix();
@@ -72,7 +73,7 @@ void TPSCamera::PostUpdate()
 	{
 		ShowCursor(true);
 	}
-
+	
 	m_mRotation = GetRotationMatrix();
 	m_mWorld = m_mLocalPos * m_mRotation * _targetMat;
 

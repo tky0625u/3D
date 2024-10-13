@@ -152,6 +152,64 @@ void ObjectManager::EnemyWrite(int _waveNum)
 	}
 }
 
+void ObjectManager::SwordWrite(std::string _swordName, Math::Vector3 _pos, int _atk, int _size, int _traject)
+{
+	nlohmann::json _json;
+	std::ifstream _oldFile("Json/Weapon/Sword/Sword.json");
+	if (_oldFile.is_open())
+	{
+		_oldFile >> _json;
+		_oldFile.close();
+	}
+
+	for(auto& _sword: _json)
+	{
+		if (_sword["Name"] != _swordName)continue;
+
+		_sword["PosX"] = _pos.x;
+		_sword["PosY"] = _pos.y;
+		_sword["PosZ"] = _pos.z;
+		_sword["ATK"] = _atk;
+		_sword["Size"] = _size;
+		_sword["Traject"] = _traject;
+	}
+
+	std::ofstream _newFile("Json/Weapon/Sword/Sword.json");
+	if (_newFile.is_open())
+	{
+		_newFile << _json.dump();
+		_newFile.close();
+	}
+}
+
+void ObjectManager::ShieldWrite(std::string _shieldName, Math::Vector3 _pos, int _size)
+{
+	nlohmann::json _json;
+	std::ifstream _oldFile("Json/Weapon/Shield/Shield.json");
+	if (_oldFile.is_open())
+	{
+		_oldFile >> _json;
+		_oldFile.close();
+	}
+
+	for (auto& _shield : _json)
+	{
+		if (_shield["Name"] != _shieldName)continue;
+
+		_shield["PosX"] = _pos.x;
+		_shield["PosY"] = _pos.y;
+		_shield["PosZ"] = _pos.z;
+		_shield["Size"] = _size;
+	}
+
+	std::ofstream _newFile("Json/Weapon/Shield/Shield.json");
+	if (_newFile.is_open())
+	{
+		_newFile << _json.dump();
+		_newFile.close();
+	}
+}
+
 void ObjectManager::SetObjectParam()
 {
 	//jsonファイル
@@ -236,9 +294,6 @@ void ObjectManager::SetPlayerParam()
 		int _hp = 0;
 		_hp = stage["HP"];
 
-		int _atk = 0;
-		_atk = stage["ATK"];
-
 		float _speed = 0.0f;
 		_speed = stage["Speed"];
 
@@ -257,19 +312,20 @@ void ObjectManager::SetPlayerParam()
 		_inviTime = stage["InviTime"];
 
 		std::shared_ptr<Player> player = std::make_shared<Player>();
+		m_player = player;
+
+		SetWeaponParam("Json/Weapon/Sword/Sword.json", stage["SwordName"]);
+		SetWeaponParam("Json/Weapon/Shield/Shield.json", stage["ShieldName"]);
+
 		std::shared_ptr<TPSCamera> camera = std::make_shared<TPSCamera>();
 		player->SetCamera(camera);
-		player->SetParam(_hp, _atk, _speed, _stamina, _pos, _dir, _angleY, _size, _atkRange, _forword);
+		player->SetParam(_hp, player->GetSword().lock()->GetATK(), _speed, _stamina, _pos, _dir, _angleY, _size, _atkRange, _forword);
 		player->Init();
 		player->SetInviTime(_inviTime);
 		player->SetID(m_id);
 		m_id++;
 
 		SceneManager::Instance().AddObject(player);
-		m_player = player;
-
-		SetWeaponParam("Json/Weapon/Sword/Sword.json", stage["SwordName"]);
-		SetWeaponParam("Json/Weapon/Shield/Shield.json", stage["ShieldName"]);
 
 		camera->SetTarget(player);
 		camera->SetID(m_id);
@@ -319,13 +375,14 @@ void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponNam
 		_angleY = stage["Angle"];
 
 		std::shared_ptr<WeaponBase> weapon = nullptr;
-		int weaponATK = 0;
 		if (stage["ObjectName"] == "Sword")
 		{
 			std::shared_ptr<Sword> sword = std::make_shared<Sword>();
-			m_player.lock()->SetSword(sword);
+			int weaponATK = 0;
 			weaponATK = stage["ATK"];
+			sword->SetATK(weaponATK);
 			sword->SetTrajectPointNUM(stage["Traject"]);
+			m_player.lock()->SetSword(sword);
 			weapon = sword;
 		}
 		else if (stage["ObjectName"] == "Shield")
@@ -341,14 +398,10 @@ void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponNam
 		weapon->SetModelPath(_modelPath);
 		weapon->Init();
 		weapon->SetPos(_pos);
-		weapon->SetScale(_size);
+		weapon->SetSize(_size);
 		weapon->SetAngleY(_angleY);
-		if (m_player.expired() == false)
-		{
-			weapon->SetTarget(m_player.lock());
-			if (weaponATK != 0)m_player.lock()->SetATK(stage["ATK"]);
-		}
 		weapon->SetWeaponName(_weaponName);
+		weapon->SetTarget(m_player.lock());
 		weapon->SetID(m_id);
 		m_id++;
 
@@ -500,13 +553,14 @@ void ObjectManager::AddWeapon(std::string _filePath,std::string _weaponName)
 		_angleY = stage["Angle"];
 
 		std::shared_ptr<WeaponBase> weapon = nullptr;
-		int weaponATK = 0;
 		if (stage["ObjectName"] == "Sword")
 		{
 			std::shared_ptr<Sword> sword = std::make_shared<Sword>();
-			m_player.lock()->SetSword(sword);
+			int weaponATK = 0;
 			weaponATK = stage["ATK"];
 			sword->SetTrajectPointNUM(stage["Traject"]);
+			sword->SetATK(weaponATK);
+			m_player.lock()->SetSword(sword);
 			weapon = sword;
 		}
 		else if (stage["ObjectName"] == "Shield")
@@ -522,14 +576,10 @@ void ObjectManager::AddWeapon(std::string _filePath,std::string _weaponName)
 		weapon->SetModelPath(_modelPath);
 		weapon->Init();
 		weapon->SetPos(_pos);
-		weapon->SetScale(_size);
+		weapon->SetSize(_size);
 		weapon->SetAngleY(_angleY);
-		if (m_player.expired() == false)
-		{
-			weapon->SetTarget(m_player.lock());
-			if (weaponATK != 0)m_player.lock()->SetATK(stage["ATK"]);
-		}
 		weapon->SetWeaponName(_weaponName);
+		weapon->SetTarget(m_player.lock());
 		weapon->SetID(m_id);
 		m_id++;
 
