@@ -15,8 +15,8 @@ public:
 
 	void PlayerWrite();
 	void EnemyWrite(int _wave);
-	void SwordWrite(std::string _swordName, Math::Vector3 _pos, int _atk, int _size, int _traject);
-	void ShieldWrite(std::string _shieldName, Math::Vector3 _pos, int _size);
+	void SwordWrite(std::string _swordName);
+	void ShieldWrite(std::string _shieldName);
 
 	void SetObjectParam();
 	void SetPlayerParam();

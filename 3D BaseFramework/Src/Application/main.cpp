@@ -456,7 +456,7 @@ void Application::ImGuiProcess()
 						{
 							if (ImGui::Button((const char*)u8"Sword保存"))
 							{
-								ObjectManager::Instance().SwordWrite(_swordName, swordPos, swordAtk, swordSize, traje);
+								ObjectManager::Instance().SwordWrite(_swordName);
 							}
 
 							ImGui::Text((const char*)u8"　剣 Sword=%s", _player->GetSword().lock()->GetWeaponName().c_str());
@@ -506,7 +506,7 @@ void Application::ImGuiProcess()
 							static float shieldSize = _shield->GetSize();
 							if (ImGui::Button((const char*)u8"Shield保存"))
 							{
-								ObjectManager::Instance().ShieldWrite(_shieldName, shieldPos, shieldSize);
+								ObjectManager::Instance().ShieldWrite(_shieldName);
 							}
 
 							ImGui::Text((const char*)u8"　盾 Shield=%s", _player->GetShield().lock()->GetWeaponName().c_str());

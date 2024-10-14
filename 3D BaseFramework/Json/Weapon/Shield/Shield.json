@@ -1,12 +1,1 @@
-{
-	"0Shield": {
-		"ObjectName":"Shield",
-		"Name": "Shield",
-		"PosX": 0.0,
-		"PosY": -0.1,
-		"PosZ": 0.0,
-		"Size": 1.0,
-		"Angle": 0.0,
-		"Path": "Asset/Models/Weapon/shield/Shield.gltf"
-	}
-}
+{"0Shield":{"Angle":0.0,"Name":"Shield","ObjectName":"Shield","Path":"Asset/Models/Weapon/shield/Shield.gltf","PosX":0.0,"PosY":-0.10000000149011612,"PosZ":0.0,"Size":1.0}}

@@ -45,7 +45,7 @@ void Bone_ActionState::Hit(std::shared_ptr<Enemy_ConText> context, int _damage)
 	if (m_target.lock()->GetParam().Hp <= 0)return;
 	std::shared_ptr<Bone_Hit> hit = std::make_shared<Bone_Hit>();
 	hit->SetTarget(m_target.lock());
-	ObjectManager::Instance().SetStopTime(10);
+	ObjectManager::Instance().SetStopTime(5);
 	context->SetState(hit);
 	m_target.lock()->SetNextAction(hit, m_target.lock()->Action::HitType);
 }

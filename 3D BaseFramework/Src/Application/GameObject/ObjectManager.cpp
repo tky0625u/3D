@@ -152,7 +152,7 @@ void ObjectManager::EnemyWrite(int _waveNum)
 	}
 }
 
-void ObjectManager::SwordWrite(std::string _swordName, Math::Vector3 _pos, int _atk, int _size, int _traject)
+void ObjectManager::SwordWrite(std::string _swordName)
 {
 	nlohmann::json _json;
 	std::ifstream _oldFile("Json/Weapon/Sword/Sword.json");
@@ -166,12 +166,12 @@ void ObjectManager::SwordWrite(std::string _swordName, Math::Vector3 _pos, int _
 	{
 		if (_sword["Name"] != _swordName)continue;
 
-		_sword["PosX"] = _pos.x;
-		_sword["PosY"] = _pos.y;
-		_sword["PosZ"] = _pos.z;
-		_sword["ATK"] = _atk;
-		_sword["Size"] = _size;
-		_sword["Traject"] = _traject;
+		_sword["PosX"] = m_player.lock()->GetSword().lock()->GetPos().x;
+		_sword["PosY"] = m_player.lock()->GetSword().lock()->GetPos().y;
+		_sword["PosZ"] = m_player.lock()->GetSword().lock()->GetPos().z;
+		_sword["ATK"] = m_player.lock()->GetSword().lock()->GetATK();
+		_sword["Size"] = m_player.lock()->GetSword().lock()->GetSize();
+		_sword["Traject"] = m_player.lock()->GetSword().lock()->GetTraject();
 	}
 
 	std::ofstream _newFile("Json/Weapon/Sword/Sword.json");
@@ -182,7 +182,7 @@ void ObjectManager::SwordWrite(std::string _swordName, Math::Vector3 _pos, int _
 	}
 }
 
-void ObjectManager::ShieldWrite(std::string _shieldName, Math::Vector3 _pos, int _size)
+void ObjectManager::ShieldWrite(std::string _shieldName)
 {
 	nlohmann::json _json;
 	std::ifstream _oldFile("Json/Weapon/Shield/Shield.json");
@@ -196,10 +196,10 @@ void ObjectManager::ShieldWrite(std::string _shieldName, Math::Vector3 _pos, int
 	{
 		if (_shield["Name"] != _shieldName)continue;
 
-		_shield["PosX"] = _pos.x;
-		_shield["PosY"] = _pos.y;
-		_shield["PosZ"] = _pos.z;
-		_shield["Size"] = _size;
+		_shield["PosX"] = m_player.lock()->GetShield().lock()->GetPos().x;
+		_shield["PosY"] = m_player.lock()->GetShield().lock()->GetPos().y;
+		_shield["PosZ"] = m_player.lock()->GetShield().lock()->GetPos().z;
+		_shield["Size"] = m_player.lock()->GetShield().lock()->GetSize();
 	}
 
 	std::ofstream _newFile("Json/Weapon/Shield/Shield.json");
