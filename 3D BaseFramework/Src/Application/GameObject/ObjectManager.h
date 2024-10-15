@@ -13,10 +13,11 @@ public:
 	void DeleteObjectList();
 	void StopTimeMinus() { if (m_stopTime > 0)m_stopTime--; }
 	void SlowChange();
+	void Clear();
 	bool IsWaveMax();
 
 	void PlayerWrite();
-	void EnemyWrite(int _wave);
+	void EnemyWrite(int _stage, int _wave);
 	void SwordWrite(std::string _swordName);
 	void ShieldWrite(std::string _shieldName);
 	void ObjectWrite();
@@ -31,6 +32,7 @@ public:
 	void AddBone();
 	void AddWeapon(std::string _filePath,std::string _weaponName);
 	void AddGround();
+	void AddCircle();
 	void AddWall();
 	void ChangeWeapon(std::string _swordName, std::string _shieldName);
 	const std::vector<std::string> GetSwordNameList() const { return m_swordNameList; }
@@ -55,6 +57,9 @@ private:
 	bool                                  m_slowFlg  = false;
 	std::vector<std::weak_ptr<EnemyBase>> m_EnemyList;
 	std::vector<std::weak_ptr<KdGameObject>>    m_ObjectList;
+	std::vector<Math::Vector3>            m_StartPosList;
+	int                                   m_MaxStage = 3;
+	int                                   m_nowStage = 1;
 
 	nlohmann::json                        m_EnemyJson;
 	int                                   m_MaxWave  = 0;

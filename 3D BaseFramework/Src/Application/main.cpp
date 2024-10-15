@@ -426,7 +426,7 @@ void Application::ImGuiProcess()
 					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _player->GetPos().x, _player->GetPos().y, _player->GetPos().z);
 					Math::Vector3 pos = _player->GetPos();
 					ImGui::SliderFloat("PosX", &pos.x, -100, 100);
-					ImGui::SliderFloat("PosY", &pos.y, 0, 100);
+					ImGui::SliderFloat("PosY", &pos.y, 0, 400);
 					ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
 					// 方向
 					ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _player->GetDir().x, _player->GetDir().y, _player->GetDir().z);
@@ -579,14 +579,37 @@ void Application::ImGuiProcess()
 					}
 				}
 
+				static int _stageNum = 1;
+				ImGui::Text((const char*)u8"ステージ数 : %d", _stageNum);
+				static int _nowStage = ObjectManager::Instance().GetnowWave();
+				ImGui::SliderInt((const char*)u8"ステージ", &_nowStage, 1, _stageNum);
+				if (ImGui::Button((const char*)u8"ステージ追加"))
+				{
+					_stageNum++;
+					if (_stageNum - 1 == _nowStage)_nowStage = _stageNum;
+				}
+
 				static int _wave = ObjectManager::Instance().GetMaxWave();
 				ImGui::Text((const char*)u8"ウェーブ数 : %d", _wave);
 				static int _nowWave = ObjectManager::Instance().GetnowWave();
 				ImGui::SliderInt((const char*)u8"ウェーブ", &_nowWave, 1, _wave);
+				if (ImGui::Button((const char*)u8"ウェーブ追加"))
+				{
+					_wave++;
+					if (_wave - 1 == _nowWave)_nowWave = _wave;
+				}
+				if (ImGui::Button((const char*)u8"ウェーブ削除"))
+				{
+					if (_wave > 1)
+					{
+						_wave--;
+						if (_wave + 1 == _nowWave)_nowWave = _wave;
+					}
+				}
 
 				if (ImGui::Button((const char*)u8"Enemy保存"))
 				{
-					ObjectManager::Instance().EnemyWrite(_nowWave);
+					ObjectManager::Instance().EnemyWrite(_nowStage, _nowWave);
 					if (_nowWave == _wave)
 					{
 						_wave++;
@@ -638,7 +661,7 @@ void Application::ImGuiProcess()
 							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetPos().x, _boneList[operation].lock()->GetPos().y, _boneList[operation].lock()->GetPos().z);
 							Math::Vector3 pos = _boneList[operation].lock()->GetPos();
 							ImGui::SliderFloat("PosX", &pos.x, -100, 100);
-							ImGui::SliderFloat("PosY", &pos.y, 0, 100);
+							ImGui::SliderFloat("PosY", &pos.y, 0, 400);
 							ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
 							// 方向
 							ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetDir().x, _boneList[operation].lock()->GetDir().y, _boneList[operation].lock()->GetDir().z);
@@ -684,9 +707,11 @@ void Application::ImGuiProcess()
 			{
 				if (ImGui::Button((const char*)u8"Object保存"))ObjectManager::Instance().ObjectWrite();
 				static int Goperation = -1;
+				static int Coperation = -1;
 				static int Woperation = -1;
 
 				std::vector<std::weak_ptr<KdGameObject>> groundList;
+				std::vector<std::weak_ptr<KdGameObject>> circleList;
 				std::vector<std::weak_ptr<KdGameObject>> wallList;
 				std::vector<std::weak_ptr<KdGameObject>> skyboxList;
 				for (auto& obj : ObjectManager::Instance().GetObjectList())
@@ -696,6 +721,10 @@ void Application::ImGuiProcess()
 						if (obj.lock()->GetName() == "Ground")
 						{
 							groundList.push_back(obj);
+						}
+						else if (obj.lock()->GetName() == "Circle")
+						{
+							circleList.push_back(obj);
 						}
 						else if (obj.lock()->GetName() == "Wall")
 						{
@@ -741,12 +770,69 @@ void Application::ImGuiProcess()
 						if (ImGui::Button((const char*)u8"消滅"))
 						{
 							groundList[Goperation].lock()->Expired();
+							if (circleList.size()==groundList.size())circleList[Goperation].lock()->Expired();
 							ObjectManager::Instance().DeleteObjectList();
 							Goperation = -1;
+							Coperation = -1;
 						}
 
 						ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 					}
+					ImGui::TreePop();
+				}
+				if (ImGui::TreeNode("Circle"))
+				{
+					if (ImGui::Button((const char*)u8"Circle追加"))
+					{
+						if (groundList.size() > circleList.size())ObjectManager::Instance().AddCircle();
+					}
+
+					if (circleList.size() != 0)
+					{
+						// 角度
+						ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", circleList[0].lock()->GetAngle());
+						float angle = circleList[0].lock()->GetAngle();
+						ImGui::SliderFloat("Angle", &angle, 0, 360);
+						// 大きさ
+						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", circleList[0].lock()->GetSize());
+						float size = circleList[0].lock()->GetSize();
+						ImGui::SliderFloat("Size", &size, 1, 100);
+
+						for (int c = 0; c < circleList.size(); ++c)
+						{
+							circleList[c].lock()->SetSize(size);
+							circleList[c].lock()->SetAngle(angle);
+
+							if (ImGui::Button(std::to_string(c + 1).c_str()))Coperation = c;
+						}
+
+						if (Coperation != -1)
+						{
+							if (circleList[Coperation].expired() == false)
+							{
+								ImGui::Text((const char*)u8"%d個目", Coperation + 1);
+								// 位置
+								Math::Vector3 pos;
+								ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", circleList[Coperation].lock()->GetPos().x, circleList[Coperation].lock()->GetPos().y, circleList[Coperation].lock()->GetPos().z);
+								pos = circleList[Coperation].lock()->GetPos();
+								if (groundList[Coperation].expired() == false)pos.y = groundList[Coperation].lock()->GetPos().y;
+								ImGui::SliderFloat("PosX", &pos.x, -100, 100);
+								ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
+
+								circleList[Coperation].lock()->SetPos(pos);
+
+								if (ImGui::Button((const char*)u8"消滅"))
+								{
+									circleList[Coperation].lock()->Expired();
+									ObjectManager::Instance().DeleteObjectList();
+									Coperation = -1;
+								}
+							}
+						}
+					}
+
+					ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+
 					ImGui::TreePop();
 				}
 				if (ImGui::TreeNode("Wall"))

@@ -8,6 +8,8 @@
 
 //地面
 #include"../GameObject/Stage/Ground/Ground.h"
+//魔法陣
+#include"../GameObject/Stage/Circle/Circle.h"
 //壁
 #include"../GameObject/Stage/Wall/Wall.h"
 //スカイボックス
@@ -71,6 +73,22 @@ void ObjectManager::SlowChange()
 	}
 }
 
+void ObjectManager::Clear()
+{
+	if (m_MaxStage == m_nowStage)
+	{
+
+	}
+	else
+	{
+		m_nowStage++;
+		m_player.lock()->SetPos(m_StartPosList[m_nowStage - 1]);
+		m_nowWave = 0;
+		std::string _filePath = ((std::string)"Json/Enemy/Stage") + (std::to_string(m_nowStage).c_str()) + ((std::string)".json");
+		SetEnemyParam(_filePath);
+	}
+}
+
 bool ObjectManager::IsWaveMax()
 {
 	if (m_nowWave == m_MaxWave)return true;
@@ -111,17 +129,18 @@ void ObjectManager::PlayerWrite()
 	}
 }
 
-void ObjectManager::EnemyWrite(int _waveNum)
+void ObjectManager::EnemyWrite(int _stage, int _wave)
 {
+	std::string _stagePath = ((std::string)"Json/Enemy/Stage") + std::to_string(_stage).c_str() + ((std::string)".json");
 	nlohmann::json _json;
-	std::ifstream _oldFile("Json/Enemy/Enemy.json");
+	std::ifstream _oldFile(_stagePath);
 	if (_oldFile.is_open())
 	{
 		_oldFile >> _json;
 		_oldFile.close();
 	}
 
-	std::string wave = (std::to_string(_waveNum).c_str()) + ((std::string)"Wave");
+	std::string wave = (std::to_string(_wave).c_str()) + ((std::string)"Wave");
 	_json[wave].clear();
 
 	for (auto& enemy:m_EnemyList)
@@ -155,7 +174,7 @@ void ObjectManager::EnemyWrite(int _waveNum)
 		_json[wave][_category][_name]["ForwardZ"] = enemy.lock()->GetForward().z;
 	}
 
-	std::ofstream _newFile("Json/Enemy/Enemy.json");
+	std::ofstream _newFile(_stagePath);
 	if (_newFile.is_open())
 	{
 		_newFile << _json.dump();
@@ -236,6 +255,13 @@ void ObjectManager::ObjectWrite()
 			_name = (std::to_string(g).c_str()) + ((std::string)"Ground");
 			g++;
 		}
+		else if (obj.lock()->GetName() == "Circle")
+		{
+			static int c = 0;
+			_category = "Circle";
+			_name = (std::to_string(c).c_str()) + ((std::string)"Circle");
+			c++;
+		}
 		else if (obj.lock()->GetName() == "Wall")
 		{
 			static int w = 0;
@@ -301,6 +327,10 @@ void ObjectManager::SetObjectParam()
 			{
 				obj = std::make_shared<Ground>();
 			}
+			if (_name == "Circle")
+			{
+				obj = std::make_shared<Circle>();
+			}
 			if (_name == "Wall")
 			{
 				obj = std::make_shared<Wall>();
@@ -319,6 +349,7 @@ void ObjectManager::SetObjectParam()
 			m_id++;
 
 			m_ObjectList.push_back(obj);
+			if (_name == "Circle")m_StartPosList.push_back(_pos);
 			SceneManager::Instance().AddObject(obj);
 		}
 	}
@@ -344,9 +375,9 @@ void ObjectManager::SetPlayerParam()
 		_name = stage["Name"];
 
 		Math::Vector3 _pos = Math::Vector3::Zero;
-		_pos.x = stage["PosX"];
-		_pos.y = stage["PosY"];
-		_pos.z = stage["PosZ"];
+		_pos.x = m_StartPosList[m_nowStage - 1].x;
+		_pos.y = m_StartPosList[m_nowStage - 1].y;
+		_pos.z = m_StartPosList[m_nowStage - 1].z;
 
 		Math::Vector3 _dir = Math::Vector3::Zero;
 		_dir.x = stage["DirX"];
@@ -519,7 +550,7 @@ void ObjectManager::SetEnemyParam(std::string _filePath)
 
 			Math::Vector3 _pos = Math::Vector3::Zero;
 			_pos.x = stage["PosX"];
-			_pos.y = stage["PosY"];
+			_pos.y = m_StartPosList[m_nowStage - 1].y;
 			_pos.z = stage["PosZ"];
 
 			Math::Vector3 _dir = Math::Vector3::Zero;
@@ -694,6 +725,27 @@ void ObjectManager::AddGround()
 	float _size = 10.0f;
 	float _angleY = 0.0f;
 	std::shared_ptr<Ground> obj = std::make_shared<Ground>();
+
+	obj->SetPos(_pos);
+	obj->SetSize(_size);
+	obj->SetAngle(_angleY);
+	obj->SetName(_name);
+	obj->SetID(m_id);
+	obj->Init();
+
+	m_id++;
+
+	m_ObjectList.push_back(obj);
+	SceneManager::Instance().AddObject(obj);
+}
+
+void ObjectManager::AddCircle()
+{
+	std::string _name = "Circle";
+	Math::Vector3 _pos = Math::Vector3::Zero;
+	float _size = 10.0f;
+	float _angleY = 0.0f;
+	std::shared_ptr<Circle> obj = std::make_shared<Circle>();
 
 	obj->SetPos(_pos);
 	obj->SetSize(_size);

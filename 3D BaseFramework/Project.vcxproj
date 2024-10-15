@@ -186,6 +186,7 @@
     <ClInclude Include="Src\Application\GameObject\Loading\Loading.h" />
     <ClInclude Include="Src\Application\GameObject\ObjectManager.h" />
     <ClInclude Include="Src\Application\GameObject\SkyBox\SkyBox.h" />
+    <ClInclude Include="Src\Application\GameObject\Stage\Circle\Circle.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Ground\Ground.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Stage.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Wall\Wall.h" />
@@ -275,6 +276,7 @@
     <ClCompile Include="Src\Application\GameObject\Loading\Loading.cpp" />
     <ClCompile Include="Src\Application\GameObject\ObjectManager.cpp" />
     <ClCompile Include="Src\Application\GameObject\SkyBox\SkyBox.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Stage\Circle\Circle.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Ground\Ground.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Stage.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Wall\Wall.cpp" />

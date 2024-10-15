@@ -47,7 +47,7 @@ void CharacterBase::PostUpdate()
 {
 	KdCollider::RayInfo rayInfo;
 	rayInfo.m_pos = m_pos;
-	float LitleUP = 0.3f;
+	float LitleUP = 1.0f;
 	rayInfo.m_pos.y += LitleUP;
 	rayInfo.m_dir = Math::Vector3::Down; 
 	rayInfo.m_range = m_gravity + LitleUP;

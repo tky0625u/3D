@@ -5,6 +5,7 @@
 #include"Application/main.h"
 #include"../Action/Player/Player_ConText.h"
 #include"../../UI/Player/Player_UI_Manager.h"
+#include"../../../Scene/SceneManager.h"
 
 void Player::Action()
 {
@@ -24,7 +25,32 @@ void Player::Update()
 
 void Player::PostUpdate()
 {
+	if (ObjectManager::Instance().GetEnemyList().size() == 0)
+	{
+		KdCollider::RayInfo rayInfo;
+		rayInfo.m_pos = m_pos;
+		float LitleUP = 1.0f;
+		rayInfo.m_pos.y += LitleUP;
+		rayInfo.m_dir = Math::Vector3::Down;
+		rayInfo.m_range = m_gravity + LitleUP;
+		rayInfo.m_type = KdCollider::TypeEvent;
+
+		//デバッグ用
+		Math::Color color = { 1,1,1,1 };
+		m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
+
+		std::list<KdCollider::CollisionResult> retRayList;
+		for (auto& ret : ObjectManager::Instance().GetObjectList())
+		{
+			if (ret.lock()->Intersects(rayInfo, &retRayList))
+			{
+				ObjectManager::Instance().Clear();
+			}
+		}
+	}
+
 	CharacterBase::PostUpdate();
+
 	m_camera.lock()->SlowChange(ObjectManager::Instance().GetSlowFlg());
 
 	if (ObjectManager::Instance().GetSlowFlg())

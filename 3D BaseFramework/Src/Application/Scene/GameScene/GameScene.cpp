@@ -41,7 +41,7 @@ void GameScene::Init()
 	//オブジェクトマネジャ
 	ObjectManager::Instance().SetObjectParam();
 	ObjectManager::Instance().SetPlayerParam();
-	ObjectManager::Instance().SetEnemyParam("Json/Enemy/Enemy.json");
+	ObjectManager::Instance().SetEnemyParam("Json/Enemy/Stage1.json");
 
 	KdEffekseerManager::GetInstance().Create(1280, 720);
 }
