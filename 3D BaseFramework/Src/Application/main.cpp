@@ -390,419 +390,436 @@ void Application::ImGuiProcess()
 		ImGui::Checkbox((const char*)u8"ストップ", &stop);
 		SceneManager::Instance().m_stop = stop;
 
-		if (ImGui::TreeNode("Player"))
+		switch (SceneManager::Instance().GetNowSceneType())
 		{
-			if (ImGui::Button((const char*)u8"Player保存"))
+		case SceneManager::SceneType::Title:
+
+			break;
+		case SceneManager::SceneType::Game:
+
+			if (ImGui::TreeNode("Player"))
 			{
-				ObjectManager::Instance().PlayerWrite();
-			}
-
-			if (ObjectManager::Instance().GetPlayer().expired() == false)
-			{
-				std::shared_ptr<Player> _player = ObjectManager::Instance().GetPlayer().lock();
-
-				// 体力
-				ImGui::Text((const char*)u8"　体力 　　HP=%d", _player->GetParam().Hp);
-				int hp = _player->GetParam().Hp;
-				ImGui::SliderInt("HP", &hp, 1, 100);
-				// 攻撃力
-				ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _player->GetParam().Atk);
-				// 素早さ
-				ImGui::Text((const char*)u8"　素早さ 　SP=%.2f", _player->GetParam().Sp);
-				float speed = _player->GetParam().Sp;
-				ImGui::SliderFloat("Speed", &speed, 1, 100);
-				// スタミナ
-				ImGui::Text((const char*)u8"　スタミナ SM=%d", _player->GetParam().Sm);
-				int stamina = _player->GetParam().Sm;
-				ImGui::SliderInt("Stamina", &stamina, 1, 100);
-				// 位置
-				ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _player->GetPos().x, _player->GetPos().y, _player->GetPos().z);
-				Math::Vector3 pos = _player->GetPos();
-				ImGui::SliderFloat("PosX", &pos.x, -100, 100);
-				ImGui::SliderFloat("PosY", &pos.y, 0, 100);
-				ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
-				// 方向
-				ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _player->GetDir().x, _player->GetDir().y, _player->GetDir().z);
-				// 角度
-				ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _player->GetAngle());
-				float angle = _player->GetAngle();
-				ImGui::SliderFloat("Angle", &angle, 0, 360);
-				// 大きさ
-				ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _player->GetSize());
-				float size = _player->GetSize();
-				ImGui::SliderFloat("Size", &size, 1, 100);
-				// 攻撃範囲
-				ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _player->GetAtkRange());
-				float range = _player->GetAtkRange();
-				ImGui::SliderFloat("ATKRange", &range, 1, 100);
-				// 前方方向
-				ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _player->GetForward().x, _player->GetForward().y, _player->GetForward().z);
-				// 無敵時間
-				ImGui::Text((const char*)u8"　無敵付与時間 InviTime=%d", _player->GetinviTime());
-				int _inviTime = _player->GetinviTime();
-				ImGui::SliderInt("InviTIme", &_inviTime, 0, 300);
-
-				// 武器
-				static std::string _swordName = _player->GetSword().lock()->GetName().c_str();
-				static std::string _shieldName = _player->GetShield().lock()->GetName().c_str();
-				if (ImGui::TreeNode("Weapon"))
+				if (ImGui::Button((const char*)u8"Player保存"))
 				{
-					// 剣
-					if (_player->GetSword().expired() == false)
+					ObjectManager::Instance().PlayerWrite();
+				}
+
+				if (ObjectManager::Instance().GetPlayer().expired() == false)
+				{
+					std::shared_ptr<Player> _player = ObjectManager::Instance().GetPlayer().lock();
+
+					// 体力
+					ImGui::Text((const char*)u8"　体力 　　HP=%d", _player->GetParam().Hp);
+					int hp = _player->GetParam().Hp;
+					ImGui::SliderInt("HP", &hp, 1, 100);
+					// 攻撃力
+					ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _player->GetParam().Atk);
+					// 素早さ
+					ImGui::Text((const char*)u8"　素早さ 　SP=%.2f", _player->GetParam().Sp);
+					float speed = _player->GetParam().Sp;
+					ImGui::SliderFloat("Speed", &speed, 1, 100);
+					// スタミナ
+					ImGui::Text((const char*)u8"　スタミナ SM=%d", _player->GetParam().Sm);
+					int stamina = _player->GetParam().Sm;
+					ImGui::SliderInt("Stamina", &stamina, 1, 100);
+					// 位置
+					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _player->GetPos().x, _player->GetPos().y, _player->GetPos().z);
+					Math::Vector3 pos = _player->GetPos();
+					ImGui::SliderFloat("PosX", &pos.x, -100, 100);
+					ImGui::SliderFloat("PosY", &pos.y, 0, 100);
+					ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
+					// 方向
+					ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _player->GetDir().x, _player->GetDir().y, _player->GetDir().z);
+					// 角度
+					ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _player->GetAngle());
+					float angle = _player->GetAngle();
+					ImGui::SliderFloat("Angle", &angle, 0, 360);
+					// 大きさ
+					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _player->GetSize());
+					float size = _player->GetSize();
+					ImGui::SliderFloat("Size", &size, 1, 100);
+					// 攻撃範囲
+					ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _player->GetAtkRange());
+					float range = _player->GetAtkRange();
+					ImGui::SliderFloat("ATKRange", &range, 1, 100);
+					// 前方方向
+					ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _player->GetForward().x, _player->GetForward().y, _player->GetForward().z);
+					// 無敵時間
+					ImGui::Text((const char*)u8"　無敵付与時間 InviTime=%d", _player->GetinviTime());
+					int _inviTime = _player->GetinviTime();
+					ImGui::SliderInt("InviTIme", &_inviTime, 0, 300);
+
+					// 武器
+					static std::string _swordName = _player->GetSword().lock()->GetName().c_str();
+					static std::string _shieldName = _player->GetShield().lock()->GetName().c_str();
+					if (ImGui::TreeNode("Weapon"))
 					{
-						std::shared_ptr<Sword> _sword = _player->GetSword().lock();
-						static Math::Vector3 swordPos = _sword->GetPos();
-						static int swordAtk = _sword->GetATK();
-						static float swordSize = _sword->GetSize();
-						static int traje = _sword->GetTraject();
-						if (ImGui::TreeNode("Sword"))
+						// 剣
+						if (_player->GetSword().expired() == false)
 						{
-							if (ImGui::Button((const char*)u8"Sword保存"))
+							std::shared_ptr<Sword> _sword = _player->GetSword().lock();
+							static Math::Vector3 swordPos = _sword->GetPos();
+							static int swordAtk = _sword->GetATK();
+							static float swordSize = _sword->GetSize();
+							static int traje = _sword->GetTraject();
+							if (ImGui::TreeNode("Sword"))
 							{
-								ObjectManager::Instance().SwordWrite(_swordName);
-							}
-
-							ImGui::Text((const char*)u8"　剣 Sword=%s", _player->GetSword().lock()->GetName().c_str());
-							for (auto& sword : ObjectManager::Instance().GetSwordNameList())
-							{
-								if (ImGui::Button(sword.c_str()))
+								if (ImGui::Button((const char*)u8"Sword保存"))
 								{
-									_swordName = sword;
+									ObjectManager::Instance().SwordWrite(_swordName);
 								}
+
+								ImGui::Text((const char*)u8"　剣 Sword=%s", _player->GetSword().lock()->GetName().c_str());
+								for (auto& sword : ObjectManager::Instance().GetSwordNameList())
+								{
+									if (ImGui::Button(sword.c_str()))
+									{
+										_swordName = sword;
+									}
+								}
+
+								// 位置
+								ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _sword->GetPos().x, _sword->GetPos().y, _sword->GetPos().z);
+								swordPos = _sword->GetPos();
+								ImGui::SliderFloat("PosX", & swordPos.x, -0.5, 0.5);
+								ImGui::SliderFloat("PosY", & swordPos.y, -0.5, 0.5);
+								ImGui::SliderFloat("PosZ", & swordPos.z, -0.5, 0.5);
+								// 攻撃力
+								ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _sword->GetATK());
+								swordAtk = _sword->GetATK();
+								ImGui::SliderInt("ATK", &swordAtk, 1, 100);
+								// 大きさ
+								ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _sword->GetSize());
+								swordSize = _sword->GetSize();
+								ImGui::SliderFloat("Size", &swordSize, 1, 100);
+								// トレイルポリゴン
+								ImGui::Text((const char*)u8"　トレイルポリゴン　Traject=%d", _sword->GetTraject());
+								traje = _sword->GetTraject();
+								ImGui::SliderInt("Traject", &traje, 1, 100);
+
+								_sword->SetPos(swordPos);
+								_sword->SetATK(swordAtk);
+								_sword->SetSize(swordSize);
+								_sword->SetTrajectPointNUM(traje);
+
+								ImGui::TreePop();
 							}
-
-							// 位置
-							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _sword->GetPos().x, _sword->GetPos().y, _sword->GetPos().z);
-							swordPos = _sword->GetPos();
-							ImGui::SliderFloat("PosX", & swordPos.x, -0.5, 0.5);
-							ImGui::SliderFloat("PosY", & swordPos.y, -0.5, 0.5);
-							ImGui::SliderFloat("PosZ", & swordPos.z, -0.5, 0.5);
-							// 攻撃力
-							ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _sword->GetATK());
-							swordAtk = _sword->GetATK();
-							ImGui::SliderInt("ATK", &swordAtk, 1, 100);
-							// 大きさ
-							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _sword->GetSize());
-							swordSize = _sword->GetSize();
-							ImGui::SliderFloat("Size", &swordSize, 1, 100);
-							// トレイルポリゴン
-							ImGui::Text((const char*)u8"　トレイルポリゴン　Traject=%d", _sword->GetTraject());
-							traje = _sword->GetTraject();
-							ImGui::SliderInt("Traject", &traje, 1, 100);
-
-							_sword->SetPos(swordPos);
-							_sword->SetATK(swordAtk);
-							_sword->SetSize(swordSize);
-							_sword->SetTrajectPointNUM(traje);
-
-							ImGui::TreePop();
 						}
+
+						// 盾
+						if (_player->GetShield().expired() == false)
+						{
+							if (ImGui::TreeNode("Shield"))
+							{
+								std::shared_ptr<Shield> _shield = _player->GetShield().lock();
+								static Math::Vector3 shieldPos = _shield->GetPos();
+								static float shieldSize = _shield->GetSize();
+								if (ImGui::Button((const char*)u8"Shield保存"))
+								{
+									ObjectManager::Instance().ShieldWrite(_shieldName);
+								}
+
+								ImGui::Text((const char*)u8"　盾 Shield=%s", _player->GetShield().lock()->GetName().c_str());
+								for (auto& shield : ObjectManager::Instance().GetShieldNameList())
+								{
+									if (ImGui::Button(shield.c_str()))
+									{
+										_shieldName = shield;
+									}
+								}
+
+								// 位置
+								ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _shield->GetPos().x, _shield->GetPos().y, _shield->GetPos().z);
+								shieldPos = _shield->GetPos();
+								ImGui::SliderFloat("PosX", &shieldPos.x, -0.5, 0.5);
+								ImGui::SliderFloat("PosY", &shieldPos.y, -0.5, 0.5);
+								ImGui::SliderFloat("PosZ", &shieldPos.z, -0.5, 0.5);
+
+								// 大きさ
+								ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _shield->GetSize());
+								shieldSize = _shield->GetSize();
+								ImGui::SliderFloat("Size", &shieldSize, 1, 100);
+
+								_shield->SetPos(shieldPos);
+								_shield->SetSize(shieldSize);
+
+								ImGui::TreePop();
+							}
+						}
+
+						ImGui::TreePop();
+
+						ObjectManager::Instance().ChangeWeapon(_swordName, _shieldName);
 					}
 
-					// 盾
-					if (_player->GetShield().expired() == false)
-					{
-						if (ImGui::TreeNode("Shield"))
-						{
-							std::shared_ptr<Shield> _shield = _player->GetShield().lock();
-							static Math::Vector3 shieldPos = _shield->GetPos();
-							static float shieldSize = _shield->GetSize();
-							if (ImGui::Button((const char*)u8"Shield保存"))
-							{
-								ObjectManager::Instance().ShieldWrite(_shieldName);
-							}
+					_player->SetParam(hp, _player->GetSword().lock()->GetATK(), speed, stamina);
+					_player->SetPos(pos);
+					_player->SetAngle(angle);
+					_player->SetSize(size);
+					_player->SetAtkRange(range);
+					_player->SetInviTime(_inviTime);
 
-							ImGui::Text((const char*)u8"　盾 Shield=%s", _player->GetShield().lock()->GetName().c_str());
-							for (auto& shield : ObjectManager::Instance().GetShieldNameList())
-							{
-								if (ImGui::Button(shield.c_str()))
-								{
-									_shieldName = shield;
-								}
-							}
-
-							// 位置
-							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _shield->GetPos().x, _shield->GetPos().y, _shield->GetPos().z);
-							shieldPos = _shield->GetPos();
-							ImGui::SliderFloat("PosX", &shieldPos.x, -0.5, 0.5);
-							ImGui::SliderFloat("PosY", &shieldPos.y, -0.5, 0.5);
-							ImGui::SliderFloat("PosZ", &shieldPos.z, -0.5, 0.5);
-
-							// 大きさ
-							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _shield->GetSize());
-							shieldSize = _shield->GetSize();
-							ImGui::SliderFloat("Size", &shieldSize, 1, 100);
-
-							_shield->SetPos(shieldPos);
-							_shield->SetSize(shieldSize);
-
-							ImGui::TreePop();
-						}
-					}
+					ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
 					ImGui::TreePop();
-
-					ObjectManager::Instance().ChangeWeapon(_swordName, _shieldName);
-				}
-
-				_player->SetParam(hp, _player->GetSword().lock()->GetATK(), speed, stamina);
-				_player->SetPos(pos);
-				_player->SetAngle(angle);
-				_player->SetSize(size);
-				_player->SetAtkRange(range);
-				_player->SetInviTime(_inviTime);
-
-				ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-
-				ImGui::TreePop();
-			}
-		}
-
-		if (ImGui::TreeNode("Enemy"))
-		{
-			std::vector<std::weak_ptr<EnemyBase>> _boneList;
-			for (auto& enemy : ObjectManager::Instance().GetEnemyList())
-			{
-				if (enemy.lock()->GetName() == "Bone")
-				{
-					_boneList.push_back(enemy);
 				}
 			}
 
-			static int _wave = ObjectManager::Instance().GetMaxWave();
-			ImGui::Text((const char*)u8"ウェーブ数 : %d", _wave);
-			static int _nowWave = ObjectManager::Instance().GetnowWave();
-			ImGui::SliderInt((const char*)u8"ウェーブ", &_nowWave, 1, _wave);
-
-			if (ImGui::Button((const char*)u8"Enemy保存"))
+			if (ImGui::TreeNode("Enemy"))
 			{
-				ObjectManager::Instance().EnemyWrite(_nowWave);
-				if (_nowWave == _wave)
+				std::vector<std::weak_ptr<EnemyBase>> _boneList;
+				for (auto& enemy : ObjectManager::Instance().GetEnemyList())
 				{
-					_wave++;
-					_nowWave = _wave;
-				}
-			}
-
-			if (ImGui::TreeNode("Bone"))
-			{
-				if (ImGui::Button((const char*)u8"Bone追加"))
-				{
-					ObjectManager::Instance().AddBone();
+					if (enemy.expired() == false)
+					{
+						if (enemy.lock()->GetName() == "Bone")
+						{
+							_boneList.push_back(enemy);
+						}
+					}
 				}
 
-				static int operation = -1;
-				if (!SceneManager::Instance().m_stop)operation = -1;
+				static int _wave = ObjectManager::Instance().GetMaxWave();
+				ImGui::Text((const char*)u8"ウェーブ数 : %d", _wave);
+				static int _nowWave = ObjectManager::Instance().GetnowWave();
+				ImGui::SliderInt((const char*)u8"ウェーブ", &_nowWave, 1, _wave);
+
+				if (ImGui::Button((const char*)u8"Enemy保存"))
+				{
+					ObjectManager::Instance().EnemyWrite(_nowWave);
+					if (_nowWave == _wave)
+					{
+						_wave++;
+						_nowWave = _wave;
+					}
+				}
 
 				if (ImGui::TreeNode("Bone"))
 				{
-					ImGui::Text((const char*)u8"ボーン:%d体", _boneList.size());
-					for (int bone = 0; bone <_boneList.size(); ++bone)
+					if (ImGui::Button((const char*)u8"Bone追加"))
 					{
-						if (ImGui::Button(std::to_string(bone + 1).c_str()))
-						{
-							operation = bone;
-						}
+						ObjectManager::Instance().AddBone();
 					}
 
-					if (operation!=-1)
+					static int operation = -1;
+					if (!SceneManager::Instance().m_stop)operation = -1;
+
+					if (ImGui::TreeNode("Bone"))
 					{
-						ImGui::Text((const char*)u8"%d体目", operation + 1);
-						// 体力
-						ImGui::Text((const char*)u8"　体力 　　HP=%d", _boneList[operation].lock()->GetParam().Hp);
-						int hp = _boneList[operation].lock()->GetParam().Hp;
-						ImGui::SliderInt("HP", &hp, 1, 100);
-						// 攻撃力
-						ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _boneList[operation].lock()->GetParam().Atk);
-						int atk = _boneList[operation].lock()->GetParam().Atk;
-						ImGui::SliderInt("ATK", &atk, 1, 100);
-						// 素早さ
-						ImGui::Text((const char*)u8"　素早さ 　SP=%.2f", _boneList[operation].lock()->GetParam().Sp);
-						float speed = _boneList[operation].lock()->GetParam().Sp;
-						ImGui::SliderFloat("Speed", &speed, 1, 100);
-						// スタミナ
-						ImGui::Text((const char*)u8"　スタミナ SM=%d", _boneList[operation].lock()->GetParam().Sm);
-						int stamina = _boneList[operation].lock()->GetParam().Sm;
-						ImGui::SliderInt("Stamina", &stamina, 1, 100);
+						ImGui::Text((const char*)u8"ボーン:%d体", _boneList.size());
+						for (int bone = 0; bone <_boneList.size(); ++bone)
+						{
+							if (ImGui::Button(std::to_string(bone + 1).c_str()))
+							{
+								operation = bone;
+							}
+						}
+
+						if (operation!=-1)
+						{
+							ImGui::Text((const char*)u8"%d体目", operation + 1);
+							// 体力
+							ImGui::Text((const char*)u8"　体力 　　HP=%d", _boneList[operation].lock()->GetParam().Hp);
+							int hp = _boneList[operation].lock()->GetParam().Hp;
+							ImGui::SliderInt("HP", &hp, 1, 100);
+							// 攻撃力
+							ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _boneList[operation].lock()->GetParam().Atk);
+							int atk = _boneList[operation].lock()->GetParam().Atk;
+							ImGui::SliderInt("ATK", &atk, 1, 100);
+							// 素早さ
+							ImGui::Text((const char*)u8"　素早さ 　SP=%.2f", _boneList[operation].lock()->GetParam().Sp);
+							float speed = _boneList[operation].lock()->GetParam().Sp;
+							ImGui::SliderFloat("Speed", &speed, 1, 100);
+							// スタミナ
+							ImGui::Text((const char*)u8"　スタミナ SM=%d", _boneList[operation].lock()->GetParam().Sm);
+							int stamina = _boneList[operation].lock()->GetParam().Sm;
+							ImGui::SliderInt("Stamina", &stamina, 1, 100);
+							// 位置
+							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetPos().x, _boneList[operation].lock()->GetPos().y, _boneList[operation].lock()->GetPos().z);
+							Math::Vector3 pos = _boneList[operation].lock()->GetPos();
+							ImGui::SliderFloat("PosX", &pos.x, -100, 100);
+							ImGui::SliderFloat("PosY", &pos.y, 0, 100);
+							ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
+							// 方向
+							ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetDir().x, _boneList[operation].lock()->GetDir().y, _boneList[operation].lock()->GetDir().z);
+							// 角度
+							ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _boneList[operation].lock()->GetAngle());
+							float angle = _boneList[operation].lock()->GetAngle();
+							ImGui::SliderFloat("Angle", &angle, 0, 360);
+							// 大きさ
+							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _boneList[operation].lock()->GetSize());
+							float size = _boneList[operation].lock()->GetSize();
+							ImGui::SliderFloat("Size", &size, 1, 100);
+							// 攻撃範囲
+							ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _boneList[operation].lock()->GetAtkRange());
+							float range = _boneList[operation].lock()->GetAtkRange();
+							ImGui::SliderFloat("ATKRange", &range, 1, 100);
+							// 前方方向
+							ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetForward().x, _boneList[operation].lock()->GetForward().y, _boneList[operation].lock()->GetForward().z);
+
+							_boneList[operation].lock()->SetParam(hp, atk, speed, stamina);
+							_boneList[operation].lock()->SetPos(pos);
+							_boneList[operation].lock()->SetAngle(angle);
+							_boneList[operation].lock()->SetSize(size);
+							_boneList[operation].lock()->SetAtkRange(range);
+
+							if (ImGui::Button((const char*)u8"消滅"))
+							{
+								_boneList[operation].lock()->Expired();
+								operation = -1;
+							}
+
+							ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+						}
+							ImGui::TreePop();
+					}
+
+					ImGui::TreePop();
+				}
+
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNode("Object"))
+			{
+				if (ImGui::Button((const char*)u8"Object保存"))ObjectManager::Instance().ObjectWrite();
+				static int Goperation = -1;
+				static int Woperation = -1;
+
+				std::vector<std::weak_ptr<KdGameObject>> groundList;
+				std::vector<std::weak_ptr<KdGameObject>> wallList;
+				std::vector<std::weak_ptr<KdGameObject>> skyboxList;
+				for (auto& obj : ObjectManager::Instance().GetObjectList())
+				{
+					if (obj.expired() == false)
+					{
+						if (obj.lock()->GetName() == "Ground")
+						{
+							groundList.push_back(obj);
+						}
+						else if (obj.lock()->GetName() == "Wall")
+						{
+							wallList.push_back(obj);
+						}
+						else if (obj.lock()->GetName() == "SkyBox")
+						{
+							skyboxList.push_back(obj);
+						}
+					}
+				}
+
+				if (ImGui::TreeNode("Ground"))
+				{
+					if (ImGui::Button((const char*)u8"Ground追加"))ObjectManager::Instance().AddGround();
+					for (int g = 0; g < groundList.size(); ++g)
+					{
+						if (ImGui::Button(std::to_string(g + 1).c_str()))Goperation = g;
+					}
+
+					if (Goperation != -1)
+					{
+						ImGui::Text((const char*)u8"%d個目", Goperation + 1);
 						// 位置
-						ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetPos().x, _boneList[operation].lock()->GetPos().y, _boneList[operation].lock()->GetPos().z);
-						Math::Vector3 pos = _boneList[operation].lock()->GetPos();
+						ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", groundList[Goperation].lock()->GetPos().x, groundList[Goperation].lock()->GetPos().y, groundList[Goperation].lock()->GetPos().z);
+						Math::Vector3 pos = groundList[Goperation].lock()->GetPos();
 						ImGui::SliderFloat("PosX", &pos.x, -100, 100);
-						ImGui::SliderFloat("PosY", &pos.y, 0, 100);
+						ImGui::SliderFloat("PosY", &pos.y, 0, 500);
 						ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
-						// 方向
-						ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetDir().x, _boneList[operation].lock()->GetDir().y, _boneList[operation].lock()->GetDir().z);
 						// 角度
-						ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _boneList[operation].lock()->GetAngle());
-						float angle = _boneList[operation].lock()->GetAngle();
+						ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", groundList[Goperation].lock()->GetAngle());
+						float angle = groundList[Goperation].lock()->GetAngle();
 						ImGui::SliderFloat("Angle", &angle, 0, 360);
 						// 大きさ
-						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _boneList[operation].lock()->GetSize());
-						float size = _boneList[operation].lock()->GetSize();
+						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", groundList[Goperation].lock()->GetSize());
+						float size = groundList[Goperation].lock()->GetSize();
 						ImGui::SliderFloat("Size", &size, 1, 100);
-						// 攻撃範囲
-						ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _boneList[operation].lock()->GetAtkRange());
-						float range = _boneList[operation].lock()->GetAtkRange();
-						ImGui::SliderFloat("ATKRange", &range, 1, 100);
-						// 前方方向
-						ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetForward().x, _boneList[operation].lock()->GetForward().y, _boneList[operation].lock()->GetForward().z);
-
-						_boneList[operation].lock()->SetParam(hp, atk, speed, stamina);
-						_boneList[operation].lock()->SetPos(pos);
-						_boneList[operation].lock()->SetAngle(angle);
-						_boneList[operation].lock()->SetSize(size);
-						_boneList[operation].lock()->SetAtkRange(range);
+						
+						groundList[Goperation].lock()->SetPos(pos);
+						groundList[Goperation].lock()->SetSize(size);
+						groundList[Goperation].lock()->SetAngle(angle);
 
 						if (ImGui::Button((const char*)u8"消滅"))
 						{
-							_boneList[operation].lock()->Expired();
-							operation = -1;
+							groundList[Goperation].lock()->Expired();
+							ObjectManager::Instance().DeleteObjectList();
+							Goperation = -1;
 						}
 
 						ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 					}
-						ImGui::TreePop();
+					ImGui::TreePop();
 				}
-
-				ImGui::TreePop();
-			}
-
-			ImGui::TreePop();
-		}
-
-		if (ImGui::TreeNode("Object"))
-		{
-			if (ImGui::Button((const char*)u8"Object保存"))ObjectManager::Instance().ObjectWrite();
-			static int Goperation = -1;
-			static int Woperation = -1;
-
-			std::vector<std::weak_ptr<KdGameObject>> groundList;
-			std::vector<std::weak_ptr<KdGameObject>> wallList;
-			std::vector<std::weak_ptr<KdGameObject>> skyboxList;
-			for (auto& obj : ObjectManager::Instance().GetObjectList())
-			{
-				if(obj.lock()->GetName()=="Ground")
+				if (ImGui::TreeNode("Wall"))
 				{
-					groundList.push_back(obj);
-				}
-				else if (obj.lock()->GetName() == "Wall")
-				{
-					wallList.push_back(obj);
-				}
-				else if (obj.lock()->GetName() == "SkyBox")
-				{
-					skyboxList.push_back(obj);
-				}
-			}
-
-			if (ImGui::TreeNode("Ground"))
-			{
-				if (ImGui::Button((const char*)u8"Ground追加"))ObjectManager::Instance().AddGround();
-				for (int g = 0; g < groundList.size(); ++g)
-				{
-					if (ImGui::Button(std::to_string(g + 1).c_str()))Goperation = g;
-				}
-
-				if (Goperation != -1)
-				{
-					ImGui::Text((const char*)u8"%d個目", Goperation + 1);
-					// 位置
-					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", groundList[Goperation].lock()->GetPos().x, groundList[Goperation].lock()->GetPos().y, groundList[Goperation].lock()->GetPos().z);
-					Math::Vector3 pos = groundList[Goperation].lock()->GetPos();
-					ImGui::SliderFloat("PosX", &pos.x, -100, 100);
-					ImGui::SliderFloat("PosY", &pos.y, 0, 500);
-					ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
-					// 角度
-					ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", groundList[Goperation].lock()->GetAngle());
-					float angle = groundList[Goperation].lock()->GetAngle();
-					ImGui::SliderFloat("Angle", &angle, 0, 360);
-					// 大きさ
-					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", groundList[Goperation].lock()->GetSize());
-					float size = groundList[Goperation].lock()->GetSize();
-					ImGui::SliderFloat("Size", &size, 1, 100);
-					
-					groundList[Goperation].lock()->SetPos(pos);
-					groundList[Goperation].lock()->SetSize(size);
-					groundList[Goperation].lock()->SetAngle(angle);
-
-					if (ImGui::Button((const char*)u8"消滅"))
+					if (ImGui::Button((const char*)u8"Wall追加"))ObjectManager::Instance().AddWall();
+					for (int w = 0; w < wallList.size(); ++w)
 					{
-						groundList[Goperation].lock()->Expired();
-						ObjectManager::Instance().DeleteObjectList();
-						Goperation = -1;
+						if (ImGui::Button(std::to_string(w + 1).c_str()))Woperation = w;
 					}
 
-					ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-				}
-				ImGui::TreePop();
-			}
-			if (ImGui::TreeNode("Wall"))
-			{
-				if (ImGui::Button((const char*)u8"Wall追加"))ObjectManager::Instance().AddWall();
-				for (int w = 0; w < wallList.size(); ++w)
-				{
-					if (ImGui::Button(std::to_string(w + 1).c_str()))Woperation = w;
-				}
+					if (Woperation != -1)
+					{
+						ImGui::Text((const char*)u8"%d個目", Woperation + 1);
+						// 位置
+						ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", wallList[Woperation].lock()->GetPos().x, wallList[Woperation].lock()->GetPos().y, wallList[Woperation].lock()->GetPos().z);
+						Math::Vector3 pos = wallList[Woperation].lock()->GetPos();
+						ImGui::SliderFloat("PosX", &pos.x, -100, 100);
+						ImGui::SliderFloat("PosY", &pos.y, 0, 500);
+						ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
+						// 角度
+						ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", wallList[Woperation].lock()->GetAngle());
+						float angle = wallList[Woperation].lock()->GetAngle();
+						ImGui::SliderFloat("Angle", &angle, 0, 360);
+						// 大きさ
+						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", wallList[Woperation].lock()->GetSize());
+						float size = wallList[Woperation].lock()->GetSize();
+						ImGui::SliderFloat("Size", &size, 1, 100);
 
-				if (Woperation != -1)
+						wallList[Woperation].lock()->SetPos(pos);
+						wallList[Woperation].lock()->SetSize(size);
+						wallList[Woperation].lock()->SetAngle(angle);
+
+						if (ImGui::Button((const char*)u8"消滅"))
+						{
+							wallList[Woperation].lock()->Expired();
+							ObjectManager::Instance().DeleteObjectList();
+							Woperation = -1;
+						}
+
+						ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+					}
+					ImGui::TreePop();
+				}
+				if (ImGui::TreeNode("SkyBox"))
 				{
-					ImGui::Text((const char*)u8"%d個目", Woperation + 1);
 					// 位置
-					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", wallList[Woperation].lock()->GetPos().x, wallList[Woperation].lock()->GetPos().y, wallList[Woperation].lock()->GetPos().z);
-					Math::Vector3 pos = wallList[Woperation].lock()->GetPos();
-					ImGui::SliderFloat("PosX", &pos.x, -100, 100);
+					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", skyboxList[0].lock()->GetPos().x, skyboxList[0].lock()->GetPos().y, skyboxList[0].lock()->GetPos().z);
+					Math::Vector3 pos = skyboxList[0].lock()->GetPos();
+					ImGui::SliderFloat("PosX", &pos.x, -500, 500);
 					ImGui::SliderFloat("PosY", &pos.y, 0, 500);
-					ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
+					ImGui::SliderFloat("PosZ", &pos.z, -500, 500);
 					// 角度
-					ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", wallList[Woperation].lock()->GetAngle());
-					float angle = wallList[Woperation].lock()->GetAngle();
+					ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", skyboxList[0].lock()->GetAngle());
+					float angle = skyboxList[0].lock()->GetAngle();
 					ImGui::SliderFloat("Angle", &angle, 0, 360);
 					// 大きさ
-					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", wallList[Woperation].lock()->GetSize());
-					float size = wallList[Woperation].lock()->GetSize();
+					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", skyboxList[0].lock()->GetSize());
+					float size = skyboxList[0].lock()->GetSize();
 					ImGui::SliderFloat("Size", &size, 1, 100);
 
-					wallList[Woperation].lock()->SetPos(pos);
-					wallList[Woperation].lock()->SetSize(size);
-					wallList[Woperation].lock()->SetAngle(angle);
-
-					if (ImGui::Button((const char*)u8"消滅"))
-					{
-						wallList[Woperation].lock()->Expired();
-						ObjectManager::Instance().DeleteObjectList();
-						Woperation = -1;
-					}
+					skyboxList[0].lock()->SetPos(pos);
+					skyboxList[0].lock()->SetSize(size);
+					skyboxList[0].lock()->SetAngle(angle);
 
 					ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+					ImGui::TreePop();
 				}
+
 				ImGui::TreePop();
 			}
-			if (ImGui::TreeNode("SkyBox"))
-			{
-				// 位置
-				ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", skyboxList[0].lock()->GetPos().x, skyboxList[0].lock()->GetPos().y, skyboxList[0].lock()->GetPos().z);
-				Math::Vector3 pos = skyboxList[0].lock()->GetPos();
-				ImGui::SliderFloat("PosX", &pos.x, -500, 500);
-				ImGui::SliderFloat("PosY", &pos.y, 0, 500);
-				ImGui::SliderFloat("PosZ", &pos.z, -500, 500);
-				// 角度
-				ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", skyboxList[0].lock()->GetAngle());
-				float angle = skyboxList[0].lock()->GetAngle();
-				ImGui::SliderFloat("Angle", &angle, 0, 360);
-				// 大きさ
-				ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", skyboxList[0].lock()->GetSize());
-				float size = skyboxList[0].lock()->GetSize();
-				ImGui::SliderFloat("Size", &size, 1, 100);
-
-				skyboxList[0].lock()->SetPos(pos);
-				skyboxList[0].lock()->SetSize(size);
-				skyboxList[0].lock()->SetAngle(angle);
-
-				ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-				ImGui::TreePop();
-			}
-
-			ImGui::TreePop();
+			break;
+		default:
+			break;
 		}
 
 		if (ImGui::TreeNode((const char*)u8"シーン切替"))

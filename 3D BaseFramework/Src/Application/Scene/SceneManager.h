@@ -31,6 +31,8 @@ public :
 	// 現在のシーンのオブジェクトリストを取得
 	const std::list<std::shared_ptr<KdGameObject>>& GetObjList();
 
+	const SceneType GetNowSceneType()const { return m_currentSceneType; }
+
 	// 現在のシーンにオブジェクトを追加
 	void AddObject(const std::shared_ptr<KdGameObject>& obj);
 

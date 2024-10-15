@@ -3,8 +3,9 @@
 void Ground::Update()
 {
 	Math::Matrix Scale = Math::Matrix::CreateScale(m_size);
+	Math::Matrix RotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
 	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
-	m_mWorld = Scale * Trans;
+	m_mWorld = Scale * RotY * Trans;
 }
 
 void Ground::DrawLit()
@@ -24,8 +25,9 @@ void Ground::Init()
 	m_model->SetModelData("Asset/Models/Stage/Ground/Ground.gltf");
 
 	Math::Matrix Scale = Math::Matrix::CreateScale(m_size);
+	Math::Matrix RotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
 	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
-	m_mWorld = Scale * Trans;
+	m_mWorld = Scale * RotY * Trans;
 
 	m_pCollider = std::make_unique<KdCollider>();
 	m_pCollider->RegisterCollisionShape("Ground", m_model, KdCollider::TypeGround);
