@@ -1,5 +1,12 @@
 ﻿#include "Ground.h"
 
+void Ground::Update()
+{
+	Math::Matrix Scale = Math::Matrix::CreateScale(m_size);
+	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
+	m_mWorld = Scale * Trans;
+}
+
 void Ground::DrawLit()
 {
 	//オブジェクトを裏返す==========================================================
@@ -16,9 +23,7 @@ void Ground::Init()
 	m_model = std::make_shared<KdModelWork>();
 	m_model->SetModelData("Asset/Models/Stage/Ground/Ground.gltf");
 
-	m_pos = { 0.0f,0.0f,-1.0f };
-
-	Math::Matrix Scale = Math::Matrix::CreateScale(10.0f);
+	Math::Matrix Scale = Math::Matrix::CreateScale(m_size);
 	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
 	m_mWorld = Scale * Trans;
 

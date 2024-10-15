@@ -1,26 +1,34 @@
 {
 	"0Ground": {
+		"Angle": 0.0,
 		"Name": "Ground",
 		"PosX": 1.0,
 		"PosY": 0.0,
 		"PosZ": 0.0,
-		"Size": 10.0,
-		"Angle": 0.0
+		"Size": 10.0
 	},
-	"1Wall": {
-		"Name": "Wall",
-		"PosX": 1.0,
-		"PosY": 0.0,
-		"PosZ": 0.0,
-		"Size": 10.0,
-		"Angle": 0.0
-	},
-	"2SkyBox": {
+	"0SkyBox": {
+		"Angle": 0.0,
 		"Name": "SkyBox",
 		"PosX": 2.0,
 		"PosY": 0.0,
 		"PosZ": 0.0,
-		"Size": 10.0,
-		"Angle": 0.0
+		"Size": 5.769000053405762
+	},
+	"0Wall": {
+		"Angle": 0.0,
+		"Name": "Wall",
+		"PosX": 1.0,
+		"PosY": 0.0,
+		"PosZ": 0.0,
+		"Size": 10.0
+	},
+	"1Ground": {
+		"Angle": 0.0,
+		"Name": "Ground",
+		"PosX": 0.0,
+		"PosY": 82.47899627685547,
+		"PosZ": 0.0,
+		"Size": 10.0
 	}
 }

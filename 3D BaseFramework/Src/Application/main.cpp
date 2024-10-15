@@ -6,6 +6,9 @@
 #include"GameObject/Character/Player/Player.h"
 #include"GameObject/Weapon/Sword/Sword.h"
 #include"GameObject/Weapon/Shield/Shield.h"
+#include"GameObject/SkyBox/SkyBox.h"
+#include"GameObject/Stage/Ground/Ground.h"
+#include"GameObject/Stage/Wall/Wall.h"
 
 // ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
 // エントリーポイント
@@ -440,8 +443,8 @@ void Application::ImGuiProcess()
 				ImGui::SliderInt("InviTIme", &_inviTime, 0, 300);
 
 				// 武器
-				static std::string _swordName = _player->GetSword().lock()->GetWeaponName().c_str();
-				static std::string _shieldName = _player->GetShield().lock()->GetWeaponName().c_str();
+				static std::string _swordName = _player->GetSword().lock()->GetName().c_str();
+				static std::string _shieldName = _player->GetShield().lock()->GetName().c_str();
 				if (ImGui::TreeNode("Weapon"))
 				{
 					// 剣
@@ -459,7 +462,7 @@ void Application::ImGuiProcess()
 								ObjectManager::Instance().SwordWrite(_swordName);
 							}
 
-							ImGui::Text((const char*)u8"　剣 Sword=%s", _player->GetSword().lock()->GetWeaponName().c_str());
+							ImGui::Text((const char*)u8"　剣 Sword=%s", _player->GetSword().lock()->GetName().c_str());
 							for (auto& sword : ObjectManager::Instance().GetSwordNameList())
 							{
 								if (ImGui::Button(sword.c_str()))
@@ -509,7 +512,7 @@ void Application::ImGuiProcess()
 								ObjectManager::Instance().ShieldWrite(_shieldName);
 							}
 
-							ImGui::Text((const char*)u8"　盾 Shield=%s", _player->GetShield().lock()->GetWeaponName().c_str());
+							ImGui::Text((const char*)u8"　盾 Shield=%s", _player->GetShield().lock()->GetName().c_str());
 							for (auto& shield : ObjectManager::Instance().GetShieldNameList())
 							{
 								if (ImGui::Button(shield.c_str()))
@@ -645,6 +648,143 @@ void Application::ImGuiProcess()
 						ImGui::TreePop();
 				}
 
+				ImGui::TreePop();
+			}
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNode("Object"))
+		{
+			if (ImGui::Button((const char*)u8"Object保存"))ObjectManager::Instance().ObjectWrite();
+			static int Goperation = -1;
+			static int Woperation = -1;
+
+			std::vector<std::weak_ptr<KdGameObject>> groundList;
+			std::vector<std::weak_ptr<KdGameObject>> wallList;
+			std::vector<std::weak_ptr<KdGameObject>> skyboxList;
+			for (auto& obj : ObjectManager::Instance().GetObjectList())
+			{
+				if(obj.lock()->GetName()=="Ground")
+				{
+					groundList.push_back(obj);
+				}
+				else if (obj.lock()->GetName() == "Wall")
+				{
+					wallList.push_back(obj);
+				}
+				else if (obj.lock()->GetName() == "SkyBox")
+				{
+					skyboxList.push_back(obj);
+				}
+			}
+
+			m_log.AddLog("%d\n", ObjectManager::Instance().GetObjectList().size());
+
+			if (ImGui::TreeNode("Ground"))
+			{
+				if (ImGui::Button((const char*)u8"Ground追加"))ObjectManager::Instance().AddGround();
+				for (int g = 0; g < groundList.size(); ++g)
+				{
+					if (ImGui::Button(std::to_string(g + 1).c_str()))Goperation = g;
+				}
+
+				if (Goperation != -1)
+				{
+					ImGui::Text((const char*)u8"%d個目", Goperation + 1);
+					// 位置
+					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", groundList[Goperation].lock()->GetPos().x, groundList[Goperation].lock()->GetPos().y, groundList[Goperation].lock()->GetPos().z);
+					Math::Vector3 pos = groundList[Goperation].lock()->GetPos();
+					ImGui::SliderFloat("PosX", &pos.x, -100, 100);
+					ImGui::SliderFloat("PosY", &pos.y, 0, 500);
+					ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
+					// 角度
+					ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", groundList[Goperation].lock()->GetAngle());
+					float angle = groundList[Goperation].lock()->GetAngle();
+					ImGui::SliderFloat("Angle", &angle, 0, 360);
+					// 大きさ
+					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", groundList[Goperation].lock()->GetSize());
+					float size = groundList[Goperation].lock()->GetSize();
+					ImGui::SliderFloat("Size", &size, 1, 100);
+					
+					groundList[Goperation].lock()->SetPos(pos);
+					groundList[Goperation].lock()->SetSize(size);
+					groundList[Goperation].lock()->SetAngle(angle);
+
+					if (ImGui::Button((const char*)u8"消滅"))
+					{
+						groundList[Goperation].lock()->Expired();
+						ObjectManager::Instance().DeleteObjectList();
+						Goperation = -1;
+					}
+
+					ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+				}
+				ImGui::TreePop();
+			}
+			if (ImGui::TreeNode("Wall"))
+			{
+				if (ImGui::Button((const char*)u8"Wall追加"))ObjectManager::Instance().AddWall();
+				for (int w = 0; w < wallList.size(); ++w)
+				{
+					if (ImGui::Button(std::to_string(w + 1).c_str()))Woperation = w;
+				}
+
+				if (Woperation != -1)
+				{
+					ImGui::Text((const char*)u8"%d個目", Woperation + 1);
+					// 位置
+					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", wallList[Woperation].lock()->GetPos().x, wallList[Woperation].lock()->GetPos().y, wallList[Woperation].lock()->GetPos().z);
+					Math::Vector3 pos = wallList[Woperation].lock()->GetPos();
+					ImGui::SliderFloat("PosX", &pos.x, -100, 100);
+					ImGui::SliderFloat("PosY", &pos.y, 0, 500);
+					ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
+					// 角度
+					ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", wallList[Woperation].lock()->GetAngle());
+					float angle = wallList[Woperation].lock()->GetAngle();
+					ImGui::SliderFloat("Angle", &angle, 0, 360);
+					// 大きさ
+					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", wallList[Woperation].lock()->GetSize());
+					float size = wallList[Woperation].lock()->GetSize();
+					ImGui::SliderFloat("Size", &size, 1, 100);
+
+					wallList[Woperation].lock()->SetPos(pos);
+					wallList[Woperation].lock()->SetSize(size);
+					wallList[Woperation].lock()->SetAngle(angle);
+
+					if (ImGui::Button((const char*)u8"消滅"))
+					{
+						wallList[Woperation].lock()->Expired();
+						ObjectManager::Instance().DeleteObjectList();
+						Woperation = -1;
+					}
+
+					ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+				}
+				ImGui::TreePop();
+			}
+			if (ImGui::TreeNode("SkyBox"))
+			{
+				// 位置
+				ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", skyboxList[0].lock()->GetPos().x, skyboxList[0].lock()->GetPos().y, skyboxList[0].lock()->GetPos().z);
+				Math::Vector3 pos = skyboxList[0].lock()->GetPos();
+				ImGui::SliderFloat("PosX", &pos.x, -500, 500);
+				ImGui::SliderFloat("PosY", &pos.y, 0, 500);
+				ImGui::SliderFloat("PosZ", &pos.z, -500, 500);
+				// 角度
+				ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", skyboxList[0].lock()->GetAngle());
+				float angle = skyboxList[0].lock()->GetAngle();
+				ImGui::SliderFloat("Angle", &angle, 0, 360);
+				// 大きさ
+				ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", skyboxList[0].lock()->GetSize());
+				float size = skyboxList[0].lock()->GetSize();
+				ImGui::SliderFloat("Size", &size, 1, 100);
+
+				skyboxList[0].lock()->SetPos(pos);
+				skyboxList[0].lock()->SetSize(size);
+				skyboxList[0].lock()->SetAngle(angle);
+
+				ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 				ImGui::TreePop();
 			}
 

@@ -1,5 +1,12 @@
 ﻿#include"Wall.h"
 
+void Wall::Update()
+{
+	Math::Matrix Scale = Math::Matrix::CreateScale(m_size);
+	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
+	m_mWorld = Scale * Trans;
+}
+
 void Wall::DrawLit()
 {
 	//オブジェクトを裏返す==========================================================
@@ -16,9 +23,7 @@ void Wall::Init()
 	m_model = std::make_shared<KdModelWork>();
 	m_model->SetModelData("Asset/Models/Stage/Wall/Wall.gltf");
 
-	m_pos = { 0.0f,0.0f,-1.0f };
-
-	Math::Matrix Scale = Math::Matrix::CreateScale(10.0f);
+	Math::Matrix Scale = Math::Matrix::CreateScale(m_size);
 	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
 	m_mWorld = Scale * Trans;
 

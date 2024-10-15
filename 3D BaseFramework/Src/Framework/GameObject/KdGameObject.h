@@ -46,8 +46,10 @@ public:
 
 	virtual void SetAsset(const std::string&) {}
 
-	virtual void SetPos(const Math::Vector3& pos) { m_mWorld.Translation(pos); }
-	virtual Math::Vector3 GetPos() const { return m_mWorld.Translation(); }
+	//virtual void SetPos(const Math::Vector3& pos) { m_mWorld.Translation(pos); }
+	//virtual Math::Vector3 GetPos() const { return m_mWorld.Translation(); }
+	virtual void SetPos(const Math::Vector3 pos) { m_pos = pos; }
+	virtual Math::Vector3 GetPos() const { return m_pos; }
 
 	// 拡大率を変更する関数
 	void SetScale(float scalar);
@@ -59,8 +61,19 @@ public:
 	void SetID(UINT _id) { m_id = _id; }
 	UINT GetID()const { return m_id; }
 
+	void SetName(std::string _name) { m_name = _name; }
+	const std::string GetName()const {return m_name; }
+
+	void SetSize(float _size) { m_size = _size; }
+	const float GetSize()const {return m_size; }
+
+	void SetAngle(float _angle) { m_angle = _angle; }
+	const float GetAngle()const {return m_angle; }
+
 	const Math::Matrix& GetMatrix() const { return m_mWorld; }
 
+	// デバッグ
+	void Expired() { m_isExpired = true; }
 	virtual bool IsExpired() const { return m_isExpired; }
 
 	virtual bool IsVisible()	const { return false; }
@@ -106,6 +119,14 @@ protected:
 
 	// デバッグ情報クラス
 	std::unique_ptr<KdDebugWireFrame> m_pDebugWire = nullptr;
+
+	std::string m_name;
+
+	Math::Vector3 m_pos = Math::Vector3::Zero;
+
+	float m_size = 0.0f;
+
+	float m_angle = 0.0f;
 
 	//ID
 	UINT m_id = 0;

@@ -54,6 +54,23 @@ void ObjectManager::DeleteEnemyList()
 	}
 }
 
+void ObjectManager::DeleteObjectList()
+{
+	auto Obj = m_ObjectList.begin();
+
+	while (Obj != m_ObjectList.end())
+	{
+		if (Obj->lock()->IsExpired())
+		{
+			Obj = m_ObjectList.erase(Obj);
+		}
+		else
+		{
+			++Obj;
+		}
+	}
+}
+
 void ObjectManager::SlowChange()
 {
 	if (m_slowFlg)
@@ -96,8 +113,8 @@ void ObjectManager::PlayerWrite()
 	_json["Player"]["ForwardY"] = m_player.lock()->GetParam().ForwardY;
 	_json["Player"]["ForwardZ"] = m_player.lock()->GetParam().ForwardZ;
 	_json["Player"]["InviTime"] = m_player.lock()->GetinviTime();
-	_json["Player"]["SwordName"] = m_player.lock()->GetSword().lock()->GetWeaponName();
-	_json["Player"]["ShieldName"]= m_player.lock()->GetShield().lock()->GetWeaponName();
+	_json["Player"]["SwordName"] = m_player.lock()->GetSword().lock()->GetName();
+	_json["Player"]["ShieldName"]= m_player.lock()->GetShield().lock()->GetName();
 	
 
 	std::ofstream _file("Json/Player/Player.json");
@@ -210,6 +227,48 @@ void ObjectManager::ShieldWrite(std::string _shieldName)
 	}
 }
 
+void ObjectManager::ObjectWrite()
+{
+	nlohmann::json _json;
+
+	for (auto& obj:m_ObjectList)
+	{
+		std::string _name;
+		if (obj.lock()->GetName() == "Ground")
+		{
+			static int g = 0;
+			_name = (std::to_string(g).c_str()) + ((std::string)"Ground");
+			g++;
+		}
+		else if (obj.lock()->GetName() == "Wall")
+		{
+			static int w = 0;
+			_name = (std::to_string(w).c_str()) + ((std::string)"Wall");
+			w++;
+		}
+		else if (obj.lock()->GetName() == "SkyBox")
+		{
+			static int s = 0;
+			_name = (std::to_string(s).c_str()) + ((std::string)"SkyBox");
+			s++;
+		}
+
+		_json[_name]["Name"] = obj.lock()->GetName();
+		_json[_name]["PosX"] = obj.lock()->GetPos().x;
+		_json[_name]["PosY"] = obj.lock()->GetPos().y;
+		_json[_name]["PosZ"] = obj.lock()->GetPos().z;
+		_json[_name]["Size"] = obj.lock()->GetSize();
+		_json[_name]["Angle"] = obj.lock()->GetAngle();
+	}
+
+	std::ofstream _file("Json/Object/Object.json");
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
+	}
+}
+
 void ObjectManager::SetObjectParam()
 {
 	//jsonファイル
@@ -235,26 +294,31 @@ void ObjectManager::SetObjectParam()
 		float _angleY = 0.0f;
 		_angleY = stage["Angle"];
 
+		std::string _name;
+		_name = stage["Name"];
 		std::shared_ptr<KdGameObject> obj;
-		if (stage["Name"] == "Ground")
+		if (_name == "Ground")
 		{
 			obj = std::make_shared<Ground>();
 		}
-		if (stage["Name"] == "Wall")
+		if (_name == "Wall")
 		{
 			obj = std::make_shared<Wall>();
 		}
-		if (stage["Name"] == "SkyBox")
+		if (_name == "SkyBox")
 		{
 			obj = std::make_shared<SkyBox>();
 		}
 
 		obj->SetPos(_pos);
-		obj->SetScale(_size);
-		obj->SetAngleY(_angleY);
+		obj->SetSize(_size);
+		obj->SetAngle(_angleY);
+		obj->SetName(_name);
 		obj->SetID(m_id);
+		obj->Init();
 		m_id++;
 
+		m_ObjectList.push_back(obj);
 		SceneManager::Instance().AddObject(obj);
 	}
 
@@ -275,6 +339,9 @@ void ObjectManager::SetPlayerParam()
 
 	for (auto& stage : _json)
 	{
+		std::string _name;
+		_name = stage["Name"];
+
 		Math::Vector3 _pos = Math::Vector3::Zero;
 		_pos.x = stage["PosX"];
 		_pos.y = stage["PosY"];
@@ -322,6 +389,7 @@ void ObjectManager::SetPlayerParam()
 		player->SetParam(_hp, player->GetSword().lock()->GetATK(), _speed, _stamina, _pos, _dir, _angleY, _size, _atkRange, _forword);
 		player->Init();
 		player->SetInviTime(_inviTime);
+		player->SetName(_name);
 		player->SetID(m_id);
 		m_id++;
 
@@ -374,6 +442,8 @@ void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponNam
 		float _angleY = 0.0f;
 		_angleY = stage["Angle"];
 
+		std::string _name;
+		_name = stage["Name"];
 		std::shared_ptr<WeaponBase> weapon = nullptr;
 		if (stage["ObjectName"] == "Sword")
 		{
@@ -399,9 +469,9 @@ void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponNam
 		weapon->Init();
 		weapon->SetPos(_pos);
 		weapon->SetSize(_size);
-		weapon->SetAngleY(_angleY);
-		weapon->SetWeaponName(_weaponName);
+		weapon->SetAngle(_angleY);
 		weapon->SetTarget(m_player.lock());
+		weapon->SetName(_name);
 		weapon->SetID(m_id);
 		m_id++;
 
@@ -435,6 +505,9 @@ void ObjectManager::SetEnemyParam(std::string _filePath)
 	std::string wave = std::to_string(m_nowWave).c_str() + ((std::string)"Wave");
 	for (auto& stage : m_EnemyJson[wave])
 	{
+		std::string _name;
+		_name = stage["Name"];
+
 		Math::Vector3 _pos = Math::Vector3::Zero;
 		_pos.x = stage["PosX"];
 		_pos.y = stage["PosY"];
@@ -485,6 +558,7 @@ void ObjectManager::SetEnemyParam(std::string _filePath)
 		enemy->SetParam(_hp, _atk, _speed, _stamina, _pos, _dir, _angleY, _size, _atkRange, _forword);
 		enemy->Init();
 		enemy->SetPos(_pos);
+		enemy->SetName(_name);
 		enemy->SetID(m_id);
 		m_id++;
 
@@ -495,33 +569,34 @@ void ObjectManager::SetEnemyParam(std::string _filePath)
 
 void ObjectManager::AddBone()
 {
-		Math::Vector3 _pos = Math::Vector3::Zero;
-		Math::Vector3 _dir = Math::Vector3::Zero;
-		float _size = 1.5f;
-		float _angleY = 180.0f;
-		int _hp = 10;
-		int _atk = 2;
-		float _speed = 1.0f;
-		int _stamina = 50;
-		float _atkRange = 3.0f;
-		Math::Vector3 _forword = Math::Vector3::Zero;
-		_forword.z = 1.0f;
-		float _chaseRange = 1000.0f;
+	std::string _name = "Bone";
+	Math::Vector3 _pos = Math::Vector3::Zero;
+	Math::Vector3 _dir = Math::Vector3::Zero;
+	float _size = 1.5f;
+	float _angleY = 180.0f;
+	int _hp = 10;
+	int _atk = 2;
+	float _speed = 1.0f;
+	int _stamina = 50;
+	float _atkRange = 3.0f;
+	Math::Vector3 _forword = Math::Vector3::Zero;
+	_forword.z = 1.0f;
+	float _chaseRange = 1000.0f;
 
-		std::shared_ptr<Bone> enemy = nullptr;
-		enemy = std::make_shared<Bone>();
-		m_BoneList.push_back(enemy);
-		if (m_player.expired() == false)
-		{
-			enemy->SetPlayer(m_player.lock());
-		}
-		enemy->SetParam(_hp, _atk, _speed, _stamina, _pos, _dir, _angleY, _size, _atkRange, _forword);
-		enemy->Init();
-		enemy->SetID(m_id);
-		m_id++;
+	std::shared_ptr<Bone> enemy = nullptr;
+	enemy = std::make_shared<Bone>();
+	m_BoneList.push_back(enemy);
+	if (m_player.expired() == false)
+	{
+		enemy->SetPlayer(m_player.lock());
+	}
+	enemy->SetParam(_hp, _atk, _speed, _stamina, _pos, _dir, _angleY, _size, _atkRange, _forword);
+	enemy->Init();
+	enemy->SetID(m_id);
+	m_id++;
 
-		SceneManager::Instance().AddObject(enemy);
-		m_EnemyList.push_back(enemy);
+	SceneManager::Instance().AddObject(enemy);
+	m_EnemyList.push_back(enemy);
 }
 
 void ObjectManager::AddWeapon(std::string _filePath,std::string _weaponName)
@@ -538,8 +613,9 @@ void ObjectManager::AddWeapon(std::string _filePath,std::string _weaponName)
 
 	for (auto& stage : _json)
 	{
-
-		if (stage["Name"] != _weaponName)continue;
+		std::string _name;
+		_name = stage["Name"];
+		if (_name != _weaponName)continue;
 
 		Math::Vector3 _pos = Math::Vector3::Zero;
 		_pos.x = stage["PosX"];
@@ -577,8 +653,8 @@ void ObjectManager::AddWeapon(std::string _filePath,std::string _weaponName)
 		weapon->Init();
 		weapon->SetPos(_pos);
 		weapon->SetSize(_size);
-		weapon->SetAngleY(_angleY);
-		weapon->SetWeaponName(_weaponName);
+		weapon->SetAngle(_angleY);
+		weapon->SetName(_name);
 		weapon->SetTarget(m_player.lock());
 		weapon->SetID(m_id);
 		m_id++;
@@ -591,16 +667,58 @@ void ObjectManager::AddWeapon(std::string _filePath,std::string _weaponName)
 	ifs.close();
 }
 
+void ObjectManager::AddGround()
+{
+	std::string _name = "Ground";
+	Math::Vector3 _pos = Math::Vector3::Zero;
+	float _size = 10.0f;
+	float _angleY = 0.0f;
+	std::shared_ptr<Ground> obj = std::make_shared<Ground>();
+
+	obj->SetPos(_pos);
+	obj->SetSize(_size);
+	obj->SetAngle(_angleY);
+	obj->SetName(_name);
+	obj->SetID(m_id);
+	obj->Init();
+
+	m_id++;
+
+	m_ObjectList.push_back(obj);
+	SceneManager::Instance().AddObject(obj);
+}
+
+void ObjectManager::AddWall()
+{
+	std::string _name = "Wall";
+	Math::Vector3 _pos = Math::Vector3::Zero;
+	float _size = 10.0f;
+	float _angleY = 0.0f;
+	std::shared_ptr<Wall> obj = std::make_shared<Wall>();
+
+	obj->SetPos(_pos);
+	obj->SetSize(_size);
+	obj->SetAngle(_angleY);
+	obj->SetName(_name);
+	obj->SetID(m_id);
+	obj->Init();
+
+	m_id++;
+
+	m_ObjectList.push_back(obj);
+	SceneManager::Instance().AddObject(obj);
+}
+
 void ObjectManager::ChangeWeapon(std::string _swordName, std::string _shieldName)
 {
-	if (m_player.lock()->GetSword().lock()->GetWeaponName() != _swordName)
+	if (m_player.lock()->GetSword().lock()->GetName() != _swordName)
 	{
 		m_player.lock()->GetSword().lock()->Expired();
 
 		AddWeapon("Json/Weapon/Sword/Sword.json", _swordName);
 	}
 
-	if (m_player.lock()->GetShield().lock()->GetWeaponName() != _shieldName)
+	if (m_player.lock()->GetShield().lock()->GetName() != _shieldName)
 	{
 		m_player.lock()->GetShield().lock()->Expired();
 
