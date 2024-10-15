@@ -79,8 +79,8 @@ void Player_Guard::End()
 void Player_Guard::GuardRotate(Math::Vector3 _pos)
 {
 	//今の方向
-	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_target.lock()->GetParam().Angle));
-	Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3(m_target.lock()->GetParam().ForwardX, m_target.lock()->GetParam().ForwardY, m_target.lock()->GetParam().ForwardZ), nowRot);
+	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_target.lock()->GetAngle()));
+	Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3(m_target.lock()->GetForward().x, m_target.lock()->GetForward().y, m_target.lock()->GetForward().z), nowRot);
 
 	//向きたい方向
 	Math::Vector3 toVec = _pos - m_target.lock()->GetPos();
@@ -96,7 +96,7 @@ void Player_Guard::GuardRotate(Math::Vector3 _pos)
 	//角度変更
 	//外角　どっち回転かを求める
 	Math::Vector3 c = toVec.Cross(nowVec);
-	float angle = m_target.lock()->GetParam().Angle;
+	float angle = m_target.lock()->GetAngle();
 	if (c.y >= 0)
 	{
 		//右回転
@@ -112,7 +112,7 @@ void Player_Guard::GuardRotate(Math::Vector3 _pos)
 	{
 		//左回転
 		angle += ang;
-		if (m_target.lock()->GetParam().Angle >= 360.0f)
+		if (m_target.lock()->GetAngle() >= 360.0f)
 		{
 			angle -= 360.0f;
 		}

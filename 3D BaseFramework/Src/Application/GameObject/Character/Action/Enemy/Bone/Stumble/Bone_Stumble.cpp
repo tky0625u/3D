@@ -42,8 +42,8 @@ void Bone_Stumble::End()
 
 void Bone_Stumble::Stumble()
 {
-	Math::Matrix _nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_target.lock()->GetParam().Angle));
-	Math::Vector3 _nowVec = Math::Vector3::TransformNormal(Math::Vector3{ m_target.lock()->GetParam().ForwardX, m_target.lock()->GetParam().ForwardY, m_target.lock()->GetParam().ForwardZ }, _nowRot);
+	Math::Matrix _nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_target.lock()->GetAngle()));
+	Math::Vector3 _nowVec = Math::Vector3::TransformNormal(Math::Vector3{ m_target.lock()->GetForward().x, m_target.lock()->GetForward().y, m_target.lock()->GetForward().z}, _nowRot);
 	_nowVec.y = 0.0f;
 	_nowVec *= -1.0f;
 	_nowVec.Normalize();

@@ -8,7 +8,7 @@ void CharacterBase::Update()
 	// デバッグ
 	if (!SceneManager::Instance().m_stop)
 	{
-		m_param.Dir = Math::Vector3::Zero;
+		m_dir = Math::Vector3::Zero;
 		float Move = 0.0f;
 		m_MoveSpeed = 0.0f;
 
@@ -31,22 +31,22 @@ void CharacterBase::Update()
 
 
 		m_gravity += m_gravityPow * _slow;
-		m_param.Pos.y -= m_gravity;
+		m_pos.y -= m_gravity;
 		Move = m_MoveSpeed * m_SpeedCorrection * _slow;
-		m_param.Pos += Move * m_param.Dir; //座標更新
+		m_pos += Move * m_dir; //座標更新
 	}
 
 	//ワールド行列更新
-	Math::Matrix Scale = Math::Matrix::CreateScale(m_param.Size);
-	Math::Matrix RotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_param.Angle));
-	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_param.Pos);
+	Math::Matrix Scale = Math::Matrix::CreateScale(m_size);
+	Math::Matrix RotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
+	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
 	m_mWorld = Scale * RotY * Trans;
 }
 
 void CharacterBase::PostUpdate()
 {
 	KdCollider::RayInfo rayInfo;
-	rayInfo.m_pos = m_param.Pos;
+	rayInfo.m_pos = m_pos;
 	float LitleUP = 0.3f;
 	rayInfo.m_pos.y += LitleUP;
 	rayInfo.m_dir = Math::Vector3::Down; 
@@ -79,7 +79,7 @@ void CharacterBase::PostUpdate()
 
 	if (_hitFlg)
 	{
-		m_param.Pos = _hitPos;
+		m_pos = _hitPos;
 		m_gravity = 0.0f;
 	}
 	else
@@ -126,7 +126,7 @@ void CharacterBase::PostUpdate()
 	{
 		HitDir.y = 0.0f;
 		HitDir.Normalize();
-		m_param.Pos += maxOverLap * HitDir;
+		m_pos += maxOverLap * HitDir;
 	}
 
 	//アニメーションの更新
@@ -192,18 +192,10 @@ void CharacterBase::Hit(int _damege)
 	if (m_param.Hp <= 0)m_param.Hp = 0;
 }
 
-void CharacterBase::SetParam(int _hp, int _atk, float _speed, int _stamina, Math::Vector3 _pos, Math::Vector3 _dir, float _angle, float _size, float _atkRange, Math::Vector3 _forword)
+void CharacterBase::SetParam(int _hp, int _atk, float _speed, int _stamina)
 {
 	m_param.Hp = _hp;
 	m_param.Atk = _atk;
 	m_param.Sp = _speed;
 	m_param.Sm = _stamina;
-	m_param.Pos = _pos;
-	m_param.Dir = _dir;
-	m_param.Angle = _angle;
-	m_param.Size = _size;
-	m_param.AtkRange = _atkRange;
-	m_param.ForwardX = _forword.x;
-	m_param.ForwardY = _forword.y;
-	m_param.ForwardZ = _forword.z;
 }

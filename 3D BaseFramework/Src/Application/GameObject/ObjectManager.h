@@ -38,7 +38,6 @@ public:
 
 	std::weak_ptr<Player> GetPlayer()const { return m_player; }
 	std::vector<std::weak_ptr<EnemyBase>> GetEnemyList()const { return m_EnemyList; }
-	std::vector<std::weak_ptr<Bone>> GetBoneList()const       { return m_BoneList; }
 	std::vector<std::weak_ptr<KdGameObject>> GetObjectList()const{ return m_ObjectList; }
 	int GetStopTime()const { return m_stopTime; }
 	float GetSlow()const { return m_slow; }
@@ -55,7 +54,6 @@ private:
 	float                                 m_slow     = 1.0f;
 	bool                                  m_slowFlg  = false;
 	std::vector<std::weak_ptr<EnemyBase>> m_EnemyList;
-	std::vector<std::weak_ptr<Bone>>      m_BoneList;
 	std::vector<std::weak_ptr<KdGameObject>>    m_ObjectList;
 
 	nlohmann::json                        m_EnemyJson;

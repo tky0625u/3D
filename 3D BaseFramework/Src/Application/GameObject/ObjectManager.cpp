@@ -25,20 +25,6 @@
 
 void ObjectManager::DeleteEnemyList()
 {
-	auto bone = m_BoneList.begin();
-
-	while (bone != m_BoneList.end())
-	{
-		if (bone->expired())
-		{
-			bone = m_BoneList.erase(bone);
-		}
-		else
-		{
-			++bone;
-		}
-	}
-
 	auto enemy = m_EnemyList.begin();
 
 	while (enemy != m_EnemyList.end())
@@ -96,22 +82,22 @@ void ObjectManager::PlayerWrite()
 	nlohmann::json _json;
 
 	_json["Player"]["Name"] = "Player";
-	_json["Player"]["PosX"] = m_player.lock()->GetParam().Pos.x;
-	_json["Player"]["PosY"] = m_player.lock()->GetParam().Pos.y;
-	_json["Player"]["PosZ"] = m_player.lock()->GetParam().Pos.z;
-	_json["Player"]["DirX"] = m_player.lock()->GetParam().Dir.x;
-	_json["Player"]["DirY"] = m_player.lock()->GetParam().Dir.y;
-	_json["Player"]["DirZ"] = m_player.lock()->GetParam().Dir.z;
-	_json["Player"]["Size"] = m_player.lock()->GetParam().Size;
-	_json["Player"]["Angle"] = m_player.lock()->GetParam().Angle;
+	_json["Player"]["PosX"] = m_player.lock()->GetPos().x;
+	_json["Player"]["PosY"] = m_player.lock()->GetPos().y;
+	_json["Player"]["PosZ"] = m_player.lock()->GetPos().z;
+	_json["Player"]["DirX"] = m_player.lock()->GetDir().x;
+	_json["Player"]["DirY"] = m_player.lock()->GetDir().y;
+	_json["Player"]["DirZ"] = m_player.lock()->GetDir().z;
+	_json["Player"]["Size"] = m_player.lock()->GetSize();
+	_json["Player"]["Angle"] = m_player.lock()->GetAngle();
 	_json["Player"]["HP"] = m_player.lock()->GetParam().Hp;
 	_json["Player"]["ATK"] = m_player.lock()->GetParam().Atk;
 	_json["Player"]["Speed"] = m_player.lock()->GetParam().Sp;
 	_json["Player"]["Stamina"] = m_player.lock()->GetParam().Sm;
-	_json["Player"]["ATKRange"] = m_player.lock()->GetParam().AtkRange;
-	_json["Player"]["ForwardX"] = m_player.lock()->GetParam().ForwardX;
-	_json["Player"]["ForwardY"] = m_player.lock()->GetParam().ForwardY;
-	_json["Player"]["ForwardZ"] = m_player.lock()->GetParam().ForwardZ;
+	_json["Player"]["ATKRange"] = m_player.lock()->GetAtkRange();
+	_json["Player"]["ForwardX"] = m_player.lock()->GetForward().x;
+	_json["Player"]["ForwardY"] = m_player.lock()->GetForward().y;
+	_json["Player"]["ForwardZ"] = m_player.lock()->GetForward().z;
 	_json["Player"]["InviTime"] = m_player.lock()->GetinviTime();
 	_json["Player"]["SwordName"] = m_player.lock()->GetSword().lock()->GetName();
 	_json["Player"]["ShieldName"]= m_player.lock()->GetShield().lock()->GetName();
@@ -138,27 +124,35 @@ void ObjectManager::EnemyWrite(int _waveNum)
 	std::string wave = (std::to_string(_waveNum).c_str()) + ((std::string)"Wave");
 	_json[wave].clear();
 
-	for (int bone = 0; bone < m_BoneList.size(); ++bone)
+	for (auto& enemy:m_EnemyList)
 	{
-		std::string name = (std::to_string(bone).c_str());
-		name += "Bone";
-		_json[wave][name]["Name"] = "Bone";
-		_json[wave][name]["PosX"] = m_BoneList[bone].lock()->GetParam().Pos.x;
-		_json[wave][name]["PosY"] = m_BoneList[bone].lock()->GetParam().Pos.y;
-		_json[wave][name]["PosZ"] = m_BoneList[bone].lock()->GetParam().Pos.z;
-		_json[wave][name]["DirX"] = m_BoneList[bone].lock()->GetParam().Dir.x;
-		_json[wave][name]["DirY"] = m_BoneList[bone].lock()->GetParam().Dir.y;
-		_json[wave][name]["DirZ"] = m_BoneList[bone].lock()->GetParam().Dir.z;
-		_json[wave][name]["Size"] = m_BoneList[bone].lock()->GetParam().Size;
-		_json[wave][name]["Angle"] = m_BoneList[bone].lock()->GetParam().Angle;
-		_json[wave][name]["HP"] = m_BoneList[bone].lock()->GetParam().Hp;
-		_json[wave][name]["ATK"] = m_BoneList[bone].lock()->GetParam().Atk;
-		_json[wave][name]["Speed"] = m_BoneList[bone].lock()->GetParam().Sp;
-		_json[wave][name]["Stamina"] = m_BoneList[bone].lock()->GetParam().Sm;
-		_json[wave][name]["ATKRange"] = m_BoneList[bone].lock()->GetParam().AtkRange;
-		_json[wave][name]["ForwardX"] = m_BoneList[bone].lock()->GetParam().ForwardX;
-		_json[wave][name]["ForwardY"] = m_BoneList[bone].lock()->GetParam().ForwardY;
-		_json[wave][name]["ForwardZ"] = m_BoneList[bone].lock()->GetParam().ForwardZ;
+		std::string _category;
+		std::string _name;
+		if (enemy.lock()->GetName() == "Bone")
+		{
+			static int b = 0;
+			_category = "Bone";
+			_name = (std::to_string(b).c_str()) + ((std::string)"Bone");
+			b++;
+		}
+
+		_json[wave][_category][_name]["Name"] = enemy.lock()->GetName();
+		_json[wave][_category][_name]["PosX"] = enemy.lock()->GetPos().x;
+		_json[wave][_category][_name]["PosY"] = enemy.lock()->GetPos().y;
+		_json[wave][_category][_name]["PosZ"] = enemy.lock()->GetPos().z;
+		_json[wave][_category][_name]["DirX"] = enemy.lock()->GetDir().x;
+		_json[wave][_category][_name]["DirY"] = enemy.lock()->GetDir().y;
+		_json[wave][_category][_name]["DirZ"] = enemy.lock()->GetDir().z;
+		_json[wave][_category][_name]["Size"] = enemy.lock()->GetSize();
+		_json[wave][_category][_name]["Angle"] = enemy.lock()->GetAngle();
+		_json[wave][_category][_name]["HP"] = enemy.lock()->GetParam().Hp;
+		_json[wave][_category][_name]["ATK"] = enemy.lock()->GetParam().Atk;
+		_json[wave][_category][_name]["Speed"] = enemy.lock()->GetParam().Sp;
+		_json[wave][_category][_name]["Stamina"] = enemy.lock()->GetParam().Sm;
+		_json[wave][_category][_name]["ATKRange"] = enemy.lock()->GetAtkRange();
+		_json[wave][_category][_name]["ForwardX"] = enemy.lock()->GetForward().x;
+		_json[wave][_category][_name]["ForwardY"] = enemy.lock()->GetForward().y;
+		_json[wave][_category][_name]["ForwardZ"] = enemy.lock()->GetForward().z;
 	}
 
 	std::ofstream _newFile("Json/Enemy/Enemy.json");
@@ -233,32 +227,36 @@ void ObjectManager::ObjectWrite()
 
 	for (auto& obj:m_ObjectList)
 	{
+		std::string _category;
 		std::string _name;
 		if (obj.lock()->GetName() == "Ground")
 		{
 			static int g = 0;
+			_category = "Ground";
 			_name = (std::to_string(g).c_str()) + ((std::string)"Ground");
 			g++;
 		}
 		else if (obj.lock()->GetName() == "Wall")
 		{
 			static int w = 0;
+			_category = "Wall";
 			_name = (std::to_string(w).c_str()) + ((std::string)"Wall");
 			w++;
 		}
 		else if (obj.lock()->GetName() == "SkyBox")
 		{
 			static int s = 0;
+			_category = "SkyBox";
 			_name = (std::to_string(s).c_str()) + ((std::string)"SkyBox");
 			s++;
 		}
 
-		_json[_name]["Name"] = obj.lock()->GetName();
-		_json[_name]["PosX"] = obj.lock()->GetPos().x;
-		_json[_name]["PosY"] = obj.lock()->GetPos().y;
-		_json[_name]["PosZ"] = obj.lock()->GetPos().z;
-		_json[_name]["Size"] = obj.lock()->GetSize();
-		_json[_name]["Angle"] = obj.lock()->GetAngle();
+		_json[_category][_name]["Name"] = obj.lock()->GetName();
+		_json[_category][_name]["PosX"] = obj.lock()->GetPos().x;
+		_json[_category][_name]["PosY"] = obj.lock()->GetPos().y;
+		_json[_category][_name]["PosZ"] = obj.lock()->GetPos().z;
+		_json[_category][_name]["Size"] = obj.lock()->GetSize();
+		_json[_category][_name]["Angle"] = obj.lock()->GetAngle();
 	}
 
 	std::ofstream _file("Json/Object/Object.json");
@@ -281,45 +279,48 @@ void ObjectManager::SetObjectParam()
 		ifs >> _json;
 	}
 
-	for (auto& stage : _json)
+	for (auto& category : _json)
 	{
-		Math::Vector3 _pos = Math::Vector3::Zero;
-		_pos.x = stage["PosX"];
-		_pos.y = stage["PosY"];
-		_pos.z = stage["PosZ"];
-
-		float _size = 0.0f;
-		_size = stage["Size"];
-
-		float _angleY = 0.0f;
-		_angleY = stage["Angle"];
-
-		std::string _name;
-		_name = stage["Name"];
-		std::shared_ptr<KdGameObject> obj;
-		if (_name == "Ground")
+		for (auto& stage : category)
 		{
-			obj = std::make_shared<Ground>();
-		}
-		if (_name == "Wall")
-		{
-			obj = std::make_shared<Wall>();
-		}
-		if (_name == "SkyBox")
-		{
-			obj = std::make_shared<SkyBox>();
-		}
+			Math::Vector3 _pos = Math::Vector3::Zero;
+			_pos.x = stage["PosX"];
+			_pos.y = stage["PosY"];
+			_pos.z = stage["PosZ"];
 
-		obj->SetPos(_pos);
-		obj->SetSize(_size);
-		obj->SetAngle(_angleY);
-		obj->SetName(_name);
-		obj->SetID(m_id);
-		obj->Init();
-		m_id++;
+			float _size = 0.0f;
+			_size = stage["Size"];
 
-		m_ObjectList.push_back(obj);
-		SceneManager::Instance().AddObject(obj);
+			float _angleY = 0.0f;
+			_angleY = stage["Angle"];
+
+			std::string _name;
+			_name = stage["Name"];
+			std::shared_ptr<KdGameObject> obj;
+			if (_name == "Ground")
+			{
+				obj = std::make_shared<Ground>();
+			}
+			if (_name == "Wall")
+			{
+				obj = std::make_shared<Wall>();
+			}
+			if (_name == "SkyBox")
+			{
+				obj = std::make_shared<SkyBox>();
+			}
+
+			obj->SetPos(_pos);
+			obj->SetSize(_size);
+			obj->SetAngle(_angleY);
+			obj->SetName(_name);
+			obj->SetID(m_id);
+			obj->Init();
+			m_id++;
+
+			m_ObjectList.push_back(obj);
+			SceneManager::Instance().AddObject(obj);
+		}
 	}
 
 	ifs.close();
@@ -370,10 +371,10 @@ void ObjectManager::SetPlayerParam()
 		float _atkRange = 0.0f;
 		_atkRange = stage["ATKRange"];
 
-		Math::Vector3 _forword = Math::Vector3::Zero;
-		_forword.x = stage["ForwardX"];
-		_forword.y = stage["ForwardY"];
-		_forword.z = stage["ForwardZ"];
+		Math::Vector3 _forward = Math::Vector3::Zero;
+		_forward.x = stage["ForwardX"];
+		_forward.y = stage["ForwardY"];
+		_forward.z = stage["ForwardZ"];
 
 		int _inviTime = 0;
 		_inviTime = stage["InviTime"];
@@ -386,7 +387,13 @@ void ObjectManager::SetPlayerParam()
 
 		std::shared_ptr<TPSCamera> camera = std::make_shared<TPSCamera>();
 		player->SetCamera(camera);
-		player->SetParam(_hp, player->GetSword().lock()->GetATK(), _speed, _stamina, _pos, _dir, _angleY, _size, _atkRange, _forword);
+		player->SetParam(_hp, player->GetSword().lock()->GetATK(), _speed, _stamina);
+		player->SetPos(_pos);
+		player->SetSize(_size);
+		player->SetDir(_dir);
+		player->SetAngle(_angleY);
+		player->SetAtkRange(_atkRange);
+		player->SetForward(_forward);
 		player->Init();
 		player->SetInviTime(_inviTime);
 		player->SetName(_name);
@@ -502,68 +509,75 @@ void ObjectManager::SetEnemyParam(std::string _filePath)
 	}
 	m_nowWave++;
 
-	std::string wave = std::to_string(m_nowWave).c_str() + ((std::string)"Wave");
-	for (auto& stage : m_EnemyJson[wave])
+	std::string _wave = std::to_string(m_nowWave).c_str() + ((std::string)"Wave");
+	for (auto& category : m_EnemyJson[_wave])
 	{
-		std::string _name;
-		_name = stage["Name"];
-
-		Math::Vector3 _pos = Math::Vector3::Zero;
-		_pos.x = stage["PosX"];
-		_pos.y = stage["PosY"];
-		_pos.z = stage["PosZ"];
-
-		Math::Vector3 _dir = Math::Vector3::Zero;
-		_dir.x = stage["DirX"];
-		_dir.y = stage["DirY"];
-		_dir.z = stage["DirZ"];
-
-		float _size = 0.0f;
-		_size = stage["Size"];
-
-		float _angleY = 0.0f;
-		_angleY = stage["Angle"];
-
-		int _hp = 0;
-		_hp = stage["HP"];
-
-		int _atk = 0;
-		_atk = stage["ATK"];
-
-		float _speed = 0.0f;
-		_speed = stage["Speed"];
-
-		int _stamina = 0;
-		_stamina = stage["Stamina"];
-
-		float _atkRange = 0.0f;
-		_atkRange = stage["ATKRange"];
-
-		Math::Vector3 _forword = Math::Vector3::Zero;
-		_forword.x = stage["ForwardX"];
-		_forword.y = stage["ForwardY"];
-		_forword.z = stage["ForwardZ"];
-
-		std::shared_ptr<EnemyBase> enemy = nullptr;
-		if (stage["Name"] == "Bone")
+		for (auto& stage : category)
 		{
-			std::shared_ptr<Bone> bone = std::make_shared<Bone>();
-			m_BoneList.push_back(bone);
-			enemy = bone;
-		}
-		if (m_player.expired() == false)
-		{
-			enemy->SetPlayer(m_player.lock());
-		}
-		enemy->SetParam(_hp, _atk, _speed, _stamina, _pos, _dir, _angleY, _size, _atkRange, _forword);
-		enemy->Init();
-		enemy->SetPos(_pos);
-		enemy->SetName(_name);
-		enemy->SetID(m_id);
-		m_id++;
+			std::string _name;
+			_name = stage["Name"];
 
-		SceneManager::Instance().AddObject(enemy);
-		m_EnemyList.push_back(enemy);
+			Math::Vector3 _pos = Math::Vector3::Zero;
+			_pos.x = stage["PosX"];
+			_pos.y = stage["PosY"];
+			_pos.z = stage["PosZ"];
+
+			Math::Vector3 _dir = Math::Vector3::Zero;
+			_dir.x = stage["DirX"];
+			_dir.y = stage["DirY"];
+			_dir.z = stage["DirZ"];
+
+			float _size = 0.0f;
+			_size = stage["Size"];
+
+			float _angleY = 0.0f;
+			_angleY = stage["Angle"];
+
+			int _hp = 0;
+			_hp = stage["HP"];
+
+			int _atk = 0;
+			_atk = stage["ATK"];
+
+			float _speed = 0.0f;
+			_speed = stage["Speed"];
+
+			int _stamina = 0;
+			_stamina = stage["Stamina"];
+
+			float _atkRange = 0.0f;
+			_atkRange = stage["ATKRange"];
+
+			Math::Vector3 _forward = Math::Vector3::Zero;
+			_forward.x = stage["ForwardX"];
+			_forward.y = stage["ForwardY"];
+			_forward.z = stage["ForwardZ"];
+
+			std::shared_ptr<EnemyBase> enemy = nullptr;
+			if (stage["Name"] == "Bone")
+			{
+				std::shared_ptr<Bone> bone = std::make_shared<Bone>();
+				enemy = bone;
+			}
+			if (m_player.expired() == false)
+			{
+				enemy->SetPlayer(m_player.lock());
+			}
+			enemy->SetParam(_hp, _atk, _speed, _stamina);
+			enemy->SetPos(_pos);
+			enemy->SetSize(_size);
+			enemy->SetDir(_dir);
+			enemy->SetAngle(_angleY);
+			enemy->SetAtkRange(_atkRange);
+			enemy->SetForward(_forward);
+			enemy->SetName(_name);
+			enemy->SetID(m_id);
+			enemy->Init();
+			m_id++;
+
+			SceneManager::Instance().AddObject(enemy);
+			m_EnemyList.push_back(enemy);
+		}
 	}
 }
 
@@ -579,20 +593,26 @@ void ObjectManager::AddBone()
 	float _speed = 1.0f;
 	int _stamina = 50;
 	float _atkRange = 3.0f;
-	Math::Vector3 _forword = Math::Vector3::Zero;
-	_forword.z = 1.0f;
+	Math::Vector3 _forward = Math::Vector3::Zero;
+	_forward.z = 1.0f;
 	float _chaseRange = 1000.0f;
 
 	std::shared_ptr<Bone> enemy = nullptr;
 	enemy = std::make_shared<Bone>();
-	m_BoneList.push_back(enemy);
 	if (m_player.expired() == false)
 	{
 		enemy->SetPlayer(m_player.lock());
 	}
-	enemy->SetParam(_hp, _atk, _speed, _stamina, _pos, _dir, _angleY, _size, _atkRange, _forword);
-	enemy->Init();
+	enemy->SetParam(_hp, _atk, _speed, _stamina);
+	enemy->SetPos(_pos);
+	enemy->SetSize(_size);
+	enemy->SetDir(_dir);
+	enemy->SetAngle(_angleY);
+	enemy->SetAtkRange(_atkRange);
+	enemy->SetForward(_forward);
+	enemy->SetName(_name);
 	enemy->SetID(m_id);
+	enemy->Init();
 	m_id++;
 
 	SceneManager::Instance().AddObject(enemy);

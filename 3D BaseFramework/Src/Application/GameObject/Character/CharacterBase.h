@@ -13,15 +13,6 @@ public:
 		 int   Atk = 1; //攻撃力
 		 float Sp  = 1; //素早さ
 		 int   Sm  = 1; //スタミナ
-
-		 Math::Vector3 Pos = Math::Vector3::Zero; //座標
-		 Math::Vector3 Dir = Math::Vector3::Zero; //方向
-		 float  Angle    = 0.0f; //角度
-		 float  Size     = 1.0f; //大きさ
-		 float  AtkRange = 0.0f; //攻撃範囲
-		 float  ForwardX = 0.0f; //前方方向X
-		 float  ForwardY = 0.0f; //前方方向Y
-		 float  ForwardZ = 0.0f; //前方方向Z
 	};
 
 	CharacterBase()                                   { Init(); }
@@ -38,12 +29,12 @@ public:
 
 	void Hit(int _damege);
 
-	void SetParam(int _hp, int _atk, float _speed, int _stamina, Math::Vector3 _pos, Math::Vector3 _dir, float _angle, float _size, float _atkRange, Math::Vector3 _forword);
-
-	void SetPos(Math::Vector3 a_pos) { m_param.Pos = a_pos; }
-	void SetAngle(float _angle) { m_param.Angle = _angle; }
+	void SetParam(int _hp, int _atk, float _speed, int _stamina);
 	void SetStamina(int _stamina) { m_param.Sm = _stamina; }
 	void SetATK(int _atk) { m_param.Atk = _atk; }
+	void SetAtkRange(float _atkRange) { m_AtkRange = _atkRange; }
+	void SetForward(Math::Vector3 _forward) { m_forward = _forward; }
+	void SetDir(Math::Vector3 _dir) { m_dir = _dir; }
 	void SetAnime(std::string animeName, bool animeFlg, float animeSpeed) {
 																			m_anime = animeName;
 																			m_animeFlg = animeFlg;
@@ -51,7 +42,7 @@ public:
 																		  }
 	void SetMove(Math::Vector3 dir,float _moveSpeed=0.0f)
 	{
-		m_param.Dir = dir;
+		m_dir = dir;
 		m_MoveSpeed = _moveSpeed;
 	}
 	void SetSword(std::shared_ptr<Sword> _sword) { m_sword = _sword; }
@@ -60,11 +51,13 @@ public:
 	Param GetParam() { return m_param; }
 	bool GetIsAnimator() { return m_animator->IsAnimationEnd(); }
 	std::string GetAnime() { return m_anime; }
-	Math::Matrix GetSwordMat() { return m_model->FindWorkNode("sword.R")->m_localTransform * m_model->FindWorkNode("hand.R")->m_worldTransform * (Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_param.Angle))*(Math::Matrix::CreateTranslation(m_mWorld.Translation()))); }
-	Math::Matrix GetShieldMat() { return m_model->FindWorkNode("shield.L")->m_localTransform * m_model->FindWorkNode("forearm.L")->m_worldTransform * (Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_param.Angle)) * (Math::Matrix::CreateTranslation(m_mWorld.Translation()))); }
+	Math::Matrix GetSwordMat() { return m_model->FindWorkNode("sword.R")->m_localTransform * m_model->FindWorkNode("hand.R")->m_worldTransform * (Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle))*(Math::Matrix::CreateTranslation(m_mWorld.Translation()))); }
+	Math::Matrix GetShieldMat() { return m_model->FindWorkNode("shield.L")->m_localTransform * m_model->FindWorkNode("forearm.L")->m_worldTransform * (Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle)) * (Math::Matrix::CreateTranslation(m_mWorld.Translation()))); }
 	std::weak_ptr<Sword> GetSword() { return m_sword; }
-	Math::Vector3 GetPos()const override { return m_param.Pos; }
 	int GetinviTime()const { return m_inviTime; }
+	const Math::Vector3 GetDir() const { return m_dir; }
+	const Math::Vector3 GetForward() const { return m_forward; }
+	const float GetAtkRange() const { return m_AtkRange; }
 
 protected:
 	Param                        m_param;
@@ -74,12 +67,15 @@ protected:
 	std::weak_ptr<Sword>         m_sword;
 	std::string                  m_anime           = "Idol";
 	std::string                  m_beforeAnime     = m_anime;
+	Math::Vector3 m_dir = Math::Vector3::Zero; //方向
+	Math::Vector3 m_forward = Math::Vector3::Zero;
 	std::unordered_map<std::string, std::shared_ptr<ActionBase>> m_actionList;
 	int                          m_inviTime        = 0;
 	float                        m_gravity         = 0.0f;
 	float                        m_animeSpeed      = 1.0f;
 	float                        m_MoveSpeed       = 0.0f;
 	float                        m_dossolve        = 0.0f;
+	float                        m_AtkRange = 0.0f; //攻撃範囲
 	const float                  m_SpeedCorrection = 0.2f;
 	const float                  m_gravityPow      = 0.1f;
 	bool                         m_atkFlg          = false;

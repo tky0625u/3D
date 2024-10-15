@@ -416,27 +416,27 @@ void Application::ImGuiProcess()
 				int stamina = _player->GetParam().Sm;
 				ImGui::SliderInt("Stamina", &stamina, 1, 100);
 				// 位置
-				ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _player->GetParam().Pos.x, _player->GetParam().Pos.y, _player->GetParam().Pos.z);
-				Math::Vector3 pos = _player->GetParam().Pos;
+				ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _player->GetPos().x, _player->GetPos().y, _player->GetPos().z);
+				Math::Vector3 pos = _player->GetPos();
 				ImGui::SliderFloat("PosX", &pos.x, -100, 100);
 				ImGui::SliderFloat("PosY", &pos.y, 0, 100);
 				ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
 				// 方向
-				ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _player->GetParam().Dir.x, _player->GetParam().Dir.y, _player->GetParam().Dir.z);
+				ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _player->GetDir().x, _player->GetDir().y, _player->GetDir().z);
 				// 角度
-				ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _player->GetParam().Angle);
-				float angle = _player->GetParam().Angle;
+				ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _player->GetAngle());
+				float angle = _player->GetAngle();
 				ImGui::SliderFloat("Angle", &angle, 0, 360);
 				// 大きさ
-				ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _player->GetParam().Size);
-				float size = _player->GetParam().Size;
+				ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _player->GetSize());
+				float size = _player->GetSize();
 				ImGui::SliderFloat("Size", &size, 1, 100);
 				// 攻撃範囲
-				ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _player->GetParam().AtkRange);
-				float range = _player->GetParam().AtkRange;
+				ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _player->GetAtkRange());
+				float range = _player->GetAtkRange();
 				ImGui::SliderFloat("ATKRange", &range, 1, 100);
 				// 前方方向
-				ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _player->GetParam().ForwardX, _player->GetParam().ForwardY, _player->GetParam().ForwardZ);
+				ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _player->GetForward().x, _player->GetForward().y, _player->GetForward().z);
 				// 無敵時間
 				ImGui::Text((const char*)u8"　無敵付与時間 InviTime=%d", _player->GetinviTime());
 				int _inviTime = _player->GetinviTime();
@@ -545,7 +545,11 @@ void Application::ImGuiProcess()
 					ObjectManager::Instance().ChangeWeapon(_swordName, _shieldName);
 				}
 
-				_player->SetParam(hp, _player->GetSword().lock()->GetATK(), speed, stamina, pos, _player->GetParam().Dir, angle, size, range, Math::Vector3{_player->GetParam().ForwardX, _player->GetParam().ForwardY, _player->GetParam().ForwardZ});
+				_player->SetParam(hp, _player->GetSword().lock()->GetATK(), speed, stamina);
+				_player->SetPos(pos);
+				_player->SetAngle(angle);
+				_player->SetSize(size);
+				_player->SetAtkRange(range);
 				_player->SetInviTime(_inviTime);
 
 				ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
@@ -556,6 +560,15 @@ void Application::ImGuiProcess()
 
 		if (ImGui::TreeNode("Enemy"))
 		{
+			std::vector<std::weak_ptr<EnemyBase>> _boneList;
+			for (auto& enemy : ObjectManager::Instance().GetEnemyList())
+			{
+				if (enemy.lock()->GetName() == "Bone")
+				{
+					_boneList.push_back(enemy);
+				}
+			}
+
 			static int _wave = ObjectManager::Instance().GetMaxWave();
 			ImGui::Text((const char*)u8"ウェーブ数 : %d", _wave);
 			static int _nowWave = ObjectManager::Instance().GetnowWave();
@@ -583,9 +596,8 @@ void Application::ImGuiProcess()
 
 				if (ImGui::TreeNode("Bone"))
 				{
-					std::vector<std::weak_ptr<Bone>> _boneList = ObjectManager::Instance().GetBoneList();
 					ImGui::Text((const char*)u8"ボーン:%d体", _boneList.size());
-					for (int bone = 0; bone < ObjectManager::Instance().GetBoneList().size(); ++bone)
+					for (int bone = 0; bone <_boneList.size(); ++bone)
 					{
 						if (ImGui::Button(std::to_string(bone + 1).c_str()))
 						{
@@ -613,29 +625,33 @@ void Application::ImGuiProcess()
 						int stamina = _boneList[operation].lock()->GetParam().Sm;
 						ImGui::SliderInt("Stamina", &stamina, 1, 100);
 						// 位置
-						ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetParam().Pos.x, _boneList[operation].lock()->GetParam().Pos.y, _boneList[operation].lock()->GetParam().Pos.z);
-						Math::Vector3 pos = _boneList[operation].lock()->GetParam().Pos;
+						ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetPos().x, _boneList[operation].lock()->GetPos().y, _boneList[operation].lock()->GetPos().z);
+						Math::Vector3 pos = _boneList[operation].lock()->GetPos();
 						ImGui::SliderFloat("PosX", &pos.x, -100, 100);
 						ImGui::SliderFloat("PosY", &pos.y, 0, 100);
 						ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
 						// 方向
-						ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetParam().Dir.x, _boneList[operation].lock()->GetParam().Dir.y, _boneList[operation].lock()->GetParam().Dir.z);
+						ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetDir().x, _boneList[operation].lock()->GetDir().y, _boneList[operation].lock()->GetDir().z);
 						// 角度
-						ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _boneList[operation].lock()->GetParam().Angle);
-						float angle = _boneList[operation].lock()->GetParam().Angle;
+						ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _boneList[operation].lock()->GetAngle());
+						float angle = _boneList[operation].lock()->GetAngle();
 						ImGui::SliderFloat("Angle", &angle, 0, 360);
 						// 大きさ
-						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _boneList[operation].lock()->GetParam().Size);
-						float size = _boneList[operation].lock()->GetParam().Size;
+						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _boneList[operation].lock()->GetSize());
+						float size = _boneList[operation].lock()->GetSize();
 						ImGui::SliderFloat("Size", &size, 1, 100);
 						// 攻撃範囲
-						ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _boneList[operation].lock()->GetParam().AtkRange);
-						float range = _boneList[operation].lock()->GetParam().AtkRange;
+						ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _boneList[operation].lock()->GetAtkRange());
+						float range = _boneList[operation].lock()->GetAtkRange();
 						ImGui::SliderFloat("ATKRange", &range, 1, 100);
 						// 前方方向
-						ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetParam().ForwardX, _boneList[operation].lock()->GetParam().ForwardY, _boneList[operation].lock()->GetParam().ForwardZ);
+						ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetForward().x, _boneList[operation].lock()->GetForward().y, _boneList[operation].lock()->GetForward().z);
 
-						_boneList[operation].lock()->SetParam(hp, atk, speed, stamina, pos, _boneList[operation].lock()->GetParam().Dir, angle, size, range, Math::Vector3{ _boneList[operation].lock()->GetParam().ForwardX, _boneList[operation].lock()->GetParam().ForwardY, _boneList[operation].lock()->GetParam().ForwardZ });
+						_boneList[operation].lock()->SetParam(hp, atk, speed, stamina);
+						_boneList[operation].lock()->SetPos(pos);
+						_boneList[operation].lock()->SetAngle(angle);
+						_boneList[operation].lock()->SetSize(size);
+						_boneList[operation].lock()->SetAtkRange(range);
 
 						if (ImGui::Button((const char*)u8"消滅"))
 						{
@@ -678,8 +694,6 @@ void Application::ImGuiProcess()
 					skyboxList.push_back(obj);
 				}
 			}
-
-			m_log.AddLog("%d\n", ObjectManager::Instance().GetObjectList().size());
 
 			if (ImGui::TreeNode("Ground"))
 			{

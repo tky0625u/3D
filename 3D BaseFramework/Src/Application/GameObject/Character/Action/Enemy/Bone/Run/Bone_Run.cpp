@@ -68,12 +68,12 @@ void Bone_Run::Chace()
 	float dist = _moveDir.Length();
 	_moveDir.Normalize();
 
-	float _beforeAngle = m_target.lock()->GetParam().Angle;
+	float _beforeAngle = m_target.lock()->GetAngle();
 	if (m_target.expired() == false)Rotate(_moveDir, m_target.lock());
-	if (AttackCheck() && (m_target.lock()->GetParam().Angle - _beforeAngle) >= -30.0f && (m_target.lock()->GetParam().Angle - _beforeAngle) <= 30.0f)
+	if (AttackCheck() && (m_target.lock()->GetAngle() - _beforeAngle) >= -30.0f && (m_target.lock()->GetAngle() - _beforeAngle) <= 30.0f)
 	{
 		m_flow = Flow::EndType;
 	}
 
-	if (dist >= m_target.lock()->GetParam().AtkRange)m_target.lock()->SetMove(_moveDir);
+	if (dist >= m_target.lock()->GetAtkRange())m_target.lock()->SetMove(_moveDir);
 }
