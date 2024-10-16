@@ -157,6 +157,7 @@
     <ClInclude Include="..\Library\tinygltf\stb_image_write.h" />
     <ClInclude Include="..\Library\tinygltf\tiny_gltf.h" />
     <ClInclude Include="Src\Application\GameObject\Camera\CameraBase.h" />
+    <ClInclude Include="Src\Application\GameObject\Camera\FixedCamera\FixedCamera.h" />
     <ClInclude Include="Src\Application\GameObject\Camera\TPSCamera\TPSCamera.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\ActionBase.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal\Bone_Appeal.h" />
@@ -188,7 +189,7 @@
     <ClInclude Include="Src\Application\GameObject\SkyBox\SkyBox.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Circle\Circle.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Ground\Ground.h" />
-    <ClInclude Include="Src\Application\GameObject\Stage\Stage.h" />
+    <ClInclude Include="Src\Application\GameObject\Stage\MagicPolygon\MagicPolygon.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Wall\Wall.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Enemy\HP\Enemy_HP.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Player\HP\Player_HP.h" />
@@ -249,6 +250,7 @@
     <ClCompile Include="..\Library\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\Library\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Src\Application\GameObject\Camera\CameraBase.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Camera\FixedCamera\FixedCamera.cpp" />
     <ClCompile Include="Src\Application\GameObject\Camera\TPSCamera\TPSCamera.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\ActionBase.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal\Bone_Appeal.cpp" />
@@ -278,7 +280,7 @@
     <ClCompile Include="Src\Application\GameObject\SkyBox\SkyBox.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Circle\Circle.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Ground\Ground.cpp" />
-    <ClCompile Include="Src\Application\GameObject\Stage\Stage.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Stage\MagicPolygon\MagicPolygon.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Wall\Wall.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Enemy\HP\Enemy_HP.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\HP\Player_HP.cpp" />

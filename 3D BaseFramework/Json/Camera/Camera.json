@@ -1,0 +1,13 @@
+{
+	"Camera": {
+		"Name": "Camera",
+		"PlayerPosX": 0.0,
+		"PlayerPosY": 3.0,
+		"PlayerPosZ": -8.0,
+		"FixedPosX": 0.0,
+		"FixedPosY": 0.0,
+		"FixedPosZ": 0.0,
+		"AngleX": 0.0,
+		"AngleY": 0.0
+	}
+}

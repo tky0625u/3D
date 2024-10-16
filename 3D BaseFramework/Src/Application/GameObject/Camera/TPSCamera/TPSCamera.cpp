@@ -1,5 +1,6 @@
 ﻿#include "TPSCamera.h"
 #include"../../../Scene/SceneManager.h"
+#include"../../ObjectManager.h"
 
 void TPSCamera::Init()
 {
@@ -7,7 +8,7 @@ void TPSCamera::Init()
 	CameraBase::Init();
 
 	// 注視点
-	m_mLocalPos = Math::Matrix::CreateTranslation(0.0f, 3.0f, -8.0f);
+	m_mLocalPos = Math::Matrix::CreateTranslation(m_targetPos);
 
 	//SetCursorPos(m_FixMousePos.x, m_FixMousePos.y);
 }
@@ -75,7 +76,16 @@ void TPSCamera::PostUpdate()
 	}
 	
 	m_mRotation = GetRotationMatrix();
-	m_mWorld = m_mLocalPos * m_mRotation * _targetMat;
+
+	Math::Matrix _trans;
+	if (!m_fixFlg)_trans = m_mLocalPos;
+	else
+	{
+		Math::Vector3 _pos = m_fixPos;
+		_trans = Math::Matrix::CreateTranslation(_pos);
+		_targetMat = m_FixedTargetList[ObjectManager::Instance().GetnowStage() - 1].lock()->GetMatrix();
+	}
+	m_mWorld = _trans * m_mRotation * _targetMat;
 
 	KdCollider::RayInfo rayInfo;
 	rayInfo.m_pos = GetPos();

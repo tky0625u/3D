@@ -193,6 +193,12 @@
     <Filter Include="Src\Application\GameObject\Stage\Circle">
       <UniqueIdentifier>{8ec3fc6d-06c5-475b-84ed-cb3ffcecfcd3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\Stage\MagicPolygon">
+      <UniqueIdentifier>{025b20cb-c79d-4b3e-b1b6-3adc4703eb8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Camera\FixedCamera">
+      <UniqueIdentifier>{e78d4638-d969-419a-9ea7-305fa7d1f20e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -393,9 +399,6 @@
     <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Attack\Player_Attack.h">
       <Filter>Src\Application\GameObject\Character\Action\Player\Attack</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Stage\Stage.h">
-      <Filter>Src\Application\GameObject\Stage</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Hit\Player_Hit.h">
       <Filter>Src\Application\GameObject\Character\Action\Player\Hit</Filter>
     </ClInclude>
@@ -485,6 +488,12 @@
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Stage\Circle\Circle.h">
       <Filter>Src\Application\GameObject\Stage\Circle</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Stage\MagicPolygon\MagicPolygon.h">
+      <Filter>Src\Application\GameObject\Stage\MagicPolygon</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Camera\FixedCamera\FixedCamera.h">
+      <Filter>Src\Application\GameObject\Camera\FixedCamera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -659,9 +668,6 @@
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Attack\Player_Attack.cpp">
       <Filter>Src\Application\GameObject\Character\Action\Player\Attack</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Stage\Stage.cpp">
-      <Filter>Src\Application\GameObject\Stage</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Hit\Player_Hit.cpp">
       <Filter>Src\Application\GameObject\Character\Action\Player\Hit</Filter>
     </ClCompile>
@@ -745,6 +751,12 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Stage\Circle\Circle.cpp">
       <Filter>Src\Application\GameObject\Stage\Circle</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Stage\MagicPolygon\MagicPolygon.cpp">
+      <Filter>Src\Application\GameObject\Stage\MagicPolygon</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Camera\FixedCamera\FixedCamera.cpp">
+      <Filter>Src\Application\GameObject\Camera\FixedCamera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

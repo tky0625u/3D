@@ -39,6 +39,7 @@ void GameScene::PostUpdate()
 void GameScene::Init()
 {
 	//オブジェクトマネジャ
+	ObjectManager::Instance().SetCameraParam();
 	ObjectManager::Instance().SetObjectParam();
 	ObjectManager::Instance().SetPlayerParam();
 	ObjectManager::Instance().SetEnemyParam("Json/Enemy/Stage1.json");

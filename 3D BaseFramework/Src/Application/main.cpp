@@ -1,6 +1,6 @@
 ﻿#include "main.h"
 
-#include "Scene/SceneManager.h"
+#include"Scene/SceneManager.h"
 #include"GameObject/ObjectManager.h"
 #include"GameObject/Character/Enemy/Bone/Bone.h"
 #include"GameObject/Character/Player/Player.h"
@@ -712,6 +712,7 @@ void Application::ImGuiProcess()
 
 				std::vector<std::weak_ptr<KdGameObject>> groundList;
 				std::vector<std::weak_ptr<KdGameObject>> circleList;
+				std::vector<std::weak_ptr<KdGameObject>> magicList;
 				std::vector<std::weak_ptr<KdGameObject>> wallList;
 				std::vector<std::weak_ptr<KdGameObject>> skyboxList;
 				for (auto& obj : ObjectManager::Instance().GetObjectList())
@@ -725,6 +726,10 @@ void Application::ImGuiProcess()
 						else if (obj.lock()->GetName() == "Circle")
 						{
 							circleList.push_back(obj);
+						}
+						else if (obj.lock()->GetName() == "Magic")
+						{
+							magicList.push_back(obj);
 						}
 						else if (obj.lock()->GetName() == "Wall")
 						{
@@ -770,7 +775,11 @@ void Application::ImGuiProcess()
 						if (ImGui::Button((const char*)u8"消滅"))
 						{
 							groundList[Goperation].lock()->Expired();
-							if (circleList.size()==groundList.size())circleList[Goperation].lock()->Expired();
+							if (circleList.size() == groundList.size())
+							{
+								circleList[Goperation].lock()->Expired();
+								magicList[Goperation].lock()->Expired();
+							}
 							ObjectManager::Instance().DeleteObjectList();
 							Goperation = -1;
 							Coperation = -1;
@@ -824,14 +833,37 @@ void Application::ImGuiProcess()
 								if (ImGui::Button((const char*)u8"消滅"))
 								{
 									circleList[Coperation].lock()->Expired();
+									magicList[Coperation].lock()->Expired();
 									ObjectManager::Instance().DeleteObjectList();
 									Coperation = -1;
 								}
 							}
 						}
-					}
 
-					ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+						ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+						if (ImGui::TreeNode("Magic"))
+						{
+							float size = 0.0f;
+							if (magicList[0].expired() == false)
+							{
+								// 大きさ
+								ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", magicList[0].lock()->GetSize());
+								size = magicList[0].lock()->GetSize();
+								ImGui::SliderFloat("Size", &size, 1, 100);
+							}
+
+							for (int m = 0; m < magicList.size(); ++m)
+							{
+								if (circleList[m].expired() == false)
+								{
+									magicList[m].lock()->SetSize(size);
+								}
+							}
+							ImGui::TreePop();
+						}
+					}
 
 					ImGui::TreePop();
 				}

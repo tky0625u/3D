@@ -3,6 +3,7 @@
 class Player;
 class EnemyBase;
 class Bone;
+class TPSCamera;
 
 #include"../tinygltf/json.hpp"
 class ObjectManager:public std::enable_shared_from_this<ObjectManager>
@@ -22,6 +23,7 @@ public:
 	void ShieldWrite(std::string _shieldName);
 	void ObjectWrite();
 
+	void SetCameraParam();
 	void SetObjectParam();
 	void SetPlayerParam();
 	void SetWeaponParam(std::string _filePath, std::string _weaponName);
@@ -38,18 +40,21 @@ public:
 	const std::vector<std::string> GetSwordNameList() const { return m_swordNameList; }
 	const std::vector<std::string> GetShieldNameList() const { return m_shieldNameList; }
 
-	std::weak_ptr<Player> GetPlayer()const { return m_player; }
-	std::vector<std::weak_ptr<EnemyBase>> GetEnemyList()const { return m_EnemyList; }
-	std::vector<std::weak_ptr<KdGameObject>> GetObjectList()const{ return m_ObjectList; }
-	int GetStopTime()const { return m_stopTime; }
-	float GetSlow()const { return m_slow; }
-	bool GetSlowFlg()const { return m_slowFlg; }
+	const std::weak_ptr<TPSCamera> GetCamera()const { return m_camera; }
+	const std::weak_ptr<Player> GetPlayer()const { return m_player; }
+	const std::vector<std::weak_ptr<EnemyBase>> GetEnemyList()const { return m_EnemyList; }
+	const std::vector<std::weak_ptr<KdGameObject>> GetObjectList()const{ return m_ObjectList; }
+	const int GetStopTime()const { return m_stopTime; }
+	const float GetSlow()const { return m_slow; }
+	const bool GetSlowFlg()const { return m_slowFlg; }
+	const int GetnowStage()const { return m_nowStage; }
 
 	// デバッグ
 	int GetMaxWave()const { return m_MaxWave; }
 	int GetnowWave()const { return m_nowWave; }
 
 private:
+	std::weak_ptr<TPSCamera>                 m_camera;
 	std::weak_ptr<Player>                 m_player;
 	UINT                                  m_id       = 0;
 	int                                   m_stopTime = 0;

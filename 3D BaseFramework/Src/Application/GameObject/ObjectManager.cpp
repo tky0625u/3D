@@ -8,8 +8,10 @@
 
 //地面
 #include"../GameObject/Stage/Ground/Ground.h"
-//魔法陣
+//魔法陣の台
 #include"../GameObject/Stage/Circle/Circle.h"
+//魔法陣
+#include"../GameObject/Stage/MagicPolygon/MagicPolygon.h"
 //壁
 #include"../GameObject/Stage/Wall/Wall.h"
 //スカイボックス
@@ -262,6 +264,13 @@ void ObjectManager::ObjectWrite()
 			_name = (std::to_string(c).c_str()) + ((std::string)"Circle");
 			c++;
 		}
+		else if (obj.lock()->GetName() == "Magic")
+		{
+			static int m = 0;
+			_category = "Magic";
+			_name = (std::to_string(m).c_str()) + ((std::string)"Magic");
+			m++;
+		}
 		else if (obj.lock()->GetName() == "Wall")
 		{
 			static int w = 0;
@@ -293,6 +302,53 @@ void ObjectManager::ObjectWrite()
 	}
 }
 
+void ObjectManager::SetCameraParam()
+{
+	//jsonファイル
+	std::string fileName = "Json/Camera/Camera.json";
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& stage : _json)
+	{
+		Math::Vector3 _PlayerPos = Math::Vector3::Zero;
+		_PlayerPos.x = stage["PlayerPosX"];
+		_PlayerPos.y = stage["PlayerPosY"];
+		_PlayerPos.z = stage["PlayerPosZ"];
+
+		Math::Vector3 _FixedPos = Math::Vector3::Zero;
+		_FixedPos.x = stage["FixedPosX"];
+		_FixedPos.y = stage["FixedPosY"];
+		_FixedPos.z = stage["FixedPosZ"];
+
+		Math::Vector2 _angle = Math::Vector2::Zero;
+		_angle.x = stage["AngleX"];
+		_angle.y = stage["AngleY"];
+
+		std::string _name;
+		_name = stage["Name"];
+		std::shared_ptr<TPSCamera> camera = std::make_shared<TPSCamera>();
+
+		camera->SetPlayerTargetPos(_PlayerPos);
+		camera->SetFixedTargetPos(_FixedPos);
+		camera->SetFixedTargetAngle(_angle);
+		camera->SetName(_name);
+		camera->SetID(m_id);
+		camera->Init();
+		m_id++;
+
+		m_camera = camera;
+		SceneManager::Instance().AddObject(camera);
+	}
+
+	ifs.close();
+}
+
 void ObjectManager::SetObjectParam()
 {
 	//jsonファイル
@@ -304,6 +360,9 @@ void ObjectManager::SetObjectParam()
 	{
 		ifs >> _json;
 	}
+
+	std::vector<std::shared_ptr<Circle>> circleList;
+	std::vector<std::shared_ptr<MagicPolygon>> magicList;
 
 	for (auto& category : _json)
 	{
@@ -329,7 +388,16 @@ void ObjectManager::SetObjectParam()
 			}
 			if (_name == "Circle")
 			{
-				obj = std::make_shared<Circle>();
+				std::shared_ptr<Circle> circle = std::make_shared<Circle>();
+				circleList.push_back(circle);
+				if (m_camera.expired() == false)m_camera.lock()->SetFixedTargetList(circle);
+				obj = circle;
+			}
+			if (_name == "Magic")
+			{
+				std::shared_ptr<MagicPolygon> magic = std::make_shared<MagicPolygon>();
+				magicList.push_back(magic);
+				obj = magic;
 			}
 			if (_name == "Wall")
 			{
@@ -355,6 +423,11 @@ void ObjectManager::SetObjectParam()
 	}
 
 	ifs.close();
+
+	for (int m = 0; m < magicList.size(); ++m)
+	{
+		magicList[m]->SetCircle(circleList[m]);
+	}
 }
 
 void ObjectManager::SetPlayerParam()
@@ -416,8 +489,7 @@ void ObjectManager::SetPlayerParam()
 		SetWeaponParam("Json/Weapon/Sword/Sword.json", stage["SwordName"]);
 		SetWeaponParam("Json/Weapon/Shield/Shield.json", stage["ShieldName"]);
 
-		std::shared_ptr<TPSCamera> camera = std::make_shared<TPSCamera>();
-		player->SetCamera(camera);
+		player->SetCamera(m_camera.lock());
 		player->SetParam(_hp, player->GetSword().lock()->GetATK(), _speed, _stamina);
 		player->SetPos(_pos);
 		player->SetSize(_size);
@@ -433,12 +505,12 @@ void ObjectManager::SetPlayerParam()
 
 		SceneManager::Instance().AddObject(player);
 
-		camera->SetTarget(player);
-		camera->SetID(m_id);
+		m_camera.lock()->SetTarget(player);
+		m_camera.lock()->SetID(m_id);
 		m_id++;
 
-		SceneManager::Instance().AddObject(camera);
-		KdEffekseerManager::GetInstance().SetCamera(camera->GetCamera());
+		SceneManager::Instance().AddObject(m_camera.lock());
+		KdEffekseerManager::GetInstance().SetCamera(m_camera.lock()->GetCamera());
 	}
 
 	ifs.close();
@@ -741,23 +813,51 @@ void ObjectManager::AddGround()
 
 void ObjectManager::AddCircle()
 {
-	std::string _name = "Circle";
-	Math::Vector3 _pos = Math::Vector3::Zero;
-	float _size = 10.0f;
-	float _angleY = 0.0f;
-	std::shared_ptr<Circle> obj = std::make_shared<Circle>();
+	std::string _name;
+	Math::Vector3 _pos;
+	float _size;
+	float _angleY;
+	std::shared_ptr<KdGameObject> obj;
+	std::shared_ptr<Circle> circle;
+	std::shared_ptr<MagicPolygon> magic;
 
-	obj->SetPos(_pos);
-	obj->SetSize(_size);
-	obj->SetAngle(_angleY);
-	obj->SetName(_name);
-	obj->SetID(m_id);
-	obj->Init();
+	for (int i = 0; i < 2; ++i)
+	{
+		switch (i)
+		{
+		case 0:
+			circle = std::make_shared<Circle>();
+			_name = "Circle";
+			_pos = Math::Vector3::Zero;
+			_size = 10.0f;
+			_angleY = 0.0f;
+			obj = circle;
+			break;
+		case 1:
+			magic = std::make_shared<MagicPolygon>();
+			_name = "Magic";
+			if (circle)_pos = circle->GetMagicPolygonPoint();
+			else { _pos = Math::Vector3::Zero; }
+			_size = 5.0f;
+			_angleY = 0.0f;
+			obj = magic;
+			break;
+		default:
+			break;
+		}
 
-	m_id++;
+		obj->SetPos(_pos);
+		obj->SetSize(_size);
+		obj->SetAngle(_angleY);
+		obj->SetName(_name);
+		obj->SetID(m_id);
+		obj->Init();
 
-	m_ObjectList.push_back(obj);
-	SceneManager::Instance().AddObject(obj);
+		m_id++;
+
+		m_ObjectList.push_back(obj);
+		SceneManager::Instance().AddObject(obj);
+	}
 }
 
 void ObjectManager::AddWall()

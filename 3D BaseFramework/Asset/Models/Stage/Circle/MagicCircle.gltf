@@ -1,6 +1,6 @@
 {
 	"asset":{
-		"generator":"Khronos glTF Blender I/O v4.1.63",
+		"generator":"Khronos glTF Blender I/O v4.1.62",
 		"version":"2.0"
 	},
 	"scene":0,
@@ -8,12 +8,23 @@
 		{
 			"name":"Scene",
 			"nodes":[
-				0
+				1
 			]
 		}
 	],
 	"nodes":[
 		{
+			"name":"MagicPolygonPoint",
+			"translation":[
+				0,
+				0.3499999940395355,
+				0
+			]
+		},
+		{
+			"children":[
+				0
+			],
 			"mesh":0,
 			"name":"\u5186\u67f1",
 			"scale":[
@@ -68,7 +79,7 @@
 	"images":[
 		{
 			"mimeType":"image/png",
-			"name":"NormalMap (5)",
+			"name":"NormalMap 5",
 			"uri":"NormalMap%205.png"
 		},
 		{
