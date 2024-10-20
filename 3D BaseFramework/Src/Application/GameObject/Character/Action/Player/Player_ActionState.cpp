@@ -79,7 +79,7 @@ void Player_ActionState::AttackDamage()
 void Player_ActionState::Update()
 {
 	ActionBase::Update();
-	if (m_staminaRecoveryFlg)StaminaRecovery();
+	if (m_target.lock()->GetStaminaRecoveryTime() <= 0)m_target.lock()->StaminaRecovery();
 	KeyCheck();
 	ChangeAction();
 	m_target.lock()->GetConText()->SetBeforeActionType(m_ActionType);
@@ -131,14 +131,6 @@ void Player_ActionState::KeyCheck()
 	}
 }
 
-void Player_ActionState::StaminaRecovery()
-{
-	if (m_target.lock()->GetParam().Sm < m_target.lock()->GetMaxStamina())
-	{
-		m_target.lock()->StaminaRecovery();
-	}
-}
-
 void Player_ActionState::Idol(std::shared_ptr<Player_ActionConText> context)
 {
 	std::shared_ptr<Player_Idol> idol = std::make_shared<Player_Idol>();
@@ -178,8 +170,14 @@ void Player_ActionState::Guard(std::shared_ptr<Player_ActionConText> context)
 
 void Player_ActionState::GuardReaction(std::shared_ptr<Player_ActionConText> context)
 {
-	std::shared_ptr<Player_GuardReaction> guardReaction = std::make_shared<Player_GuardReaction>();
 	if (m_target.expired())return;
+	int sta = m_target.lock()->GetParam().Sm;
+	if (sta <= 0)return;
+	sta -= 10;
+	if (sta <= 0)sta = 0;
+	std::shared_ptr<Player_GuardReaction> guardReaction = std::make_shared<Player_GuardReaction>();
+	m_target.lock()->SetStamina(sta);
+	m_target.lock()->SetStaminaRecoveryTime(60);
 	guardReaction->SetTarget(m_target.lock());
 	context->SetState(guardReaction);
 	m_target.lock()->SetNextState(guardReaction);
@@ -206,8 +204,14 @@ void Player_ActionState::Counter(std::shared_ptr<Player_ActionConText> context)
 
 void Player_ActionState::Roll(std::shared_ptr<Player_ActionConText> context)
 {
-	std::shared_ptr<Player_Roll> roll = std::make_shared<Player_Roll>();
 	if (m_target.expired())return;
+	int sta = m_target.lock()->GetParam().Sm;
+	if (sta <= 0)return;
+	sta -= 10;
+	if (sta <= 0)sta = 0;
+	std::shared_ptr<Player_Roll> roll = std::make_shared<Player_Roll>();
+	m_target.lock()->SetStamina(sta);
+	m_target.lock()->SetStaminaRecoveryTime(60);
 	roll->SetTarget(m_target.lock());
 	context->SetState(roll);
 	m_target.lock()->SetNextState(roll);

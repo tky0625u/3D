@@ -9,6 +9,7 @@
 #include"GameObject/SkyBox/SkyBox.h"
 #include"GameObject/Stage/Ground/Ground.h"
 #include"GameObject/Stage/Wall/Wall.h"
+#include"GameObject/Camera/TPSCamera/TPSCamera.h"
 
 // ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
 // エントリーポイント
@@ -397,6 +398,63 @@ void Application::ImGuiProcess()
 			break;
 		case SceneManager::SceneType::Game:
 
+			if (ImGui::TreeNode("Camera"))
+			{
+				if (ImGui::Button((const char*)u8"Camera保存"))
+				{
+					ObjectManager::Instance().CameraWrite();
+				}
+
+
+				if (ObjectManager::Instance().GetCamera().expired() == false)
+				{
+					std::shared_ptr<TPSCamera> _camera = ObjectManager::Instance().GetCamera().lock();
+					
+					if (ImGui::Button((const char*)u8"Camera切替"))_camera->FixedFlgChange();
+
+					// 位置
+					ImGui::Text((const char*)u8"　プレイヤーカメラ位置 　　x=%.2f,y=%.2f,z=%.2f", _camera->GetLocalPos().x, _camera->GetLocalPos().y, _camera->GetLocalPos().z);
+					Math::Vector3 Playerpos = _camera->GetLocalPos();
+					if (!_camera->GetFixedFlg())
+					{
+						ImGui::SliderFloat("PlayerPosX", &Playerpos.x, -10, 10);
+						ImGui::SliderFloat("PlayerPosY", &Playerpos.y, -10, 10);
+						ImGui::SliderFloat("PlayerPosZ", &Playerpos.z, -100, 0);
+					}
+
+					// 位置
+					ImGui::Text((const char*)u8"　定点カメラ位置 　　x=%.2f,y=%.2f,z=%.2f", _camera->GetFixedPos().x, _camera->GetFixedPos().y, _camera->GetFixedPos().z);
+					Math::Vector3 Fixedpos = _camera->GetFixedPos();
+					if (_camera->GetFixedFlg())
+					{
+						ImGui::SliderFloat("FixedPosX", &Fixedpos.x, -10, 10);
+						ImGui::SliderFloat("FixedPosY", &Fixedpos.y, -10, 10);
+						ImGui::SliderFloat("FixedPosZ", &Fixedpos.z, -100, 0);
+					}
+
+					// 角度
+					ImGui::Text((const char*)u8"　角度 　　AngleX=%.2f, AngleY=%.2f", _camera->GetFixedAngle().x, _camera->GetFixedAngle().y);
+					float angleX = _camera->GetFixedAngle().x;
+					float angleY = _camera->GetFixedAngle().y;
+					if (_camera->GetFixedFlg())
+					{
+						ImGui::SliderFloat("AngleX", &angleX, 0, 360);
+						ImGui::SliderFloat("AngleY", &angleY, 0, 360);
+					}
+
+					if (angleX > 360.0f)angleX -= 360.0f;
+					else if (angleX < 0.0f)angleX += 360.0f;
+					if (angleY > 360.0f)angleY -= 360.0f;
+					if (angleY < 0.0f)angleY += 360.0f;
+
+					//_camera->SetPlayerTargetPos(Playerpos);
+					_camera->SetFixedTargetPos(Fixedpos);
+					_camera->SetFixedTargetAngle(Math::Vector2{ angleX,angleY });
+				}
+
+				ImGui::TreePop();
+			}
+
 			if (ImGui::TreeNode("Player"))
 			{
 				if (ImGui::Button((const char*)u8"Player保存"))
@@ -568,6 +626,7 @@ void Application::ImGuiProcess()
 			if (ImGui::TreeNode("Enemy"))
 			{
 				std::vector<std::weak_ptr<EnemyBase>> _boneList;
+				std::vector<std::weak_ptr<EnemyBase>> _golemList;
 				for (auto& enemy : ObjectManager::Instance().GetEnemyList())
 				{
 					if (enemy.expired() == false)
@@ -575,6 +634,10 @@ void Application::ImGuiProcess()
 						if (enemy.lock()->GetName() == "Bone")
 						{
 							_boneList.push_back(enemy);
+						}
+						if (enemy.lock()->GetName() == "Golem")
+						{
+							_golemList.push_back(enemy);
 						}
 					}
 				}
@@ -695,6 +758,89 @@ void Application::ImGuiProcess()
 							ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 						}
 							ImGui::TreePop();
+					}
+
+					ImGui::TreePop();
+				}
+
+				if (ImGui::TreeNode("Golem"))
+				{
+					if (ImGui::Button((const char*)u8"Golem追加"))
+					{
+						ObjectManager::Instance().AddGolem();
+					}
+
+					static int operation = -1;
+					if (!SceneManager::Instance().m_stop)operation = -1;
+
+					if (ImGui::TreeNode("Golem"))
+					{
+						ImGui::Text((const char*)u8"Golem:%d体", _golemList.size());
+						for (int golem = 0; golem < _golemList.size(); ++golem)
+						{
+							if (ImGui::Button(std::to_string(golem + 1).c_str()))
+							{
+								operation = golem;
+							}
+						}
+
+						if (operation != -1)
+						{
+							ImGui::Text((const char*)u8"%d体目", operation + 1);
+							// 体力
+							ImGui::Text((const char*)u8"　体力 　　HP=%d", _golemList[operation].lock()->GetParam().Hp);
+							int hp = _golemList[operation].lock()->GetParam().Hp;
+							ImGui::SliderInt("HP", &hp, 1, 100);
+							// 攻撃力
+							ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _golemList[operation].lock()->GetParam().Atk);
+							int atk = _golemList[operation].lock()->GetParam().Atk;
+							ImGui::SliderInt("ATK", &atk, 1, 100);
+							// 素早さ
+							ImGui::Text((const char*)u8"　素早さ 　SP=%.2f", _golemList[operation].lock()->GetParam().Sp);
+							float speed = _golemList[operation].lock()->GetParam().Sp;
+							ImGui::SliderFloat("Speed", &speed, 1, 100);
+							// スタミナ
+							ImGui::Text((const char*)u8"　スタミナ SM=%d", _golemList[operation].lock()->GetParam().Sm);
+							int stamina = _golemList[operation].lock()->GetParam().Sm;
+							ImGui::SliderInt("Stamina", &stamina, 1, 100);
+							// 位置
+							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _golemList[operation].lock()->GetPos().x, _golemList[operation].lock()->GetPos().y, _golemList[operation].lock()->GetPos().z);
+							Math::Vector3 pos = _golemList[operation].lock()->GetPos();
+							ImGui::SliderFloat("PosX", &pos.x, -100, 100);
+							ImGui::SliderFloat("PosY", &pos.y, 0, 400);
+							ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
+							// 方向
+							ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _golemList[operation].lock()->GetDir().x, _golemList[operation].lock()->GetDir().y, _golemList[operation].lock()->GetDir().z);
+							// 角度
+							ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _golemList[operation].lock()->GetAngle());
+							float angle = _golemList[operation].lock()->GetAngle();
+							ImGui::SliderFloat("Angle", &angle, 0, 360);
+							// 大きさ
+							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _golemList[operation].lock()->GetSize());
+							float size = _golemList[operation].lock()->GetSize();
+							ImGui::SliderFloat("Size", &size, 0.01, 1.5);
+							// 攻撃範囲
+							ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _golemList[operation].lock()->GetAtkRange());
+							float range = _golemList[operation].lock()->GetAtkRange();
+							ImGui::SliderFloat("ATKRange", &range, 1, 100);
+							// 前方方向
+							ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _golemList[operation].lock()->GetForward().x, _golemList[operation].lock()->GetForward().y, _golemList[operation].lock()->GetForward().z);
+
+							_golemList[operation].lock()->SetParam(hp, atk, speed, stamina);
+							_golemList[operation].lock()->SetPos(pos);
+							_golemList[operation].lock()->SetAngle(angle);
+							_golemList[operation].lock()->SetSize(size);
+							_golemList[operation].lock()->SetAtkRange(range);
+
+							if (ImGui::Button((const char*)u8"消滅"))
+							{
+								_golemList[operation].lock()->Expired();
+								operation = -1;
+							}
+
+							ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+						}
+						ImGui::TreePop();
 					}
 
 					ImGui::TreePop();

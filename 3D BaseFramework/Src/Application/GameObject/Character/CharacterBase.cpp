@@ -97,7 +97,7 @@ void CharacterBase::PostUpdate()
 	sphereInfo.m_type = KdCollider::TypeBump;
 
 	//デバッグ用
-	m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
+	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
 
 	std::list<KdCollider::CollisionResult>retSphereList;
 	for (auto& ret : SceneManager::Instance().GetObjList())

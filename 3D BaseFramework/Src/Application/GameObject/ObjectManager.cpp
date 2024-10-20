@@ -24,8 +24,11 @@
 #include"../GameObject/Character/Player/Player.h"
 //カメラ
 #include"../GameObject/Camera/TPSCamera/TPSCamera.h"
-//敵
+//骨
 #include"../GameObject/Character/Enemy/Bone/Bone.h"
+//ゴーレム
+#include"../GameObject/Character/Enemy/Golem/Golem.h"
+
 
 void ObjectManager::DeleteEnemyList()
 {
@@ -97,6 +100,28 @@ bool ObjectManager::IsWaveMax()
 	return false;
 }
 
+void ObjectManager::CameraWrite()
+{
+	nlohmann::json _json;
+
+	_json["Camera"]["Name"] = "Camera";
+	_json["Camera"]["PlayerPosX"] = m_camera.lock()->GetLocalPos().x;
+	_json["Camera"]["PlayerPosY"] = m_camera.lock()->GetLocalPos().y;
+	_json["Camera"]["PlayerPosZ"] = m_camera.lock()->GetLocalPos().z;
+	_json["Camera"]["FixedPosX"] = m_camera.lock()->GetFixedPos().x;
+	_json["Camera"]["FixedPosY"] = m_camera.lock()->GetFixedPos().y;
+	_json["Camera"]["FixedPosZ"] = m_camera.lock()->GetFixedPos().z;
+	_json["Camera"]["AngleX"] = m_camera.lock()->GetFixedAngle().x;
+	_json["Camera"]["AngleY"] = m_camera.lock()->GetFixedAngle().y;
+
+	std::ofstream _file("Json/Camera/Camera.json");
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
+	}
+}
+
 void ObjectManager::PlayerWrite()
 {
 	nlohmann::json _json;
@@ -155,6 +180,13 @@ void ObjectManager::EnemyWrite(int _stage, int _wave)
 			_category = "Bone";
 			_name = (std::to_string(b).c_str()) + ((std::string)"Bone");
 			b++;
+		}
+		else if (enemy.lock()->GetName() == "Golem")
+		{
+			static int g = 0;
+			_category = "Golem";
+			_name = (std::to_string(g).c_str()) + ((std::string)"Golem");
+			g++;
 		}
 
 		_json[wave][_category][_name]["Name"] = enemy.lock()->GetName();
@@ -662,6 +694,11 @@ void ObjectManager::SetEnemyParam(std::string _filePath)
 				std::shared_ptr<Bone> bone = std::make_shared<Bone>();
 				enemy = bone;
 			}
+			else if (stage["Name"] == "Golem")
+			{
+				std::shared_ptr<Golem> golem = std::make_shared<Golem>();
+				enemy = golem;
+			}
 			if (m_player.expired() == false)
 			{
 				enemy->SetPlayer(m_player.lock());
@@ -702,6 +739,44 @@ void ObjectManager::AddBone()
 
 	std::shared_ptr<Bone> enemy = nullptr;
 	enemy = std::make_shared<Bone>();
+	if (m_player.expired() == false)
+	{
+		enemy->SetPlayer(m_player.lock());
+	}
+	enemy->SetParam(_hp, _atk, _speed, _stamina);
+	enemy->SetPos(_pos);
+	enemy->SetSize(_size);
+	enemy->SetDir(_dir);
+	enemy->SetAngle(_angleY);
+	enemy->SetAtkRange(_atkRange);
+	enemy->SetForward(_forward);
+	enemy->SetName(_name);
+	enemy->SetID(m_id);
+	enemy->Init();
+	m_id++;
+
+	SceneManager::Instance().AddObject(enemy);
+	m_EnemyList.push_back(enemy);
+}
+
+void ObjectManager::AddGolem()
+{
+	std::string _name = "Golem";
+	Math::Vector3 _pos = Math::Vector3::Zero;
+	Math::Vector3 _dir = Math::Vector3::Zero;
+	float _size = 1.5f;
+	float _angleY = 180.0f;
+	int _hp = 10;
+	int _atk = 2;
+	float _speed = 1.0f;
+	int _stamina = 50;
+	float _atkRange = 3.0f;
+	Math::Vector3 _forward = Math::Vector3::Zero;
+	_forward.z = 1.0f;
+	float _chaseRange = 1000.0f;
+
+	std::shared_ptr<Golem> enemy = nullptr;
+	enemy = std::make_shared<Golem>();
 	if (m_player.expired() == false)
 	{
 		enemy->SetPlayer(m_player.lock());

@@ -17,6 +17,7 @@ public:
 	void Clear();
 	bool IsWaveMax();
 
+	void CameraWrite();
 	void PlayerWrite();
 	void EnemyWrite(int _stage, int _wave);
 	void SwordWrite(std::string _swordName);
@@ -32,6 +33,7 @@ public:
 
 	// デバッグ
 	void AddBone();
+	void AddGolem();
 	void AddWeapon(std::string _filePath,std::string _weaponName);
 	void AddGround();
 	void AddCircle();

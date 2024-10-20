@@ -1,4 +1,5 @@
-﻿
+﻿#include "KdEffekseerManager.h"
+
 void KdEffekseerManager::Create(int w, int h)
 {
 	// エフェクトのレンダラーの作成
@@ -58,6 +59,20 @@ std::weak_ptr<KdEffekseerObject> KdEffekseerManager::Play(
 	info.FileName = effName;
 	info.Pos = pos;
 	info.Size = Math::Vector3(size);
+	info.Speed = speed;
+	info.IsLoop = isLoop;
+
+	return Play(info);
+}
+
+std::weak_ptr<KdEffekseerObject> KdEffekseerManager::Play(
+	const std::string& effName, const DirectX::SimpleMath::Vector3& pos, const Math::Vector3 size, const float speed, const bool isLoop)
+{
+	PlayEfkInfo info;
+
+	info.FileName = effName;
+	info.Pos = pos;
+	info.Size = size;
 	info.Speed = speed;
 	info.IsLoop = isLoop;
 

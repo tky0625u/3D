@@ -23,6 +23,7 @@ public:
 
 	// Effekseerエフェクト再生
 	std::weak_ptr<KdEffekseerObject> Play(const std::string& effName, const DirectX::SimpleMath::Vector3& pos, const float size = 1, const float speed = 1, const bool isLoop = true);
+	std::weak_ptr<KdEffekseerObject> Play(const std::string& effName, const DirectX::SimpleMath::Vector3& pos, const Math::Vector3 size = Math::Vector3{ 1.0f,1.0f,1.0f }, const float speed = 1, const bool isLoop = true);
 
 	void StopAllEffect();
 	void StopEffect(const std::string& name);

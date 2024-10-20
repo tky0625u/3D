@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+class Player;
+
 class CameraBase : public KdGameObject
 {
 public:
@@ -12,7 +14,7 @@ public:
 
 	void SlowChange(bool _slowFlg);
 
-	void SetTarget(const std::shared_ptr<KdGameObject>& target);
+	void SetTarget(const std::shared_ptr<Player>& target);
 
 	// 「絶対変更しません！見るだけ！」な書き方
 	const std::shared_ptr<KdCamera>& GetCamera() const
@@ -40,15 +42,16 @@ public:
 			DirectX::XMConvertToRadians(m_DegAng.y));
 	}
 
+	const Math::Vector3 GetDegAng()const { return m_DegAng; }
+
 private:
-	// カメラ回転用角度
-	Math::Vector3				m_DegAng = Math::Vector3::Zero;
+
 
 protected:
 	void UpdateRotateByMouse();
 
 	std::shared_ptr<KdCamera>	m_spCamera		= nullptr;
-	std::weak_ptr<KdGameObject>	m_wpTarget;
+	std::weak_ptr<Player>	m_wpTarget;
 
 	Math::Matrix				m_mLocalPos		= Math::Matrix::Identity;
 	Math::Matrix				m_mRotation     = Math::Matrix::Identity;
@@ -58,6 +61,7 @@ protected:
 	// カメラ回転用マウス座標の差分
 	POINT						m_FixMousePos{};
 
-	// デバッグ
-	Math::Vector3               m_pos = {0.0f,50.0f,-80.0f};
+	// カメラ回転用角度
+	Math::Vector3				m_DegAng = Math::Vector3::Zero;
+
 };

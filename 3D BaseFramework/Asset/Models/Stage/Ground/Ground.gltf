@@ -32,12 +32,14 @@
 		{
 			"doubleSided":true,
 			"name":"\u30de\u30c6\u30ea\u30a2\u30eb",
+			"normalTexture":{
+				"index":0
+			},
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
-					"index":0
+					"index":1
 				},
-				"metallicFactor":0,
-				"roughnessFactor":0.5
+				"metallicFactor":0
 			}
 		}
 	],
@@ -62,13 +64,22 @@
 		{
 			"sampler":0,
 			"source":0
+		},
+		{
+			"sampler":0,
+			"source":1
 		}
 	],
 	"images":[
 		{
 			"mimeType":"image/png",
-			"name":"dif_coupole_01",
-			"uri":"dif_coupole_01.png"
+			"name":"stone_floor_normal",
+			"uri":"stone_floor_normal.png"
+		},
+		{
+			"mimeType":"image/png",
+			"name":"stone_floor_basecolor",
+			"uri":"stone_floor_basecolor.png"
 		}
 	],
 	"accessors":[

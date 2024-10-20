@@ -59,7 +59,7 @@ void CameraBase::SlowChange(bool _slowFlg)
 	}
 }
 
-void CameraBase::SetTarget(const std::shared_ptr<KdGameObject>& target)
+void CameraBase::SetTarget(const std::shared_ptr<Player>& target)
 {
 	if (!target) { return; }
 

@@ -6,6 +6,7 @@
 #include"../Player_ConText.h"
 #include"../Player_ActionState.h"
 #include"../../../../Weapon/Sword/Sword.h"
+#include"../../../../Camera/TPSCamera/TPSCamera.h"
 
 void Player_Attack::Start()
 {
@@ -133,9 +134,10 @@ void Player_Attack::Attack3()
 
 void Player_Attack::AttackDirCheck()
 {
-	std::shared_ptr<CharacterBase> _player = nullptr;
+	std::shared_ptr<Player> _player = nullptr;
 	if (m_target.expired() == false)_player = m_target.lock();
 	m_AttackDir = Math::Vector3::Zero;
+
 	if (GetAsyncKeyState('W') & 0x8000)
 	{
 		m_AttackDir.z = 1.0f;

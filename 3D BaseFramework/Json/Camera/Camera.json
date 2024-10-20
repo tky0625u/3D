@@ -1,13 +1,1 @@
-{
-	"Camera": {
-		"Name": "Camera",
-		"PlayerPosX": 0.0,
-		"PlayerPosY": 3.0,
-		"PlayerPosZ": -8.0,
-		"FixedPosX": 0.0,
-		"FixedPosY": 0.0,
-		"FixedPosZ": 0.0,
-		"AngleX": 0.0,
-		"AngleY": 0.0
-	}
-}
+{"Camera":{"AngleX":46.90999984741211,"AngleY":8.736000061035156,"FixedPosX":-0.11900000274181366,"FixedPosY":0.15399999916553497,"FixedPosZ":-5.252999782562256,"Name":"Camera","PlayerPosX":0.0,"PlayerPosY":3.0,"PlayerPosZ":-8.0}}

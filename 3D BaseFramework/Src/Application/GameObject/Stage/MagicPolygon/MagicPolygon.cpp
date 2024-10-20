@@ -1,27 +1,41 @@
 ﻿#include "MagicPolygon.h"
+#include"../../../Scene/SceneManager.h"
 #include"../../ObjectManager.h"
 #include"../Circle/Circle.h"
+#include"../../Camera/TPSCamera/TPSCamera.h"
 
 void MagicPolygon::Update()
 {
-	if (ObjectManager::Instance().GetEnemyList().size() == 0)
+	if (!SceneManager::Instance().m_stop)
 	{
-		if (!m_rightFlg)
+		if (ObjectManager::Instance().GetEnemyList().size() == 0)
 		{
-			KdEffekseerManager::GetInstance().Play("Circle/Circle.efkefc", m_mWorld.Translation(), m_size, 1.0f, false);
-			m_rightFlg = true;
+			if (!m_rightFlg)
+			{
+				ObjectManager::Instance().GetCamera().lock()->FixedFlgChange();
+				KdEffekseerManager::GetInstance().Play("Circle/Circle.efkefc", m_mWorld.Translation(), m_size, 1.0f, false);
+				m_rightFlg = true;
+			}
+			m_angle += 0.1f;
+			if (m_angle > 360.0f)m_angle -= 360.0f;
+			if (m_rgb < 1.0f)m_rgb += 0.01f;
+			else
+			{
+				if (ObjectManager::Instance().GetCamera().lock()->GetFixedFlg())
+				{
+					KdEffekseerManager::GetInstance().StopEffect("Circle/Circle.efkefc");
+					ObjectManager::Instance().GetCamera().lock()->FixedFlgChange();
+				}
+			}
 		}
-		m_angle += 0.1f;
-		if (m_angle > 360.0f)m_angle -= 360.0f;
-		if (m_rgb < 1.0f)m_rgb += 0.01f;
-	}
-	else
-	{
-		m_rgb = 0.0f;
-		m_rightFlg = false;
-	}
+		else
+		{
+			m_rgb = 0.0f;
+			m_rightFlg = false;
+		}
 
-	m_color = { m_rgb,m_rgb ,m_rgb ,1 };
+		m_color = { m_rgb,m_rgb ,m_rgb ,1 };
+	}
 
 	Math::Matrix _scale = Math::Matrix::CreateScale(m_size);
 	Math::Matrix _rotX= Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(90));

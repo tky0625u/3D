@@ -1,5 +1,7 @@
 ﻿#include "FixedCamera.h"
 
+#include"../../Character/Player/Player.h"
+
 void FixedCamera::Update()
 {
 	m_mLocalPos = Math::Matrix::CreateTranslation(m_pos);

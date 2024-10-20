@@ -169,6 +169,13 @@
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble\Bone_Stumble.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Enemy_ActionState.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Enemy_ConText.h" />
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Appeal\Golem_Appeal.h" />
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Golem_Attack.h" />
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Golem_ActionState.h" />
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Hit\Golem_Hit.h" />
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Idol\Golem_Idol.h" />
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Run\Golem_Run.h" />
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Stumble\Golem_Stumble.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Attack\Player_Attack.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Counter\Player_Counter.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Player\GuardReaction\Player_GuardReaction.h" />
@@ -183,6 +190,8 @@
     <ClInclude Include="Src\Application\GameObject\Character\CharacterBase.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\Bone\Bone.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\EnemyBase.h" />
+    <ClInclude Include="Src\Application\GameObject\Character\Enemy\Golem\Golem.h" />
+    <ClInclude Include="Src\Application\GameObject\Character\Enemy\Golem\Laser\Laser.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Player\Player.h" />
     <ClInclude Include="Src\Application\GameObject\Loading\Loading.h" />
     <ClInclude Include="Src\Application\GameObject\ObjectManager.h" />
@@ -193,6 +202,7 @@
     <ClInclude Include="Src\Application\GameObject\Stage\Wall\Wall.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Enemy\HP\Enemy_HP.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Player\HP\Player_HP.h" />
+    <ClInclude Include="Src\Application\GameObject\UI\Player\LockON\LockON.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Player\Player_UI_Manager.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Player\Stamina\Player_Stamina.h" />
     <ClInclude Include="Src\Application\GameObject\UI\UIBase.h" />
@@ -261,6 +271,13 @@
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Run\Bone_Run.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble\Bone_Stumble.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Enemy_ActionState.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Appeal\Golem_Appeal.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Golem_Attack.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Golem_ActionState.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Hit\Golem_Hit.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Idol\Golem_Idol.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Run\Golem_Run.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Stumble\Golem_Stumble.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Attack\Player_Attack.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Counter\Player_Counter.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\GuardReaction\Player_GuardReaction.cpp" />
@@ -274,6 +291,8 @@
     <ClCompile Include="Src\Application\GameObject\Character\CharacterBase.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\Bone\Bone.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\EnemyBase.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Character\Enemy\Golem\Golem.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Character\Enemy\Golem\Laser\Laser.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Player\Player.cpp" />
     <ClCompile Include="Src\Application\GameObject\Loading\Loading.cpp" />
     <ClCompile Include="Src\Application\GameObject\ObjectManager.cpp" />
@@ -284,6 +303,7 @@
     <ClCompile Include="Src\Application\GameObject\Stage\Wall\Wall.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Enemy\HP\Enemy_HP.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\HP\Player_HP.cpp" />
+    <ClCompile Include="Src\Application\GameObject\UI\Player\LockON\LockON.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\Player_UI_Manager.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\Stamina\Player_Stamina.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\UIBase.cpp" />

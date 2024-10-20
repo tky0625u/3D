@@ -1,1 +1,86 @@
-{"1Wave":{"Bone":{"1Bone":{"ATK":2,"ATKRange":3.0,"Angle":188.47557067871094,"DirX":0.0,"DirY":0.0,"DirZ":0.0,"ForwardX":0.0,"ForwardY":0.0,"ForwardZ":1.0,"HP":10,"Name":"Bone","PosX":-1.3491591215133667,"PosY":-5.960464477539063e-08,"PosZ":21.417999267578125,"Size":1.5,"Speed":1.0,"Stamina":50}}},"2Wave":{"Bone":{"2Bone":{"ATK":2,"ATKRange":3.0,"Angle":188.47557067871094,"DirX":0.0,"DirY":0.0,"DirZ":0.0,"ForwardX":0.0,"ForwardY":0.0,"ForwardZ":1.0,"HP":10,"Name":"Bone","PosX":-1.3491591215133667,"PosY":-5.960464477539063e-08,"PosZ":21.417999267578125,"Size":1.5,"Speed":1.0,"Stamina":50},"3Bone":{"ATK":2,"ATKRange":3.0,"Angle":140.5019989013672,"DirX":0.0,"DirY":0.0,"DirZ":0.0,"ForwardX":0.0,"ForwardY":0.0,"ForwardZ":1.0,"HP":10,"Name":"Bone","PosX":-15.04699993133545,"PosY":0.0,"PosZ":16.927000045776367,"Size":1.5,"Speed":1.0,"Stamina":50},"4Bone":{"ATK":2,"ATKRange":3.0,"Angle":218.3699951171875,"DirX":0.0,"DirY":0.0,"DirZ":0.0,"ForwardX":0.0,"ForwardY":0.0,"ForwardZ":1.0,"HP":10,"Name":"Bone","PosX":15.04699993133545,"PosY":0.0,"PosZ":19.43600082397461,"Size":1.5,"Speed":1.0,"Stamina":50}}}}
+{
+	"1Wave": {
+		"Bone": {
+			"1Bone": {
+				"ATK": 2,
+				"ATKRange": 3.0,
+				"Angle": 188.47557067871094,
+				"DirX": 0.0,
+				"DirY": 0.0,
+				"DirZ": 0.0,
+				"ForwardX": 0.0,
+				"ForwardY": 0.0,
+				"ForwardZ": 1.0,
+				"HP": 50,
+				"Name": "Bone",
+				"PosX": -1.3491591215133667,
+				"PosY": -5.960464477539063e-08,
+				"PosZ": 21.417999267578125,
+				"Size": 1.5,
+				"Speed": 1.0,
+				"Stamina": 50
+			}
+		}
+	},
+	"2Wave": {
+		"Bone": {
+			"2Bone": {
+				"ATK": 2,
+				"ATKRange": 3.0,
+				"Angle": 188.47557067871094,
+				"DirX": 0.0,
+				"DirY": 0.0,
+				"DirZ": 0.0,
+				"ForwardX": 0.0,
+				"ForwardY": 0.0,
+				"ForwardZ": 1.0,
+				"HP": 50,
+				"Name": "Bone",
+				"PosX": -1.3491591215133667,
+				"PosY": -5.960464477539063e-08,
+				"PosZ": 21.417999267578125,
+				"Size": 1.5,
+				"Speed": 1.0,
+				"Stamina": 50
+			},
+			"3Bone": {
+				"ATK": 2,
+				"ATKRange": 3.0,
+				"Angle": 140.5019989013672,
+				"DirX": 0.0,
+				"DirY": 0.0,
+				"DirZ": 0.0,
+				"ForwardX": 0.0,
+				"ForwardY": 0.0,
+				"ForwardZ": 1.0,
+				"HP": 50,
+				"Name": "Bone",
+				"PosX": -15.04699993133545,
+				"PosY": 0.0,
+				"PosZ": 16.927000045776367,
+				"Size": 1.5,
+				"Speed": 1.0,
+				"Stamina": 50
+			},
+			"4Bone": {
+				"ATK": 2,
+				"ATKRange": 3.0,
+				"Angle": 218.3699951171875,
+				"DirX": 0.0,
+				"DirY": 0.0,
+				"DirZ": 0.0,
+				"ForwardX": 0.0,
+				"ForwardY": 0.0,
+				"ForwardZ": 1.0,
+				"HP": 50,
+				"Name": "Bone",
+				"PosX": 15.04699993133545,
+				"PosY": 0.0,
+				"PosZ": 19.43600082397461,
+				"Size": 1.5,
+				"Speed": 1.0,
+				"Stamina": 50
+			}
+		}
+	}
+}

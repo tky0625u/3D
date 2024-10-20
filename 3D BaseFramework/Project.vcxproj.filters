@@ -199,6 +199,36 @@
     <Filter Include="Src\Application\GameObject\Camera\FixedCamera">
       <UniqueIdentifier>{e78d4638-d969-419a-9ea7-305fa7d1f20e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Enemy\Golem">
+      <UniqueIdentifier>{6180fbf8-467c-4202-83a6-29ab5659f332}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Enemy\Golem\Laser">
+      <UniqueIdentifier>{192ec523-1876-4ba0-8e0e-a7df860caed0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem">
+      <UniqueIdentifier>{8f12c8d8-7b48-44a2-978f-496f0b10c41a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Idol">
+      <UniqueIdentifier>{5f6d426c-b586-430a-ae4f-4927cbf34d9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Appeal">
+      <UniqueIdentifier>{5579f4ac-2c2b-46c9-acab-eda1d6556a48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack">
+      <UniqueIdentifier>{ef39f84f-f79f-4f76-a604-a175da9dc93d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Hit">
+      <UniqueIdentifier>{f023cc5d-bc3e-43de-9399-0ad26ffdc43a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Run">
+      <UniqueIdentifier>{196349be-abdb-4a74-b435-bb1e92939978}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Stumble">
+      <UniqueIdentifier>{91fb060a-bdba-4538-a5d7-ae18be927cef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\UI\Player\LockON">
+      <UniqueIdentifier>{04eb853b-cfff-4568-aa40-301bc7597af6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -495,6 +525,36 @@
     <ClInclude Include="Src\Application\GameObject\Camera\FixedCamera\FixedCamera.h">
       <Filter>Src\Application\GameObject\Camera\FixedCamera</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Enemy\Golem\Golem.h">
+      <Filter>Src\Application\GameObject\Character\Enemy\Golem</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Enemy\Golem\Laser\Laser.h">
+      <Filter>Src\Application\GameObject\Character\Enemy\Golem\Laser</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Golem_ActionState.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Idol\Golem_Idol.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Idol</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Appeal\Golem_Appeal.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Appeal</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Hit\Golem_Hit.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Hit</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Stumble\Golem_Stumble.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Stumble</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Run\Golem_Run.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Golem_Attack.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\UI\Player\LockON\LockON.h">
+      <Filter>Src\Application\GameObject\UI\Player\LockON</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -757,6 +817,36 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Camera\FixedCamera\FixedCamera.cpp">
       <Filter>Src\Application\GameObject\Camera\FixedCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Enemy\Golem\Golem.cpp">
+      <Filter>Src\Application\GameObject\Character\Enemy\Golem</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Enemy\Golem\Laser\Laser.cpp">
+      <Filter>Src\Application\GameObject\Character\Enemy\Golem\Laser</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Golem_ActionState.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Idol\Golem_Idol.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Idol</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Appeal\Golem_Appeal.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Appeal</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Hit\Golem_Hit.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Hit</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Stumble\Golem_Stumble.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Stumble</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Run\Golem_Run.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Run</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Golem_Attack.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\UI\Player\LockON\LockON.cpp">
+      <Filter>Src\Application\GameObject\UI\Player\LockON</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

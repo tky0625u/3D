@@ -1,6 +1,8 @@
 ﻿#include "TPSCamera.h"
 #include"../../../Scene/SceneManager.h"
 #include"../../ObjectManager.h"
+#include"../../Character/Enemy/EnemyBase.h"
+#include"../../Character/Player/Player.h"
 
 void TPSCamera::Init()
 {
@@ -36,7 +38,10 @@ void TPSCamera::Update()
 
 		if (!(GetAsyncKeyState(VK_LSHIFT) & 0x8000))
 		{
-			UpdateRotateByMouse();
+			if (!m_wpTarget.lock()->GetLockONFlg())
+			{
+				UpdateRotateByMouse();
+			}
 			//ShowCursor(false);
 		}
 		else
@@ -49,7 +54,6 @@ void TPSCamera::Update()
 		Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
 		m_mWorld = m_mRotation * Trans;
 		CameraBase::PostUpdate();
-		return;
 	}
 }
 
@@ -63,24 +67,31 @@ void TPSCamera::PostUpdate()
 		_targetMat = Math::Matrix::CreateTranslation(_spTarget->GetPos() );
 		m_targetPos = _targetMat.Translation();
 	}
+	Math::Matrix _trans;
 
 	// デバッグ
 	if (!(GetAsyncKeyState(VK_LSHIFT) & 0x8000))
 	{
-		UpdateRotateByMouse();
+		if (!m_wpTarget.lock()->GetLockONFlg())
+		{
+			UpdateRotateByMouse();
+		}
 		//ShowCursor(false);
 	}
 	else
 	{
 		ShowCursor(true);
 	}
-	
-	m_mRotation = GetRotationMatrix();
 
-	Math::Matrix _trans;
-	if (!m_fixFlg)_trans = m_mLocalPos;
+	if (!m_fixFlg)
+	{
+
+		m_mRotation = GetRotationMatrix();
+		_trans = m_mLocalPos;
+	}
 	else
 	{
+		m_mRotation = Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(m_fixAngle.x)) * Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_fixAngle.y));
 		Math::Vector3 _pos = m_fixPos;
 		_trans = Math::Matrix::CreateTranslation(_pos);
 		_targetMat = m_FixedTargetList[ObjectManager::Instance().GetnowStage() - 1].lock()->GetMatrix();
@@ -122,4 +133,75 @@ void TPSCamera::PostUpdate()
 	}
 
 	CameraBase::PostUpdate();
+}
+
+void TPSCamera::FixedFlgChange()
+{
+	if (m_fixFlg)m_fixFlg = false;
+	else { m_fixFlg = true; }
+}
+
+void TPSCamera::LockON(std::shared_ptr<EnemyBase> _target)
+{
+	if (!_target)return;
+
+	// マウスでカメラを回転させる処理
+	POINT _nowPos;
+	GetCursorPos(&_nowPos);
+
+	POINT _mouseMove{};
+	_mouseMove.y = _nowPos.y - m_FixMousePos.y;
+
+	SetCursorPos(m_FixMousePos.x, m_FixMousePos.y);
+
+	// 実際にカメラを回転させる処理(0.15はただの補正値)
+	m_DegAng.x += _mouseMove.y * 0.15f;
+
+	// 回転制御
+	m_DegAng.x = std::clamp(m_DegAng.x, -20.f, 45.f);
+
+	Math::Vector3 _nowVec = Math::Vector3::TransformNormal(Math::Vector3{ 0,0,1 }, GetRotationYMatrix());
+
+	Math::Vector3 _dir = _target->GetPos() - m_wpTarget.lock()->GetPos();
+	_dir.Normalize();
+
+	float d = _nowVec.Dot(_dir);
+	d = std::clamp(d, -1.0f, 1.0f);
+
+	float _ang = DirectX::XMConvertToDegrees(acos(d));
+
+	//角度変更
+	if (_ang >= 0.45f)
+	{
+		if (_ang > 10.0f)
+		{
+			_ang = 10.0f; //変更角度
+		}
+
+		//外角　どっち回転かを求める
+		Math::Vector3 c = _dir.Cross(_nowVec);
+		float angle = GetAngle();
+		if (c.y >= 0)
+		{
+			//右回転
+			angle -= _ang;
+			if (angle < 0.0f)
+			{
+				angle += 360.0f;
+			}
+
+			m_DegAng.y += angle;
+		}
+		else
+		{
+			//左回転
+			angle += _ang;
+			if (GetAngle() >= 360.0f)
+			{
+				angle -= 360.0f;
+			}
+
+			m_DegAng.y += angle;
+		}
+	}
 }

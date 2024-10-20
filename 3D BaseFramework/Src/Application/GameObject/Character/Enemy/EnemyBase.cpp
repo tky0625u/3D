@@ -44,9 +44,6 @@ void EnemyBase::Init()
 	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
 	m_mWorld = Trans;
 
-	m_pCollider = std::make_unique<KdCollider>();
-	m_pCollider->RegisterCollisionShape("Enemy", m_model, KdCollider::TypeDamage | KdCollider::TypeBump | KdCollider::TypeSight);
-
 	m_ObjType = ObjType::oEnemy;
 
 	m_hp = std::make_shared<Enemy_HP>();
