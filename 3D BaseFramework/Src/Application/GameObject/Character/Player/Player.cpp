@@ -77,6 +77,7 @@ void Player::Action()
 			HitDir.y = 0.0f;
 			HitDir.Normalize();
 			m_camera.lock()->LockON(enemyList[listNum]);
+			m_lockONTarget = enemyList[listNum];
 		}
 		else
 		{

@@ -7,6 +7,7 @@ class ActionBase;
 class Player_ActionConText;
 class Player_ActionState;
 class Player_UI_Manager;
+class EnemyBase;
 class Shield;
 
 class Player :public CharacterBase, public std::enable_shared_from_this<Player>
@@ -40,7 +41,7 @@ public:
 	std::weak_ptr<Shield> GetShield() { return m_shield; }
 	const bool GetLockONFlg()const { return m_lockOnFlg; }
 	const int GetStaminaRecoveryTime()const { return m_StaminaRecoveryTime; }
-
+	const std::weak_ptr<EnemyBase> GetLockONTarget()const { return m_lockONTarget; }
 private:
 	std::weak_ptr<TPSCamera>             m_camera;
 	std::shared_ptr<Player_ActionConText> m_context        = nullptr;
@@ -48,6 +49,7 @@ private:
 	std::shared_ptr<Player_ActionState>   m_NextState;
 	std::shared_ptr<Player_UI_Manager>    m_ui             = nullptr;
 	std::weak_ptr<Shield>                 m_shield;
+	std::weak_ptr<EnemyBase>              m_lockONTarget;
 	float                                 m_FocusBackRange = 2000.0f;
 	int                                   m_MaxStamina     = 0;
 	int                                   m_StaminaRecoveryTime = 0;

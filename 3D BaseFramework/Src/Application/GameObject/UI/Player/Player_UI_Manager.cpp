@@ -1,6 +1,7 @@
 ﻿#include "Player_UI_Manager.h"
 #include"HP/Player_HP.h"
 #include"Stamina/Player_Stamina.h"
+#include"LockON/LockON.h"
 
 void Player_UI_Manager::Update()
 {
@@ -29,4 +30,9 @@ void Player_UI_Manager::Init()
 	if (m_player.expired() == false)_stamina->SetTraget(m_player.lock());
 	_stamina->Init();
 	m_UIList.push_back(_stamina);
+
+	std::shared_ptr<LockON> _lock = std::make_shared<LockON>();
+	if (m_player.expired() == false)_lock->SetTraget(m_player.lock());
+	_lock->Init();
+	m_UIList.push_back(_lock);
 }
