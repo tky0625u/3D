@@ -201,6 +201,7 @@
     <ClInclude Include="Src\Application\GameObject\Stage\MagicPolygon\MagicPolygon.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Wall\Wall.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Enemy\HP\Enemy_HP.h" />
+    <ClInclude Include="Src\Application\GameObject\UI\Player\Floor\Floor.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Player\HP\Player_HP.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Player\LockON\LockON.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Player\Player_UI_Manager.h" />
@@ -302,6 +303,7 @@
     <ClCompile Include="Src\Application\GameObject\Stage\MagicPolygon\MagicPolygon.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Wall\Wall.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Enemy\HP\Enemy_HP.cpp" />
+    <ClCompile Include="Src\Application\GameObject\UI\Player\Floor\Floor.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\HP\Player_HP.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\LockON\LockON.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\Player_UI_Manager.cpp" />

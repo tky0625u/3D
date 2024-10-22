@@ -229,6 +229,9 @@
     <Filter Include="Src\Application\GameObject\UI\Player\LockON">
       <UniqueIdentifier>{04eb853b-cfff-4568-aa40-301bc7597af6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\UI\Player\Floor">
+      <UniqueIdentifier>{d279b14f-5150-41ef-ad65-e70061b65305}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -555,6 +558,9 @@
     <ClInclude Include="Src\Application\GameObject\UI\Player\LockON\LockON.h">
       <Filter>Src\Application\GameObject\UI\Player\LockON</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\UI\Player\Floor\Floor.h">
+      <Filter>Src\Application\GameObject\UI\Player\Floor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -847,6 +853,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\UI\Player\LockON\LockON.cpp">
       <Filter>Src\Application\GameObject\UI\Player\LockON</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\UI\Player\Floor\Floor.cpp">
+      <Filter>Src\Application\GameObject\UI\Player\Floor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

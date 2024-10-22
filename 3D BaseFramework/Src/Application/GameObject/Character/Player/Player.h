@@ -43,7 +43,7 @@ public:
 	const int GetStaminaRecoveryTime()const { return m_StaminaRecoveryTime; }
 	const std::weak_ptr<EnemyBase> GetLockONTarget()const { return m_lockONTarget; }
 private:
-	std::weak_ptr<TPSCamera>             m_camera;
+	std::weak_ptr<TPSCamera>              m_camera;
 	std::shared_ptr<Player_ActionConText> m_context        = nullptr;
 	std::weak_ptr<Player_ActionState>     m_state;
 	std::shared_ptr<Player_ActionState>   m_NextState;

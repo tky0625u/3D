@@ -2,6 +2,7 @@
 #include"HP/Player_HP.h"
 #include"Stamina/Player_Stamina.h"
 #include"LockON/LockON.h"
+#include"Floor/Floor.h"
 
 void Player_UI_Manager::Update()
 {
@@ -35,4 +36,8 @@ void Player_UI_Manager::Init()
 	if (m_player.expired() == false)_lock->SetTraget(m_player.lock());
 	_lock->Init();
 	m_UIList.push_back(_lock);
+
+	std::shared_ptr<Floor> _floor = std::make_shared<Floor>();
+	_floor->Init();
+	m_UIList.push_back(_floor);
 }
