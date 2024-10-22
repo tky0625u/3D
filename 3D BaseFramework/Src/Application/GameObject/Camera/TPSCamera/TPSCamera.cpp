@@ -180,7 +180,7 @@ void TPSCamera::LockON(std::shared_ptr<EnemyBase> _target)
 
 		//外角　どっち回転かを求める
 		Math::Vector3 c = _dir.Cross(_nowVec);
-		float angle = GetAngle();
+		float angle = m_DegAng.y;
 		if (c.y >= 0)
 		{
 			//右回転
@@ -190,18 +190,18 @@ void TPSCamera::LockON(std::shared_ptr<EnemyBase> _target)
 				angle += 360.0f;
 			}
 
-			m_DegAng.y += angle;
+			m_DegAng.y = angle;
 		}
 		else
 		{
 			//左回転
 			angle += _ang;
-			if (GetAngle() >= 360.0f)
+			if (angle >= 360.0f)
 			{
 				angle -= 360.0f;
 			}
 
-			m_DegAng.y += angle;
+			m_DegAng.y = angle;
 		}
 	}
 }
