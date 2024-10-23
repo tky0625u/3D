@@ -23,7 +23,7 @@ public:
 	void Init()      override;
 
 	void CrushingAction()override;
-
+	void LockON();
 	void StaminaRecovery() { 
 		if (m_StaminaRecoveryTime > 0)return;
 		m_param.Sm++;
@@ -35,7 +35,6 @@ public:
 	void SetShield(std::shared_ptr<Shield> _shield) { m_shield = _shield; }
 	void SetStaminaRecoveryTime(int _time) { m_StaminaRecoveryTime = _time; }
 
-	std::weak_ptr<TPSCamera> GetCamera()const { return m_camera; }
 	std::shared_ptr<Player_ActionConText>GetConText()const { return m_context; }
 	int GetMaxStamina()const { return m_MaxStamina; }
 	std::weak_ptr<Shield> GetShield() { return m_shield; }

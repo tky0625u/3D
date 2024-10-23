@@ -165,9 +165,9 @@ void Player_Attack::AttackDirCheck()
 	else
 	{
 		Math::Matrix cameraRotYMat = Math::Matrix::Identity;
-		if (m_target.lock()->GetCamera().expired() == false)
+		if (ObjectManager::Instance().GetCamera().expired() == false)
 		{
-			cameraRotYMat = m_target.lock()->GetCamera().lock()->GetRotationYMatrix();
+			cameraRotYMat = ObjectManager::Instance().GetCamera().lock()->GetRotationYMatrix();
 		}
 		m_AttackDir = m_AttackDir.TransformNormal(m_AttackDir, cameraRotYMat);
 	}

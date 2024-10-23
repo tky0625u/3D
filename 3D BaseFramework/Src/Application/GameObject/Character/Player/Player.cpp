@@ -24,7 +24,10 @@ void Player::Action()
 		if (!m_keyFlg)
 		{
 			if (m_lockOnFlg)m_lockOnFlg = false;
-			else { m_lockOnFlg = true; }
+			else
+			{
+				LockON();
+			}
 			m_keyFlg = true;
 		}
 	}
@@ -35,55 +38,16 @@ void Player::Action()
 
 	if (m_lockOnFlg)
 	{
-		KdCollider::SphereInfo sphereInfo;
-		Math::Matrix _mat = m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(m_mWorld.Translation()));
-		sphereInfo.m_sphere.Center = _mat.Translation();
-		sphereInfo.m_sphere.Radius = 100.0f;
-		sphereInfo.m_type = KdCollider::TypeBump;
-
-		std::list<KdCollider::CollisionResult>retSphereList;
-		std::vector<std::shared_ptr<EnemyBase>> enemyList;
-		for (auto& ret : ObjectManager::Instance().GetEnemyList())
+		if (m_lockONTarget.lock()->GetParam().Hp <= 0)
 		{
-			if (ret.expired())continue;
-
-			if (m_id != ret.lock()->GetID())
-			{
-				if (ret.lock()->Intersects(sphereInfo, &retSphereList))
-				{
-					enemyList.push_back(ret.lock());
-				}
-			}
-		}
-
-		Math::Vector3 HitDir = Math::Vector3::Zero;
-		float maxOverLap = 0.0f;
-		bool HitFlg = false;
-		int listNum = -1;
-
-		for (auto& sphere : retSphereList)
-		{
-			if (maxOverLap < sphere.m_overlapDistance)
-			{
-				maxOverLap = sphere.m_overlapDistance;
-				HitDir = sphere.m_hitDir;
-				HitFlg = true;
-				listNum++;
-			}
-		}
-
-		if (HitFlg == true)
-		{
-			HitDir.y = 0.0f;
-			HitDir.Normalize();
-			m_camera.lock()->LockON(enemyList[listNum]);
-			m_lockONTarget = enemyList[listNum];
+			LockON();
 		}
 		else
 		{
-			m_lockOnFlg = false;
+			m_camera.lock()->SetLockONTarget(m_lockONTarget.lock());
 		}
 	}
+
 }
 
 void Player::Update()
@@ -94,7 +58,8 @@ void Player::Update()
 
 void Player::PostUpdate()
 {
-	if (ObjectManager::Instance().GetEnemyList().size() == 0)
+	if (ObjectManager::Instance().GetEnemyList().size() == 0 &&
+		!ObjectManager::Instance().GetCamera().lock()->GetFixedFlg())
 	{
 		KdCollider::RayInfo rayInfo;
 		rayInfo.m_pos = m_pos;
@@ -106,11 +71,12 @@ void Player::PostUpdate()
 
 		//デバッグ用
 		Math::Color color = { 1,1,1,1 };
-		m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
+		//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
 
 		std::list<KdCollider::CollisionResult> retRayList;
 		for (auto& ret : ObjectManager::Instance().GetObjectList())
 		{
+			if (ret.expired())continue;
 			if (ret.lock()->Intersects(rayInfo, &retRayList))
 			{
 				ObjectManager::Instance().Clear();
@@ -169,4 +135,45 @@ void Player::CrushingAction()
 {
 	CharacterBase::CrushingAction();
 	if (m_dossolve >= 1.0f)m_dossolve = 1.0f;
+}
+
+void Player::LockON()
+{
+	float Dist = 0.0f;
+	bool HitFlg = false;
+	int listNum = 0;
+
+	for (int e = 0; e < ObjectManager::Instance().GetEnemyList().size(); ++e)
+	{
+		if (!ObjectManager::Instance().GetEnemyList()[e].expired() &&
+			ObjectManager::Instance().GetEnemyList()[e].lock()->GetParam().Hp > 0)
+		{
+			if (!HitFlg)
+			{
+				float d = (ObjectManager::Instance().GetEnemyList()[e].lock()->GetPos() - m_pos).Length();
+				Dist = d;
+				HitFlg = true;
+				listNum = e;
+			}
+			else
+			{
+				float d = (ObjectManager::Instance().GetEnemyList()[e].lock()->GetPos() - m_pos).Length();
+				if (d < Dist)
+				{
+					Dist = d;
+					listNum = e;
+				}
+			}
+		}
+	}
+
+	if (HitFlg == true)
+	{
+		m_lockONTarget = ObjectManager::Instance().GetEnemyList()[listNum];
+		m_lockOnFlg = true;
+	}
+	else
+	{
+		m_lockOnFlg = false;
+	}
 }

@@ -48,7 +48,7 @@ void EnemyBase::Init()
 
 	m_hp = std::make_shared<Enemy_HP>();
 	m_hp->SetTarget(shared_from_this());
-	m_hp->SetCamera(m_player.lock()->GetCamera().lock());
+	m_hp->SetCamera(ObjectManager::Instance().GetCamera().lock());
 	m_hp->Init();
 }
 

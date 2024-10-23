@@ -3,6 +3,7 @@
 #include"../Player_ConText.h"
 #include"../Player_ActionState.h"
 #include"../../../../Camera/TPSCamera/TPSCamera.h"
+#include"../../../../ObjectManager.h"
 
 void Player_Run::Start()
 {
@@ -104,9 +105,9 @@ void Player_Run::Run()
 void Player_Run::CameraTransform(Math::Vector3& _dir)
 {
 	Math::Matrix cameraRotYMat = Math::Matrix::Identity;
-	if (m_target.lock()->GetCamera().expired() == false)
+	if (ObjectManager::Instance().GetCamera().expired() == false)
 	{
-		cameraRotYMat = m_target.lock()->GetCamera().lock()->GetRotationYMatrix();
+		cameraRotYMat = ObjectManager::Instance().GetCamera().lock()->GetRotationYMatrix();
 	}
 	_dir = _dir.TransformNormal(_dir, cameraRotYMat);
 

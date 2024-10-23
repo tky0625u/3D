@@ -76,6 +76,10 @@ void TPSCamera::PostUpdate()
 		{
 			UpdateRotateByMouse();
 		}
+		else
+		{
+			LockON();
+		}
 		//ShowCursor(false);
 	}
 	else
@@ -141,9 +145,10 @@ void TPSCamera::FixedFlgChange()
 	else { m_fixFlg = true; }
 }
 
-void TPSCamera::LockON(std::shared_ptr<EnemyBase> _target)
+void TPSCamera::LockON()
 {
-	if (!_target)return;
+	if (m_LockONTarget.expired())return;
+	std::shared_ptr<EnemyBase> _target = m_LockONTarget.lock();
 
 	// マウスでカメラを回転させる処理
 	POINT _nowPos;
@@ -163,6 +168,7 @@ void TPSCamera::LockON(std::shared_ptr<EnemyBase> _target)
 	Math::Vector3 _nowVec = Math::Vector3::TransformNormal(Math::Vector3{ 0,0,1 }, GetRotationYMatrix());
 
 	Math::Vector3 _dir = _target->GetPos() - m_wpTarget.lock()->GetPos();
+	_dir.y = 0.0f;
 	_dir.Normalize();
 
 	float d = _nowVec.Dot(_dir);

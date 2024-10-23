@@ -2,6 +2,7 @@
 #include"../../../Character/Player/Player.h"
 #include"../../../Character/Enemy/EnemyBase.h"
 #include"../../../Camera/TPSCamera/TPSCamera.h"
+#include"../../../ObjectManager.h"
 
 void LockON::Update()
 {
@@ -33,7 +34,7 @@ void LockON::Update()
 
 	//座標変換
 	Math::Vector3 _pos = { m_pos.x,m_pos.y,0.0f };
-	m_target.lock()->GetCamera().lock()->WorkCamera()->ConvertWorldToScreenDetail(_targetEnemy->GetLockPointMat().Translation(), _pos);
+	ObjectManager::Instance().GetCamera().lock()->WorkCamera()->ConvertWorldToScreenDetail(_targetEnemy->GetLockPointMat().Translation(), _pos);
 
 	m_pos = { _pos.x,_pos.y };
 	m_color = { 1,1,1,m_alpha };
