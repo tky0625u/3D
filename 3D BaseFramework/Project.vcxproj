@@ -158,6 +158,7 @@
     <ClInclude Include="..\Library\tinygltf\tiny_gltf.h" />
     <ClInclude Include="Src\Application\GameObject\Camera\CameraBase.h" />
     <ClInclude Include="Src\Application\GameObject\Camera\FixedCamera\FixedCamera.h" />
+    <ClInclude Include="Src\Application\GameObject\Camera\TitleCamera\TitleCamera.h" />
     <ClInclude Include="Src\Application\GameObject\Camera\TPSCamera\TPSCamera.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\ActionBase.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal\Bone_Appeal.h" />
@@ -206,6 +207,7 @@
     <ClInclude Include="Src\Application\GameObject\UI\Player\LockON\LockON.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Player\Player_UI_Manager.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Player\Stamina\Player_Stamina.h" />
+    <ClInclude Include="Src\Application\GameObject\UI\Title\Title.h" />
     <ClInclude Include="Src\Application\GameObject\UI\UIBase.h" />
     <ClInclude Include="Src\Application\GameObject\Weapon\Shield\Shield.h" />
     <ClInclude Include="Src\Application\GameObject\Weapon\Sword\Sword.h" />
@@ -262,6 +264,7 @@
     <ClCompile Include="..\Library\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Src\Application\GameObject\Camera\CameraBase.cpp" />
     <ClCompile Include="Src\Application\GameObject\Camera\FixedCamera\FixedCamera.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Camera\TitleCamera\TitleCamera.cpp" />
     <ClCompile Include="Src\Application\GameObject\Camera\TPSCamera\TPSCamera.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\ActionBase.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal\Bone_Appeal.cpp" />
@@ -308,6 +311,7 @@
     <ClCompile Include="Src\Application\GameObject\UI\Player\LockON\LockON.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\Player_UI_Manager.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\Stamina\Player_Stamina.cpp" />
+    <ClCompile Include="Src\Application\GameObject\UI\Title\Title.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\UIBase.cpp" />
     <ClCompile Include="Src\Application\GameObject\Weapon\Shield\Shield.cpp" />
     <ClCompile Include="Src\Application\GameObject\Weapon\Sword\Sword.cpp" />

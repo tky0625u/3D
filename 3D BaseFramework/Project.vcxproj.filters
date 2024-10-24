@@ -232,6 +232,12 @@
     <Filter Include="Src\Application\GameObject\UI\Player\Floor">
       <UniqueIdentifier>{d279b14f-5150-41ef-ad65-e70061b65305}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\UI\Title">
+      <UniqueIdentifier>{e1b6465f-e950-4991-b599-f8902824951f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Camera\TitleCamera">
+      <UniqueIdentifier>{642fefe1-e907-4a37-9885-52d377dc5030}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -561,6 +567,12 @@
     <ClInclude Include="Src\Application\GameObject\UI\Player\Floor\Floor.h">
       <Filter>Src\Application\GameObject\UI\Player\Floor</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\UI\Title\Title.h">
+      <Filter>Src\Application\GameObject\UI\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Camera\TitleCamera\TitleCamera.h">
+      <Filter>Src\Application\GameObject\Camera\TitleCamera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -856,6 +868,12 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\UI\Player\Floor\Floor.cpp">
       <Filter>Src\Application\GameObject\UI\Player\Floor</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\UI\Title\Title.cpp">
+      <Filter>Src\Application\GameObject\UI\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Camera\TitleCamera\TitleCamera.cpp">
+      <Filter>Src\Application\GameObject\Camera\TitleCamera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

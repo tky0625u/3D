@@ -7,28 +7,45 @@
 #include<sstream>
 
 //地面
-#include"../GameObject/Stage/Ground/Ground.h"
+#include"Stage/Ground/Ground.h"
 //魔法陣の台
-#include"../GameObject/Stage/Circle/Circle.h"
+#include"Stage/Circle/Circle.h"
 //魔法陣
-#include"../GameObject/Stage/MagicPolygon/MagicPolygon.h"
+#include"Stage/MagicPolygon/MagicPolygon.h"
 //壁
-#include"../GameObject/Stage/Wall/Wall.h"
+#include"Stage/Wall/Wall.h"
 //スカイボックス
-#include"../GameObject/SkyBox/SkyBox.h"
+#include"SkyBox/SkyBox.h"
 //剣
-#include"../GameObject/Weapon/Sword/Sword.h"
+#include"Weapon/Sword/Sword.h"
 //盾
-#include"../GameObject/Weapon/Shield/Shield.h"
+#include"Weapon/Shield/Shield.h"
 //プレイヤー
-#include"../GameObject/Character/Player/Player.h"
+#include"Character/Player/Player.h"
 //カメラ
-#include"../GameObject/Camera/TPSCamera/TPSCamera.h"
+#include"Camera/TPSCamera/TPSCamera.h"
 //骨
-#include"../GameObject/Character/Enemy/Bone/Bone.h"
+#include"Character/Enemy/Bone/Bone.h"
 //ゴーレム
-#include"../GameObject/Character/Enemy/Golem/Golem.h"
+#include"Character/Enemy/Golem/Golem.h"
+//タイトル
+#include"UI/Title/Title.h"
 
+
+void ObjectManager::SceneCheck()
+{
+	switch (SceneManager::Instance().GetNowSceneType())
+	{
+	case SceneManager::SceneType::Title:
+		m_nowScene = "Title";
+		break;
+	case SceneManager::SceneType::Game:
+		m_nowScene = "Game";
+		break;
+	default:
+		break;
+	}
+}
 
 void ObjectManager::DeleteEnemyList()
 {
@@ -89,7 +106,7 @@ void ObjectManager::Clear()
 		m_nowStage++;
 		m_player.lock()->SetPos(m_StartPosList[m_nowStage - 1]);
 		m_nowWave = 0;
-		std::string _filePath = ((std::string)"Json/Enemy/Stage") + (std::to_string(m_nowStage).c_str()) + ((std::string)".json");
+		std::string _filePath = ((std::string)"Json/Game/Enemy/Stage") + (std::to_string(m_nowStage).c_str()) + ((std::string)".json");
 		SetEnemyParam(_filePath);
 	}
 }
@@ -100,7 +117,26 @@ bool ObjectManager::IsWaveMax()
 	return false;
 }
 
-void ObjectManager::CameraWrite()
+void ObjectManager::TitleWrite()
+{
+	if (m_title.expired())return;
+
+	nlohmann::json _json;
+
+	_json["Title"]["Name"] = "Title";
+	_json["Title"]["PosX"] = m_title.lock()->GetVector2Pos().x;
+	_json["Title"]["PosY"] = m_title.lock()->GetVector2Pos().y;
+	_json["Title"]["Size"] = m_title.lock()->GetSize();
+
+	std::ofstream _file("Json/Title/Title/Title.json");
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
+	}
+}
+
+void ObjectManager::GameCameraWrite()
 {
 	nlohmann::json _json;
 
@@ -114,7 +150,7 @@ void ObjectManager::CameraWrite()
 	_json["Camera"]["AngleX"] = m_camera.lock()->GetFixedAngle().x;
 	_json["Camera"]["AngleY"] = m_camera.lock()->GetFixedAngle().y;
 
-	std::ofstream _file("Json/Camera/Camera.json");
+	std::ofstream _file("Json/Game/Camera/Camera.json");
 	if (_file.is_open())
 	{
 		_file << _json.dump();
@@ -122,7 +158,7 @@ void ObjectManager::CameraWrite()
 	}
 }
 
-void ObjectManager::PlayerWrite()
+void ObjectManager::PlayerWrite(std::string _fileName)
 {
 	nlohmann::json _json;
 
@@ -148,7 +184,7 @@ void ObjectManager::PlayerWrite()
 	_json["Player"]["ShieldName"]= m_player.lock()->GetShield().lock()->GetName();
 	
 
-	std::ofstream _file("Json/Player/Player.json");
+	std::ofstream _file(_fileName);
 	if (_file.is_open())
 	{
 		_file << _json.dump();
@@ -156,9 +192,9 @@ void ObjectManager::PlayerWrite()
 	}
 }
 
-void ObjectManager::EnemyWrite(int _stage, int _wave)
+void ObjectManager::EnemyWrite(int _stage, int _wave,std::string _fileName)
 {
-	std::string _stagePath = ((std::string)"Json/Enemy/Stage") + std::to_string(_stage).c_str() + ((std::string)".json");
+	std::string _stagePath = (_fileName) + std::to_string(_stage).c_str() + ((std::string)".json");
 	nlohmann::json _json;
 	std::ifstream _oldFile(_stagePath);
 	if (_oldFile.is_open())
@@ -216,10 +252,10 @@ void ObjectManager::EnemyWrite(int _stage, int _wave)
 	}
 }
 
-void ObjectManager::SwordWrite(std::string _swordName)
+void ObjectManager::SwordWrite(std::string _swordName, std::string _fileName)
 {
 	nlohmann::json _json;
-	std::ifstream _oldFile("Json/Weapon/Sword/Sword.json");
+	std::ifstream _oldFile(_fileName);
 	if (_oldFile.is_open())
 	{
 		_oldFile >> _json;
@@ -238,7 +274,7 @@ void ObjectManager::SwordWrite(std::string _swordName)
 		_sword["Traject"] = m_player.lock()->GetSword().lock()->GetTraject();
 	}
 
-	std::ofstream _newFile("Json/Weapon/Sword/Sword.json");
+	std::ofstream _newFile(_fileName);
 	if (_newFile.is_open())
 	{
 		_newFile << _json.dump();
@@ -246,10 +282,10 @@ void ObjectManager::SwordWrite(std::string _swordName)
 	}
 }
 
-void ObjectManager::ShieldWrite(std::string _shieldName)
+void ObjectManager::ShieldWrite(std::string _shieldName, std::string _fileName)
 {
 	nlohmann::json _json;
-	std::ifstream _oldFile("Json/Weapon/Shield/Shield.json");
+	std::ifstream _oldFile(_fileName);
 	if (_oldFile.is_open())
 	{
 		_oldFile >> _json;
@@ -266,7 +302,7 @@ void ObjectManager::ShieldWrite(std::string _shieldName)
 		_shield["Size"] = m_player.lock()->GetShield().lock()->GetSize();
 	}
 
-	std::ofstream _newFile("Json/Weapon/Shield/Shield.json");
+	std::ofstream _newFile(_fileName);
 	if (_newFile.is_open())
 	{
 		_newFile << _json.dump();
@@ -274,7 +310,7 @@ void ObjectManager::ShieldWrite(std::string _shieldName)
 	}
 }
 
-void ObjectManager::ObjectWrite()
+void ObjectManager::ObjectWrite(std::string _fileName)
 {
 	nlohmann::json _json;
 
@@ -326,7 +362,7 @@ void ObjectManager::ObjectWrite()
 		_json[_category][_name]["Angle"] = obj.lock()->GetAngle();
 	}
 
-	std::ofstream _file("Json/Object/Object.json");
+	std::ofstream _file(_fileName);
 	if (_file.is_open())
 	{
 		_file << _json.dump();
@@ -334,10 +370,49 @@ void ObjectManager::ObjectWrite()
 	}
 }
 
-void ObjectManager::SetCameraParam()
+void ObjectManager::SetTitleParam()
 {
 	//jsonファイル
-	std::string fileName = "Json/Camera/Camera.json";
+	std::string fileName = "Json/Title/Title/Title.json";
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& stage : _json)
+	{
+		Math::Vector2 _pos = Math::Vector2::Zero;
+		_pos.x = stage["PosX"];
+		_pos.y = stage["PosY"];
+
+		float _size = 1.0f;
+		_size = stage["Size"];
+
+		std::string _name;
+		_name = stage["Name"];
+		std::shared_ptr<Title> title = std::make_shared<Title>();
+
+		title->SetPos(_pos);
+		title->SetSize(_size);
+		title->SetName(_name);
+		title->SetID(m_id);
+		title->Init();
+		m_id++;
+
+		m_title = title;
+		SceneManager::Instance().AddObject(title);
+	}
+
+	ifs.close();
+}
+
+void ObjectManager::SetGameCameraParam()
+{
+	//jsonファイル
+	std::string fileName = "Json/Game/Camera/Camera.json";
 
 	std::ifstream ifs(fileName.c_str());
 	nlohmann::json _json;
@@ -384,7 +459,7 @@ void ObjectManager::SetCameraParam()
 void ObjectManager::SetObjectParam()
 {
 	//jsonファイル
-	std::string fileName = "Json/Object/Object.json";
+	std::string fileName = ("Json/") + m_nowScene + ("/Object/Object.json");
 
 	std::ifstream ifs(fileName.c_str());
 	nlohmann::json _json;
@@ -465,7 +540,7 @@ void ObjectManager::SetObjectParam()
 void ObjectManager::SetPlayerParam()
 {
 	//jsonファイル
-	std::string fileName = "Json/Player/Player.json";
+	std::string fileName = ("Json/") + m_nowScene + ("/Player/Player.json");
 
 	std::ifstream ifs(fileName.c_str());
 	nlohmann::json _json;
@@ -518,8 +593,8 @@ void ObjectManager::SetPlayerParam()
 		std::shared_ptr<Player> player = std::make_shared<Player>();
 		m_player = player;
 
-		SetWeaponParam("Json/Weapon/Sword/Sword.json", stage["SwordName"]);
-		SetWeaponParam("Json/Weapon/Shield/Shield.json", stage["ShieldName"]);
+		SetWeaponParam((("Json/") + m_nowScene + ("/Weapon/Sword/Sword.json")), stage["SwordName"]);
+		SetWeaponParam((("Json/") + m_nowScene + ("/Weapon/Shield/Shield.json")), stage["ShieldName"]);
 
 		player->SetCamera(m_camera.lock());
 		player->SetParam(_hp, player->GetSword().lock()->GetATK(), _speed, _stamina);
@@ -719,6 +794,23 @@ void ObjectManager::SetEnemyParam(std::string _filePath)
 			m_EnemyList.push_back(enemy);
 		}
 	}
+}
+
+void ObjectManager::AddTitle()
+{
+	if (!m_title.expired())return;
+
+	std::string _name = "Title";
+	Math::Vector2 _pos = Math::Vector2::Zero;
+	float _size = 1.0f;
+
+	std::shared_ptr<Title> _title = std::make_shared<Title>();
+	_title->SetPos(_pos);
+	_title->SetSize(_size);
+	_title->Init();
+
+	m_title = _title;
+	SceneManager::Instance().AddObject(_title);
 }
 
 void ObjectManager::AddBone()

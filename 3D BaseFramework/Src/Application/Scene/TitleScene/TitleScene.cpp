@@ -1,5 +1,7 @@
 ﻿#include "TitleScene.h"
 #include "../SceneManager.h"
+#include"../../GameObject/ObjectManager.h"
+#include"../../GameObject/UI/Title/Title.h"
 
 void TitleScene::Event()
 {
@@ -14,4 +16,6 @@ void TitleScene::Event()
 
 void TitleScene::Init()
 {
+	ObjectManager::Instance().SceneCheck();
+	ObjectManager::Instance().SetTitleParam();
 }

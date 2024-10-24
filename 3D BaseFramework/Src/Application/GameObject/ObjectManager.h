@@ -4,12 +4,14 @@ class Player;
 class EnemyBase;
 class Bone;
 class TPSCamera;
+class Title;
 
 #include"../tinygltf/json.hpp"
 class ObjectManager:public std::enable_shared_from_this<ObjectManager>
 {
 public:
 
+	void SceneCheck();
 	void DeleteEnemyList();
 	void DeleteObjectList();
 	void StopTimeMinus() { if (m_stopTime > 0)m_stopTime--; }
@@ -17,14 +19,16 @@ public:
 	void Clear();
 	bool IsWaveMax();
 
-	void CameraWrite();
-	void PlayerWrite();
-	void EnemyWrite(int _stage, int _wave);
-	void SwordWrite(std::string _swordName);
-	void ShieldWrite(std::string _shieldName);
-	void ObjectWrite();
+	void TitleWrite();
+	void GameCameraWrite();
+	void PlayerWrite(std::string _fileName);
+	void EnemyWrite(int _stage, int _wave, std::string _fileName);
+	void SwordWrite(std::string _swordName, std::string _fileName);
+	void ShieldWrite(std::string _shieldName, std::string _fileName);
+	void ObjectWrite(std::string _fileName);
 
-	void SetCameraParam();
+	void SetTitleParam();
+	void SetGameCameraParam();
 	void SetObjectParam();
 	void SetPlayerParam();
 	void SetWeaponParam(std::string _filePath, std::string _weaponName);
@@ -32,6 +36,7 @@ public:
 	void SetStopTime(int _stopTime) { m_stopTime = _stopTime; }
 
 	// デバッグ
+	void AddTitle();
 	void AddBone();
 	void AddGolem();
 	void AddWeapon(std::string _filePath,std::string _weaponName);
@@ -42,6 +47,7 @@ public:
 	const std::vector<std::string> GetSwordNameList() const { return m_swordNameList; }
 	const std::vector<std::string> GetShieldNameList() const { return m_shieldNameList; }
 
+	const std::weak_ptr<Title> GetTitle()const { return m_title; }
 	const std::weak_ptr<TPSCamera> GetCamera()const { return m_camera; }
 	const std::weak_ptr<Player> GetPlayer()const { return m_player; }
 	const std::vector<std::weak_ptr<EnemyBase>> GetEnemyList()const { return m_EnemyList; }
@@ -56,7 +62,8 @@ public:
 	int GetnowWave()const { return m_nowWave; }
 
 private:
-	std::weak_ptr<TPSCamera>                 m_camera;
+	std::weak_ptr<Title>                  m_title;
+	std::weak_ptr<TPSCamera>              m_camera;
 	std::weak_ptr<Player>                 m_player;
 	UINT                                  m_id       = 0;
 	int                                   m_stopTime = 0;
@@ -75,6 +82,8 @@ private:
 	//デバッグ
 	std::vector<std::string>              m_swordNameList;
 	std::vector<std::string>              m_shieldNameList;
+
+	std::string                           m_nowScene;
 
 private:
 	ObjectManager() {};

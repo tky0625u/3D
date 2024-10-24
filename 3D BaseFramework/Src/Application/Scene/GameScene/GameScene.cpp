@@ -39,10 +39,11 @@ void GameScene::PostUpdate()
 void GameScene::Init()
 {
 	//オブジェクトマネジャ
-	ObjectManager::Instance().SetCameraParam();
+	ObjectManager::Instance().SceneCheck();
+	ObjectManager::Instance().SetGameCameraParam();
 	ObjectManager::Instance().SetObjectParam();
 	ObjectManager::Instance().SetPlayerParam();
-	ObjectManager::Instance().SetEnemyParam("Json/Enemy/Stage1.json");
+	ObjectManager::Instance().SetEnemyParam("Json/Game/Enemy/Stage1.json");
 
 	KdEffekseerManager::GetInstance().Create(1280, 720);
 }
