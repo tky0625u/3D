@@ -1,6 +1,7 @@
 ﻿#include "main.h"
 
 #include"Scene/SceneManager.h"
+#include"Scene/BaseScene/BaseScene.h"
 #include"GameObject/ObjectManager.h"
 #include"GameObject/Character/Enemy/Bone/Bone.h"
 #include"GameObject/Character/Player/Player.h"
@@ -10,7 +11,9 @@
 #include"GameObject/Stage/Ground/Ground.h"
 #include"GameObject/Stage/Wall/Wall.h"
 #include"GameObject/Camera/TPSCamera/TPSCamera.h"
-#include"GameObject/UI/Title/Title.h"
+#include"GameObject/UI/Title/Title/Title.h"
+#include"GameObject/UI/Title/Game/Game.h"
+#include"GameObject/UI/Title/Exit/Exit.h"
 
 // ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
 // エントリーポイント
@@ -242,8 +245,6 @@ void Application::Execute()
 	SceneManager::Instance();
 	SceneManager::Instance().Init();
 
-	ObjectManager::Instance();
-
 	// ループ
 	while (1)
 	{
@@ -410,51 +411,125 @@ void Application::ImGuiProcess()
 			break;
 		}
 
-		if (ImGui::TreeNode("Title"))
+		if (ImGui::TreeNode("TitleUI"))
 		{
-			if (ImGui::Button((const char*)u8"Title保存"))
+			if (ImGui::TreeNode("Title"))
 			{
-				ObjectManager::Instance().TitleWrite();
+				if (ImGui::Button((const char*)u8"Title保存"))
+				{
+					SceneManager::Instance().GetNowScene()->GetObjectManager()->TitleWrite();
+				}
+
+				if (ImGui::Button((const char*)u8"Title追加"))
+				{
+					SceneManager::Instance().GetNowScene()->GetObjectManager()->AddTitle();
+				}
+
+				if (SceneManager::Instance().GetNowScene()->GetObjectManager()->GetTitle().expired() == false)
+				{
+					std::shared_ptr<Title> _title = SceneManager::Instance().GetNowScene()->GetObjectManager()->GetTitle().lock();
+
+					// 位置
+					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f", _title->GetVector2Pos().x, _title->GetVector2Pos().y);
+					Math::Vector2 _TitlePos = _title->GetVector2Pos();
+					ImGui::SliderFloat("PosX", &_TitlePos.x, -640, 640);
+					ImGui::SliderFloat("PosY", &_TitlePos.y, -360, 360);
+
+					// 大きさ
+					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _title->GetSize());
+					float _TitleSize = _title->GetSize();
+					ImGui::SliderFloat("Size", &_TitleSize, 1, 100);
+
+					_title->SetPos(_TitlePos);
+					_title->SetSize(_TitleSize);
+				}
+
+				ImGui::TreePop();
 			}
 
-			if (ImGui::Button((const char*)u8"Title追加"))
+			if (ImGui::TreeNode("Game"))
 			{
-				ObjectManager::Instance().AddTitle();
+				if (ImGui::Button((const char*)u8"Game保存"))
+				{
+					SceneManager::Instance().GetNowScene()->GetObjectManager()->GameWrite();
+				}
+
+				if (ImGui::Button((const char*)u8"Game追加"))
+				{
+					SceneManager::Instance().GetNowScene()->GetObjectManager()->AddGame();
+				}
+
+				if (SceneManager::Instance().GetNowScene()->GetObjectManager()->GetGame().expired() == false)
+				{
+					std::shared_ptr<Game> _game = SceneManager::Instance().GetNowScene()->GetObjectManager()->GetGame().lock();
+
+					// 位置
+					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f", _game->GetVector2Pos().x, _game->GetVector2Pos().y);
+					Math::Vector2 _GamePos = _game->GetVector2Pos();
+					ImGui::SliderFloat("PosX", &_GamePos.x, -640, 640);
+					ImGui::SliderFloat("PosY", &_GamePos.y, -360, 360);
+
+					// 大きさ
+					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _game->GetSize());
+					float _GameSize = _game->GetSize();
+					ImGui::SliderFloat("Size", &_GameSize, 0.01, 1);
+
+					_game->SetPos(_GamePos);
+					_game->SetSize(_GameSize);
+				}
+
+				ImGui::TreePop();
 			}
 
-			if (ObjectManager::Instance().GetTitle().expired() == false)
+			if (ImGui::TreeNode("Exit"))
 			{
-				std::shared_ptr<Title> _title = ObjectManager::Instance().GetTitle().lock();
+				if (ImGui::Button((const char*)u8"Exit保存"))
+				{
+					SceneManager::Instance().GetNowScene()->GetObjectManager()->ExitWrite();
+				}
 
-				// 位置
-				ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f", _title->GetVector2Pos().x, _title->GetVector2Pos().y);
-				Math::Vector2 _TitlePos = _title->GetVector2Pos();
-				ImGui::SliderFloat("PosX", &_TitlePos.x, -640, 640);
-				ImGui::SliderFloat("PosY", &_TitlePos.y, -360, 360);
+				if (ImGui::Button((const char*)u8"Exit追加"))
+				{
+					SceneManager::Instance().GetNowScene()->GetObjectManager()->AddExit();
+				}
 
-				// 大きさ
-				ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _title->GetSize());
-				float _TitleSize = _title->GetSize();
-				ImGui::SliderFloat("Size", &_TitleSize, 1, 100);
+				if (SceneManager::Instance().GetNowScene()->GetObjectManager()->GetExit().expired() == false)
+				{
+					std::shared_ptr<Exit> _exit = SceneManager::Instance().GetNowScene()->GetObjectManager()->GetExit().lock();
 
-				_title->SetPos(_TitlePos);
-				_title->SetSize(_TitleSize);
+					// 位置
+					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f", _exit->GetVector2Pos().x, _exit->GetVector2Pos().y);
+					Math::Vector2 _ExitPos = _exit->GetVector2Pos();
+					ImGui::SliderFloat("PosX", &_ExitPos.x, -640, 640);
+					ImGui::SliderFloat("PosY", &_ExitPos.y, -360, 360);
+
+					// 大きさ
+					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _exit->GetSize());
+					float _ExitSize = _exit->GetSize();
+					ImGui::SliderFloat("Size", &_ExitSize, 0.01, 1);
+
+					_exit->SetPos(_ExitPos);
+					_exit->SetSize(_ExitSize);
+				}
+
+				ImGui::TreePop();
 			}
 
 			ImGui::TreePop();
 		}
 
+
 		if (ImGui::TreeNode("Camera"))
 		{
 			if (ImGui::Button((const char*)u8"Camera保存"))
 			{
-				ObjectManager::Instance().GameCameraWrite();
+				SceneManager::Instance().GetNowScene()->GetObjectManager()->GameCameraWrite();
 			}
 
 
-			if (ObjectManager::Instance().GetCamera().expired() == false)
+			if (SceneManager::Instance().GetNowScene()->GetObjectManager()->GetCamera().expired() == false)
 			{
-				std::shared_ptr<TPSCamera> _camera = ObjectManager::Instance().GetCamera().lock();
+				std::shared_ptr<TPSCamera> _camera = SceneManager::Instance().GetNowScene()->GetObjectManager()->GetCamera().lock();
 
 				if (ImGui::Button((const char*)u8"Camera切替"))_camera->FixedFlgChange();
 
@@ -505,12 +580,12 @@ void Application::ImGuiProcess()
 		{
 			if (ImGui::Button((const char*)u8"Player保存"))
 			{
-				ObjectManager::Instance().PlayerWrite(("Json/") + _filePath + ("/Player/Player.json"));
+				SceneManager::Instance().GetNowScene()->GetObjectManager()->PlayerWrite(("Json/") + _filePath + ("/Player/Player.json"));
 			}
 
-			if (ObjectManager::Instance().GetPlayer().expired() == false)
+			if (SceneManager::Instance().GetNowScene()->GetObjectManager()->GetPlayer().expired() == false)
 			{
-				std::shared_ptr<Player> _player = ObjectManager::Instance().GetPlayer().lock();
+				std::shared_ptr<Player> _player = SceneManager::Instance().GetNowScene()->GetObjectManager()->GetPlayer().lock();
 
 				// 体力
 				ImGui::Text((const char*)u8"　体力 　　HP=%d", _player->GetParam().Hp);
@@ -570,11 +645,11 @@ void Application::ImGuiProcess()
 						{
 							if (ImGui::Button((const char*)u8"Sword保存"))
 							{
-								ObjectManager::Instance().SwordWrite(_swordName, (("Json/") + _filePath + ("/Sword/Sword.json")));
+								SceneManager::Instance().GetNowScene()->GetObjectManager()->SwordWrite(_swordName, (("Json/") + _filePath + ("/Sword/Sword.json")));
 							}
 
 							ImGui::Text((const char*)u8"　剣 Sword=%s", _player->GetSword().lock()->GetName().c_str());
-							for (auto& sword : ObjectManager::Instance().GetSwordNameList())
+							for (auto& sword : SceneManager::Instance().GetNowScene()->GetObjectManager()->GetSwordNameList())
 							{
 								if (ImGui::Button(sword.c_str()))
 								{
@@ -620,11 +695,11 @@ void Application::ImGuiProcess()
 							static float shieldSize = _shield->GetSize();
 							if (ImGui::Button((const char*)u8"Shield保存"))
 							{
-								ObjectManager::Instance().ShieldWrite(_shieldName, (("Json/") + _filePath + ("/Shield/Shield.json")));
+								SceneManager::Instance().GetNowScene()->GetObjectManager()->ShieldWrite(_shieldName, (("Json/") + _filePath + ("/Shield/Shield.json")));
 							}
 
 							ImGui::Text((const char*)u8"　盾 Shield=%s", _player->GetShield().lock()->GetName().c_str());
-							for (auto& shield : ObjectManager::Instance().GetShieldNameList())
+							for (auto& shield : SceneManager::Instance().GetNowScene()->GetObjectManager()->GetShieldNameList())
 							{
 								if (ImGui::Button(shield.c_str()))
 								{
@@ -653,7 +728,7 @@ void Application::ImGuiProcess()
 
 					ImGui::TreePop();
 
-					ObjectManager::Instance().ChangeWeapon(_swordName, _shieldName);
+					SceneManager::Instance().GetNowScene()->GetObjectManager()->ChangeWeapon(_swordName, _shieldName);
 				}
 
 				_player->SetParam(hp, _player->GetSword().lock()->GetATK(), speed, stamina);
@@ -673,7 +748,7 @@ void Application::ImGuiProcess()
 		{
 			std::vector<std::weak_ptr<EnemyBase>> _boneList;
 			std::vector<std::weak_ptr<EnemyBase>> _golemList;
-			for (auto& enemy : ObjectManager::Instance().GetEnemyList())
+			for (auto& enemy : SceneManager::Instance().GetNowScene()->GetObjectManager()->GetEnemyList())
 			{
 				if (enemy.expired() == false)
 				{
@@ -690,7 +765,7 @@ void Application::ImGuiProcess()
 
 			static int _stageNum = 1;
 			ImGui::Text((const char*)u8"ステージ数 : %d", _stageNum);
-			static int _nowStage = ObjectManager::Instance().GetnowWave();
+			static int _nowStage = SceneManager::Instance().GetNowScene()->GetObjectManager()->GetnowWave();
 			ImGui::SliderInt((const char*)u8"ステージ", &_nowStage, 1, _stageNum);
 			if (ImGui::Button((const char*)u8"ステージ追加"))
 			{
@@ -698,9 +773,9 @@ void Application::ImGuiProcess()
 				if (_stageNum - 1 == _nowStage)_nowStage = _stageNum;
 			}
 
-			static int _wave = ObjectManager::Instance().GetMaxWave();
+			static int _wave = SceneManager::Instance().GetNowScene()->GetObjectManager()->GetMaxWave();
 			ImGui::Text((const char*)u8"ウェーブ数 : %d", _wave);
-			static int _nowWave = ObjectManager::Instance().GetnowWave();
+			static int _nowWave = SceneManager::Instance().GetNowScene()->GetObjectManager()->GetnowWave();
 			ImGui::SliderInt((const char*)u8"ウェーブ", &_nowWave, 1, _wave);
 			if (ImGui::Button((const char*)u8"ウェーブ追加"))
 			{
@@ -718,7 +793,7 @@ void Application::ImGuiProcess()
 
 			if (ImGui::Button((const char*)u8"Enemy保存"))
 			{
-				ObjectManager::Instance().EnemyWrite(_nowStage, _nowWave,(("Json/")+_filePath+("/Enemy/Stage")));
+				SceneManager::Instance().GetNowScene()->GetObjectManager()->EnemyWrite(_nowStage, _nowWave,(("Json/")+_filePath+("/Enemy/Stage")));
 				if (_nowWave == _wave)
 				{
 					_wave++;
@@ -730,7 +805,7 @@ void Application::ImGuiProcess()
 			{
 				if (ImGui::Button((const char*)u8"Bone追加"))
 				{
-					ObjectManager::Instance().AddBone();
+					SceneManager::Instance().GetNowScene()->GetObjectManager()->AddBone();
 				}
 
 				static int operation = -1;
@@ -813,7 +888,7 @@ void Application::ImGuiProcess()
 			{
 				if (ImGui::Button((const char*)u8"Golem追加"))
 				{
-					ObjectManager::Instance().AddGolem();
+					SceneManager::Instance().GetNowScene()->GetObjectManager()->AddGolem();
 				}
 
 				static int operation = -1;
@@ -897,7 +972,7 @@ void Application::ImGuiProcess()
 
 		if (ImGui::TreeNode("Object"))
 		{
-			if (ImGui::Button((const char*)u8"Object保存"))ObjectManager::Instance().ObjectWrite(("Json/") + _filePath + ("/Object/Object.json"));
+			if (ImGui::Button((const char*)u8"Object保存"))SceneManager::Instance().GetNowScene()->GetObjectManager()->ObjectWrite(("Json/") + _filePath + ("/Object/Object.json"));
 			static int Goperation = -1;
 			static int Coperation = -1;
 			static int Woperation = -1;
@@ -907,7 +982,7 @@ void Application::ImGuiProcess()
 			std::vector<std::weak_ptr<KdGameObject>> magicList;
 			std::vector<std::weak_ptr<KdGameObject>> wallList;
 			std::vector<std::weak_ptr<KdGameObject>> skyboxList;
-			for (auto& obj : ObjectManager::Instance().GetObjectList())
+			for (auto& obj : SceneManager::Instance().GetNowScene()->GetObjectManager()->GetObjectList())
 			{
 				if (obj.expired() == false)
 				{
@@ -936,7 +1011,7 @@ void Application::ImGuiProcess()
 
 			if (ImGui::TreeNode("Ground"))
 			{
-				if (ImGui::Button((const char*)u8"Ground追加"))ObjectManager::Instance().AddGround();
+				if (ImGui::Button((const char*)u8"Ground追加"))SceneManager::Instance().GetNowScene()->GetObjectManager()->AddGround();
 				for (int g = 0; g < groundList.size(); ++g)
 				{
 					if (ImGui::Button(std::to_string(g + 1).c_str()))Goperation = g;
@@ -972,7 +1047,7 @@ void Application::ImGuiProcess()
 							circleList[Goperation].lock()->Expired();
 							magicList[Goperation].lock()->Expired();
 						}
-						ObjectManager::Instance().DeleteObjectList();
+						SceneManager::Instance().GetNowScene()->GetObjectManager()->DeleteObjectList();
 						Goperation = -1;
 						Coperation = -1;
 					}
@@ -985,7 +1060,7 @@ void Application::ImGuiProcess()
 			{
 				if (ImGui::Button((const char*)u8"Circle追加"))
 				{
-					if (groundList.size() > circleList.size())ObjectManager::Instance().AddCircle();
+					if (groundList.size() > circleList.size())SceneManager::Instance().GetNowScene()->GetObjectManager()->AddCircle();
 				}
 
 				if (circleList.size() != 0)
@@ -1026,7 +1101,7 @@ void Application::ImGuiProcess()
 							{
 								circleList[Coperation].lock()->Expired();
 								magicList[Coperation].lock()->Expired();
-								ObjectManager::Instance().DeleteObjectList();
+								SceneManager::Instance().GetNowScene()->GetObjectManager()->DeleteObjectList();
 								Coperation = -1;
 							}
 						}
@@ -1061,7 +1136,7 @@ void Application::ImGuiProcess()
 			}
 			if (ImGui::TreeNode("Wall"))
 			{
-				if (ImGui::Button((const char*)u8"Wall追加"))ObjectManager::Instance().AddWall();
+				if (ImGui::Button((const char*)u8"Wall追加"))SceneManager::Instance().GetNowScene()->GetObjectManager()->AddWall();
 				for (int w = 0; w < wallList.size(); ++w)
 				{
 					if (ImGui::Button(std::to_string(w + 1).c_str()))Woperation = w;
@@ -1092,7 +1167,7 @@ void Application::ImGuiProcess()
 					if (ImGui::Button((const char*)u8"消滅"))
 					{
 						wallList[Woperation].lock()->Expired();
-						ObjectManager::Instance().DeleteObjectList();
+						SceneManager::Instance().GetNowScene()->GetObjectManager()->DeleteObjectList();
 						Woperation = -1;
 					}
 

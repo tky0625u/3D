@@ -24,20 +24,24 @@ void Player_UI_Manager::Init()
 {
 	std::shared_ptr<Player_HP> _hp = std::make_shared<Player_HP>();
 	if (m_player.expired() == false)_hp->SetTraget(m_player.lock());
+	_hp->SetObjectManager(m_ObjManager.lock());
 	_hp->Init();
 	m_UIList.push_back(_hp);
 
 	std::shared_ptr<Player_Stamina> _stamina = std::make_shared<Player_Stamina>();
 	if (m_player.expired() == false)_stamina->SetTraget(m_player.lock());
+	_stamina->SetObjectManager(m_ObjManager.lock());
 	_stamina->Init();
 	m_UIList.push_back(_stamina);
 
 	std::shared_ptr<LockON> _lock = std::make_shared<LockON>();
 	if (m_player.expired() == false)_lock->SetTraget(m_player.lock());
+	_lock->SetObjectManager(m_ObjManager.lock());
 	_lock->Init();
 	m_UIList.push_back(_lock);
 
 	std::shared_ptr<Floor> _floor = std::make_shared<Floor>();
+	_floor->SetObjectManager(m_ObjManager.lock());
 	_floor->Init();
 	m_UIList.push_back(_floor);
 }

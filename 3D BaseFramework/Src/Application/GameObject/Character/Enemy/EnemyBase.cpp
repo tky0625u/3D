@@ -16,7 +16,7 @@ void EnemyBase::PostUpdate()
 {
 	CharacterBase::PostUpdate();
 
-	if (m_inviTime > 0 && ObjectManager::Instance().GetStopTime() == 0)
+	if (m_inviTime > 0 && m_ObjManager.lock()->GetStopTime() == 0)
 	{
 		m_inviTime--;
 	}
@@ -48,7 +48,8 @@ void EnemyBase::Init()
 
 	m_hp = std::make_shared<Enemy_HP>();
 	m_hp->SetTarget(shared_from_this());
-	m_hp->SetCamera(ObjectManager::Instance().GetCamera().lock());
+	m_hp->SetCamera(m_ObjManager.lock()->GetCamera().lock());
+	m_hp->SetObjectManager(m_ObjManager.lock());
 	m_hp->Init();
 }
 

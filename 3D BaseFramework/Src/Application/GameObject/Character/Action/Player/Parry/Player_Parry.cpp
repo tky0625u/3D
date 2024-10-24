@@ -37,7 +37,7 @@ void Player_Parry::End()
 		if (m_target.lock()->GetIsAnimator())
 		{
 			m_target.lock()->GetConText()->Idol();
-			ObjectManager::Instance().SlowChange();
+			m_ObjManager.lock()->SlowChange();
 			return;
 		}
 	}
@@ -50,7 +50,7 @@ void Player_Parry::ChangeAction()
 	if (m_ActionType & Player_ActionConText::ActionType::AttackType && !(m_target.lock()->GetConText()->GetBeforeActionType() & Player_ActionConText::ActionType::AttackType))
 	{
 		m_target.lock()->GetConText()->Counter();
-		ObjectManager::Instance().SlowChange();
+		m_ObjManager.lock()->SlowChange();
 		return;
 	}
 
@@ -59,16 +59,16 @@ void Player_Parry::ChangeAction()
 	if (m_ActionType & Player_ActionConText::ActionType::MoveType)
 	{
 		m_target.lock()->GetConText()->Run();
-		ObjectManager::Instance().SlowChange();
+		m_ObjManager.lock()->SlowChange();
 	}
 	else if (m_ActionType & Player_ActionConText::ActionType::GuardType)
 	{
 		m_target.lock()->GetConText()->Guard();
-		ObjectManager::Instance().SlowChange();
+		m_ObjManager.lock()->SlowChange();
 	}
 	else if (m_ActionType & Player_ActionConText::ActionType::RollType && !(m_target.lock()->GetConText()->GetBeforeActionType() & Player_ActionConText::ActionType::RollType))
 	{
 		m_target.lock()->GetConText()->Roll();
-		ObjectManager::Instance().SlowChange();
+		m_ObjManager.lock()->SlowChange();
 	}
 }

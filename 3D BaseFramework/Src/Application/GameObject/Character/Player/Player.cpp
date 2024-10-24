@@ -10,7 +10,7 @@
 
 void Player::Action()
 {
-	if (ObjectManager::Instance().GetCamera().lock()->GetFixedFlg())return;
+	if (m_ObjManager.lock()->GetCamera().lock()->GetFixedFlg())return;
 
 	if (m_NextState != nullptr)
 	{
@@ -19,7 +19,7 @@ void Player::Action()
 	}
 	m_state.lock()->Update();
 
-	if (GetAsyncKeyState(VK_LCONTROL) & 0x8000)
+	if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
 	{
 		if (!m_keyFlg)
 		{
@@ -58,8 +58,8 @@ void Player::Update()
 
 void Player::PostUpdate()
 {
-	if (ObjectManager::Instance().GetEnemyList().size() == 0 &&
-		!ObjectManager::Instance().GetCamera().lock()->GetFixedFlg())
+	if (m_ObjManager.lock()->GetEnemyList().size() == 0 &&
+		!m_ObjManager.lock()->GetCamera().lock()->GetFixedFlg())
 	{
 		KdCollider::RayInfo rayInfo;
 		rayInfo.m_pos = m_pos;
@@ -74,21 +74,21 @@ void Player::PostUpdate()
 		//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
 
 		std::list<KdCollider::CollisionResult> retRayList;
-		for (auto& ret : ObjectManager::Instance().GetObjectList())
+		for (auto& ret : m_ObjManager.lock()->GetObjectList())
 		{
 			if (ret.expired())continue;
 			if (ret.lock()->Intersects(rayInfo, &retRayList))
 			{
-				ObjectManager::Instance().Clear();
+				m_ObjManager.lock()->Clear();
 			}
 		}
 	}
 
 	CharacterBase::PostUpdate();
 
-	m_camera.lock()->SlowChange(ObjectManager::Instance().GetSlowFlg());
+	m_camera.lock()->SlowChange(m_ObjManager.lock()->GetSlowFlg());
 
-	if (ObjectManager::Instance().GetSlowFlg())
+	if (m_ObjManager.lock()->GetSlowFlg())
 	{
 		if (m_FocusBackRange != 10.0f)m_FocusBackRange = 10.0f;
 	}
@@ -120,9 +120,11 @@ void Player::Init()
 
 	m_context = std::make_shared<Player_ActionConText>(idol);
 	m_state = m_context->GetState();
+	m_state.lock()->SetObjectManager(m_ObjManager.lock());
 
 	m_ui = std::make_shared<Player_UI_Manager>();
 	m_ui->SetPlayer(shared_from_this());
+	m_ui->SetObjectManager(m_ObjManager.lock());
 	m_ui->Init();
 
 	m_pCollider = std::make_unique<KdCollider>();
@@ -143,21 +145,21 @@ void Player::LockON()
 	bool HitFlg = false;
 	int listNum = 0;
 
-	for (int e = 0; e < ObjectManager::Instance().GetEnemyList().size(); ++e)
+	for (int e = 0; e < m_ObjManager.lock()->GetEnemyList().size(); ++e)
 	{
-		if (!ObjectManager::Instance().GetEnemyList()[e].expired() &&
-			ObjectManager::Instance().GetEnemyList()[e].lock()->GetParam().Hp > 0)
+		if (!m_ObjManager.lock()->GetEnemyList()[e].expired() &&
+			m_ObjManager.lock()->GetEnemyList()[e].lock()->GetParam().Hp > 0)
 		{
 			if (!HitFlg)
 			{
-				float d = (ObjectManager::Instance().GetEnemyList()[e].lock()->GetPos() - m_pos).Length();
+				float d = (m_ObjManager.lock()->GetEnemyList()[e].lock()->GetPos() - m_pos).Length();
 				Dist = d;
 				HitFlg = true;
 				listNum = e;
 			}
 			else
 			{
-				float d = (ObjectManager::Instance().GetEnemyList()[e].lock()->GetPos() - m_pos).Length();
+				float d = (m_ObjManager.lock()->GetEnemyList()[e].lock()->GetPos() - m_pos).Length();
 				if (d < Dist)
 				{
 					Dist = d;
@@ -169,7 +171,7 @@ void Player::LockON()
 
 	if (HitFlg == true)
 	{
-		m_lockONTarget = ObjectManager::Instance().GetEnemyList()[listNum];
+		m_lockONTarget = m_ObjManager.lock()->GetEnemyList()[listNum];
 		m_lockOnFlg = true;
 	}
 	else

@@ -70,7 +70,7 @@ void TPSCamera::PostUpdate()
 	Math::Matrix _trans;
 
 	// デバッグ
-	if (!(GetAsyncKeyState(VK_LSHIFT) & 0x8000))
+	if (!(GetAsyncKeyState(VK_LCONTROL) & 0x8000))
 	{
 		if (!m_wpTarget.lock()->GetLockONFlg())
 		{
@@ -98,7 +98,7 @@ void TPSCamera::PostUpdate()
 		m_mRotation = Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(m_fixAngle.x)) * Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_fixAngle.y));
 		Math::Vector3 _pos = m_fixPos;
 		_trans = Math::Matrix::CreateTranslation(_pos);
-		_targetMat = m_FixedTargetList[ObjectManager::Instance().GetnowStage() - 1].lock()->GetMatrix();
+		_targetMat = m_FixedTargetList[m_ObjManager.lock()->GetnowStage() - 1].lock()->GetMatrix();
 	}
 	m_mWorld = _trans * m_mRotation * _targetMat;
 

@@ -23,7 +23,7 @@ void CharacterBase::Update()
 
 		float _slow = 1.0f;
 
-		_slow = ObjectManager::Instance().GetSlow();
+		_slow = m_ObjManager.lock()->GetSlow();
 		if (m_MoveSpeed == 0.0f)
 		{
 			m_MoveSpeed = m_param.Sp;
@@ -89,7 +89,7 @@ void CharacterBase::PostUpdate()
 		m_animeSpeed = 1.0f;
 	}
 
-	if (ObjectManager::Instance().GetStopTime() > 0)return;
+	if (m_ObjManager.lock()->GetStopTime() > 0)return;
 	KdCollider::SphereInfo sphereInfo;
 	Math::Matrix _mat = m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(m_mWorld.Translation()));
 	sphereInfo.m_sphere.Center = _mat.Translation();
@@ -136,7 +136,7 @@ void CharacterBase::PostUpdate()
 		m_beforeAnime = m_anime;
 	}
 	float _slow = 1.0f;
-	_slow = ObjectManager::Instance().GetSlow();
+	_slow = m_ObjManager.lock()->GetSlow();
 	m_animator->AdvanceTime(m_model->WorkNodes(), m_animeSpeed * _slow);
 	m_model->CalcNodeMatrices();
 

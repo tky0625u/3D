@@ -5,11 +5,15 @@ class EnemyBase;
 class Bone;
 class TPSCamera;
 class Title;
+class Game;
+class Exit;
 
 #include"../tinygltf/json.hpp"
 class ObjectManager:public std::enable_shared_from_this<ObjectManager>
 {
 public:
+	ObjectManager() {};
+	~ObjectManager() {};
 
 	void SceneCheck();
 	void DeleteEnemyList();
@@ -20,6 +24,8 @@ public:
 	bool IsWaveMax();
 
 	void TitleWrite();
+	void GameWrite();
+	void ExitWrite();
 	void GameCameraWrite();
 	void PlayerWrite(std::string _fileName);
 	void EnemyWrite(int _stage, int _wave, std::string _fileName);
@@ -28,6 +34,8 @@ public:
 	void ObjectWrite(std::string _fileName);
 
 	void SetTitleParam();
+	void SetGameParam();
+	void SetExitParam();
 	void SetGameCameraParam();
 	void SetObjectParam();
 	void SetPlayerParam();
@@ -37,6 +45,8 @@ public:
 
 	// デバッグ
 	void AddTitle();
+	void AddGame();
+	void AddExit();
 	void AddBone();
 	void AddGolem();
 	void AddWeapon(std::string _filePath,std::string _weaponName);
@@ -48,6 +58,8 @@ public:
 	const std::vector<std::string> GetShieldNameList() const { return m_shieldNameList; }
 
 	const std::weak_ptr<Title> GetTitle()const { return m_title; }
+	const std::weak_ptr<Game> GetGame()const { return m_game; }
+	const std::weak_ptr<Exit> GetExit()const { return m_exit; }
 	const std::weak_ptr<TPSCamera> GetCamera()const { return m_camera; }
 	const std::weak_ptr<Player> GetPlayer()const { return m_player; }
 	const std::vector<std::weak_ptr<EnemyBase>> GetEnemyList()const { return m_EnemyList; }
@@ -62,37 +74,29 @@ public:
 	int GetnowWave()const { return m_nowWave; }
 
 private:
-	std::weak_ptr<Title>                  m_title;
-	std::weak_ptr<TPSCamera>              m_camera;
-	std::weak_ptr<Player>                 m_player;
-	UINT                                  m_id       = 0;
-	int                                   m_stopTime = 0;
-	float                                 m_slow     = 1.0f;
-	bool                                  m_slowFlg  = false;
-	std::vector<std::weak_ptr<EnemyBase>> m_EnemyList;
-	std::vector<std::weak_ptr<KdGameObject>>    m_ObjectList;
-	std::vector<Math::Vector3>            m_StartPosList;
-	int                                   m_MaxStage = 3;
-	int                                   m_nowStage = 1;
+	std::weak_ptr<Title>                     m_title;
+	std::weak_ptr<Game>                      m_game;
+	std::weak_ptr<Exit>                      m_exit;
+	std::weak_ptr<TPSCamera>                 m_camera;
+	std::weak_ptr<Player>                    m_player;
+	UINT                                     m_id       = 0;
+	int                                      m_stopTime = 0;
+	float                                    m_slow     = 1.0f;
+	bool                                     m_slowFlg  = false;
+	std::vector<std::weak_ptr<EnemyBase>>    m_EnemyList;
+	std::vector<std::weak_ptr<KdGameObject>> m_ObjectList;
+	std::vector<Math::Vector3>               m_StartPosList;
+	int                                      m_MaxStage = 3;
+	int                                      m_nowStage = 1;
+										     
+	nlohmann::json                           m_EnemyJson;
+	int                                      m_MaxWave  = 0;
+	int                                      m_nowWave  = 0;
+										     
+	//デバッグ							     
+	std::vector<std::string>                 m_swordNameList;
+	std::vector<std::string>                 m_shieldNameList;
+										     
+	std::string                              m_nowScene;
 
-	nlohmann::json                        m_EnemyJson;
-	int                                   m_MaxWave  = 0;
-	int                                   m_nowWave  = 0;
-
-	//デバッグ
-	std::vector<std::string>              m_swordNameList;
-	std::vector<std::string>              m_shieldNameList;
-
-	std::string                           m_nowScene;
-
-private:
-	ObjectManager() {};
-	~ObjectManager() {};
-
-public:
-	static ObjectManager& Instance()
-	{
-		static ObjectManager instance;
-		return instance;
-	}
 };

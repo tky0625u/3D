@@ -58,6 +58,11 @@ void SceneManager::AddObject(const std::shared_ptr<KdGameObject>& obj)
 
 void SceneManager::ChangeScene(SceneType sceneType)
 {
+	if (m_currentSceneType == SceneType::Game)m_currentScene->GetObjectManager()->DeleteEnemyList();
+
+	// 現在のシーン情報を更新
+	m_currentSceneType = sceneType;
+
 	// 次のシーンを作成し、現在のシーンにする
 	switch (sceneType)
 	{
@@ -70,9 +75,4 @@ void SceneManager::ChangeScene(SceneType sceneType)
 		m_currentScene->Init();
 		break;
 	}
-
-	if (m_currentSceneType == SceneType::Game)ObjectManager::Instance().DeleteEnemyList();
-
-	// 現在のシーン情報を更新
-	m_currentSceneType = sceneType;
 }

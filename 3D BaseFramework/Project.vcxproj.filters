@@ -238,6 +238,15 @@
     <Filter Include="Src\Application\GameObject\Camera\TitleCamera">
       <UniqueIdentifier>{642fefe1-e907-4a37-9885-52d377dc5030}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\UI\Title\Game">
+      <UniqueIdentifier>{7db260f7-f56e-4d46-bb31-311349c3e3fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\UI\Title\Title">
+      <UniqueIdentifier>{5c5c8c58-fc1d-47b0-9a1a-59026613d927}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\UI\Title\Exit">
+      <UniqueIdentifier>{f5138d53-a1e1-4cf5-98b5-3599a6d1c7ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -567,11 +576,17 @@
     <ClInclude Include="Src\Application\GameObject\UI\Player\Floor\Floor.h">
       <Filter>Src\Application\GameObject\UI\Player\Floor</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\UI\Title\Title.h">
-      <Filter>Src\Application\GameObject\UI\Title</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Camera\TitleCamera\TitleCamera.h">
       <Filter>Src\Application\GameObject\Camera\TitleCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\UI\Title\Title\TItle.h">
+      <Filter>Src\Application\GameObject\UI\Title\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\UI\Title\Game\Game.h">
+      <Filter>Src\Application\GameObject\UI\Title\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\UI\Title\Exit\Exit.h">
+      <Filter>Src\Application\GameObject\UI\Title\Exit</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -869,11 +884,17 @@
     <ClCompile Include="Src\Application\GameObject\UI\Player\Floor\Floor.cpp">
       <Filter>Src\Application\GameObject\UI\Player\Floor</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\UI\Title\Title.cpp">
-      <Filter>Src\Application\GameObject\UI\Title</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Camera\TitleCamera\TitleCamera.cpp">
       <Filter>Src\Application\GameObject\Camera\TitleCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\UI\Title\Title\Title.cpp">
+      <Filter>Src\Application\GameObject\UI\Title\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\UI\Title\Game\Game.cpp">
+      <Filter>Src\Application\GameObject\UI\Title\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\UI\Title\Exit\Exit.cpp">
+      <Filter>Src\Application\GameObject\UI\Title\Exit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

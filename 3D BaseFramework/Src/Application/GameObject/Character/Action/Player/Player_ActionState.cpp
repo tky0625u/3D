@@ -49,7 +49,7 @@ void Player_ActionState::AttackDamage()
 	std::list<KdCollider::CollisionResult> retSphereList;
 	std::vector<std::shared_ptr<EnemyBase>> hitEnemyList;
 
-	for (auto& sphere : ObjectManager::Instance().GetEnemyList())
+	for (auto& sphere : m_ObjManager.lock()->GetEnemyList())
 	{
 		if (sphere.expired())continue;
 
@@ -136,6 +136,7 @@ void Player_ActionState::Idol(std::shared_ptr<Player_ActionConText> context)
 	std::shared_ptr<Player_Idol> idol = std::make_shared<Player_Idol>();
 	if (m_target.expired())return;
 	idol->SetTarget(m_target.lock());
+	idol->SetObjectManager(m_ObjManager.lock());
 	context->SetState(idol);
 	m_target.lock()->SetNextState(idol);
 }
@@ -145,6 +146,7 @@ void Player_ActionState::Run(std::shared_ptr<Player_ActionConText> context)
 	std::shared_ptr<Player_Run> run = std::make_shared<Player_Run>();
 	if (m_target.expired())return;
 	run->SetTarget(m_target.lock());
+	run->SetObjectManager(m_ObjManager.lock());
 	context->SetState(run);
 	m_target.lock()->SetNextState(run);
 }
@@ -154,6 +156,7 @@ void Player_ActionState::Attack(std::shared_ptr<Player_ActionConText> context)
 	std::shared_ptr<Player_Attack> attack = std::make_shared<Player_Attack>();
 	if (m_target.expired())return;
 	attack->SetTarget(m_target.lock());
+	attack->SetObjectManager(m_ObjManager.lock());
 	attack->AttackDirCheck();
 	context->SetState(attack);
 	m_target.lock()->SetNextState(attack);
@@ -164,6 +167,7 @@ void Player_ActionState::Guard(std::shared_ptr<Player_ActionConText> context)
 	std::shared_ptr<Player_Guard> guard = std::make_shared<Player_Guard>();
 	if (m_target.expired())return;
 	guard->SetTarget(m_target.lock());
+	guard->SetObjectManager(m_ObjManager.lock());
 	context->SetState(guard);
 	m_target.lock()->SetNextState(guard);
 }
@@ -179,6 +183,7 @@ void Player_ActionState::GuardReaction(std::shared_ptr<Player_ActionConText> con
 	m_target.lock()->SetStamina(sta);
 	m_target.lock()->SetStaminaRecoveryTime(60);
 	guardReaction->SetTarget(m_target.lock());
+	guardReaction->SetObjectManager(m_ObjManager.lock());
 	context->SetState(guardReaction);
 	m_target.lock()->SetNextState(guardReaction);
 }
@@ -188,6 +193,7 @@ void Player_ActionState::Parry(std::shared_ptr<Player_ActionConText> context, st
 	std::shared_ptr<Player_Parry> parry = std::make_shared<Player_Parry>();
 	if (m_target.expired())return;
 	parry->SetTarget(m_target.lock());
+	parry->SetObjectManager(m_ObjManager.lock());
 	context->SetState(parry);
 	m_target.lock()->SetNextState(parry);
 	_enemy->GetConText()->Stumble();
@@ -198,6 +204,7 @@ void Player_ActionState::Counter(std::shared_ptr<Player_ActionConText> context)
 	std::shared_ptr<Player_Counter> counter = std::make_shared<Player_Counter>();
 	if (m_target.expired())return;
 	counter->SetTarget(m_target.lock());
+	counter->SetObjectManager(m_ObjManager.lock());
 	context->SetState(counter);
 	m_target.lock()->SetNextState(counter);
 }
@@ -213,6 +220,7 @@ void Player_ActionState::Roll(std::shared_ptr<Player_ActionConText> context)
 	m_target.lock()->SetStamina(sta);
 	m_target.lock()->SetStaminaRecoveryTime(60);
 	roll->SetTarget(m_target.lock());
+	roll->SetObjectManager(m_ObjManager.lock());
 	context->SetState(roll);
 	m_target.lock()->SetNextState(roll);
 }
@@ -222,6 +230,7 @@ void Player_ActionState::Hit(std::shared_ptr<Player_ActionConText> context, int 
 	std::shared_ptr<Player_Hit> hit = std::make_shared<Player_Hit>();
 	if (m_target.expired())return;
 	hit->SetTarget(m_target.lock());
+	hit->SetObjectManager(m_ObjManager.lock());
 	m_target.lock()->Hit(_damage);
 	context->SetState(hit);
 	m_target.lock()->SetNextState(hit);

@@ -130,7 +130,7 @@ void Player_Guard::Hit(std::shared_ptr<Player_ActionConText> context, int _damag
 	if (m_guardTime <= 30)
 	{
 		m_target.lock()->GetConText()->Parry(_enemy);
-		ObjectManager::Instance().SlowChange();
+		m_ObjManager.lock()->SlowChange();
 	}
 	else 
 	{

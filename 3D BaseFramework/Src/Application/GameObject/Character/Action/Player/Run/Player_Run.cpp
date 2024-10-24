@@ -105,9 +105,9 @@ void Player_Run::Run()
 void Player_Run::CameraTransform(Math::Vector3& _dir)
 {
 	Math::Matrix cameraRotYMat = Math::Matrix::Identity;
-	if (ObjectManager::Instance().GetCamera().expired() == false)
+	if (m_ObjManager.lock()->GetCamera().expired() == false)
 	{
-		cameraRotYMat = ObjectManager::Instance().GetCamera().lock()->GetRotationYMatrix();
+		cameraRotYMat = m_ObjManager.lock()->GetCamera().lock()->GetRotationYMatrix();
 	}
 	_dir = _dir.TransformNormal(_dir, cameraRotYMat);
 

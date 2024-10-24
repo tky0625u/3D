@@ -207,7 +207,9 @@
     <ClInclude Include="Src\Application\GameObject\UI\Player\LockON\LockON.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Player\Player_UI_Manager.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Player\Stamina\Player_Stamina.h" />
-    <ClInclude Include="Src\Application\GameObject\UI\Title\Title.h" />
+    <ClInclude Include="Src\Application\GameObject\UI\Title\Exit\Exit.h" />
+    <ClInclude Include="Src\Application\GameObject\UI\Title\Game\Game.h" />
+    <ClInclude Include="Src\Application\GameObject\UI\Title\Title\TItle.h" />
     <ClInclude Include="Src\Application\GameObject\UI\UIBase.h" />
     <ClInclude Include="Src\Application\GameObject\Weapon\Shield\Shield.h" />
     <ClInclude Include="Src\Application\GameObject\Weapon\Sword\Sword.h" />
@@ -311,7 +313,9 @@
     <ClCompile Include="Src\Application\GameObject\UI\Player\LockON\LockON.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\Player_UI_Manager.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\Stamina\Player_Stamina.cpp" />
-    <ClCompile Include="Src\Application\GameObject\UI\Title\Title.cpp" />
+    <ClCompile Include="Src\Application\GameObject\UI\Title\Exit\Exit.cpp" />
+    <ClCompile Include="Src\Application\GameObject\UI\Title\Game\Game.cpp" />
+    <ClCompile Include="Src\Application\GameObject\UI\Title\Title\Title.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\UIBase.cpp" />
     <ClCompile Include="Src\Application\GameObject\Weapon\Shield\Shield.cpp" />
     <ClCompile Include="Src\Application\GameObject\Weapon\Sword\Sword.cpp" />

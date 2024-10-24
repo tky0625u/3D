@@ -1,7 +1,6 @@
 ﻿#include "TitleScene.h"
 #include "../SceneManager.h"
 #include"../../GameObject/ObjectManager.h"
-#include"../../GameObject/UI/Title/Title.h"
 
 void TitleScene::Event()
 {
@@ -16,6 +15,9 @@ void TitleScene::Event()
 
 void TitleScene::Init()
 {
-	ObjectManager::Instance().SceneCheck();
-	ObjectManager::Instance().SetTitleParam();
+	m_ObjManager = std::make_shared<ObjectManager>();
+	m_ObjManager->SceneCheck();
+	m_ObjManager->SetTitleParam();
+	m_ObjManager->SetGameParam();
+	m_ObjManager->SetExitParam();
 }

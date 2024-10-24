@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 class CharacterBase;
+class ObjectManager;
 
 // ゲーム上に存在するすべてのオブジェクトの基底となるクラス
 class KdGameObject //: public std::enable_shared_from_this<KdGameObject>
@@ -72,6 +73,8 @@ public:
 
 	const Math::Matrix& GetMatrix() const { return m_mWorld; }
 
+	void SetObjectManager(std::shared_ptr<ObjectManager> _ObjManager) { m_ObjManager = _ObjManager; }
+
 	// デバッグ
 	void Expired() { m_isExpired = true; }
 	virtual bool IsExpired() const { return m_isExpired; }
@@ -130,4 +133,6 @@ protected:
 
 	//ID
 	UINT m_id = 0;
+
+	std::weak_ptr<ObjectManager> m_ObjManager;
 };

@@ -16,6 +16,7 @@ void Bone_ActionState::Idol(std::shared_ptr<Enemy_ConText> context)
 	std::shared_ptr<Bone_Idol> idol = std::make_shared<Bone_Idol>();
 	if (m_target.expired())return;
 	idol->SetTarget(m_target.lock());
+	idol->SetObjectManager(m_ObjManager.lock());
 	context->SetState(idol);
 	m_target.lock()->SetNextAction(idol, m_target.lock()->Action::IdolType);
 }
@@ -25,6 +26,7 @@ void Bone_ActionState::Run(std::shared_ptr<Enemy_ConText> context)
 	std::shared_ptr<Bone_Run> run = std::make_shared<Bone_Run>();
 	if (m_target.expired())return;
 	run->SetTarget(m_target.lock());
+	run->SetObjectManager(m_ObjManager.lock());
 	context->SetState(run);
 	m_target.lock()->SetNextAction(run, m_target.lock()->Action::RunType);
 }
@@ -34,6 +36,7 @@ void Bone_ActionState::Attack(std::shared_ptr<Enemy_ConText> context)
 	std::shared_ptr<Bone_Attack> attack = std::make_shared<Bone_Attack>();
 	if (m_target.expired())return;
 	attack->SetTarget(m_target.lock());
+	attack->SetObjectManager(m_ObjManager.lock());
 	context->SetState(attack);
 	m_target.lock()->SetNextAction(attack, m_target.lock()->Action::AttackType);
 }
@@ -45,7 +48,8 @@ void Bone_ActionState::Hit(std::shared_ptr<Enemy_ConText> context, int _damage)
 	if (m_target.lock()->GetParam().Hp <= 0)return;
 	std::shared_ptr<Bone_Hit> hit = std::make_shared<Bone_Hit>();
 	hit->SetTarget(m_target.lock());
-	ObjectManager::Instance().SetStopTime(5);
+	hit->SetObjectManager(m_ObjManager.lock());
+	m_ObjManager.lock()->SetStopTime(5);
 	context->SetState(hit);
 	m_target.lock()->SetNextAction(hit, m_target.lock()->Action::HitType);
 }
@@ -55,6 +59,7 @@ void Bone_ActionState::Stumble(std::shared_ptr<Enemy_ConText> context)
 	std::shared_ptr<Bone_Stumble> stumble = std::make_shared<Bone_Stumble>();
 	if (m_target.expired())return;
 	stumble->SetTarget(m_target.lock());
+	stumble->SetObjectManager(m_ObjManager.lock());
 	context->SetState(stumble);
 	m_target.lock()->SetNextAction(stumble, m_target.lock()->Action::StumbleType);
 }

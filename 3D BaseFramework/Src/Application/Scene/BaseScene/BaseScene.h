@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+class ObjectManager;
+
 class BaseScene
 {
 public :
@@ -22,6 +24,7 @@ public :
 		return m_objList;
 	}
 	
+	const std::shared_ptr<ObjectManager> GetObjectManager() const { return m_ObjManager; }
 	// オブジェクトリストに追加
 	void AddObject(const std::shared_ptr<KdGameObject>& obj)
 	{
@@ -38,4 +41,6 @@ protected :
 
 	// 全オブジェクトのアドレスをリストで管理
 	std::list<std::shared_ptr<KdGameObject>> m_objList;
+
+	std::shared_ptr<ObjectManager>           m_ObjManager = nullptr;
 };

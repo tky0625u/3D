@@ -7,20 +7,20 @@
 
 void GameScene::Event()
 {
-	ObjectManager::Instance().DeleteEnemyList();
-	if(ObjectManager::Instance().GetEnemyList().size()==0 && !ObjectManager::Instance().IsWaveMax())ObjectManager::Instance().SetEnemyParam();
+	m_ObjManager->DeleteEnemyList();
+	if(m_ObjManager->GetEnemyList().size()==0 && !m_ObjManager->IsWaveMax())m_ObjManager->SetEnemyParam();
 
 	KdShaderManager::Instance().WorkAmbientController().SetDirLight(Math::Vector3{ 0.5f,-1.0f,0.5f }, Math::Vector3{ 1.5f,1.5f,1.3f });
 }
 
 void GameScene::Update()
 {
-	if (ObjectManager::Instance().GetStopTime() > 0)return;
+	if (m_ObjManager->GetStopTime() > 0)return;
 
 	BaseScene::Update();
 	for (auto& effect : KdEffekseerManager::GetInstance().GetnowEffectPlayList())
 	{
-		float speed = effect->GetSpeed() * ObjectManager::Instance().GetSlow();
+		float speed = effect->GetSpeed() * m_ObjManager->GetSlow();
 		KdEffekseerManager::GetInstance().SetSpeed(effect->GetHandle(), speed);
 	}
 	KdEffekseerManager::GetInstance().Update();
@@ -30,20 +30,22 @@ void GameScene::PostUpdate()
 {
 	BaseScene::PostUpdate();
 	
-	if (ObjectManager::Instance().GetStopTime() > 0)
+	if (m_ObjManager->GetStopTime() > 0)
 	{
-		ObjectManager::Instance().StopTimeMinus();
+		m_ObjManager->StopTimeMinus();
 	}
 }
 
 void GameScene::Init()
 {
 	//オブジェクトマネジャ
-	ObjectManager::Instance().SceneCheck();
-	ObjectManager::Instance().SetGameCameraParam();
-	ObjectManager::Instance().SetObjectParam();
-	ObjectManager::Instance().SetPlayerParam();
-	ObjectManager::Instance().SetEnemyParam("Json/Game/Enemy/Stage1.json");
+	m_ObjManager = std::make_shared<ObjectManager>();
+
+	m_ObjManager->SceneCheck();
+	m_ObjManager->SetGameCameraParam();
+	m_ObjManager->SetObjectParam();
+	m_ObjManager->SetPlayerParam();
+	m_ObjManager->SetEnemyParam("Json/Game/Enemy/Stage1.json");
 
 	KdEffekseerManager::GetInstance().Create(1280, 720);
 }

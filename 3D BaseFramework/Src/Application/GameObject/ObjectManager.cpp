@@ -29,7 +29,11 @@
 //ゴーレム
 #include"Character/Enemy/Golem/Golem.h"
 //タイトル
-#include"UI/Title/Title.h"
+#include"UI/Title/Title/Title.h"
+//ゲーム文字
+#include"UI/Title/Game/Game.h"
+//終了文字
+#include"UI/Title/Exit/Exit.h"
 
 
 void ObjectManager::SceneCheck()
@@ -129,6 +133,44 @@ void ObjectManager::TitleWrite()
 	_json["Title"]["Size"] = m_title.lock()->GetSize();
 
 	std::ofstream _file("Json/Title/Title/Title.json");
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
+	}
+}
+
+void ObjectManager::GameWrite()
+{
+	if (m_game.expired())return;
+
+	nlohmann::json _json;
+
+	_json["Game"]["Name"] = "Title";
+	_json["Game"]["PosX"] = m_game.lock()->GetVector2Pos().x;
+	_json["Game"]["PosY"] = m_game.lock()->GetVector2Pos().y;
+	_json["Game"]["Size"] = m_game.lock()->GetSize();
+
+	std::ofstream _file("Json/Title/Game/Game.json");
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
+	}
+}
+
+void ObjectManager::ExitWrite()
+{
+	if (m_exit.expired())return;
+
+	nlohmann::json _json;
+
+	_json["Exit"]["Name"] = "Title";
+	_json["Exit"]["PosX"] = m_exit.lock()->GetVector2Pos().x;
+	_json["Exit"]["PosY"] = m_exit.lock()->GetVector2Pos().y;
+	_json["Exit"]["Size"] = m_exit.lock()->GetSize();
+
+	std::ofstream _file("Json/Title/Exit/Exit.json");
 	if (_file.is_open())
 	{
 		_file << _json.dump();
@@ -409,6 +451,84 @@ void ObjectManager::SetTitleParam()
 	ifs.close();
 }
 
+void ObjectManager::SetGameParam()
+{
+	//jsonファイル
+	std::string fileName = "Json/Title/Game/Game.json";
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& stage : _json)
+	{
+		Math::Vector2 _pos = Math::Vector2::Zero;
+		_pos.x = stage["PosX"];
+		_pos.y = stage["PosY"];
+
+		float _size = 1.0f;
+		_size = stage["Size"];
+
+		std::string _name;
+		_name = stage["Name"];
+		std::shared_ptr<Game> game = std::make_shared<Game>();
+
+		game->SetPos(_pos);
+		game->SetSize(_size);
+		game->SetName(_name);
+		game->SetID(m_id);
+		game->Init();
+		m_id++;
+
+		m_game = game;
+		SceneManager::Instance().AddObject(game);
+	}
+
+	ifs.close();
+}
+
+void ObjectManager::SetExitParam()
+{
+	//jsonファイル
+	std::string fileName = "Json/Title/Exit/Exit.json";
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& stage : _json)
+	{
+		Math::Vector2 _pos = Math::Vector2::Zero;
+		_pos.x = stage["PosX"];
+		_pos.y = stage["PosY"];
+
+		float _size = 1.0f;
+		_size = stage["Size"];
+
+		std::string _name;
+		_name = stage["Name"];
+		std::shared_ptr<Exit> exit = std::make_shared<Exit>();
+
+		exit->SetPos(_pos);
+		exit->SetSize(_size);
+		exit->SetName(_name);
+		exit->SetID(m_id);
+		exit->Init();
+		m_id++;
+
+		m_exit = exit;
+		SceneManager::Instance().AddObject(exit);
+	}
+
+	ifs.close();
+}
+
 void ObjectManager::SetGameCameraParam()
 {
 	//jsonファイル
@@ -446,6 +566,7 @@ void ObjectManager::SetGameCameraParam()
 		camera->SetFixedTargetAngle(_angle);
 		camera->SetName(_name);
 		camera->SetID(m_id);
+		camera->SetObjectManager(shared_from_this());
 		camera->Init();
 		m_id++;
 
@@ -520,6 +641,7 @@ void ObjectManager::SetObjectParam()
 			obj->SetAngle(_angleY);
 			obj->SetName(_name);
 			obj->SetID(m_id);
+			obj->SetObjectManager(shared_from_this());
 			obj->Init();
 			m_id++;
 
@@ -604,6 +726,7 @@ void ObjectManager::SetPlayerParam()
 		player->SetAngle(_angleY);
 		player->SetAtkRange(_atkRange);
 		player->SetForward(_forward);
+		player->SetObjectManager(shared_from_this());
 		player->Init();
 		player->SetInviTime(_inviTime);
 		player->SetName(_name);
@@ -683,6 +806,7 @@ void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponNam
 		_modelPath = stage["Path"];
 
 		weapon->SetModelPath(_modelPath);
+		weapon->SetObjectManager(shared_from_this());
 		weapon->Init();
 		weapon->SetPos(_pos);
 		weapon->SetSize(_size);
@@ -787,6 +911,7 @@ void ObjectManager::SetEnemyParam(std::string _filePath)
 			enemy->SetForward(_forward);
 			enemy->SetName(_name);
 			enemy->SetID(m_id);
+			enemy->SetObjectManager(shared_from_this());
 			enemy->Init();
 			m_id++;
 
@@ -811,6 +936,40 @@ void ObjectManager::AddTitle()
 
 	m_title = _title;
 	SceneManager::Instance().AddObject(_title);
+}
+
+void ObjectManager::AddGame()
+{
+	if (!m_game.expired())return;
+
+	std::string _name = "Game";
+	Math::Vector2 _pos = Math::Vector2::Zero;
+	float _size = 1.0f;
+
+	std::shared_ptr<Game> _game = std::make_shared<Game>();
+	_game->SetPos(_pos);
+	_game->SetSize(_size);
+	_game->Init();
+
+	m_game = _game;
+	SceneManager::Instance().AddObject(_game);
+}
+
+void ObjectManager::AddExit()
+{
+	if (!m_exit.expired())return;
+
+	std::string _name = "Exit";
+	Math::Vector2 _pos = Math::Vector2::Zero;
+	float _size = 1.0f;
+
+	std::shared_ptr<Exit> _exit = std::make_shared<Exit>();
+	_exit->SetPos(_pos);
+	_exit->SetSize(_size);
+	_exit->Init();
+
+	m_exit = _exit;
+	SceneManager::Instance().AddObject(_exit);
 }
 
 void ObjectManager::AddBone()

@@ -1,11 +1,11 @@
 ﻿#pragma once
-#include"../UIBase.h"
+#include"../../UIBase.h"
 
-class Title :public UIBase
+class Game :public UIBase
 {
 public:
-	Title() {};
-	~Title()override{}
+	Game() {};
+	~Game()override {}
 
 	void DrawSprite()override;
 	void Init()override;

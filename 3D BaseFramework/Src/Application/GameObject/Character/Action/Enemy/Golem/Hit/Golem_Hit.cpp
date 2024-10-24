@@ -26,5 +26,5 @@ void Golem_Hit::Hit(std::shared_ptr<Enemy_ConText> context, int _damage)
 	if (m_target.expired())return;
 	m_target.lock()->Hit(_damage);
 	if (m_target.lock()->GetParam().Hp <= 0)return;
-	ObjectManager::Instance().SetStopTime(10);
+	m_ObjManager.lock()->SetStopTime(10);
 }

@@ -33,10 +33,10 @@ public :
 
 	const SceneType GetNowSceneType()const { return m_currentSceneType; }
 
+	const std::shared_ptr<BaseScene> GetNowScene()const { return m_currentScene; }
+
 	// 現在のシーンにオブジェクトを追加
 	void AddObject(const std::shared_ptr<KdGameObject>& obj);
-
-
 
 	// マネージャーの初期化
 	// インスタンス生成(アプリ起動)時にコンストラクタで自動実行
