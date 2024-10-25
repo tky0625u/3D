@@ -133,17 +133,16 @@ public:
 	// ImGui
 	ImGuiAppLog m_log;
 
-	void KdBeginUpdate();
-	void KdPostUpdate();
-
 	void KdBeginDraw(bool usePostProcess = true);
 	void KdPostDraw();
 
 private:
 
+	void KdBeginUpdate();
 	void PreUpdate();
 	void Update();
 	void PostUpdate();
+	void KdPostUpdate();
 
 	void PreDraw();
 	void Draw();
