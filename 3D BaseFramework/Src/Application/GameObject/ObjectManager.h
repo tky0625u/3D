@@ -8,6 +8,7 @@ class Title;
 class Game;
 class Exit;
 class Cursor;
+class TitleCamera;
 
 #include"../tinygltf/json.hpp"
 class ObjectManager:public std::enable_shared_from_this<ObjectManager>
@@ -24,6 +25,7 @@ public:
 	void Clear();
 	bool IsWaveMax();
 
+	void TitleCameraWrite();
 	void TitleWrite();
 	void GameWrite();
 	void ExitWrite();
@@ -35,6 +37,7 @@ public:
 	void ShieldWrite(std::string _shieldName, std::string _fileName);
 	void ObjectWrite(std::string _fileName);
 
+	void SetTitleCamera();
 	void SetTitleParam();
 	void SetGameParam();
 	void SetExitParam();
@@ -47,6 +50,7 @@ public:
 	void SetStopTime(int _stopTime) { m_stopTime = _stopTime; }
 
 	// デバッグ
+	void AddTitleCamera();
 	void AddTitle();
 	void AddGame();
 	void AddExit();
@@ -57,6 +61,7 @@ public:
 	void AddGround();
 	void AddCircle();
 	void AddWall();
+	void AddSkyBox();
 	void ChangeWeapon(std::string _swordName, std::string _shieldName);
 	const std::vector<std::string> GetSwordNameList() const { return m_swordNameList; }
 	const std::vector<std::string> GetShieldNameList() const { return m_shieldNameList; }
@@ -73,16 +78,18 @@ public:
 	const float GetSlow()const { return m_slow; }
 	const bool GetSlowFlg()const { return m_slowFlg; }
 	const int GetnowStage()const { return m_nowStage; }
+	const std::weak_ptr<TitleCamera> GetTitleCamera()const { return m_titleCamera; }
 
 	// デバッグ
 	int GetMaxWave()const { return m_MaxWave; }
 	int GetnowWave()const { return m_nowWave; }
 
 private:
+	std::weak_ptr<TitleCamera>               m_titleCamera;
 	std::weak_ptr<Title>                     m_title;
 	std::weak_ptr<Game>                      m_game;
 	std::weak_ptr<Exit>                      m_exit;
-	std::weak_ptr<Cursor>                      m_cursor;
+	std::weak_ptr<Cursor>                    m_cursor;
 	std::weak_ptr<TPSCamera>                 m_camera;
 	std::weak_ptr<Player>                    m_player;
 	UINT                                     m_id       = 0;

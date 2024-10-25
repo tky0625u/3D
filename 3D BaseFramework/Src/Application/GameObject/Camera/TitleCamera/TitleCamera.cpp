@@ -13,4 +13,7 @@ void TitleCamera::Init()
 	{
 		m_spCamera = std::make_shared<KdCamera>();
 	}
+
+	m_ViewingAngle = 60;
+	m_spCamera->SetProjectionMatrix(m_ViewingAngle);
 }

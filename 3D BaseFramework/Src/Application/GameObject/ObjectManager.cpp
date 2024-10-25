@@ -36,6 +36,8 @@
 #include"UI/Title/Exit/Exit.h"
 //カーソル
 #include"UI/Title/Cursor/Cursor.h"
+//タイトルカメラ
+#include"Camera/TitleCamera/TitleCamera.h"
 
 
 void ObjectManager::SceneCheck()
@@ -123,6 +125,28 @@ bool ObjectManager::IsWaveMax()
 	return false;
 }
 
+void ObjectManager::TitleCameraWrite()
+{
+	if (m_titleCamera.expired())return;
+
+	nlohmann::json _json;
+
+	_json["TitleCamera"]["Name"] = "TitleCamera";
+	_json["TitleCamera"]["PosX"] = m_titleCamera.lock()->GetPos().x;
+	_json["TitleCamera"]["PosY"] = m_titleCamera.lock()->GetPos().y;
+	_json["TitleCamera"]["PosZ"] = m_titleCamera.lock()->GetPos().z;
+	_json["TitleCamera"]["DegAngX"] = m_titleCamera.lock()->GetDegAng().x;
+	_json["TitleCamera"]["DegAngY"] = m_titleCamera.lock()->GetDegAng().y;
+	_json["TitleCamera"]["DegAngZ"] = m_titleCamera.lock()->GetDegAng().z;
+
+	std::ofstream _file("Json/Title/Camera/TitleCamera.json");
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
+	}
+}
+
 void ObjectManager::TitleWrite()
 {
 	if (m_title.expired())return;
@@ -182,12 +206,15 @@ void ObjectManager::ExitWrite()
 
 void ObjectManager::CursorWrite()
 {
-	if (m_exit.expired())return;
+	if (m_cursor.expired())return;
 
 	nlohmann::json _json;
 
 	_json["Cursor"]["Name"] = "Title";
-	_json["Cursor"]["Size"] = m_exit.lock()->GetSize();
+	_json["Cursor"]["MaxSize"] = m_cursor.lock()->GetMaxSize();
+	_json["Cursor"]["ChangeSize"] = m_cursor.lock()->GetChangeSizeNum();
+	_json["Cursor"]["MaxAlpha"] = m_cursor.lock()->GetMaxAlpha();
+	_json["Cursor"]["ChangeAlpha"] = m_cursor.lock()->GetChangeAlphaNum();
 
 	std::ofstream _file("Json/Title/Cursor/Cursor.json");
 	if (_file.is_open())
@@ -431,6 +458,49 @@ void ObjectManager::ObjectWrite(std::string _fileName)
 	}
 }
 
+void ObjectManager::SetTitleCamera()
+{
+	//jsonファイル
+	std::string fileName = "Json/Title/Camera/TitleCamera.json";
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& stage : _json)
+	{
+		Math::Vector3 _pos = Math::Vector3::Zero;
+		_pos.x = stage["PosX"];
+		_pos.y = stage["PosY"];
+		_pos.z = stage["PosZ"];
+
+		Math::Vector3 _DegAng = Math::Vector3::Zero;
+		_DegAng.x = stage["DegAngX"];
+		_DegAng.y = stage["DegAngY"];
+		_DegAng.z = stage["DegAngZ"];
+
+		std::string _name;
+		_name = stage["Name"];
+		std::shared_ptr<TitleCamera> camera = std::make_shared<TitleCamera>();
+
+		camera->SetPos(_pos);
+		camera->SetDegAng(_DegAng);
+		camera->SetName(_name);
+		camera->SetID(m_id);
+		camera->SetObjectManager(shared_from_this());
+		camera->Init();
+		m_id++;
+
+		m_titleCamera = camera;
+		SceneManager::Instance().AddObject(camera);
+	}
+
+	ifs.close();
+}
+
 void ObjectManager::SetTitleParam()
 {
 	//jsonファイル
@@ -562,8 +632,17 @@ void ObjectManager::SetCursorParam()
 
 	for (auto& stage : _json)
 	{
-		float _size = 1.0f;
-		_size = stage["Size"];
+		float _MaxSize = 1.0f;
+		_MaxSize = stage["MaxSize"];
+
+		float _ChangeSize = 0.01f;
+		_ChangeSize = stage["ChangeSize"];
+
+		float _MaxAlpha = 1.0f;
+		_MaxAlpha = stage["MaxAlpha"];
+
+		float _ChangeAlpha = 0.01f;
+		_ChangeAlpha = stage["ChangeAlpha"];
 
 		std::string _name;
 		_name = stage["Name"];
@@ -571,7 +650,10 @@ void ObjectManager::SetCursorParam()
 
 		if (!m_game.expired())cursor->SetPosList(m_game.lock()->GetVector2Pos());
 		if (!m_exit.expired())cursor->SetPosList(m_exit.lock()->GetVector2Pos());
-		cursor->SetSize(_size);
+		cursor->SetMaxSize(_MaxSize);
+		cursor->SetChangeSizeNum(_ChangeSize);
+		cursor->SetMaxAlpha(_MaxAlpha);
+		cursor->SetChangeAlphaNum(_ChangeAlpha);
 		cursor->SetName(_name);
 		cursor->SetID(m_id);
 		cursor->Init();
@@ -976,6 +1058,23 @@ void ObjectManager::SetEnemyParam(std::string _filePath)
 	}
 }
 
+void ObjectManager::AddTitleCamera()
+{
+	if (!m_titleCamera.expired())return;
+
+	std::string _name = "TitleCamera";
+	Math::Vector3 _pos = Math::Vector3::Zero;
+	Math::Vector3 _degAng = Math::Vector3::Zero;
+
+	std::shared_ptr<TitleCamera> _camera = std::make_shared<TitleCamera>();
+	_camera->SetPos(_pos);
+	_camera->SetDegAng(_degAng);
+	_camera->Init();
+
+	m_titleCamera = _camera;
+	SceneManager::Instance().AddObject(_camera);
+}
+
 void ObjectManager::AddTitle()
 {
 	if (!m_title.expired())return;
@@ -1029,15 +1128,21 @@ void ObjectManager::AddExit()
 
 void ObjectManager::AddCursor()
 {
-	if (!m_exit.expired())return;
+	if (!m_cursor.expired())return;
 
 	std::string _name = "Cursor";
-	float _size = 1.0f;
+	float _MaxSize = 1.0f;
+	float _ChangeSize = 0.01f;
+	float _MaxAlpha = 1.0f;
+	float _ChangeAlpha = 0.01f;
 
 	std::shared_ptr<Cursor> _cursor = std::make_shared<Cursor>();
 	if (!m_game.expired())_cursor->SetPosList(m_game.lock()->GetVector2Pos());
 	if (!m_exit.expired())_cursor->SetPosList(m_exit.lock()->GetVector2Pos());
-	_cursor->SetSize(_size);
+	_cursor->SetMaxSize(_MaxSize);
+	_cursor->SetChangeSizeNum(_ChangeSize);
+	_cursor->SetMaxAlpha(_MaxAlpha);
+	_cursor->SetChangeAlphaNum(_ChangeAlpha);
 	_cursor->Init();
 
 	m_cursor = _cursor;
@@ -1265,6 +1370,27 @@ void ObjectManager::AddWall()
 	float _size = 10.0f;
 	float _angleY = 0.0f;
 	std::shared_ptr<Wall> obj = std::make_shared<Wall>();
+
+	obj->SetPos(_pos);
+	obj->SetSize(_size);
+	obj->SetAngle(_angleY);
+	obj->SetName(_name);
+	obj->SetID(m_id);
+	obj->Init();
+
+	m_id++;
+
+	m_ObjectList.push_back(obj);
+	SceneManager::Instance().AddObject(obj);
+}
+
+void ObjectManager::AddSkyBox()
+{
+	std::string _name = "SkyBox";
+	Math::Vector3 _pos = Math::Vector3::Zero;
+	float _size = 10.0f;
+	float _angleY = 0.0f;
+	std::shared_ptr<SkyBox> obj = std::make_shared<SkyBox>();
 
 	obj->SetPos(_pos);
 	obj->SetSize(_size);

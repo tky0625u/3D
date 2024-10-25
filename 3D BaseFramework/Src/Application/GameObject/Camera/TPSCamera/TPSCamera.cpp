@@ -15,6 +15,8 @@ void TPSCamera::Init()
 	m_mLocalPos = Math::Matrix::CreateTranslation(m_targetPos);
 
 	//SetCursorPos(m_FixMousePos.x, m_FixMousePos.y);
+
+	ShowCursor(false);
 }
 
 void TPSCamera::Update()
@@ -48,7 +50,7 @@ void TPSCamera::Update()
 		}
 		else
 		{
-			ShowCursor(true);
+			//ShowCursor(true);
 
 		}
 
@@ -86,7 +88,7 @@ void TPSCamera::PostUpdate()
 	}
 	else
 	{
-		ShowCursor(true);
+		//ShowCursor(true);
 	}
 
 	if (!m_fixFlg)

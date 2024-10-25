@@ -28,8 +28,10 @@ void TitleScene::Init()
 {
 	m_ObjManager = std::make_shared<ObjectManager>();
 	m_ObjManager->SceneCheck();
+	m_ObjManager->SetTitleCamera();
 	m_ObjManager->SetTitleParam();
 	m_ObjManager->SetGameParam();
 	m_ObjManager->SetExitParam();
 	m_ObjManager->SetCursorParam();
+	m_ObjManager->SetObjectParam();
 }
