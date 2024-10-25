@@ -34,6 +34,8 @@
 #include"UI/Title/Game/Game.h"
 //終了文字
 #include"UI/Title/Exit/Exit.h"
+//タイトルガイド
+#include"UI/Title/Guide/Guide.h"
 //カーソル
 #include"UI/Title/Cursor/Cursor.h"
 //タイトルカメラ
@@ -107,7 +109,10 @@ void ObjectManager::Clear()
 {
 	if (m_MaxStage == m_nowStage)
 	{
-
+		SceneManager::Instance().SetNextScene
+		(
+			SceneManager::SceneType::Title
+		);
 	}
 	else
 	{
@@ -197,6 +202,25 @@ void ObjectManager::ExitWrite()
 	_json["Exit"]["Size"] = m_exit.lock()->GetSize();
 
 	std::ofstream _file("Json/Title/Exit/Exit.json");
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
+	}
+}
+
+void ObjectManager::TitleGuideWrite()
+{
+	if (m_titleGuide.expired())return;
+
+	nlohmann::json _json;
+
+	_json["TitleGuide"]["Name"] = "TitleGuide";
+	_json["TitleGuide"]["PosX"] = m_titleGuide.lock()->GetVector2Pos().x;
+	_json["TitleGuide"]["PosY"] = m_titleGuide.lock()->GetVector2Pos().y;
+	_json["TitleGuide"]["Size"] = m_titleGuide.lock()->GetSize();
+
+	std::ofstream _file("Json/Title/Guide/Guide.json");
 	if (_file.is_open())
 	{
 		_file << _json.dump();
@@ -496,6 +520,7 @@ void ObjectManager::SetTitleCamera()
 
 		m_titleCamera = camera;
 		SceneManager::Instance().AddObject(camera);
+		KdEffekseerManager::GetInstance().SetCamera(m_titleCamera.lock()->GetCamera());
 	}
 
 	ifs.close();
@@ -613,6 +638,45 @@ void ObjectManager::SetExitParam()
 
 		m_exit = exit;
 		SceneManager::Instance().AddObject(exit);
+	}
+
+	ifs.close();
+}
+
+void ObjectManager::SetTitleGuideParam()
+{
+	//jsonファイル
+	std::string fileName = "Json/Title/Guide/Guide.json";
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& stage : _json)
+	{
+		Math::Vector2 _pos = Math::Vector2::Zero;
+		_pos.x = stage["PosX"];
+		_pos.y = stage["PosY"];
+
+		float _size = 1.0f;
+		_size = stage["Size"];
+
+		std::string _name;
+		_name = stage["Name"];
+		std::shared_ptr<TitleGuide> guide = std::make_shared<TitleGuide>();
+
+		guide->SetPos(_pos);
+		guide->SetSize(_size);
+		guide->SetName(_name);
+		guide->SetID(m_id);
+		guide->Init();
+		m_id++;
+
+		m_titleGuide = guide;
+		SceneManager::Instance().AddObject(guide);
 	}
 
 	ifs.close();
@@ -1124,6 +1188,23 @@ void ObjectManager::AddExit()
 
 	m_exit = _exit;
 	SceneManager::Instance().AddObject(_exit);
+}
+
+void ObjectManager::AddTitleGuide()
+{
+	if (!m_titleGuide.expired())return;
+
+	std::string _name = "TitleGuide";
+	Math::Vector2 _pos = Math::Vector2::Zero;
+	float _size = 1.0f;
+
+	std::shared_ptr<TitleGuide> _guide = std::make_shared<TitleGuide>();
+	_guide->SetPos(_pos);
+	_guide->SetSize(_size);
+	_guide->Init();
+
+	m_titleGuide = _guide;
+	SceneManager::Instance().AddObject(_guide);
 }
 
 void ObjectManager::AddCursor()

@@ -11,6 +11,7 @@ void Player_Roll::Start()
 		if (m_target.lock()->GetAnime() != "Roll")
 		{
 			m_target.lock()->SetAnime("Roll", false, 1.2f);
+			KdEffekseerManager::GetInstance().Play("Player/Smoke.efkefc", m_target.lock()->GetPos(), 0.5f, 1.0f, false);
 			return;
 		}
 

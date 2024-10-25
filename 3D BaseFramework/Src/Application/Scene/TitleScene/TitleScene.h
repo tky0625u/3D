@@ -9,6 +9,8 @@ public :
 	TitleScene() {}
 	~TitleScene() {}
 
+	void Update()override;
+	
 private :
 
 	void Event() override;

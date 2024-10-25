@@ -46,6 +46,4 @@ void GameScene::Init()
 	m_ObjManager->SetObjectParam();
 	m_ObjManager->SetPlayerParam();
 	m_ObjManager->SetEnemyParam("Json/Game/Enemy/Stage1.json");
-
-	KdEffekseerManager::GetInstance().Create(1280, 720);
 }

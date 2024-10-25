@@ -25,7 +25,7 @@ public:
 	void SetListnerMatrix(const Math::Matrix& mWorld);
 
 	// サウンド再生
-	std::shared_ptr<KdSoundInstance>  Play(std::string_view rName, bool loop = false);
+	std::shared_ptr<KdSoundInstance>  Play(std::string_view rName, float volume = 1.0f, bool loop = false);
 	std::shared_ptr<KdSoundInstance3D> Play3D(std::string_view rName, const Math::Vector3& rPos, bool loop = false);
 
 	void AddPlayList(const std::shared_ptr<KdSoundInstance>& rSound)

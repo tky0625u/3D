@@ -8,6 +8,7 @@ class Title;
 class Game;
 class Exit;
 class Cursor;
+class TitleGuide;
 class TitleCamera;
 
 #include"../tinygltf/json.hpp"
@@ -29,6 +30,7 @@ public:
 	void TitleWrite();
 	void GameWrite();
 	void ExitWrite();
+	void TitleGuideWrite();
 	void CursorWrite();
 	void GameCameraWrite();
 	void PlayerWrite(std::string _fileName);
@@ -41,6 +43,7 @@ public:
 	void SetTitleParam();
 	void SetGameParam();
 	void SetExitParam();
+	void SetTitleGuideParam();
 	void SetCursorParam();
 	void SetGameCameraParam();
 	void SetObjectParam();
@@ -54,6 +57,7 @@ public:
 	void AddTitle();
 	void AddGame();
 	void AddExit();
+	void AddTitleGuide();
 	void AddCursor();
 	void AddBone();
 	void AddGolem();
@@ -70,6 +74,7 @@ public:
 	const std::weak_ptr<Game> GetGame()const { return m_game; }
 	const std::weak_ptr<Exit> GetExit()const { return m_exit; }
 	const std::weak_ptr<Cursor> GetCursor()const { return m_cursor; }
+	const std::weak_ptr<TitleGuide> GetTitleGuide()const { return m_titleGuide; }
 	const std::weak_ptr<TPSCamera> GetCamera()const { return m_camera; }
 	const std::weak_ptr<Player> GetPlayer()const { return m_player; }
 	const std::vector<std::weak_ptr<EnemyBase>> GetEnemyList()const { return m_EnemyList; }
@@ -90,6 +95,7 @@ private:
 	std::weak_ptr<Game>                      m_game;
 	std::weak_ptr<Exit>                      m_exit;
 	std::weak_ptr<Cursor>                    m_cursor;
+	std::weak_ptr<TitleGuide>                m_titleGuide;
 	std::weak_ptr<TPSCamera>                 m_camera;
 	std::weak_ptr<Player>                    m_player;
 	UINT                                     m_id       = 0;

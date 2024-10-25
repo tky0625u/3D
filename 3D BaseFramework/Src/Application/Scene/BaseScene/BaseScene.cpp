@@ -91,8 +91,6 @@ void BaseScene::Draw()
 		{
 			obj->DrawUnLit();
 		}
-
-		KdEffekseerManager::GetInstance().Draw();
 	}
 	KdShaderManager::Instance().m_StandardShader.EndUnLit();
 
@@ -106,6 +104,8 @@ void BaseScene::Draw()
 		}
 	}
 	KdShaderManager::Instance().m_postProcessShader.EndBright();
+
+	KdEffekseerManager::GetInstance().Draw();
 }
 
 void BaseScene::DrawSprite()

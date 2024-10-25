@@ -14,6 +14,7 @@
 #include"GameObject/UI/Title/Title/Title.h"
 #include"GameObject/UI/Title/Game/Game.h"
 #include"GameObject/UI/Title/Exit/Exit.h"
+#include"GameObject/UI/Title/Guide/Guide.h"
 #include"GameObject/UI/Title/Cursor/Cursor.h"
 #include"GameObject/Camera/TitleCamera/TitleCamera.h"
 
@@ -376,7 +377,24 @@ io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 13.0f, &config,
 
 void Application::ImGuiProcess()
 {
-	return;
+	static bool _RFlg = true;
+	static bool _keyFlg = false;
+
+	if (GetAsyncKeyState('1') & 0x8000)
+	{
+		if (!_keyFlg)
+		{
+			if (_RFlg)_RFlg = false;
+			else if (!_RFlg)_RFlg = true;
+			_keyFlg = true;
+		}
+	}
+	else
+	{
+		_keyFlg = false;
+	}
+
+	if(_RFlg)return;
 
 	//===========================================================
 	// ImGui開始
@@ -553,6 +571,40 @@ void Application::ImGuiProcess()
 
 						_exit->SetPos(_ExitPos);
 						_exit->SetSize(_ExitSize);
+					}
+
+					ImGui::TreePop();
+				}
+
+				if (ImGui::TreeNode("Guide"))
+				{
+					if (ImGui::Button((const char*)u8"Guide保存"))
+					{
+						SceneManager::Instance().GetNowScene()->GetObjectManager()->TitleGuideWrite();
+					}
+
+					if (ImGui::Button((const char*)u8"Guide追加"))
+					{
+						SceneManager::Instance().GetNowScene()->GetObjectManager()->AddTitleGuide();
+					}
+
+					if (SceneManager::Instance().GetNowScene()->GetObjectManager()->GetTitleGuide().expired() == false)
+					{
+						std::shared_ptr<TitleGuide> _guide = SceneManager::Instance().GetNowScene()->GetObjectManager()->GetTitleGuide().lock();
+
+						// 位置
+						ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f", _guide->GetVector2Pos().x, _guide->GetVector2Pos().y);
+						Math::Vector2 _TitleGuidePos = _guide->GetVector2Pos();
+						ImGui::SliderFloat("PosX", &_TitleGuidePos.x, -640, 640);
+						ImGui::SliderFloat("PosY", &_TitleGuidePos.y, -360, 360);
+
+						// 大きさ
+						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _guide->GetSize());
+						float _TitleGuideSize = _guide->GetSize();
+						ImGui::SliderFloat("Size", &_TitleGuideSize, 0.01, 1);
+
+						_guide->SetPos(_TitleGuidePos);
+						_guide->SetSize(_TitleGuideSize);
 					}
 
 					ImGui::TreePop();
