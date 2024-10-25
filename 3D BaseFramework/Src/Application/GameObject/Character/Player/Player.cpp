@@ -18,36 +18,6 @@ void Player::Action()
 		m_NextState.reset();
 	}
 	m_state.lock()->Update();
-
-	if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
-	{
-		if (!m_keyFlg)
-		{
-			if (m_lockOnFlg)m_lockOnFlg = false;
-			else
-			{
-				LockON();
-			}
-			m_keyFlg = true;
-		}
-	}
-	else
-	{
-		m_keyFlg = false;
-	}
-
-	if (m_lockOnFlg)
-	{
-		if (m_lockONTarget.lock()->GetParam().Hp <= 0)
-		{
-			LockON();
-		}
-		else
-		{
-			m_camera.lock()->SetLockONTarget(m_lockONTarget.lock());
-		}
-	}
-
 }
 
 void Player::Update()
@@ -137,45 +107,4 @@ void Player::CrushingAction()
 {
 	CharacterBase::CrushingAction();
 	if (m_dossolve >= 1.0f)m_dossolve = 1.0f;
-}
-
-void Player::LockON()
-{
-	float Dist = 0.0f;
-	bool HitFlg = false;
-	int listNum = 0;
-
-	for (int e = 0; e < m_ObjManager.lock()->GetEnemyList().size(); ++e)
-	{
-		if (!m_ObjManager.lock()->GetEnemyList()[e].expired() &&
-			m_ObjManager.lock()->GetEnemyList()[e].lock()->GetParam().Hp > 0)
-		{
-			if (!HitFlg)
-			{
-				float d = (m_ObjManager.lock()->GetEnemyList()[e].lock()->GetPos() - m_pos).Length();
-				Dist = d;
-				HitFlg = true;
-				listNum = e;
-			}
-			else
-			{
-				float d = (m_ObjManager.lock()->GetEnemyList()[e].lock()->GetPos() - m_pos).Length();
-				if (d < Dist)
-				{
-					Dist = d;
-					listNum = e;
-				}
-			}
-		}
-	}
-
-	if (HitFlg == true)
-	{
-		m_lockONTarget = m_ObjManager.lock()->GetEnemyList()[listNum];
-		m_lockOnFlg = true;
-	}
-	else
-	{
-		m_lockOnFlg = false;
-	}
 }

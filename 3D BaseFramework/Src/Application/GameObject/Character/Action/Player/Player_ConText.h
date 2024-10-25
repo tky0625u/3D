@@ -18,13 +18,18 @@ public:
 		AttackType = 1 << 2,
 		GuardType = 1 << 3,
 		RollType = 1 << 4,
+		LockONType = 1 << 5,
 	};
 
 	void SetState(std::shared_ptr<Player_ActionState> _state) { m_state = _state; }
 	void SetBeforeActionType(UINT _ActionType) { m_BeforeActionType = _ActionType; }
+	void SetLockONFlg(bool _lockONFlg) { m_lockONFlg = _lockONFlg; }
+	void SetLockONTarget(std::shared_ptr<EnemyBase> _lockONTarget) { m_lockONTarget = _lockONTarget; }
 
 	std::shared_ptr<Player_ActionState> GetState()const { return m_state; }
 	UINT GetBeforeActionType()const { return m_BeforeActionType; }
+	const std::weak_ptr<EnemyBase> GetLockONTarget()const { return m_lockONTarget; }
+	const bool GetLockONFlg()const { return m_lockONFlg; }
 
 	void Idol() { m_state->Idol(shared_from_this()); }                   //待ち
 	void Run() { m_state->Run(shared_from_this()); }            //走り
@@ -39,4 +44,6 @@ public:
 private:
 	std::shared_ptr<Player_ActionState> m_state;
 	UINT m_BeforeActionType = 0;
+	std::weak_ptr<EnemyBase>m_lockONTarget;
+	bool                    m_lockONFlg = false;
 };

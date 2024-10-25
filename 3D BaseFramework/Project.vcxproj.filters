@@ -247,6 +247,9 @@
     <Filter Include="Src\Application\GameObject\UI\Title\Exit">
       <UniqueIdentifier>{f5138d53-a1e1-4cf5-98b5-3599a6d1c7ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\UI\Title\Cursor">
+      <UniqueIdentifier>{641d724f-e0a8-4858-8b6d-87cf5b85f721}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -588,6 +591,9 @@
     <ClInclude Include="Src\Application\GameObject\UI\Title\Exit\Exit.h">
       <Filter>Src\Application\GameObject\UI\Title\Exit</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\UI\Title\Cursor\Cursor.h">
+      <Filter>Src\Application\GameObject\UI\Title\Cursor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -895,6 +901,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\UI\Title\Exit\Exit.cpp">
       <Filter>Src\Application\GameObject\UI\Title\Exit</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\UI\Title\Cursor\Cursor.cpp">
+      <Filter>Src\Application\GameObject\UI\Title\Cursor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

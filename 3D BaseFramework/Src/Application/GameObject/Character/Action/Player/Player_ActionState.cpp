@@ -5,6 +5,7 @@
 #include"../../Player/Player.h"
 #include"Player_ConText.h"
 #include"../../../Weapon/Sword/Sword.h"
+#include"../../../Camera/TPSCamera/TPSCamera.h"
 
 #include"Idol/Player_Idol.h"
 #include"Run/Player_Run.h"
@@ -76,20 +77,72 @@ void Player_ActionState::AttackDamage()
 	}
 }
 
+void Player_ActionState::LockON()
+{
+	if (m_target.lock()->GetConText()->GetLockONFlg() && !m_target.lock()->GetConText()->GetLockONTarget().expired() && m_target.lock()->GetConText()->GetLockONTarget().lock()->GetParam().Hp > 0)
+	{
+		m_target.lock()->GetConText()->SetLockONFlg(false);
+		return;
+	}
+
+	float Dist = 0.0f;
+	bool HitFlg = false;
+	int listNum = 0;
+
+	for (int e = 0; e < m_ObjManager.lock()->GetEnemyList().size(); ++e)
+	{
+		if (!m_ObjManager.lock()->GetEnemyList()[e].expired() &&
+			m_ObjManager.lock()->GetEnemyList()[e].lock()->GetParam().Hp > 0)
+		{
+			if (!HitFlg)
+			{
+				float d = (m_ObjManager.lock()->GetEnemyList()[e].lock()->GetPos() - m_target.lock()->GetPos()).Length();
+				Dist = d;
+				HitFlg = true;
+				listNum = e;
+			}
+			else
+			{
+				float d = (m_ObjManager.lock()->GetEnemyList()[e].lock()->GetPos() - m_target.lock()->GetPos()).Length();
+				if (d < Dist)
+				{
+					Dist = d;
+					listNum = e;
+				}
+			}
+		}
+	}
+
+	if (HitFlg == true)
+	{
+		m_target.lock()->GetConText()->SetLockONTarget(m_ObjManager.lock()->GetEnemyList()[listNum].lock());
+		m_target.lock()->GetConText()->SetLockONFlg(true);
+	}
+	else
+	{
+		m_target.lock()->GetConText()->SetLockONFlg(false);
+	}
+}
+
 void Player_ActionState::Update()
 {
 	ActionBase::Update();
 	if (m_target.lock()->GetStaminaRecoveryTime() <= 0)m_target.lock()->StaminaRecovery();
 	KeyCheck();
+	if (m_target.lock()->GetConText()->GetLockONFlg())
+	{
+		if (!m_target.lock()->GetConText()->GetLockONTarget().expired())
+		{
+			if (m_target.lock()->GetConText()->GetLockONTarget().lock()->GetParam().Hp <= 0)LockON();
+			m_ObjManager.lock()->GetCamera().lock()->SetLockONTarget(m_target.lock()->GetConText()->GetLockONTarget().lock());
+		}
+	}
 	ChangeAction();
 	m_target.lock()->GetConText()->SetBeforeActionType(m_ActionType);
 }
 
 void Player_ActionState::KeyCheck()
 {
-	std::shared_ptr<Player_ActionConText> _context = nullptr;
-	if (m_target.expired() == false)_context = m_target.lock()->GetConText();
-
 	//移動
 	if (GetAsyncKeyState('W') & 0x8000 | GetAsyncKeyState('A') & 0x8000 | GetAsyncKeyState('S') & 0x8000 | GetAsyncKeyState('D') & 0x8000)
 	{
@@ -128,6 +181,17 @@ void Player_ActionState::KeyCheck()
 	else if (m_ActionType & Player_ActionConText::ActionType::RollType)
 	{
 		m_ActionType ^= Player_ActionConText::ActionType::RollType;
+	}
+
+	//ロックオン
+	if (GetAsyncKeyState(VK_LSHIFT) & 0x8000)
+	{
+		if(!(m_target.lock()->GetConText()->GetBeforeActionType() & Player_ActionConText::ActionType::LockONType))LockON();
+		m_ActionType |= Player_ActionConText::ActionType::LockONType;
+	}
+	else if (m_ActionType & Player_ActionConText::ActionType::LockONType)
+	{
+		m_ActionType ^= Player_ActionConText::ActionType::LockONType;
 	}
 }
 

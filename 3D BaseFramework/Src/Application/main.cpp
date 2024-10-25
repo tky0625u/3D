@@ -14,6 +14,7 @@
 #include"GameObject/UI/Title/Title/Title.h"
 #include"GameObject/UI/Title/Game/Game.h"
 #include"GameObject/UI/Title/Exit/Exit.h"
+#include"GameObject/UI/Title/Cursor/Cursor.h"
 
 // ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
 // エントリーポイント
@@ -510,6 +511,33 @@ void Application::ImGuiProcess()
 
 					_exit->SetPos(_ExitPos);
 					_exit->SetSize(_ExitSize);
+				}
+
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNode("Cursor"))
+			{
+				if (ImGui::Button((const char*)u8"Cursor保存"))
+				{
+					SceneManager::Instance().GetNowScene()->GetObjectManager()->CursorWrite();
+				}
+
+				if (ImGui::Button((const char*)u8"Cursor追加"))
+				{
+					SceneManager::Instance().GetNowScene()->GetObjectManager()->AddCursor();
+				}
+
+				if (SceneManager::Instance().GetNowScene()->GetObjectManager()->GetCursor().expired() == false)
+				{
+					std::shared_ptr<Cursor> _cursor = SceneManager::Instance().GetNowScene()->GetObjectManager()->GetCursor().lock();
+
+					// 大きさ
+					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _cursor->GetSize());
+					float _CursorSize = _cursor->GetSize();
+					ImGui::SliderFloat("Size", &_CursorSize, 0.01, 1);
+
+					_cursor->SetSize(_CursorSize);
 				}
 
 				ImGui::TreePop();
@@ -1208,10 +1236,12 @@ void Application::ImGuiProcess()
 			if (ImGui::Button("Title"))
 			{
 				SceneManager::Instance().SetNextScene(SceneManager::SceneType::Title);
+				KdEffekseerManager::GetInstance().StopAllEffect();
 			}
 			if (ImGui::Button("Game"))
 			{
 				SceneManager::Instance().SetNextScene(SceneManager::SceneType::Game);
+				KdEffekseerManager::GetInstance().StopAllEffect();
 			}
 
 			ImGui::TreePop();

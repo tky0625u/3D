@@ -3,6 +3,8 @@
 #include"../../ObjectManager.h"
 #include"../../Character/Enemy/EnemyBase.h"
 #include"../../Character/Player/Player.h"
+#include"../../Character/Action/Player/Player_ConText.h"
+#include"../../Character/Action/Player/Player_ActionState.h"
 
 void TPSCamera::Init()
 {
@@ -38,7 +40,7 @@ void TPSCamera::Update()
 
 		if (!(GetAsyncKeyState(VK_LSHIFT) & 0x8000))
 		{
-			if (!m_wpTarget.lock()->GetLockONFlg())
+			if (!m_wpTarget.lock()->GetConText()->GetLockONFlg())
 			{
 				UpdateRotateByMouse();
 			}
@@ -72,7 +74,7 @@ void TPSCamera::PostUpdate()
 	// デバッグ
 	if (!(GetAsyncKeyState(VK_LCONTROL) & 0x8000))
 	{
-		if (!m_wpTarget.lock()->GetLockONFlg())
+		if (!m_wpTarget.lock()->GetConText()->GetLockONFlg())
 		{
 			UpdateRotateByMouse();
 		}

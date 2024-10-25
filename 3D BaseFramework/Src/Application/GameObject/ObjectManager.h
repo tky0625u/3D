@@ -7,6 +7,7 @@ class TPSCamera;
 class Title;
 class Game;
 class Exit;
+class Cursor;
 
 #include"../tinygltf/json.hpp"
 class ObjectManager:public std::enable_shared_from_this<ObjectManager>
@@ -26,6 +27,7 @@ public:
 	void TitleWrite();
 	void GameWrite();
 	void ExitWrite();
+	void CursorWrite();
 	void GameCameraWrite();
 	void PlayerWrite(std::string _fileName);
 	void EnemyWrite(int _stage, int _wave, std::string _fileName);
@@ -36,6 +38,7 @@ public:
 	void SetTitleParam();
 	void SetGameParam();
 	void SetExitParam();
+	void SetCursorParam();
 	void SetGameCameraParam();
 	void SetObjectParam();
 	void SetPlayerParam();
@@ -47,6 +50,7 @@ public:
 	void AddTitle();
 	void AddGame();
 	void AddExit();
+	void AddCursor();
 	void AddBone();
 	void AddGolem();
 	void AddWeapon(std::string _filePath,std::string _weaponName);
@@ -60,6 +64,7 @@ public:
 	const std::weak_ptr<Title> GetTitle()const { return m_title; }
 	const std::weak_ptr<Game> GetGame()const { return m_game; }
 	const std::weak_ptr<Exit> GetExit()const { return m_exit; }
+	const std::weak_ptr<Cursor> GetCursor()const { return m_cursor; }
 	const std::weak_ptr<TPSCamera> GetCamera()const { return m_camera; }
 	const std::weak_ptr<Player> GetPlayer()const { return m_player; }
 	const std::vector<std::weak_ptr<EnemyBase>> GetEnemyList()const { return m_EnemyList; }
@@ -77,6 +82,7 @@ private:
 	std::weak_ptr<Title>                     m_title;
 	std::weak_ptr<Game>                      m_game;
 	std::weak_ptr<Exit>                      m_exit;
+	std::weak_ptr<Cursor>                      m_cursor;
 	std::weak_ptr<TPSCamera>                 m_camera;
 	std::weak_ptr<Player>                    m_player;
 	UINT                                     m_id       = 0;

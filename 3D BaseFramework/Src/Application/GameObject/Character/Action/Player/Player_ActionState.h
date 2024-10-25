@@ -12,6 +12,7 @@ public:
 	~Player_ActionState()override {};
 
 	void AttackDamage();
+	void LockON();
 
 	void Update()override;
 	virtual void KeyCheck();

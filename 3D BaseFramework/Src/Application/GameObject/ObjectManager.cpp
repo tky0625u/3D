@@ -34,6 +34,8 @@
 #include"UI/Title/Game/Game.h"
 //終了文字
 #include"UI/Title/Exit/Exit.h"
+//カーソル
+#include"UI/Title/Cursor/Cursor.h"
 
 
 void ObjectManager::SceneCheck()
@@ -146,7 +148,7 @@ void ObjectManager::GameWrite()
 
 	nlohmann::json _json;
 
-	_json["Game"]["Name"] = "Title";
+	_json["Game"]["Name"] = "Game";
 	_json["Game"]["PosX"] = m_game.lock()->GetVector2Pos().x;
 	_json["Game"]["PosY"] = m_game.lock()->GetVector2Pos().y;
 	_json["Game"]["Size"] = m_game.lock()->GetSize();
@@ -165,12 +167,29 @@ void ObjectManager::ExitWrite()
 
 	nlohmann::json _json;
 
-	_json["Exit"]["Name"] = "Title";
+	_json["Exit"]["Name"] = "Exit";
 	_json["Exit"]["PosX"] = m_exit.lock()->GetVector2Pos().x;
 	_json["Exit"]["PosY"] = m_exit.lock()->GetVector2Pos().y;
 	_json["Exit"]["Size"] = m_exit.lock()->GetSize();
 
 	std::ofstream _file("Json/Title/Exit/Exit.json");
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
+	}
+}
+
+void ObjectManager::CursorWrite()
+{
+	if (m_exit.expired())return;
+
+	nlohmann::json _json;
+
+	_json["Cursor"]["Name"] = "Title";
+	_json["Cursor"]["Size"] = m_exit.lock()->GetSize();
+
+	std::ofstream _file("Json/Title/Cursor/Cursor.json");
 	if (_file.is_open())
 	{
 		_file << _json.dump();
@@ -524,6 +543,42 @@ void ObjectManager::SetExitParam()
 
 		m_exit = exit;
 		SceneManager::Instance().AddObject(exit);
+	}
+
+	ifs.close();
+}
+
+void ObjectManager::SetCursorParam()
+{
+	//jsonファイル
+	std::string fileName = "Json/Title/Cursor/Cursor.json";
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& stage : _json)
+	{
+		float _size = 1.0f;
+		_size = stage["Size"];
+
+		std::string _name;
+		_name = stage["Name"];
+		std::shared_ptr<Cursor> cursor = std::make_shared<Cursor>();
+
+		if (!m_game.expired())cursor->SetPosList(m_game.lock()->GetVector2Pos());
+		if (!m_exit.expired())cursor->SetPosList(m_exit.lock()->GetVector2Pos());
+		cursor->SetSize(_size);
+		cursor->SetName(_name);
+		cursor->SetID(m_id);
+		cursor->Init();
+		m_id++;
+
+		m_cursor = cursor;
+		SceneManager::Instance().AddObject(cursor);
 	}
 
 	ifs.close();
@@ -970,6 +1025,23 @@ void ObjectManager::AddExit()
 
 	m_exit = _exit;
 	SceneManager::Instance().AddObject(_exit);
+}
+
+void ObjectManager::AddCursor()
+{
+	if (!m_exit.expired())return;
+
+	std::string _name = "Cursor";
+	float _size = 1.0f;
+
+	std::shared_ptr<Cursor> _cursor = std::make_shared<Cursor>();
+	if (!m_game.expired())_cursor->SetPosList(m_game.lock()->GetVector2Pos());
+	if (!m_exit.expired())_cursor->SetPosList(m_exit.lock()->GetVector2Pos());
+	_cursor->SetSize(_size);
+	_cursor->Init();
+
+	m_cursor = _cursor;
+	SceneManager::Instance().AddObject(_cursor);
 }
 
 void ObjectManager::AddBone()
