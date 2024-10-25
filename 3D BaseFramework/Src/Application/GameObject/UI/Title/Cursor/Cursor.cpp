@@ -58,8 +58,8 @@ void Cursor::Init()
 {
 	m_alpha = m_MaxAlpha;
 	m_color = { 1.0f,1.0f,1.0f,m_alpha };
-	m_rect = { 0,0,long(424),long(198) };
+	m_rect = { 0,0,long(477),long(161) };
 	m_size = m_MaxSize;
 	m_pTex = std::make_shared<KdTexture>();
-	m_pTex->Load("Asset/Textures/UI/Title/Cursor/Cursor.png");
+	m_pTex->Load("Asset/Textures/UI/Title/Cursor/Smoke3.png");
 }
