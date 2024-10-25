@@ -133,20 +133,22 @@ public:
 	// ImGui
 	ImGuiAppLog m_log;
 
-private:
-
 	void KdBeginUpdate();
-	void PreUpdate();
-	void Update();
-	void PostUpdate();
 	void KdPostUpdate();
 
 	void KdBeginDraw(bool usePostProcess = true);
+	void KdPostDraw();
+
+private:
+
+	void PreUpdate();
+	void Update();
+	void PostUpdate();
+
 	void PreDraw();
 	void Draw();
 	void PostDraw();
 	void DrawSprite();
-	void KdPostDraw();
 
 	// アプリケーション初期化
 	bool Init(int w, int h);

@@ -2,8 +2,11 @@
 #include"../../main.h"
 #include"../SceneManager.h"
 
+#include<mutex>
+
 //オブジェクトマネジャ
 #include"../../GameObject/ObjectManager.h"
+#include"../../GameObject/Loading/Loading.h"
 
 void GameScene::Event()
 {
@@ -36,14 +39,49 @@ void GameScene::PostUpdate()
 	}
 }
 
-void GameScene::Init()
+bool loop;
+std::shared_ptr<ObjectManager> _ObjManager = nullptr;
+
+void ObjLoad()
 {
 	//オブジェクトマネジャ
-	m_ObjManager = std::make_shared<ObjectManager>();
+	_ObjManager = std::make_shared<ObjectManager>();
 
-	m_ObjManager->SceneCheck();
-	m_ObjManager->SetGameCameraParam();
-	m_ObjManager->SetObjectParam();
-	m_ObjManager->SetPlayerParam();
-	m_ObjManager->SetEnemyParam("Json/Game/Enemy/Stage1.json");
+	_ObjManager->SceneCheck();
+	_ObjManager->SetGameCameraParam();
+	_ObjManager->SetObjectParam();
+	_ObjManager->SetPlayerParam();
+	_ObjManager->SetEnemyParam("Json/Game/Enemy/Stage1.json");
+
+	loop = false;
+}
+
+void LoadingTime()
+{
+	std::shared_ptr<Loading> _load = std::make_shared<Loading>();
+	_load->Init();
+
+	while (loop)
+	{
+		_load->Update();
+
+		Application::Instance().KdBeginDraw(false);
+		{
+			_load->DrawSprite();
+		}
+		Application::Instance().KdPostDraw();
+	}
+}
+
+void GameScene::Init()
+{
+	loop = true;
+
+	std::thread th_Obj(ObjLoad);
+	std::thread th_Load(LoadingTime);
+
+	th_Obj.join();
+	th_Load.join();
+
+	m_ObjManager = _ObjManager;
 }
