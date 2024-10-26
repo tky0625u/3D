@@ -61,8 +61,6 @@ void SceneManager::ChangeScene(SceneType sceneType)
 	KdAudioManager::Instance().StopAllSound();
 	KdEffekseerManager::GetInstance().StopAllEffect();
 
-	if (m_currentSceneType == SceneType::Game)m_currentScene->GetObjectManager()->DeleteEnemyList();
-
 	// 現在のシーン情報を更新
 	m_currentSceneType = sceneType;
 

@@ -7,6 +7,7 @@
 
 void Player_Run::Start()
 {
+	if (m_ObjManager.expired())return;
 	if (m_target.expired() == false)
 	{
 		if (m_target.lock()->GetAnime() != "IdolToRun")
@@ -33,6 +34,7 @@ void Player_Run::Start()
 
 void Player_Run::Center()
 {
+	if (m_ObjManager.expired())return;
 	if (m_target.expired() == false)
 	{
 		if (m_target.lock()->GetAnime() != "Run")
@@ -53,6 +55,7 @@ void Player_Run::Center()
 
 void Player_Run::End()
 {
+	if (m_ObjManager.expired())return;
 	if (m_target.expired() == false)
 	{
 		if (m_target.lock()->GetAnime() != "RunToIdol")

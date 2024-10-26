@@ -72,6 +72,7 @@ void Player_ActionState::AttackDamage()
 			hitEnemyList[enemy]->GetConText()->Hit(m_target.lock()->GetParam().Atk);
 			hitEnemyList[enemy]->SetInviTime(m_target.lock()->GetinviTime());
 			KdEffekseerManager::GetInstance().Play("hit_eff.efkefc", ret.m_hitPos, 0.4f, 0.8f, false);
+			KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/刀で斬る2.WAV", 0.05f, false);
 		}
 		enemy++;
 	}

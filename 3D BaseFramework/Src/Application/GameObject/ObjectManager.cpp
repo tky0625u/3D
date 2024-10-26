@@ -719,6 +719,7 @@ void ObjectManager::SetCursorParam()
 		cursor->SetMaxAlpha(_MaxAlpha);
 		cursor->SetChangeAlphaNum(_ChangeAlpha);
 		cursor->SetName(_name);
+		cursor->SetObjectManager(shared_from_this());
 		cursor->SetID(m_id);
 		cursor->Init();
 		m_id++;

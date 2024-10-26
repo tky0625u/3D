@@ -61,6 +61,7 @@ void Player_Attack::Center()
 		default:
 			break;
 		}
+		AttackDamage();
 
 		if (m_target.lock()->GetSword().expired() == false)
 		{
@@ -73,7 +74,6 @@ void Player_Attack::Center()
 			return;
 		}
 
-		AttackDamage();
 	}
 }
 

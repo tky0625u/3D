@@ -1,14 +1,20 @@
 ﻿#include "Cursor.h"
 #include"../../../../main.h"
+#include"../../../../Scene/SceneManager.h"
+#include"../../../ObjectManager.h"
+#include"../Game/Game.h"
+#include"../Exit/Exit.h"
+
 void Cursor::Update()
 {
 	if (GetAsyncKeyState(VK_UP) & 0x8000 &&
 		!(m_keyFlg & Key::UPType))
 	{
 		m_posNum++;
+		if (m_posNum == m_PosList.size())m_posNum = 0;
 		m_angle = 180.0f;
 		m_keyFlg |= Key::UPType;
-		if (m_posNum == m_PosList.size())m_posNum = 0;
+		KdAudioManager::Instance().Play("Asset/Sound/Title/SE/キャンセル1.WAV", 0.05f, false);
 	}
 	else if (!(GetAsyncKeyState(VK_UP) & 0x8000) &&
 		      m_keyFlg & Key::UPType)
@@ -20,14 +26,31 @@ void Cursor::Update()
 		!(m_keyFlg & Key::DOWNType))
 	{
 		m_posNum--;
+		if (m_posNum < 0)m_posNum = m_PosList.size() - 1;
 		m_angle = 180.0f;
 		m_keyFlg |= Key::DOWNType;
-		if (m_posNum < 0)m_posNum = m_PosList.size() - 1;
+		KdAudioManager::Instance().Play("Asset/Sound/Title/SE/キャンセル1.WAV", 0.05f, false);
 	}
 	else if (!(GetAsyncKeyState(VK_DOWN) & 0x8000) &&
 		      m_keyFlg & Key::DOWNType)
 	{
 		m_keyFlg ^= Key::DOWNType;
+	}
+
+	if (GetAsyncKeyState(VK_RETURN) & 0x8000)
+	{
+		if (m_pos == m_ObjManager.lock()->GetGame().lock()->GetVector2Pos())
+		{
+			KdAudioManager::Instance().Play("Asset/Sound/Title/SE/決定ボタンを押す33.WAV", 0.05f, false);
+			SceneManager::Instance().SetNextScene
+			(
+				SceneManager::SceneType::Game
+			);
+		}
+		else if (m_pos == m_ObjManager.lock()->GetExit().lock()->GetVector2Pos())
+		{
+			Application::Instance().End();
+		}
 	}
 
 	m_angle += 2.0f;

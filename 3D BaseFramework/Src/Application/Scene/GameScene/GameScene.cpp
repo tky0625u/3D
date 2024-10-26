@@ -84,4 +84,6 @@ void GameScene::Init()
 	th_Load.join();
 
 	m_ObjManager = _ObjManager;
+	KdEffekseerManager::GetInstance().Create(1280, 720);
+	KdAudioManager::Instance().Play("Asset/Sound/Game/BGM/orchestral_mission.WAV", 0.01f, true);
 }

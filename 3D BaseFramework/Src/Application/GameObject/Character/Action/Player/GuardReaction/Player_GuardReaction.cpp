@@ -11,6 +11,8 @@ void Player_GuardReaction::Start()
 		if (m_target.lock()->GetAnime() != "GuardReaction")
 		{
 			m_target.lock()->SetAnime("GuardReaction", false, 1.0f);
+			KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/ロボットを殴る1.WAV", 0.05f, false);
+			KdEffekseerManager::GetInstance().Play("Player/Spark.efkefc", m_target.lock()->GetShieldMat().Translation(), 1.0f, 1.0f, false);
 			return;
 		}
 
@@ -33,6 +35,8 @@ void Player_GuardReaction::Guard(std::shared_ptr<Player_ActionConText> context)
 	if (m_target.expired())return;
 	guard->SetTarget(m_target.lock());
 	guard->SetFlow(Flow::CenterType);
+	guard->SetGuardTime(m_guardTime);
+	guard->SetObjectManager(m_ObjManager.lock());
 	context->SetState(guard);
 	m_target.lock()->SetNextState(guard);
 }

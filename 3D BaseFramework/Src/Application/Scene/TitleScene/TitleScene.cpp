@@ -15,20 +15,7 @@ void TitleScene::Update()
 
 void TitleScene::Event()
 {
-	if (GetAsyncKeyState(VK_RETURN) & 0x8000)
-	{
-		if (m_ObjManager->GetCursor().lock()->GetVector2Pos() == m_ObjManager->GetGame().lock()->GetVector2Pos())
-		{
-			SceneManager::Instance().SetNextScene
-			(
-				SceneManager::SceneType::Game
-			);
-		}
-		else if (m_ObjManager->GetCursor().lock()->GetVector2Pos() == m_ObjManager->GetExit().lock()->GetVector2Pos())
-		{
-			Application::Instance().End();
-		}
-	}
+
 }
 
 void TitleScene::Init()
