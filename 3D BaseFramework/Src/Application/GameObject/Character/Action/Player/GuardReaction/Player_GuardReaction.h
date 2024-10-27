@@ -17,5 +17,5 @@ public:
 	void Hit(std::shared_ptr<Player_ActionConText> context, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)override { return; }
 
 private:
-	int m_guardTime = 30;
+	int m_guardTime = 31;
 };

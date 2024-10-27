@@ -53,6 +53,7 @@ void Sword::PostUpdate()
 
 void Sword::DrawUnLit()
 {
+	KdShaderManager::Instance().ChangeBlendState(KdBlendState::Add);
 	for (int t1 = 0; t1 < m_trajectList.size(); ++t1)
 	{
 		for (int t2 = 0; t2 < m_trajectList[t1].size(); ++t2)
@@ -60,6 +61,7 @@ void Sword::DrawUnLit()
 			if (m_trajectList[t1][t2].m_trajectPolyGon != nullptr)KdShaderManager::Instance().m_StandardShader.DrawPolygon(*m_trajectList[t1][t2].m_trajectPolyGon);
 		}
 	}
+	KdShaderManager::Instance().ChangeBlendState(KdBlendState::Alpha);
 }
 
 void Sword::Init()
@@ -67,7 +69,7 @@ void Sword::Init()
 	WeaponBase::Init();
 
 	m_trajeTex = std::make_shared<KdTexture>();
-	m_trajeTex->Load("Asset/Textures/Weapon/Trajectory/Image20240909102832.png");
+	m_trajeTex->Load("Asset/Textures/Weapon/Trajectory/SwordLine01.png");
 }
 
 void Sword::MakeTraject()
