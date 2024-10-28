@@ -17,12 +17,7 @@ void Bone_Attack::Start()
 
 		if (m_target.lock()->GetIsAnimator())
 		{
-			if (m_target.lock()->GetAnime() == "IdolTOAttack")
-			{
-				m_target.lock()->SetAnime("AttackStart", false, 0.5f);
-				KdEffekseerManager::GetInstance().Play("Enemy/BloodLance.efkefc", m_target.lock()->GetAttackStartPointMat().Translation(), 0.3f, 2.0f, false);
-				return;
-			}
+			KdEffekseerManager::GetInstance().Play("Enemy/BloodLance.efkefc", m_target.lock()->GetAttackStartPointMat().Translation(), 0.3f, 2.0f, false);
 			m_flow = Flow::CenterType;
 			return;
 		}
