@@ -50,6 +50,7 @@ void Cursor::Update()
 			{
 				Application::Instance().End();
 			}
+			m_angle = 358.0f;
 		}
 	}
 	else

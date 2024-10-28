@@ -7,6 +7,7 @@
 //オブジェクトマネジャ
 #include"../../GameObject/ObjectManager.h"
 #include"../../GameObject/Loading/Loading.h"
+#include"../../GameObject/Camera/TPSCamera/TPSCamera.h"
 
 void GameScene::Event()
 {
@@ -85,6 +86,7 @@ void GameScene::Init()
 	th_Load.join();
 
 	m_ObjManager = _ObjManager;
+	ShowCursor(false);
 	KdEffekseerManager::GetInstance().Create(1280, 720);
 	KdAudioManager::Instance().Play("Asset/Sound/Game/BGM/orchestral_mission.WAV", 0.01f, true);
 

@@ -260,6 +260,7 @@ void Player_ActionState::Parry(std::shared_ptr<Player_ActionConText> context, st
 	parry->SetTarget(m_target.lock());
 	parry->SetObjectManager(m_ObjManager.lock());
 	context->SetState(parry);
+	m_target.lock()->SetParryID(_enemy->GetID());
 	m_target.lock()->SetNextState(parry);
 	_enemy->GetConText()->Stumble();
 }

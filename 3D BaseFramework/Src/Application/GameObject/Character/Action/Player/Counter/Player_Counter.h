@@ -15,6 +15,7 @@ public:
 	void End()         override;
 
 	void ChangeAction()override;
+	void CounterDamage();
 
 	void SetTargetPos(Math::Vector3 targetPos) { m_targetPos = targetPos; }
 

@@ -36,6 +36,12 @@ public:
 			DirectX::XMConvertToRadians(m_DegAng.z));
 	}
 
+	const Math::Matrix GetRotationXMatrix() const
+	{
+		return Math::Matrix::CreateRotationX(
+			DirectX::XMConvertToRadians(m_DegAng.x));
+	}
+
 	const Math::Matrix GetRotationYMatrix() const
 	{
 		return Math::Matrix::CreateRotationY(
