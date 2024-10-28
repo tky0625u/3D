@@ -2,7 +2,7 @@
 
 void Loading::Update()
 {
-	m_angle += 0.001f;
+	m_angle += 0.005f;
 	Math::Matrix _scale = Math::Matrix::CreateScale(m_size);
 	Math::Matrix _rot = Math::Matrix::CreateRotationZ(DirectX::XMConvertToRadians(m_angle));
 	Math::Matrix _trans = Math::Matrix::CreateTranslation(Math::Vector3{ m_pos.x,m_pos.y,0.0f });

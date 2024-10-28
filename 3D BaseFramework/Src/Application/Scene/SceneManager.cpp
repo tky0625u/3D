@@ -19,6 +19,18 @@ void SceneManager::PreUpdate()
 void SceneManager::Update()
 {
 	m_currentScene->Update();
+
+	if (m_blackChangeFlg)
+	{
+		if (m_blackAlpha < 1.0f)m_blackAlpha += m_blackChange;
+		else { m_blackAlpha = 1.0f; }
+	}
+	else
+	{
+		if (m_blackAlpha > 0.0f)m_blackAlpha -= m_blackChange;
+		else { m_blackAlpha = 0.0f; }
+	}
+	m_black = { 0.0f,0.0f,0.0f,m_blackAlpha };
 }
 
 void SceneManager::PostUpdate()
@@ -39,6 +51,7 @@ void SceneManager::Draw()
 void SceneManager::DrawSprite()
 {
 	m_currentScene->DrawSprite();
+	KdShaderManager::Instance().m_spriteShader.DrawBox(0, 0, 640, 360, &m_black);
 }
 
 void SceneManager::DrawDebug()

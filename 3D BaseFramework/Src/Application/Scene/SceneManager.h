@@ -46,6 +46,17 @@ public :
 		ChangeScene(m_currentSceneType);
 	}
 
+
+	void BlackAlphaChange(float _change)
+	{
+		if (m_blackChangeFlg)m_blackChangeFlg = false;
+		else { m_blackChangeFlg = true; }
+
+		m_blackChange = _change;
+	}
+	const bool GetBlackAlphaFlg()const { return m_blackChangeFlg; }
+	const float GetBlackAlpha()const { return m_blackAlpha; }
+
 	bool m_stop = false;
 
 private:
@@ -61,6 +72,11 @@ private:
 	
 	// 次のシーンの種類を保持している変数
 	SceneType m_nextSceneType = m_currentSceneType;
+
+	bool  m_blackChangeFlg = false;
+	float m_blackChange = 0.0f;
+	float m_blackAlpha = 0.0f;
+	Math::Color m_black = { 0.0f,0.0f,0.0f,m_blackAlpha };
 
 private:
 

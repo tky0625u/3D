@@ -68,6 +68,7 @@ void LoadingTime()
 		Application::Instance().KdBeginDraw(false);
 		{
 			_load->DrawSprite();
+
 		}
 		Application::Instance().KdPostDraw();
 	}
@@ -86,4 +87,6 @@ void GameScene::Init()
 	m_ObjManager = _ObjManager;
 	KdEffekseerManager::GetInstance().Create(1280, 720);
 	KdAudioManager::Instance().Play("Asset/Sound/Game/BGM/orchestral_mission.WAV", 0.01f, true);
+
+	SceneManager::Instance().BlackAlphaChange(0.01f);
 }
