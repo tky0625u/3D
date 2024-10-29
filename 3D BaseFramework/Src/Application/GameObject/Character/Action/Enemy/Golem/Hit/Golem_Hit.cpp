@@ -21,7 +21,7 @@ void Golem_Hit::Start()
 	}
 }
 
-void Golem_Hit::Hit(std::shared_ptr<Enemy_ConText> context, int _damage)
+void Golem_Hit::Hit(int _damage)
 {
 	if (m_target.expired())return;
 	m_target.lock()->Hit(_damage);

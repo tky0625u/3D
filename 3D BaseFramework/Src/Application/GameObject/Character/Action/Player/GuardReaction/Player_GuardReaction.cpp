@@ -29,7 +29,7 @@ void Player_GuardReaction::Init()
 
 }
 
-void Player_GuardReaction::Guard(std::shared_ptr<Player_ActionConText> context)
+void Player_GuardReaction::Guard()
 {
 	std::shared_ptr<Player_Guard> guard = std::make_shared<Player_Guard>();
 	if (m_target.expired())return;
@@ -37,6 +37,5 @@ void Player_GuardReaction::Guard(std::shared_ptr<Player_ActionConText> context)
 	guard->SetFlow(Flow::CenterType);
 	guard->SetGuardTime(m_guardTime);
 	guard->SetObjectManager(m_ObjManager.lock());
-	context->SetState(guard);
 	m_target.lock()->SetNextState(guard);
 }

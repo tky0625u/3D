@@ -15,9 +15,10 @@ void Player::Action()
 	if (m_NextState != nullptr)
 	{
 		m_state = m_NextState;
+		m_context->SetState(m_NextState);
 		m_NextState.reset();
 	}
-	m_state.lock()->Update();
+	if (!m_state.expired())m_state.lock()->Update();
 }
 
 void Player::Update()

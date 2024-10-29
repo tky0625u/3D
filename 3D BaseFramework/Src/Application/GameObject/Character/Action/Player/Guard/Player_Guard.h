@@ -19,7 +19,7 @@ public:
 	void SetFlow(Flow _flow) { m_flow = _flow; }
 	void SetGuardTime(int _guardTime) { m_guardTime = _guardTime; }
 
-	void Hit(std::shared_ptr<Player_ActionConText> context, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)override; //被弾
+	void Hit(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)override; //被弾
 
 private:
 	int m_guardTime = 0;

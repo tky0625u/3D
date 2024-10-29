@@ -121,7 +121,7 @@ void Player_Guard::GuardRotate(Math::Vector3 _pos)
 	}
 }
 
-void Player_Guard::Hit(std::shared_ptr<Player_ActionConText> context, int _damage, std::shared_ptr<EnemyBase> _enemy)
+void Player_Guard::Hit(int _damage, std::shared_ptr<EnemyBase> _enemy)
 {
 	if (m_target.expired())return;
 
@@ -129,8 +129,8 @@ void Player_Guard::Hit(std::shared_ptr<Player_ActionConText> context, int _damag
 
 	if (m_guardTime <= 30)
 	{
-		m_target.lock()->GetConText()->Parry(_enemy);
 		m_ObjManager.lock()->SlowChange();
+		m_target.lock()->GetConText()->Parry(_enemy);
 	}
 	else 
 	{
@@ -140,7 +140,7 @@ void Player_Guard::Hit(std::shared_ptr<Player_ActionConText> context, int _damag
 		{
 			stamina = 0;
 			m_target.lock()->SetStamina(stamina);
-			Player_ActionState::Hit(context);
+			Player_ActionState::Hit();
 		}
 		else
 		{

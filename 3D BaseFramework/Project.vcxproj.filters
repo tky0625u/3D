@@ -570,9 +570,6 @@
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Stumble\Golem_Stumble.h">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Stumble</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Run\Golem_Run.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Run</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Golem_Attack.h">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Attack</Filter>
     </ClInclude>
@@ -599,6 +596,9 @@
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\UI\Title\Guide\Guide.h">
       <Filter>Src\Application\GameObject\UI\Title\Guide</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Run\Golem_Run.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Run</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

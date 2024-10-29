@@ -31,15 +31,15 @@ public:
 	const std::weak_ptr<EnemyBase> GetLockONTarget()const { return m_lockONTarget; }
 	const bool GetLockONFlg()const { return m_lockONFlg; }
 
-	void Idol() { m_state->Idol(shared_from_this()); }                   //待ち
-	void Run() { m_state->Run(shared_from_this()); }            //走り
-	void Attack() {m_state->Attack(shared_from_this()); }                //攻撃
-	void Guard() {m_state->Guard(shared_from_this()); }                  //ガード
-	void GuardReaction() {m_state->GuardReaction(shared_from_this()); }  //ガード時の反応
-	void Parry(std::shared_ptr<EnemyBase> _enemy) { m_state->Parry(shared_from_this(),_enemy); }//パリィ
-	void Counter() { m_state->Counter(shared_from_this()); }             //追撃
-	void Roll() { m_state->Roll(shared_from_this()); }          //回避
-	void Hit(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr) { m_state->Hit(shared_from_this(), _damage, _enemy); } //被弾
+	void Idol() { m_state->Idol(); }                   //待ち
+	void Run() { m_state->Run(); }            //走り
+	void Attack() {m_state->Attack(); }                //攻撃
+	void Guard() {m_state->Guard(); }                  //ガード
+	void GuardReaction() {m_state->GuardReaction(); }  //ガード時の反応
+	void Parry(std::shared_ptr<EnemyBase> _enemy) { m_state->Parry(_enemy); }//パリィ
+	void Counter() { m_state->Counter(); }             //追撃
+	void Roll() { m_state->Roll(); }          //回避
+	void Hit(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr) { m_state->Hit(_damage, _enemy); } //被弾
 
 private:
 	std::shared_ptr<Player_ActionState> m_state;

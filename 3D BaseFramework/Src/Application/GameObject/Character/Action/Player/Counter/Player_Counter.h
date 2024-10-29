@@ -19,7 +19,7 @@ public:
 
 	void SetTargetPos(Math::Vector3 targetPos) { m_targetPos = targetPos; }
 
-	void Hit(std::shared_ptr<Player_ActionConText> context, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)override { return; }
+	void Hit(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)override { return; }
 
 private:
 	Math::Vector3 m_targetPos = Math::Vector3::Zero;

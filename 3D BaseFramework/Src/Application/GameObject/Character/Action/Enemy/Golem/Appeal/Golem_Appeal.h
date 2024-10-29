@@ -9,7 +9,7 @@ public:
 
 	void Start()override;
 
-	void Hit(std::shared_ptr<Enemy_ConText> context, int _damage)override { return; }
+	void Hit(int _damage)override { return; }
 
 private:
 	std::weak_ptr<KdEffekseerObject> m_Effect;

@@ -1100,10 +1100,6 @@ void ObjectManager::SetEnemyParam(std::string _filePath)
 				std::shared_ptr<Golem> golem = std::make_shared<Golem>();
 				enemy = golem;
 			}
-			if (m_player.expired() == false)
-			{
-				enemy->SetPlayer(m_player.lock());
-			}
 			enemy->SetParam(_hp, _atk, _speed, _stamina);
 			enemy->SetPos(_pos);
 			enemy->SetSize(_size);
@@ -1249,10 +1245,6 @@ void ObjectManager::AddBone()
 
 	std::shared_ptr<Bone> enemy = nullptr;
 	enemy = std::make_shared<Bone>();
-	if (m_player.expired() == false)
-	{
-		enemy->SetPlayer(m_player.lock());
-	}
 	enemy->SetParam(_hp, _atk, _speed, _stamina);
 	enemy->SetPos(_pos);
 	enemy->SetSize(_size);
@@ -1287,10 +1279,6 @@ void ObjectManager::AddGolem()
 
 	std::shared_ptr<Golem> enemy = nullptr;
 	enemy = std::make_shared<Golem>();
-	if (m_player.expired() == false)
-	{
-		enemy->SetPlayer(m_player.lock());
-	}
 	enemy->SetParam(_hp, _atk, _speed, _stamina);
 	enemy->SetPos(_pos);
 	enemy->SetSize(_size);

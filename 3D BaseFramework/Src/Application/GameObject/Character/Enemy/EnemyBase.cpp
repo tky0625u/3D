@@ -27,6 +27,7 @@ void EnemyBase::Action()
 	if (m_NextState != nullptr)
 	{
 		m_state = m_NextState;
+		m_conText->SetState(m_NextState);
 		m_NextState.reset();
 	}
 	if (m_state.expired() == false)m_state.lock()->Update();

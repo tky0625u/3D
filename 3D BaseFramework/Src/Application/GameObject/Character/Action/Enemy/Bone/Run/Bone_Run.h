@@ -10,7 +10,7 @@ public:
 	void Start()    override;
 	void Center()   override;
 	void End()      override;
-
+	void Init() { m_pDebugWire = std::make_unique<KdDebugWireFrame>(); }
 	void Chace();
 
 private:

@@ -21,10 +21,9 @@ void Bone_Hit::Start()
 	}
 }
 
-void Bone_Hit::Hit(std::shared_ptr<Enemy_ConText> context, int _damage)
+void Bone_Hit::Hit(int _damage)
 {
 	if (m_target.expired())return;
 	m_target.lock()->Hit(_damage);
 	if (m_target.lock()->GetParam().Hp <= 0)return;
-	m_ObjManager.lock()->SetStopTime(10);
 }
