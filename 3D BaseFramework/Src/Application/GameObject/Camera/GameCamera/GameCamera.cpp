@@ -8,6 +8,7 @@
 
 void GameCamera::Update()
 {
+	if (GetAsyncKeyState(VK_LCONTROL) & 0x8000)return;
 	// デバッグ
 	if (SceneManager::Instance().m_stop)
 	{
@@ -23,32 +24,36 @@ void GameCamera::Update()
 		dir = Math::Vector3::TransformNormal(dir, cameraRotYMat);
 		dir.Normalize();
 
-		m_pos += dir * 1.0f;
+		m_PosList[m_CameraType] += dir * 1.0f;
 
 		if (!(GetAsyncKeyState(VK_LSHIFT) & 0x8000))
 		{
-			if (!m_wpTarget.lock()->GetConText()->GetLockONFlg())
-			{
-				UpdateRotateByMouse();
-			}
-			//ShowCursor(false);
+			//UpdateRotateByMouse();
+			m_spCamera->SetProjectionMatrix(m_ViewAngList[m_CameraType]);
+			ShowCursor(true);
 		}
 		else
 		{
-			//ShowCursor(true);
+			ShowCursor(false);
 
 		}
 
-		m_mRotation = GetRotationMatrix();
-		Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
-		m_mWorld = m_mRotation * Trans;
-		CameraBase::PostUpdate();
 	}
-	else if (!m_state.expired())m_state.lock()->Update();
+	else if (!m_state.expired())
+	{
+		if (m_NextState)
+		{
+			m_conText->SetState(m_NextState);
+			m_state = m_NextState;
+			m_NextState.reset();
+		}
+		m_state.lock()->Update();
+	}
 }
 
 void GameCamera::PostUpdate()
 {
+	if (GetAsyncKeyState(VK_LCONTROL) & 0x8000)return;
 	if (!m_spCamera) { return; }
 
 	if (!m_state.expired())m_state.lock()->PostUpdate();
@@ -87,6 +92,32 @@ void GameCamera::UpdateRotateByMouse()
 
 	// 回転制御
 	m_DegAngList[m_CameraType].x = std::clamp(m_DegAngList[m_CameraType].x, -20.f, 45.f);
+}
+
+void GameCamera::SlowChange(bool _slowFlg)
+{
+	if (_slowFlg)
+	{
+		if (m_ViewAngList[m_CameraType] > 45)
+		{
+			m_ViewAngList[m_CameraType] -= 2;
+		}
+		else
+		{
+			m_ViewAngList[m_CameraType] = 45;
+		}
+	}
+	else
+	{
+		if (m_ViewAngList[m_CameraType] < 60)
+		{
+			m_ViewAngList[m_CameraType] += 2;
+		}
+		else
+		{
+			m_ViewAngList[m_CameraType] = 60;
+		}
+	}
 }
 
 void GameCamera::SetDegAngList(Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _clear)

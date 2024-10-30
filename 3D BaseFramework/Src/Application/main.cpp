@@ -11,6 +11,7 @@
 #include"GameObject/Stage/Ground/Ground.h"
 #include"GameObject/Stage/Wall/Wall.h"
 #include"GameObject/Camera/GameCamera/GameCamera.h"
+#include"GameObject/Camera/GameCamera/GameCamera_ConText.h"
 #include"GameObject/UI/Title/Title/Title.h"
 #include"GameObject/UI/Title/Game/Game.h"
 #include"GameObject/UI/Title/Exit/Exit.h"
@@ -674,23 +675,48 @@ void Application::ImGuiProcess()
 				{
 					std::shared_ptr<GameCamera> _camera = SceneManager::Instance().GetNowScene()->GetObjectManager()->GetCamera().lock();
 
+					if (_camera->GetCameraType() != GameCamera::CameraType::PlayerType)
+					{
+						if (ImGui::Button((const char*)u8"Player"))
+						{
+							_camera->SetCameraType(GameCamera::CameraType::PlayerType);
+							_camera->GetConText()->PlayerCamera();
+						}
+					}
+					if (_camera->GetCameraType() != GameCamera::CameraType::FixedType)
+					{
+						if (ImGui::Button((const char*)u8"Fixed"))
+						{
+							_camera->SetCameraType(GameCamera::CameraType::FixedType);
+							_camera->GetConText()->FixedCamera();
+						}
+					}
+					//if (_camera->GetCameraType() != GameCamera::CameraType::ClearType)
+					//{
+					//	if (ImGui::Button((const char*)u8"Clear"))
+					//	{
+					//		_camera->SetCameraType(GameCamera::CameraType::ClearType);
+					//		_camera->GetConText()->ClearCamera();
+					//	}
+					//}
+
 					// 位置
-					ImGui::Text((const char*)u8"　プレイヤーカメラ位置 　　x=%.2f,y=%.2f,z=%.2f", _camera->GetNowPos().x, _camera->GetNowPos().y, _camera->GetNowPos().z);
-					Math::Vector3 Playerpos = _camera->GetNowPos();
-					ImGui::SliderFloat("PlayerPosX", &Playerpos.x, -10, 10);
-					ImGui::SliderFloat("PlayerPosY", &Playerpos.y, -10, 10);
-					ImGui::SliderFloat("PlayerPosZ", &Playerpos.z, -100, 0);
+					ImGui::Text((const char*)u8"　カメラ位置 　　x=%.2f,y=%.2f,z=%.2f", _camera->GetNowPos().x, _camera->GetNowPos().y, _camera->GetNowPos().z);
+					Math::Vector3 pos = _camera->GetNowPos();
+					ImGui::SliderFloat("PosX", &pos.x, -10, 10);
+					ImGui::SliderFloat("PosY", &pos.y, -10, 10);
+					ImGui::SliderFloat("PosZ", &pos.z, -100, 0);
 
 					// 角度
 					ImGui::Text((const char*)u8"　角度 　　AngleX=%.2f, AngleY=%.2f", _camera->GetNowDegAng().x, _camera->GetNowDegAng().y);
 					float angleX = _camera->GetNowDegAng().x;
 					float angleY = _camera->GetNowDegAng().y;
 
-					ImGui::SliderFloat("AngleX", &angleX, 0, 360);
+					ImGui::SliderFloat("AngleX", &angleX, -180.0f, 180.0f);
 					ImGui::SliderFloat("AngleY", &angleY, 0, 360);
 
-					if (angleX > 360.0f)angleX -= 360.0f;
-					else if (angleX < 0.0f)angleX += 360.0f;
+					if (angleX > 180.0f)angleX -= 180.0f;
+					else if (angleX < -180.0f)angleX += 180.0f;
 					if (angleY > 360.0f)angleY -= 360.0f;
 					if (angleY < 0.0f)angleY += 360.0f;
 
@@ -700,7 +726,7 @@ void Application::ImGuiProcess()
 
 					ImGui::SliderFloat("ViewAngle", &ViewAngle, 0, 360);
 
-					_camera->SetPos(Playerpos);
+					_camera->SetPos(pos);
 					_camera->SetDegAng(Math::Vector3{ angleX,angleY,0.0f });
 					_camera->SetViewAng(ViewAngle);
 				}

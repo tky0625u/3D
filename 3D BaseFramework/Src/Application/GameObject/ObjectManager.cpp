@@ -251,6 +251,12 @@ void ObjectManager::CursorWrite()
 void ObjectManager::GameCameraWrite()
 {
 	nlohmann::json _json;
+	std::ifstream _oldFile("Json/Game/Camera/Camera.json");
+	if (_oldFile.is_open())
+	{
+		_oldFile >> _json;
+		_oldFile.close();
+	}
 
 	std::string _cameraType;
 	switch (m_camera.lock()->GetCameraType())
@@ -276,11 +282,11 @@ void ObjectManager::GameCameraWrite()
 	_json["Camera"][_cameraType + "AngleY"] = m_camera.lock()->GetNowDegAng().y;
 	_json["Camera"][_cameraType + "ViewAngle"] = m_camera.lock()->GetNowViewAng();
 
-	std::ofstream _file("Json/Game/Camera/Camera.json");
-	if (_file.is_open())
+	std::ofstream _newfile("Json/Game/Camera/Camera.json");
+	if (_newfile.is_open())
 	{
-		_file << _json.dump();
-		_file.close();
+		_newfile << _json.dump();
+		_newfile.close();
 	}
 }
 

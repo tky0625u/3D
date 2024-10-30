@@ -44,7 +44,6 @@ void BaseScene::Update()
 
 void BaseScene::PostUpdate()
 {
-	if (SceneManager::Instance().m_stop)return;
 	for (auto& obj : m_objList)
 	{
 		obj->PostUpdate();

@@ -22,6 +22,7 @@ public:
 	void Init()      override;
 
 	void UpdateRotateByMouse()override;
+	void SlowChange(bool _slowFlg);
 
 	void SetMatrix(Math::Matrix _mWorld) { m_mWorld = _mWorld; }
 	void SetDegAng(Math::Vector3 _deg)   { m_DegAngList[m_CameraType] = _deg; }
@@ -31,6 +32,8 @@ public:
 	void SetPosList(Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _clear);
 	void SetViewAngList(float _player, float _fixed, float _clear);
 	void SetFixedTargetList(std::shared_ptr<KdGameObject> _Obj) { m_FixedTargetList.push_back(_Obj); }
+	void SetNextState(std::shared_ptr<GameCamera_State> _state) { m_NextState = _state; }
+	void SetCameraType(UINT _cameraType) { m_CameraType = _cameraType; }
 
 	const Math::Vector3 GetNowPos()   const { return m_PosList[m_CameraType]; }
 	const Math::Vector3 GetNowDegAng()const { return m_DegAngList[m_CameraType]; }
@@ -39,7 +42,7 @@ public:
 	const UINT GetCameraType()const { return m_CameraType; }
 	const std::shared_ptr<GameCamera_ConText> GetConText()const { return m_conText; }
 	const POINT GetFixMousePos()const { return m_FixMousePos; }
-	//const std::vector<std::shared_ptr<KdGameObject>> GetFixedTargetList()const { m_FixedTargetList; }
+	const std::vector<std::shared_ptr<KdGameObject>> GetFixedTargetList()const { return m_FixedTargetList; }
 	const Math::Matrix GetRotationMatrix()const override
 	{
 		return Math::Matrix::CreateFromYawPitchRoll(
@@ -62,6 +65,7 @@ public:
 private:
 	std::shared_ptr<GameCamera_ConText> m_conText = nullptr;
 	std::weak_ptr<GameCamera_State>     m_state;
+	std::shared_ptr<GameCamera_State>   m_NextState;
 
 	UINT                           m_CameraType = CameraType::PlayerType;
 	std::vector<Math::Vector3>     m_PosList;

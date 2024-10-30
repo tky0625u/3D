@@ -10,7 +10,7 @@ void FixedCamera::Update()
 void FixedCamera::PostUpdate()
 {
 	Math::Matrix								_targetMat = Math::Matrix::Identity;
-	const std::shared_ptr<const KdGameObject>	_spTarget;
+	const std::shared_ptr<const KdGameObject>	_spTarget = m_target.lock()->GetFixedTargetList()[m_ObjManager.lock()->GetnowStage() - 1];
 	if (_spTarget)
 	{
 		_targetMat = Math::Matrix::CreateTranslation(_spTarget->GetPos());

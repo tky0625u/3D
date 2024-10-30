@@ -1,6 +1,7 @@
 ﻿#include "GameCamera_Player.h"
 #include"../../../../Scene/SceneManager.h"
 #include"../GameCamera.h"
+#include"../../../ObjectManager.h"
 #include"../../../Character/Action/Player/Player_ConText.h"
 #include"../../../Character/Player/Player.h"
 #include"../../../Character/Enemy/EnemyBase.h"

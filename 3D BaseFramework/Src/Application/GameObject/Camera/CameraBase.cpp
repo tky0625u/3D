@@ -33,32 +33,6 @@ void CameraBase::PreDraw()
 	m_spCamera->SetToShader();
 }
 
-void CameraBase::SlowChange(bool _slowFlg)
-{
-	if (_slowFlg)
-	{
-		if (m_ViewingAngle > 45)
-		{
-			m_ViewingAngle -= 2;
-		}
-		else
-		{
-			m_ViewingAngle = 45;
-		}
-	}
-	else
-	{
-		if (m_ViewingAngle < 60)
-		{
-			m_ViewingAngle += 2;
-		}
-		else
-		{
-			m_ViewingAngle = 60;
-		}
-	}
-}
-
 void CameraBase::SetTarget(const std::shared_ptr<Player>& target)
 {
 	if (!target) { return; }
