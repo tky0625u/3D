@@ -2,7 +2,8 @@
 #include"../../../Scene/SceneManager.h"
 #include"../../ObjectManager.h"
 #include"../Circle/Circle.h"
-#include"../../Camera/TPSCamera/TPSCamera.h"
+#include"../../Camera/GameCamera/GameCamera.h"
+#include"../../Camera/GameCamera/GameCamera_ConText.h"
 
 void MagicPolygon::Update()
 {
@@ -12,7 +13,7 @@ void MagicPolygon::Update()
 		{
 			if (!m_rightFlg)
 			{
-				m_ObjManager.lock()->GetCamera().lock()->FixedFlgChange();
+				m_ObjManager.lock()->GetCamera().lock()->GetConText()->FixedCamera();
 				KdEffekseerManager::GetInstance().Play("Circle/Circle.efkefc", m_mWorld.Translation(), m_size, 1.0f, false);
 				m_rightFlg = true;
 			}
@@ -21,10 +22,10 @@ void MagicPolygon::Update()
 			if (m_rgb < 1.0f)m_rgb += 0.01f;
 			else
 			{
-				if (m_ObjManager.lock()->GetCamera().lock()->GetFixedFlg())
+				if (m_ObjManager.lock()->GetCamera().lock()->GetCameraType() == GameCamera::CameraType::FixedType)
 				{
 					KdEffekseerManager::GetInstance().StopEffect("Circle/Circle.efkefc");
-					m_ObjManager.lock()->GetCamera().lock()->FixedFlgChange();
+					m_ObjManager.lock()->GetCamera().lock()->GetConText()->PlayerCamera();
 				}
 			}
 		}

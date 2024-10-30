@@ -1,7 +1,7 @@
 ﻿#include "LockON.h"
 #include"../../../Character/Player/Player.h"
 #include"../../../Character/Enemy/EnemyBase.h"
-#include"../../../Camera/TPSCamera/TPSCamera.h"
+#include"../../../Camera/GameCamera/GameCamera.h"
 #include"../../../ObjectManager.h"
 #include"../../../Character/Action/Player/Player_ConText.h"
 #include"../../../Character/Action/Player/Player_ActionState.h"

@@ -5,7 +5,6 @@
 #include"../../Player/Player.h"
 #include"Player_ConText.h"
 #include"../../../Weapon/Sword/Sword.h"
-#include"../../../Camera/TPSCamera/TPSCamera.h"
 
 #include"Idol/Player_Idol.h"
 #include"Run/Player_Run.h"
@@ -135,7 +134,6 @@ void Player_ActionState::Update()
 		if (!m_target.lock()->GetConText()->GetLockONTarget().expired())
 		{
 			if (m_target.lock()->GetConText()->GetLockONTarget().lock()->GetParam().Hp <= 0)LockON();
-			m_ObjManager.lock()->GetCamera().lock()->SetLockONTarget(m_target.lock()->GetConText()->GetLockONTarget().lock());
 		}
 	}
 	ChangeAction();

@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include"../ActionBase.h"
 
-class Player_ActionConText;
 class Player;
 class EnemyBase;
 

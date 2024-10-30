@@ -2,7 +2,7 @@
 #include"../../../Player/Player.h"
 #include"../Player_ConText.h"
 #include"../Player_ActionState.h"
-#include"../../../../Camera/TPSCamera/TPSCamera.h"
+#include"../../../../Camera/GameCamera/GameCamera.h"
 #include"../../../../ObjectManager.h"
 
 void Player_Run::Start()

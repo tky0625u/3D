@@ -1,1 +1,23 @@
-{"Camera":{"AngleX":46.90999984741211,"AngleY":8.736000061035156,"FixedPosX":-0.11900000274181366,"FixedPosY":0.15399999916553497,"FixedPosZ":-5.252999782562256,"Name":"Camera","PlayerPosX":0.0,"PlayerPosY":3.0,"PlayerPosZ":-8.0}}
+{
+	"Camera": {
+		"ClearAngleX": 90.0,
+		"ClearAngleY": 0.0,
+		"ClearPosX": 0.0,
+		"ClearPosY": 3.0,
+		"ClearPosZ": -5.0,
+		"ClearViewAngle": 60.0,
+		"FixedAngleX": 46.90999984741211,
+		"FixedAngleY": 8.736000061035156,
+		"FixedPosX": -0.11900000274181366,
+		"FixedPosY": 0.15399999916553497,
+		"FixedPosZ": -5.252999782562256,
+		"FixedViewAngle": 60.0,
+		"Name": "Camera",
+		"PlayerAngleX": 0.0,
+		"PlayerAngleY": 0.0,
+		"PlayerPosX": 0.0,
+		"PlayerPosY": 3.0,
+		"PlayerPosZ": -8.0,
+		"PlayerViewAngle": 60.0
+	}
+}

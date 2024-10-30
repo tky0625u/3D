@@ -9,7 +9,7 @@ public:
 	virtual ~CameraBase()	override	{}
 
 	void Init()				override;
-	void PostUpdate()       override;
+	virtual void PostUpdate()       override;
 	void PreDraw()			override;
 
 	void SlowChange(bool _slowFlg);
@@ -28,7 +28,7 @@ public:
 		return m_spCamera;
 	}
 
-	const Math::Matrix GetRotationMatrix()const
+	virtual const Math::Matrix GetRotationMatrix()const
 	{
 		return Math::Matrix::CreateFromYawPitchRoll(
 			DirectX::XMConvertToRadians(m_DegAng.y),
@@ -36,25 +36,25 @@ public:
 			DirectX::XMConvertToRadians(m_DegAng.z));
 	}
 
-	const Math::Matrix GetRotationXMatrix() const
+	virtual const Math::Matrix GetRotationXMatrix() const
 	{
 		return Math::Matrix::CreateRotationX(
 			DirectX::XMConvertToRadians(m_DegAng.x));
 	}
 
-	const Math::Matrix GetRotationYMatrix() const
+	virtual const Math::Matrix GetRotationYMatrix() const
 	{
 		return Math::Matrix::CreateRotationY(
 			DirectX::XMConvertToRadians(m_DegAng.y));
 	}
 
-	const Math::Vector3 GetDegAng()const { return m_DegAng; }
+	virtual const Math::Vector3 GetDegAng()const { return m_DegAng; }
 
 private:
 
 
 protected:
-	void UpdateRotateByMouse();
+	virtual void UpdateRotateByMouse();
 
 	std::shared_ptr<KdCamera>	m_spCamera		= nullptr;
 	std::weak_ptr<Player>	m_wpTarget;

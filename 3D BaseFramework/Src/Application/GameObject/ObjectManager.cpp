@@ -22,8 +22,8 @@
 #include"Weapon/Shield/Shield.h"
 //プレイヤー
 #include"Character/Player/Player.h"
-//カメラ
-#include"Camera/TPSCamera/TPSCamera.h"
+//ゲームカメラ
+#include"Camera/GameCamera/GameCamera.h"
 //骨
 #include"Character/Enemy/Bone/Bone.h"
 //ゴーレム
@@ -252,15 +252,29 @@ void ObjectManager::GameCameraWrite()
 {
 	nlohmann::json _json;
 
+	std::string _cameraType;
+	switch (m_camera.lock()->GetCameraType())
+	{
+	case GameCamera::CameraType::PlayerType:
+		_cameraType = "Player";
+		break;
+	case GameCamera::CameraType::FixedType:
+		_cameraType = "Fixed";
+		break;
+	case GameCamera::CameraType::ClearType:
+		_cameraType = "Clear";
+		break;
+	default:
+		break;
+	}
+
 	_json["Camera"]["Name"] = "Camera";
-	_json["Camera"]["PlayerPosX"] = m_camera.lock()->GetLocalPos().x;
-	_json["Camera"]["PlayerPosY"] = m_camera.lock()->GetLocalPos().y;
-	_json["Camera"]["PlayerPosZ"] = m_camera.lock()->GetLocalPos().z;
-	_json["Camera"]["FixedPosX"] = m_camera.lock()->GetFixedPos().x;
-	_json["Camera"]["FixedPosY"] = m_camera.lock()->GetFixedPos().y;
-	_json["Camera"]["FixedPosZ"] = m_camera.lock()->GetFixedPos().z;
-	_json["Camera"]["AngleX"] = m_camera.lock()->GetFixedAngle().x;
-	_json["Camera"]["AngleY"] = m_camera.lock()->GetFixedAngle().y;
+	_json["Camera"][_cameraType + "PosX"] = m_camera.lock()->GetNowPos().x;
+	_json["Camera"][_cameraType + "PosY"] = m_camera.lock()->GetNowPos().y;
+	_json["Camera"][_cameraType + "PosZ"] = m_camera.lock()->GetNowPos().z;
+	_json["Camera"][_cameraType + "AngleX"] = m_camera.lock()->GetNowDegAng().x;
+	_json["Camera"][_cameraType + "AngleY"] = m_camera.lock()->GetNowDegAng().y;
+	_json["Camera"][_cameraType + "ViewAngle"] = m_camera.lock()->GetNowViewAng();
 
 	std::ofstream _file("Json/Game/Camera/Camera.json");
 	if (_file.is_open())
@@ -755,17 +769,39 @@ void ObjectManager::SetGameCameraParam()
 		_FixedPos.y = stage["FixedPosY"];
 		_FixedPos.z = stage["FixedPosZ"];
 
-		Math::Vector2 _angle = Math::Vector2::Zero;
-		_angle.x = stage["AngleX"];
-		_angle.y = stage["AngleY"];
+		Math::Vector3 _ClearPos = Math::Vector3::Zero;
+		_ClearPos.x = stage["ClearPosX"];
+		_ClearPos.y = stage["ClearPosY"];
+		_ClearPos.z = stage["ClearPosZ"];
+
+		Math::Vector3 _PlayerAngle = Math::Vector3::Zero;
+		_PlayerAngle.x = stage["PlayerAngleX"];
+		_PlayerAngle.y = stage["PlayerAngleY"];
+
+		Math::Vector3 _FixedAngle = Math::Vector3::Zero;
+		_FixedAngle.x = stage["FixedAngleX"];
+		_FixedAngle.y = stage["FixedAngleY"];
+
+		Math::Vector3 _ClearAngle = Math::Vector3::Zero;
+		_ClearAngle.x = stage["ClearAngleX"];
+		_ClearAngle.y = stage["ClearAngleY"];
+
+		float _PlayerViewAngle = 0.0f;
+		_PlayerViewAngle = stage["PlayerViewAngle"];
+
+		float _FixedViewAngle = 0.0f;
+		_FixedViewAngle = stage["FixedViewAngle"];
+
+		float _ClearViewAngle = 0.0f;
+		_ClearViewAngle = stage["ClearViewAngle"];
 
 		std::string _name;
 		_name = stage["Name"];
-		std::shared_ptr<TPSCamera> camera = std::make_shared<TPSCamera>();
+		std::shared_ptr<GameCamera> camera = std::make_shared<GameCamera>();
 
-		camera->SetPlayerTargetPos(_PlayerPos);
-		camera->SetFixedTargetPos(_FixedPos);
-		camera->SetFixedTargetAngle(_angle);
+		camera->SetPosList(_PlayerPos, _FixedPos, _ClearPos);
+		camera->SetDegAngList(_PlayerAngle, _FixedAngle, _ClearAngle);
+		camera->SetViewAngList(_PlayerViewAngle, _FixedViewAngle, _ClearViewAngle);
 		camera->SetName(_name);
 		camera->SetID(m_id);
 		camera->SetObjectManager(shared_from_this());

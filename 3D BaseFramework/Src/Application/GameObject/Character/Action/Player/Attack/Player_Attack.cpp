@@ -6,7 +6,7 @@
 #include"../Player_ConText.h"
 #include"../Player_ActionState.h"
 #include"../../../../Weapon/Sword/Sword.h"
-#include"../../../../Camera/TPSCamera/TPSCamera.h"
+#include"../../../../Camera/GameCamera/GameCamera.h"
 
 void Player_Attack::Start()
 {

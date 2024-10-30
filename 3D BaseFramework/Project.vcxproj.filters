@@ -196,9 +196,6 @@
     <Filter Include="Src\Application\GameObject\Stage\MagicPolygon">
       <UniqueIdentifier>{025b20cb-c79d-4b3e-b1b6-3adc4703eb8e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\GameObject\Camera\FixedCamera">
-      <UniqueIdentifier>{e78d4638-d969-419a-9ea7-305fa7d1f20e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Src\Application\GameObject\Character\Enemy\Golem">
       <UniqueIdentifier>{6180fbf8-467c-4202-83a6-29ab5659f332}</UniqueIdentifier>
     </Filter>
@@ -252,6 +249,18 @@
     </Filter>
     <Filter Include="Src\Application\GameObject\UI\Title\Guide">
       <UniqueIdentifier>{ccd76859-06f0-4ff8-8792-2f43d3ac9cfa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Camera\GameCamera">
+      <UniqueIdentifier>{a70532aa-9b5e-4308-8f79-0a6d219a0072}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Camera\GameCamera\PlayerCamera">
+      <UniqueIdentifier>{2d3ddaa1-71ff-4583-96cc-28026eaef3fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Camera\GameCamera\FixedCamera">
+      <UniqueIdentifier>{9c6f56cf-bb44-4c62-9ac7-9c7653d8fe5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Camera\GameCamera\ClearCamera">
+      <UniqueIdentifier>{197770a6-ca3d-49fe-9466-bf49b9138185}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -546,9 +555,6 @@
     <ClInclude Include="Src\Application\GameObject\Stage\MagicPolygon\MagicPolygon.h">
       <Filter>Src\Application\GameObject\Stage\MagicPolygon</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Camera\FixedCamera\FixedCamera.h">
-      <Filter>Src\Application\GameObject\Camera\FixedCamera</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\Golem\Golem.h">
       <Filter>Src\Application\GameObject\Character\Enemy\Golem</Filter>
     </ClInclude>
@@ -599,6 +605,21 @@
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Run\Golem_Run.h">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Camera\GameCamera\GameCamera.h">
+      <Filter>Src\Application\GameObject\Camera\GameCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Camera\GameCamera\GameCamera_ConText.h">
+      <Filter>Src\Application\GameObject\Camera\GameCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Camera\GameCamera\GameCamera_State.h">
+      <Filter>Src\Application\GameObject\Camera\GameCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Camera\GameCamera\PlayerCamera\GameCamera_Player.h">
+      <Filter>Src\Application\GameObject\Camera\GameCamera\PlayerCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Camera\GameCamera\FixedCamera\FixedCamera.h">
+      <Filter>Src\Application\GameObject\Camera\GameCamera\FixedCamera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -860,9 +881,6 @@
     <ClCompile Include="Src\Application\GameObject\Stage\MagicPolygon\MagicPolygon.cpp">
       <Filter>Src\Application\GameObject\Stage\MagicPolygon</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Camera\FixedCamera\FixedCamera.cpp">
-      <Filter>Src\Application\GameObject\Camera\FixedCamera</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\Golem\Golem.cpp">
       <Filter>Src\Application\GameObject\Character\Enemy\Golem</Filter>
     </ClCompile>
@@ -913,6 +931,18 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\UI\Title\Guide\Guide.cpp">
       <Filter>Src\Application\GameObject\UI\Title\Guide</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Camera\GameCamera\GameCamera.cpp">
+      <Filter>Src\Application\GameObject\Camera\GameCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Camera\GameCamera\GameCamera_State.cpp">
+      <Filter>Src\Application\GameObject\Camera\GameCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Camera\GameCamera\PlayerCamera\GameCamera_Player.cpp">
+      <Filter>Src\Application\GameObject\Camera\GameCamera\PlayerCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Camera\GameCamera\FixedCamera\FixedCamera.cpp">
+      <Filter>Src\Application\GameObject\Camera\GameCamera\FixedCamera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

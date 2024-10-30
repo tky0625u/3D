@@ -3,7 +3,7 @@
 class Player;
 class EnemyBase;
 class Bone;
-class TPSCamera;
+class GameCamera;
 class Title;
 class Game;
 class Exit;
@@ -75,7 +75,7 @@ public:
 	const std::weak_ptr<Exit> GetExit()const { return m_exit; }
 	const std::weak_ptr<Cursor> GetCursor()const { return m_cursor; }
 	const std::weak_ptr<TitleGuide> GetTitleGuide()const { return m_titleGuide; }
-	const std::weak_ptr<TPSCamera> GetCamera()const { return m_camera; }
+	const std::weak_ptr<GameCamera> GetCamera()const { return m_camera; }
 	const std::weak_ptr<Player> GetPlayer()const { return m_player; }
 	const std::vector<std::weak_ptr<EnemyBase>> GetEnemyList()const { return m_EnemyList; }
 	const std::vector<std::weak_ptr<KdGameObject>> GetObjectList()const{ return m_ObjectList; }
@@ -96,7 +96,7 @@ private:
 	std::weak_ptr<Exit>                      m_exit;
 	std::weak_ptr<Cursor>                    m_cursor;
 	std::weak_ptr<TitleGuide>                m_titleGuide;
-	std::weak_ptr<TPSCamera>                 m_camera;
+	std::weak_ptr<GameCamera>                m_camera;
 	std::weak_ptr<Player>                    m_player;
 	UINT                                     m_id       = 0;
 	int                                      m_stopTime = 0;

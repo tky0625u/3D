@@ -1,5 +1,5 @@
 ﻿#include "Enemy_HP.h"
-#include"../../../Camera/TPSCamera/TPSCamera.h"
+#include"../../../Camera/GameCamera/GameCamera.h"
 #include"../../../Character/Enemy/EnemyBase.h"
 
 void Enemy_HP::Update()

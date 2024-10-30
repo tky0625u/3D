@@ -1,6 +1,6 @@
 ﻿#include "Player.h"
 #include"../../ObjectManager.h"
-#include"../../Camera/TPSCamera/TPSCamera.h"
+#include"../../Camera/GameCamera/GameCamera.h"
 #include"../Action/Player/Idol/Player_Idol.h"
 #include"Application/main.h"
 #include"../Action/Player/Player_ConText.h"
@@ -10,7 +10,7 @@
 
 void Player::Action()
 {
-	if (m_ObjManager.lock()->GetCamera().lock()->GetFixedFlg())return;
+	if (m_ObjManager.lock()->GetCamera().lock()->GetCameraType() == GameCamera::CameraType::FixedType)return;
 
 	if (m_NextState != nullptr)
 	{
@@ -30,7 +30,7 @@ void Player::Update()
 void Player::PostUpdate()
 {
 	if (m_ObjManager.lock()->GetEnemyList().size() == 0 &&
-		!m_ObjManager.lock()->GetCamera().lock()->GetFixedFlg())
+		m_ObjManager.lock()->GetCamera().lock()->GetCameraType() != GameCamera::CameraType::FixedType)
 	{
 		KdCollider::RayInfo rayInfo;
 		rayInfo.m_pos = m_pos;

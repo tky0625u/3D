@@ -10,7 +10,7 @@
 #include"GameObject/SkyBox/SkyBox.h"
 #include"GameObject/Stage/Ground/Ground.h"
 #include"GameObject/Stage/Wall/Wall.h"
-#include"GameObject/Camera/TPSCamera/TPSCamera.h"
+#include"GameObject/Camera/GameCamera/GameCamera.h"
 #include"GameObject/UI/Title/Title/Title.h"
 #include"GameObject/UI/Title/Game/Game.h"
 #include"GameObject/UI/Title/Exit/Exit.h"
@@ -672,48 +672,37 @@ void Application::ImGuiProcess()
 
 				if (SceneManager::Instance().GetNowScene()->GetObjectManager()->GetCamera().expired() == false)
 				{
-					std::shared_ptr<TPSCamera> _camera = SceneManager::Instance().GetNowScene()->GetObjectManager()->GetCamera().lock();
-
-					if (ImGui::Button((const char*)u8"Camera切替"))_camera->FixedFlgChange();
+					std::shared_ptr<GameCamera> _camera = SceneManager::Instance().GetNowScene()->GetObjectManager()->GetCamera().lock();
 
 					// 位置
-					ImGui::Text((const char*)u8"　プレイヤーカメラ位置 　　x=%.2f,y=%.2f,z=%.2f", _camera->GetLocalPos().x, _camera->GetLocalPos().y, _camera->GetLocalPos().z);
-					Math::Vector3 Playerpos = _camera->GetLocalPos();
-					if (!_camera->GetFixedFlg())
-					{
-						ImGui::SliderFloat("PlayerPosX", &Playerpos.x, -10, 10);
-						ImGui::SliderFloat("PlayerPosY", &Playerpos.y, -10, 10);
-						ImGui::SliderFloat("PlayerPosZ", &Playerpos.z, -100, 0);
-					}
-
-					// 位置
-					ImGui::Text((const char*)u8"　定点カメラ位置 　　x=%.2f,y=%.2f,z=%.2f", _camera->GetFixedPos().x, _camera->GetFixedPos().y, _camera->GetFixedPos().z);
-					Math::Vector3 Fixedpos = _camera->GetFixedPos();
-					if (_camera->GetFixedFlg())
-					{
-						ImGui::SliderFloat("FixedPosX", &Fixedpos.x, -10, 10);
-						ImGui::SliderFloat("FixedPosY", &Fixedpos.y, -10, 10);
-						ImGui::SliderFloat("FixedPosZ", &Fixedpos.z, -100, 0);
-					}
+					ImGui::Text((const char*)u8"　プレイヤーカメラ位置 　　x=%.2f,y=%.2f,z=%.2f", _camera->GetNowPos().x, _camera->GetNowPos().y, _camera->GetNowPos().z);
+					Math::Vector3 Playerpos = _camera->GetNowPos();
+					ImGui::SliderFloat("PlayerPosX", &Playerpos.x, -10, 10);
+					ImGui::SliderFloat("PlayerPosY", &Playerpos.y, -10, 10);
+					ImGui::SliderFloat("PlayerPosZ", &Playerpos.z, -100, 0);
 
 					// 角度
-					ImGui::Text((const char*)u8"　角度 　　AngleX=%.2f, AngleY=%.2f", _camera->GetFixedAngle().x, _camera->GetFixedAngle().y);
-					float angleX = _camera->GetFixedAngle().x;
-					float angleY = _camera->GetFixedAngle().y;
-					if (_camera->GetFixedFlg())
-					{
-						ImGui::SliderFloat("AngleX", &angleX, 0, 360);
-						ImGui::SliderFloat("AngleY", &angleY, 0, 360);
-					}
+					ImGui::Text((const char*)u8"　角度 　　AngleX=%.2f, AngleY=%.2f", _camera->GetNowDegAng().x, _camera->GetNowDegAng().y);
+					float angleX = _camera->GetNowDegAng().x;
+					float angleY = _camera->GetNowDegAng().y;
+
+					ImGui::SliderFloat("AngleX", &angleX, 0, 360);
+					ImGui::SliderFloat("AngleY", &angleY, 0, 360);
 
 					if (angleX > 360.0f)angleX -= 360.0f;
 					else if (angleX < 0.0f)angleX += 360.0f;
 					if (angleY > 360.0f)angleY -= 360.0f;
 					if (angleY < 0.0f)angleY += 360.0f;
 
-					//_camera->SetPlayerTargetPos(Playerpos);
-					_camera->SetFixedTargetPos(Fixedpos);
-					_camera->SetFixedTargetAngle(Math::Vector2{ angleX,angleY });
+					// 視野角
+					ImGui::Text((const char*)u8"　視野角 　　ViewAngleX=%.2f", _camera->GetNowViewAng());
+					float ViewAngle = _camera->GetNowViewAng();
+
+					ImGui::SliderFloat("ViewAngle", &ViewAngle, 0, 360);
+
+					_camera->SetPos(Playerpos);
+					_camera->SetDegAng(Math::Vector3{ angleX,angleY,0.0f });
+					_camera->SetViewAng(ViewAngle);
 				}
 
 				ImGui::TreePop();
