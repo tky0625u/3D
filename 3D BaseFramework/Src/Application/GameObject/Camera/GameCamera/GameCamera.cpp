@@ -8,7 +8,17 @@
 
 void GameCamera::Update()
 {
-	if (GetAsyncKeyState(VK_LCONTROL) & 0x8000)return;
+	// デバッグ
+	if (GetAsyncKeyState(VK_LCONTROL) & 0x8000)
+	{
+		ShowCursor(true);
+		return;
+	}
+	else if(!SceneManager::Instance().m_stop)
+	{
+		ShowCursor(false);
+	}
+
 	// デバッグ
 	if (SceneManager::Instance().m_stop)
 	{
@@ -30,12 +40,6 @@ void GameCamera::Update()
 		{
 			//UpdateRotateByMouse();
 			m_spCamera->SetProjectionMatrix(m_ViewAngList[m_CameraType]);
-			ShowCursor(true);
-		}
-		else
-		{
-			ShowCursor(false);
-
 		}
 
 	}
@@ -53,6 +57,7 @@ void GameCamera::Update()
 
 void GameCamera::PostUpdate()
 {
+	// デバッグ
 	if (GetAsyncKeyState(VK_LCONTROL) & 0x8000)return;
 	if (!m_spCamera) { return; }
 

@@ -691,14 +691,14 @@ void Application::ImGuiProcess()
 							_camera->GetConText()->FixedCamera();
 						}
 					}
-					//if (_camera->GetCameraType() != GameCamera::CameraType::ClearType)
-					//{
-					//	if (ImGui::Button((const char*)u8"Clear"))
-					//	{
-					//		_camera->SetCameraType(GameCamera::CameraType::ClearType);
-					//		_camera->GetConText()->ClearCamera();
-					//	}
-					//}
+					if (_camera->GetCameraType() != GameCamera::CameraType::ClearType)
+					{
+						if (ImGui::Button((const char*)u8"Clear"))
+						{
+							_camera->SetCameraType(GameCamera::CameraType::ClearType);
+							_camera->GetConText()->ClearCamera();
+						}
+					}
 
 					// 位置
 					ImGui::Text((const char*)u8"　カメラ位置 　　x=%.2f,y=%.2f,z=%.2f", _camera->GetNowPos().x, _camera->GetNowPos().y, _camera->GetNowPos().z);

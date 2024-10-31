@@ -1,10 +1,10 @@
 {
 	"Camera": {
-		"ClearAngleX": 45.0,
+		"ClearAngleX": 0.0,
 		"ClearAngleY": 0.0,
 		"ClearPosX": 0.0,
-		"ClearPosY": 0.0,
-		"ClearPosZ": 0.0,
+		"ClearPosY": 3.0,
+		"ClearPosZ": -8.0,
 		"ClearViewAngle": 60.0,
 		"FixedAngleX": 45.0,
 		"FixedAngleY": 0.0,

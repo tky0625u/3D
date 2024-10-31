@@ -6,6 +6,8 @@
 #include"PlayerCamera/GameCamera_Player.h"
 // 定点カメラ
 #include"FixedCamera/FixedCamera.h"
+// クリアカメラ
+#include"ClearCamera/GameCamera_Clear.h"
 
 void GameCamera_State::Player()
 {
@@ -27,4 +29,9 @@ void GameCamera_State::Fixed()
 
 void GameCamera_State::Clear()
 {
+	std::shared_ptr<ClearCamera> _clear = std::make_shared<ClearCamera>();
+	_clear->SetTarget(m_target.lock());
+	_clear->SetObjectManager(m_ObjManager.lock());
+	m_target.lock()->SetCameraType(GameCamera::CameraType::ClearType);
+	m_target.lock()->SetNextState(_clear);
 }

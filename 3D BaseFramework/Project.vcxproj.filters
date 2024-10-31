@@ -621,6 +621,9 @@
     <ClInclude Include="Src\Application\GameObject\Camera\GameCamera\FixedCamera\FixedCamera.h">
       <Filter>Src\Application\GameObject\Camera\GameCamera\FixedCamera</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Camera\GameCamera\ClearCamera\GameCamera_Clear.h">
+      <Filter>Src\Application\GameObject\Camera\GameCamera\ClearCamera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -943,6 +946,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Camera\GameCamera\FixedCamera\FixedCamera.cpp">
       <Filter>Src\Application\GameObject\Camera\GameCamera\FixedCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Camera\GameCamera\ClearCamera\GameCamera_Clear.cpp">
+      <Filter>Src\Application\GameObject\Camera\GameCamera\ClearCamera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
