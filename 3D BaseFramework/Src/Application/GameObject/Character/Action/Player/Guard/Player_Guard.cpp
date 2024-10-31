@@ -79,7 +79,7 @@ void Player_Guard::End()
 void Player_Guard::GuardRotate(Math::Vector3 _pos)
 {
 	//今の方向
-	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_target.lock()->GetAngle()));
+	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_target.lock()->GetAngle().y));
 	Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3(m_target.lock()->GetForward().x, m_target.lock()->GetForward().y, m_target.lock()->GetForward().z), nowRot);
 
 	//向きたい方向
@@ -96,14 +96,14 @@ void Player_Guard::GuardRotate(Math::Vector3 _pos)
 	//角度変更
 	//外角　どっち回転かを求める
 	Math::Vector3 c = toVec.Cross(nowVec);
-	float angle = m_target.lock()->GetAngle();
+	Math::Vector3 angle = m_target.lock()->GetAngle();
 	if (c.y >= 0)
 	{
 		//右回転
-		angle -= ang;
-		if (angle < 0.0f)
+		angle.y -= ang;
+		if (angle.y < 0.0f)
 		{
-			angle += 360.0f;
+			angle.y += 360.0f;
 		}
 
 		m_target.lock()->SetAngle(angle);
@@ -111,10 +111,10 @@ void Player_Guard::GuardRotate(Math::Vector3 _pos)
 	else
 	{
 		//左回転
-		angle += ang;
-		if (m_target.lock()->GetAngle() >= 360.0f)
+		angle.y += ang;
+		if (angle.y >= 360.0f)
 		{
-			angle -= 360.0f;
+			angle.y -= 360.0f;
 		}
 
 		m_target.lock()->SetAngle(angle);

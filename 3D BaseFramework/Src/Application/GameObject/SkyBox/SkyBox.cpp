@@ -9,7 +9,7 @@ void SkyBox::Update()
 	}
 
 	Math::Matrix Scale = Math::Matrix::CreateScale(m_size);
-	Math::Matrix RotY = Math::Matrix::CreateRotationY(m_angle);
+	Math::Matrix RotY = Math::Matrix::CreateRotationY(m_angle.y);
 	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
 	m_mWorld = Scale * RotY * Trans * TargetMat;
 }
@@ -31,7 +31,7 @@ void SkyBox::Init()
 	m_model->SetModelData("Asset/Models/SkyBox/SkyBox.gltf");
 
 	Math::Matrix Scale = Math::Matrix::CreateScale(m_size);
-	Math::Matrix RotY  = Math::Matrix::CreateRotationY(m_angle);
+	Math::Matrix RotY  = Math::Matrix::CreateRotationY(m_angle.y);
 	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
 	m_mWorld = Scale * RotY * Trans;
 }

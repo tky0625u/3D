@@ -10,10 +10,10 @@ void FixedCamera::Update()
 void FixedCamera::PostUpdate()
 {
 	Math::Matrix								_targetMat = Math::Matrix::Identity;
-	const std::shared_ptr<const KdGameObject>	_spTarget = m_target.lock()->GetFixedTargetList()[m_ObjManager.lock()->GetnowStage() - 1];
+	const std::shared_ptr<const KdGameObject>	_spTarget = m_target.lock()->GetFixedTarget();
 	if (_spTarget)
 	{
-		_targetMat = Math::Matrix::CreateTranslation(_spTarget->GetPos());
+		_targetMat = Math::Matrix::CreateTranslation(_spTarget->GetMatrix().Translation());
 	}
 
 	m_mRotation = m_target.lock()->GetRotationMatrix();

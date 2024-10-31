@@ -5,7 +5,7 @@ void ActionBase::Rotate(Math::Vector3 _moveDir, std::shared_ptr<CharacterBase> _
 {
 
 	//今の方向
-	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(_target->GetAngle()));
+	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(_target->GetAngle().y));
 	Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3(_target->GetForward().x, _target->GetForward().y, _target->GetForward().z), nowRot);
 
 	//向きたい方向
@@ -29,7 +29,7 @@ void ActionBase::Rotate(Math::Vector3 _moveDir, std::shared_ptr<CharacterBase> _
 
 		//外角　どっち回転かを求める
 		Math::Vector3 c = toVec.Cross(nowVec);
-		float angle = _target->GetAngle();
+		float angle = _target->GetAngle().y;
 		if (c.y >= 0)
 		{
 			//右回転
@@ -39,18 +39,18 @@ void ActionBase::Rotate(Math::Vector3 _moveDir, std::shared_ptr<CharacterBase> _
 				angle += 360.0f;
 			}
 
-			_target->SetAngle(angle);
+			_target->SetAngle(Math::Vector3{ 0.0f,angle,0.0f });
 		}
 		else
 		{
 			//左回転
 			angle += ang;
-			if (_target->GetAngle() >= 360.0f)
+			if (angle >= 360.0f)
 			{
 				angle -= 360.0f;
 			}
 
-			_target->SetAngle(angle);
+			_target->SetAngle(Math::Vector3{ 0.0f,angle,0.0f });
 		}
 	}
 }

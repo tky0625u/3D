@@ -69,12 +69,7 @@ void Golem_Run::Chace()
 	float dist = _moveDir.Length();
 	_moveDir.Normalize();
 
-	float _beforeAngle = m_target.lock()->GetAngle();
-	if (m_target.expired() == false)Rotate(_moveDir, m_target.lock());
-	if (AttackCheck() && (m_target.lock()->GetAngle() - _beforeAngle) >= -30.0f && (m_target.lock()->GetAngle() - _beforeAngle) <= 30.0f)
-	{
-		m_flow = Flow::EndType;
-	}
-
 	if (dist >= m_target.lock()->GetAtkRange())m_target.lock()->SetMove(_moveDir);
+	if (m_target.expired() == false)Rotate(_moveDir, m_target.lock());
+	AttackCheck();
 }

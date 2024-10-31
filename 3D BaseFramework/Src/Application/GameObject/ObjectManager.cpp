@@ -117,7 +117,8 @@ void ObjectManager::Clear()
 	else
 	{
 		m_nowStage++;
-		m_player.lock()->SetPos(m_StartPosList[m_nowStage - 1]);
+		SetGroundParam();
+		m_player.lock()->SetPos(m_circle.lock()->GetMatrix().Translation());
 		m_nowWave = 0;
 		std::string _filePath = ((std::string)"Json/Game/Enemy/Stage") + (std::to_string(m_nowStage).c_str()) + ((std::string)".json");
 		SetEnemyParam(_filePath);
@@ -302,7 +303,7 @@ void ObjectManager::PlayerWrite(std::string _fileName)
 	_json["Player"]["DirY"] = m_player.lock()->GetDir().y;
 	_json["Player"]["DirZ"] = m_player.lock()->GetDir().z;
 	_json["Player"]["Size"] = m_player.lock()->GetSize();
-	_json["Player"]["Angle"] = m_player.lock()->GetAngle();
+	_json["Player"]["Angle"] = m_player.lock()->GetAngle().y;
 	_json["Player"]["HP"] = m_player.lock()->GetParam().Hp;
 	_json["Player"]["ATK"] = m_player.lock()->GetParam().Atk;
 	_json["Player"]["Speed"] = m_player.lock()->GetParam().Sp;
@@ -365,7 +366,7 @@ void ObjectManager::EnemyWrite(int _stage, int _wave,std::string _fileName)
 		_json[wave][_category][_name]["DirY"] = enemy.lock()->GetDir().y;
 		_json[wave][_category][_name]["DirZ"] = enemy.lock()->GetDir().z;
 		_json[wave][_category][_name]["Size"] = enemy.lock()->GetSize();
-		_json[wave][_category][_name]["Angle"] = enemy.lock()->GetAngle();
+		_json[wave][_category][_name]["Angle"] = enemy.lock()->GetAngle().y;
 		_json[wave][_category][_name]["HP"] = enemy.lock()->GetParam().Hp;
 		_json[wave][_category][_name]["ATK"] = enemy.lock()->GetParam().Atk;
 		_json[wave][_category][_name]["Speed"] = enemy.lock()->GetParam().Sp;
@@ -491,7 +492,7 @@ void ObjectManager::ObjectWrite(std::string _fileName)
 		_json[_category][_name]["PosY"] = obj.lock()->GetPos().y;
 		_json[_category][_name]["PosZ"] = obj.lock()->GetPos().z;
 		_json[_category][_name]["Size"] = obj.lock()->GetSize();
-		_json[_category][_name]["Angle"] = obj.lock()->GetAngle();
+		_json[_category][_name]["Angle"] = obj.lock()->GetAngle().y;
 	}
 
 	std::ofstream _file(_fileName);
@@ -833,8 +834,9 @@ void ObjectManager::SetObjectParam()
 		ifs >> _json;
 	}
 
-	std::vector<std::shared_ptr<Circle>> circleList;
-	std::vector<std::shared_ptr<MagicPolygon>> magicList;
+	std::shared_ptr<Ground> ground;
+	std::shared_ptr<Circle> circle;
+	std::shared_ptr<MagicPolygon> magic;
 
 	for (auto& category : _json)
 	{
@@ -848,28 +850,33 @@ void ObjectManager::SetObjectParam()
 			float _size = 0.0f;
 			_size = stage["Size"];
 
-			float _angleY = 0.0f;
-			_angleY = stage["Angle"];
+			Math::Vector3 _angle = Math::Vector3::Zero;
+			_angle.y = stage["Angle"];
 
 			std::string _name;
 			_name = stage["Name"];
 			std::shared_ptr<KdGameObject> obj;
 			if (_name == "Ground")
 			{
-				obj = std::make_shared<Ground>();
+				std::shared_ptr<Ground> g = std::make_shared<Ground>();
+				ground = g;
+				m_ground = g;
+				obj = g;
 			}
 			if (_name == "Circle")
 			{
-				std::shared_ptr<Circle> circle = std::make_shared<Circle>();
-				circleList.push_back(circle);
-				if (m_camera.expired() == false)m_camera.lock()->SetFixedTargetList(circle);
-				obj = circle;
+				std::shared_ptr<Circle> c = std::make_shared<Circle>();
+				circle = c;
+				m_circle = c;
+				if (m_camera.expired() == false)m_camera.lock()->SetFixedTarget(c);
+				obj = c;
 			}
 			if (_name == "Magic")
 			{
-				std::shared_ptr<MagicPolygon> magic = std::make_shared<MagicPolygon>();
-				magicList.push_back(magic);
-				obj = magic;
+				std::shared_ptr<MagicPolygon> m = std::make_shared<MagicPolygon>();
+				magic = m;
+				m_magic = m;
+				obj = m;
 			}
 			if (_name == "Wall")
 			{
@@ -882,7 +889,7 @@ void ObjectManager::SetObjectParam()
 
 			obj->SetPos(_pos);
 			obj->SetSize(_size);
-			obj->SetAngle(_angleY);
+			obj->SetAngle(_angle);
 			obj->SetName(_name);
 			obj->SetID(m_id);
 			obj->SetObjectManager(shared_from_this());
@@ -890,17 +897,84 @@ void ObjectManager::SetObjectParam()
 			m_id++;
 
 			m_ObjectList.push_back(obj);
-			if (_name == "Circle")m_StartPosList.push_back(_pos);
 			SceneManager::Instance().AddObject(obj);
+			break;
 		}
 	}
 
 	ifs.close();
 
-	for (int m = 0; m < magicList.size(); ++m)
+	if(circle && ground)circle->SetGround(ground);
+	if(magic && circle)magic->SetCircle(circle);
+}
+
+void ObjectManager::SetGroundParam()
+{
+	//jsonファイル
+	std::string fileName = ("Json/") + m_nowScene + ("/Object/Object.json");
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
 	{
-		magicList[m]->SetCircle(circleList[m]);
+		ifs >> _json;
 	}
+
+	int _stageNum = 1;
+	for (auto& stage : _json["Ground"])
+	{
+		if (m_nowStage != _stageNum)
+		{
+			_stageNum++;
+			continue;
+		}
+		Math::Vector3 _pos = Math::Vector3::Zero;
+		_pos.x = stage["PosX"];
+		_pos.y = stage["PosY"];
+		_pos.z = stage["PosZ"];
+
+		float _size = 0.0f;
+		_size = stage["Size"];
+
+		Math::Vector3 _angle = Math::Vector3::Zero;
+		_angle.y = stage["Angle"];
+
+		std::string _name;
+		_name = stage["Name"];
+
+		if (!m_ground.expired())
+		{
+			m_ground.lock()->SetPos(_pos);
+			m_ground.lock()->SetSize(_size);
+			m_ground.lock()->SetAngle(_angle);
+		}
+
+		break;
+	}
+
+	Math::Matrix _Scale;
+	Math::Matrix _Rot;
+	Math::Matrix _Trans;
+
+	_Scale = Math::Matrix::CreateScale(m_ground.lock()->GetSize());
+	_Rot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_ground.lock()->GetAngle().y));
+	_Trans = Math::Matrix::CreateTranslation(m_ground.lock()->GetPos());
+	Math::Matrix _GroundMat = _Scale * _Rot * _Trans;
+	m_ground.lock()->SetMatrix(_GroundMat);
+
+	_Scale = Math::Matrix::CreateScale(m_circle.lock()->GetSize());
+	_Rot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_circle.lock()->GetAngle().y));
+	_Trans = Math::Matrix::CreateTranslation(m_circle.lock()->GetPos());
+	Math::Matrix _CircleMat = _Scale * _Rot * _Trans * _GroundMat;
+	m_circle.lock()->SetMatrix(_CircleMat);
+
+	_Scale = Math::Matrix::CreateScale(m_magic.lock()->GetSize());
+	_Rot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_magic.lock()->GetAngle().y));
+	_Trans = Math::Matrix::CreateTranslation(m_magic.lock()->GetPos());
+	Math::Matrix _MagicMat  = _Scale * _Rot * _Trans * _CircleMat;
+	m_magic.lock()->SetMatrix(_MagicMat);
+
+	ifs.close();
 }
 
 void ObjectManager::SetPlayerParam()
@@ -921,9 +995,7 @@ void ObjectManager::SetPlayerParam()
 		_name = stage["Name"];
 
 		Math::Vector3 _pos = Math::Vector3::Zero;
-		_pos.x = m_StartPosList[m_nowStage - 1].x;
-		_pos.y = m_StartPosList[m_nowStage - 1].y;
-		_pos.z = m_StartPosList[m_nowStage - 1].z;
+		_pos = m_circle.lock()->GetPos();
 
 		Math::Vector3 _dir = Math::Vector3::Zero;
 		_dir.x = stage["DirX"];
@@ -933,8 +1005,8 @@ void ObjectManager::SetPlayerParam()
 		float _size = 0.0f;
 		_size = stage["Size"];
 
-		float _angleY = 0.0f;
-		_angleY = stage["Angle"];
+		Math::Vector3 _angle = Math::Vector3::Zero;
+		_angle.y = stage["Angle"];
 
 		int _hp = 0;
 		_hp = stage["HP"];
@@ -967,7 +1039,7 @@ void ObjectManager::SetPlayerParam()
 		player->SetPos(_pos);
 		player->SetSize(_size);
 		player->SetDir(_dir);
-		player->SetAngle(_angleY);
+		player->SetAngle(_angle);
 		player->SetAtkRange(_atkRange);
 		player->SetForward(_forward);
 		player->SetObjectManager(shared_from_this());
@@ -1023,8 +1095,8 @@ void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponNam
 		float _size = 0.0f;
 		_size = stage["Size"];
 
-		float _angleY = 0.0f;
-		_angleY = stage["Angle"];
+		Math::Vector3 _angle = Math::Vector3::Zero;
+		_angle.y = stage["Angle"];
 
 		std::string _name;
 		_name = stage["Name"];
@@ -1054,7 +1126,7 @@ void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponNam
 		weapon->Init();
 		weapon->SetPos(_pos);
 		weapon->SetSize(_size);
-		weapon->SetAngle(_angleY);
+		weapon->SetAngle(_angle);
 		weapon->SetTarget(m_player.lock());
 		weapon->SetName(_name);
 		weapon->SetID(m_id);
@@ -1097,7 +1169,7 @@ void ObjectManager::SetEnemyParam(std::string _filePath)
 
 			Math::Vector3 _pos = Math::Vector3::Zero;
 			_pos.x = stage["PosX"];
-			_pos.y = m_StartPosList[m_nowStage - 1].y;
+			_pos.y = m_ground.lock()->GetPos().y;
 			_pos.z = stage["PosZ"];
 
 			Math::Vector3 _dir = Math::Vector3::Zero;
@@ -1108,8 +1180,8 @@ void ObjectManager::SetEnemyParam(std::string _filePath)
 			float _size = 0.0f;
 			_size = stage["Size"];
 
-			float _angleY = 0.0f;
-			_angleY = stage["Angle"];
+			Math::Vector3 _angle = Math::Vector3::Zero;
+			_angle.y = stage["Angle"];
 
 			int _hp = 0;
 			_hp = stage["HP"];
@@ -1146,7 +1218,7 @@ void ObjectManager::SetEnemyParam(std::string _filePath)
 			enemy->SetPos(_pos);
 			enemy->SetSize(_size);
 			enemy->SetDir(_dir);
-			enemy->SetAngle(_angleY);
+			enemy->SetAngle(_angle);
 			enemy->SetAtkRange(_atkRange);
 			enemy->SetForward(_forward);
 			enemy->SetName(_name);
@@ -1275,7 +1347,7 @@ void ObjectManager::AddBone()
 	Math::Vector3 _pos = Math::Vector3::Zero;
 	Math::Vector3 _dir = Math::Vector3::Zero;
 	float _size = 1.5f;
-	float _angleY = 180.0f;
+	Math::Vector3 _angle = Math::Vector3::Zero;
 	int _hp = 10;
 	int _atk = 2;
 	float _speed = 1.0f;
@@ -1291,7 +1363,7 @@ void ObjectManager::AddBone()
 	enemy->SetPos(_pos);
 	enemy->SetSize(_size);
 	enemy->SetDir(_dir);
-	enemy->SetAngle(_angleY);
+	enemy->SetAngle(_angle);
 	enemy->SetAtkRange(_atkRange);
 	enemy->SetForward(_forward);
 	enemy->SetName(_name);
@@ -1309,7 +1381,8 @@ void ObjectManager::AddGolem()
 	Math::Vector3 _pos = Math::Vector3::Zero;
 	Math::Vector3 _dir = Math::Vector3::Zero;
 	float _size = 1.5f;
-	float _angleY = 180.0f;
+	Math::Vector3 _angle = Math::Vector3::Zero;
+	_angle.y = 180.0f;
 	int _hp = 10;
 	int _atk = 2;
 	float _speed = 1.0f;
@@ -1325,7 +1398,7 @@ void ObjectManager::AddGolem()
 	enemy->SetPos(_pos);
 	enemy->SetSize(_size);
 	enemy->SetDir(_dir);
-	enemy->SetAngle(_angleY);
+	enemy->SetAngle(_angle);
 	enemy->SetAtkRange(_atkRange);
 	enemy->SetForward(_forward);
 	enemy->SetName(_name);
@@ -1363,8 +1436,8 @@ void ObjectManager::AddWeapon(std::string _filePath,std::string _weaponName)
 		float _size = 0.0f;
 		_size = stage["Size"];
 
-		float _angleY = 0.0f;
-		_angleY = stage["Angle"];
+		Math::Vector3 _angle = Math::Vector3::Zero;
+		_angle.y = stage["Angle"];
 
 		std::shared_ptr<WeaponBase> weapon = nullptr;
 		if (stage["ObjectName"] == "Sword")
@@ -1391,7 +1464,7 @@ void ObjectManager::AddWeapon(std::string _filePath,std::string _weaponName)
 		weapon->Init();
 		weapon->SetPos(_pos);
 		weapon->SetSize(_size);
-		weapon->SetAngle(_angleY);
+		weapon->SetAngle(_angle);
 		weapon->SetName(_name);
 		weapon->SetTarget(m_player.lock());
 		weapon->SetID(m_id);
@@ -1410,12 +1483,12 @@ void ObjectManager::AddGround()
 	std::string _name = "Ground";
 	Math::Vector3 _pos = Math::Vector3::Zero;
 	float _size = 10.0f;
-	float _angleY = 0.0f;
+	Math::Vector3 _angle = Math::Vector3::Zero;
 	std::shared_ptr<Ground> obj = std::make_shared<Ground>();
 
 	obj->SetPos(_pos);
 	obj->SetSize(_size);
-	obj->SetAngle(_angleY);
+	obj->SetAngle(_angle);
 	obj->SetName(_name);
 	obj->SetID(m_id);
 	obj->Init();
@@ -1431,7 +1504,7 @@ void ObjectManager::AddCircle()
 	std::string _name;
 	Math::Vector3 _pos;
 	float _size;
-	float _angleY;
+	Math::Vector3 _angle = Math::Vector3::Zero;
 	std::shared_ptr<KdGameObject> obj;
 	std::shared_ptr<Circle> circle;
 	std::shared_ptr<MagicPolygon> magic;
@@ -1445,7 +1518,7 @@ void ObjectManager::AddCircle()
 			_name = "Circle";
 			_pos = Math::Vector3::Zero;
 			_size = 10.0f;
-			_angleY = 0.0f;
+			_angle.y = 0.0f;
 			obj = circle;
 			break;
 		case 1:
@@ -1454,7 +1527,7 @@ void ObjectManager::AddCircle()
 			if (circle)_pos = circle->GetMagicPolygonPoint();
 			else { _pos = Math::Vector3::Zero; }
 			_size = 5.0f;
-			_angleY = 0.0f;
+			_angle.y = 0.0f;
 			obj = magic;
 			break;
 		default:
@@ -1463,7 +1536,7 @@ void ObjectManager::AddCircle()
 
 		obj->SetPos(_pos);
 		obj->SetSize(_size);
-		obj->SetAngle(_angleY);
+		obj->SetAngle(_angle);
 		obj->SetName(_name);
 		obj->SetID(m_id);
 		obj->Init();
@@ -1480,12 +1553,12 @@ void ObjectManager::AddWall()
 	std::string _name = "Wall";
 	Math::Vector3 _pos = Math::Vector3::Zero;
 	float _size = 10.0f;
-	float _angleY = 0.0f;
+	Math::Vector3 _angle = Math::Vector3::Zero;
 	std::shared_ptr<Wall> obj = std::make_shared<Wall>();
 
 	obj->SetPos(_pos);
 	obj->SetSize(_size);
-	obj->SetAngle(_angleY);
+	obj->SetAngle(_angle);
 	obj->SetName(_name);
 	obj->SetID(m_id);
 	obj->Init();
@@ -1501,12 +1574,12 @@ void ObjectManager::AddSkyBox()
 	std::string _name = "SkyBox";
 	Math::Vector3 _pos = Math::Vector3::Zero;
 	float _size = 10.0f;
-	float _angleY = 0.0f;
+	Math::Vector3 _angle = Math::Vector3::Zero;
 	std::shared_ptr<SkyBox> obj = std::make_shared<SkyBox>();
 
 	obj->SetPos(_pos);
 	obj->SetSize(_size);
-	obj->SetAngle(_angleY);
+	obj->SetAngle(_angle);
 	obj->SetName(_name);
 	obj->SetID(m_id);
 	obj->Init();

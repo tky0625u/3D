@@ -51,8 +51,8 @@ public:
 	Param GetParam() { return m_param; }
 	bool GetIsAnimator() { return m_animator->IsAnimationEnd(); }
 	std::string GetAnime() { return m_anime; }
-	Math::Matrix GetSwordMat() { return m_model->FindWorkNode("sword.R")->m_localTransform * m_model->FindWorkNode("hand.R")->m_worldTransform * (Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle))*(Math::Matrix::CreateTranslation(m_mWorld.Translation()))); }
-	Math::Matrix GetShieldMat() { return m_model->FindWorkNode("shield.L")->m_localTransform * m_model->FindWorkNode("forearm.L")->m_worldTransform * (Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle)) * (Math::Matrix::CreateTranslation(m_mWorld.Translation()))); }
+	Math::Matrix GetSwordMat() { return m_model->FindWorkNode("sword.R")->m_localTransform * m_model->FindWorkNode("hand.R")->m_worldTransform * (Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle.y))*(Math::Matrix::CreateTranslation(m_mWorld.Translation()))); }
+	Math::Matrix GetShieldMat() { return m_model->FindWorkNode("shield.L")->m_localTransform * m_model->FindWorkNode("forearm.L")->m_worldTransform * (Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle.y)) * (Math::Matrix::CreateTranslation(m_mWorld.Translation()))); }
 	std::weak_ptr<Sword> GetSword() { return m_sword; }
 	int GetinviTime()const { return m_inviTime; }
 	const Math::Vector3 GetDir() const { return m_dir; }

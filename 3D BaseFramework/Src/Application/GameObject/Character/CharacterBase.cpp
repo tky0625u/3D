@@ -38,7 +38,7 @@ void CharacterBase::Update()
 
 	//ワールド行列更新
 	Math::Matrix Scale = Math::Matrix::CreateScale(m_size);
-	Math::Matrix RotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
+	Math::Matrix RotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle.y));
 	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
 	m_mWorld = Scale * RotY * Trans;
 }

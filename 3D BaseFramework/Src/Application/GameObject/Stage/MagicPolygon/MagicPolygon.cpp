@@ -17,8 +17,8 @@ void MagicPolygon::Update()
 				KdEffekseerManager::GetInstance().Play("Circle/Circle.efkefc", m_mWorld.Translation(), m_size, 1.0f, false);
 				m_rightFlg = true;
 			}
-			m_angle += 0.1f;
-			if (m_angle > 360.0f)m_angle -= 360.0f;
+			m_angle.y += 0.1f;
+			if (m_angle.y > 360.0f)m_angle.y -= 360.0f;
 			if (m_rgb < 1.0f)m_rgb += 0.01f;
 			else
 			{
@@ -40,7 +40,7 @@ void MagicPolygon::Update()
 
 	Math::Matrix _scale = Math::Matrix::CreateScale(m_size);
 	Math::Matrix _rotX= Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(90));
-	Math::Matrix _rotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
+	Math::Matrix _rotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle.y));
 	Math::Matrix _trans = Math::Matrix::CreateTranslation(m_pos);
 	Math::Matrix _PointTrans;
 	if (m_circle.expired() == false)_PointTrans = Math::Matrix::CreateTranslation(m_circle.lock()->GetMagicPolygonPoint());
@@ -65,5 +65,5 @@ void MagicPolygon::Init()
 	m_rgb = 0.0f;
 	m_color = { m_rgb,m_rgb ,m_rgb ,1 };
 
-	m_angle = 0.0f;
+	m_angle = Math::Vector3::Zero;
 }

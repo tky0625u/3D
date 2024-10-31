@@ -42,7 +42,7 @@ void Golem_Stumble::End()
 
 void Golem_Stumble::Stumble()
 {
-	Math::Matrix _nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_target.lock()->GetAngle()));
+	Math::Matrix _nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_target.lock()->GetAngle().y));
 	Math::Vector3 _nowVec = Math::Vector3::TransformNormal(Math::Vector3{ m_target.lock()->GetForward().x, m_target.lock()->GetForward().y, m_target.lock()->GetForward().z }, _nowRot);
 	_nowVec.y = 0.0f;
 	_nowVec *= -1.0f;

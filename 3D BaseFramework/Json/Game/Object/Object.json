@@ -3,33 +3,17 @@
 		"0Circle": {
 			"Angle": 0.0,
 			"Name": "Circle",
-			"PosX": 1.0,
+			"PosX": 0.0,
 			"PosY": 0.0,
 			"PosZ": 0.0,
-			"Size": 2.882999897003174
-		},
-		"1Circle": {
-			"Angle": 0.0,
-			"Name": "Circle",
-			"PosX": 1.0,
-			"PosY": 167.71200561523438,
-			"PosZ": 0.0,
-			"Size": 2.882999897003174
-		},
-		"2Circle": {
-			"Angle": 0.0,
-			"Name": "Circle",
-			"PosX": 0.0,
-			"PosY": 319.7489929199219,
-			"PosZ": 0.0,
-			"Size": 2.882999897003174
+			"Size": 0.30000001192092896
 		}
 	},
 	"Ground": {
 		"0Ground": {
 			"Angle": 0.0,
 			"Name": "Ground",
-			"PosX": 1.0,
+			"PosX": 0.0,
 			"PosY": 0.0,
 			"PosZ": 0.0,
 			"Size": 10.0
@@ -53,23 +37,7 @@
 	},
 	"Magic": {
 		"0Magic": {
-			"Angle": 0.0,
-			"Name": "Magic",
-			"PosX": 0.0,
-			"PosY": 0.0,
-			"PosZ": 0.0,
-			"Size": 5.6539998054504395
-		},
-		"1Magic": {
-			"Angle": 0.0,
-			"Name": "Magic",
-			"PosX": 0.0,
-			"PosY": 0.0,
-			"PosZ": 0.0,
-			"Size": 5.6539998054504395
-		},
-		"2Magic": {
-			"Angle": 0.0,
+			"Angle": 148.19984436035156,
 			"Name": "Magic",
 			"PosX": 0.0,
 			"PosY": 0.0,

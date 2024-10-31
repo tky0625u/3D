@@ -769,8 +769,8 @@ void Application::ImGuiProcess()
 					ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _player->GetDir().x, _player->GetDir().y, _player->GetDir().z);
 					// 角度
 					ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _player->GetAngle());
-					float angle = _player->GetAngle();
-					ImGui::SliderFloat("Angle", &angle, 0, 360);
+					Math::Vector3 angle = _player->GetAngle();
+					ImGui::SliderFloat("Angle", &angle.y, 0, 360);
 					// 大きさ
 					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _player->GetSize());
 					float size = _player->GetSize();
@@ -1009,8 +1009,8 @@ void Application::ImGuiProcess()
 							ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetDir().x, _boneList[operation].lock()->GetDir().y, _boneList[operation].lock()->GetDir().z);
 							// 角度
 							ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _boneList[operation].lock()->GetAngle());
-							float angle = _boneList[operation].lock()->GetAngle();
-							ImGui::SliderFloat("Angle", &angle, 0, 360);
+							Math::Vector3 angle = _boneList[operation].lock()->GetAngle();
+							ImGui::SliderFloat("Angle", &angle.y, 0, 360);
 							// 大きさ
 							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _boneList[operation].lock()->GetSize());
 							float size = _boneList[operation].lock()->GetSize();
@@ -1092,8 +1092,8 @@ void Application::ImGuiProcess()
 							ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _golemList[operation].lock()->GetDir().x, _golemList[operation].lock()->GetDir().y, _golemList[operation].lock()->GetDir().z);
 							// 角度
 							ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _golemList[operation].lock()->GetAngle());
-							float angle = _golemList[operation].lock()->GetAngle();
-							ImGui::SliderFloat("Angle", &angle, 0, 360);
+							Math::Vector3 angle = _golemList[operation].lock()->GetAngle();
+							ImGui::SliderFloat("Angle", &angle.y, 0, 360);
 							// 大きさ
 							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _golemList[operation].lock()->GetSize());
 							float size = _golemList[operation].lock()->GetSize();
@@ -1186,8 +1186,8 @@ void Application::ImGuiProcess()
 						ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
 						// 角度
 						ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", groundList[Goperation].lock()->GetAngle());
-						float angle = groundList[Goperation].lock()->GetAngle();
-						ImGui::SliderFloat("Angle", &angle, 0, 360);
+						Math::Vector3 angle = groundList[Goperation].lock()->GetAngle();
+						ImGui::SliderFloat("Angle", &angle.y, 0, 360);
 						// 大きさ
 						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", groundList[Goperation].lock()->GetSize());
 						float size = groundList[Goperation].lock()->GetSize();
@@ -1225,8 +1225,8 @@ void Application::ImGuiProcess()
 					{
 						// 角度
 						ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", circleList[0].lock()->GetAngle());
-						float angle = circleList[0].lock()->GetAngle();
-						ImGui::SliderFloat("Angle", &angle, 0, 360);
+						Math::Vector3 angle = circleList[0].lock()->GetAngle();
+						ImGui::SliderFloat("Angle", &angle.y, 0, 360);
 						// 大きさ
 						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", circleList[0].lock()->GetSize());
 						float size = circleList[0].lock()->GetSize();
@@ -1311,8 +1311,8 @@ void Application::ImGuiProcess()
 						ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
 						// 角度
 						ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", wallList[Woperation].lock()->GetAngle());
-						float angle = wallList[Woperation].lock()->GetAngle();
-						ImGui::SliderFloat("Angle", &angle, 0, 360);
+						Math::Vector3 angle = wallList[Woperation].lock()->GetAngle();
+						ImGui::SliderFloat("Angle", &angle.y, 0, 360);
 						// 大きさ
 						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", wallList[Woperation].lock()->GetSize());
 						float size = wallList[Woperation].lock()->GetSize();
@@ -1347,8 +1347,8 @@ void Application::ImGuiProcess()
 						ImGui::SliderFloat("PosZ", &pos.z, -500, 500);
 						// 角度
 						ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", skyboxList[0].lock()->GetAngle());
-						float angle = skyboxList[0].lock()->GetAngle();
-						ImGui::SliderFloat("Angle", &angle, 0, 360);
+						Math::Vector3 angle = skyboxList[0].lock()->GetAngle();
+						ImGui::SliderFloat("Angle", &angle.y, 0, 360);
 						// 大きさ
 						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", skyboxList[0].lock()->GetSize());
 						float size = skyboxList[0].lock()->GetSize();

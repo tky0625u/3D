@@ -55,7 +55,7 @@ void Player_Roll::Roll()
 	if (m_target.expired() == false)player = m_target.lock();
 
 	//今の方向
-	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(player->GetAngle()));
+	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(player->GetAngle().y));
 	Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3(player->GetForward().x, player->GetForward().y, player->GetForward().z), nowRot);
 	dir = nowVec;
 	dir.Normalize();

@@ -14,7 +14,7 @@ void Cursor::Update()
 		{
 			m_posNum++;
 			if (m_posNum == m_PosList.size())m_posNum = 0;
-			m_angle = 180.0f;
+			m_SingleAngle = 180.0f;
 			m_keyFlg |= Key::UPType;
 			KdAudioManager::Instance().Play("Asset/Sound/Title/SE/キャンセル1.WAV", 0.05f, false);
 		}
@@ -29,7 +29,7 @@ void Cursor::Update()
 		{
 			m_posNum--;
 			if (m_posNum < 0)m_posNum = m_PosList.size() - 1;
-			m_angle = 180.0f;
+			m_SingleAngle = 180.0f;
 			m_keyFlg |= Key::DOWNType;
 			KdAudioManager::Instance().Play("Asset/Sound/Title/SE/キャンセル1.WAV", 0.05f, false);
 		}
@@ -50,7 +50,7 @@ void Cursor::Update()
 			{
 				Application::Instance().End();
 			}
-			m_angle = 358.0f;
+			m_SingleAngle = 358.0f;
 		}
 	}
 	else
@@ -64,9 +64,9 @@ void Cursor::Update()
 		}
 	}
 
-	m_angle += 2.0f;
-	if (m_angle > 360.0f)m_angle -= 360.0f;
-	m_alpha = (sin(DirectX::XMConvertToRadians(m_angle))) + 1.5f;
+	m_SingleAngle += 2.0f;
+	if (m_SingleAngle > 360.0f)m_SingleAngle -= 360.0f;
+	m_alpha = (sin(DirectX::XMConvertToRadians(m_SingleAngle))) + 1.5f;
 
 	m_pos = m_PosList[m_posNum];
 	m_color = { 1.0f,1.0f,1.0f,m_alpha };

@@ -71,8 +71,5 @@ void Bone_Run::Chace()
 
 	if (dist >= m_target.lock()->GetAtkRange())m_target.lock()->SetMove(_moveDir);
 	if (m_target.expired() == false)Rotate(_moveDir, m_target.lock());
-	if (AttackCheck())
-	{
-		m_flow = Flow::EndType;
-	}
+	AttackCheck();
 }

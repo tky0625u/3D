@@ -10,6 +10,9 @@ class Exit;
 class Cursor;
 class TitleGuide;
 class TitleCamera;
+class Ground;
+class Circle;
+class MagicPolygon;
 
 #include"../tinygltf/json.hpp"
 class ObjectManager:public std::enable_shared_from_this<ObjectManager>
@@ -47,6 +50,7 @@ public:
 	void SetCursorParam();
 	void SetGameCameraParam();
 	void SetObjectParam();
+	void SetGroundParam();
 	void SetPlayerParam();
 	void SetWeaponParam(std::string _filePath, std::string _weaponName);
 	void SetEnemyParam(std::string _filePath = "none");
@@ -98,13 +102,15 @@ private:
 	std::weak_ptr<TitleGuide>                m_titleGuide;
 	std::weak_ptr<GameCamera>                m_camera;
 	std::weak_ptr<Player>                    m_player;
+	std::weak_ptr<Ground>                    m_ground;
+	std::weak_ptr<Circle>                    m_circle;
+	std::weak_ptr<MagicPolygon>              m_magic;
 	UINT                                     m_id       = 0;
 	int                                      m_stopTime = 0;
 	float                                    m_slow     = 1.0f;
 	bool                                     m_slowFlg  = false;
 	std::vector<std::weak_ptr<EnemyBase>>    m_EnemyList;
 	std::vector<std::weak_ptr<KdGameObject>> m_ObjectList;
-	std::vector<Math::Vector3>               m_StartPosList;
 	int                                      m_MaxStage = 3;
 	int                                      m_nowStage = 1;
 										     

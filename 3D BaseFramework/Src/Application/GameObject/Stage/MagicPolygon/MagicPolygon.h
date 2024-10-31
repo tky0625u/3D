@@ -14,6 +14,7 @@ public:
 	void Init()override;
 
 	void SetCircle(std::shared_ptr<Circle> _circle) { m_circle = _circle; }
+	void SetMatrix(Math::Matrix _mat) { m_mWorld = _mat; }
 
 private:
 	std::weak_ptr<Circle>            m_circle;

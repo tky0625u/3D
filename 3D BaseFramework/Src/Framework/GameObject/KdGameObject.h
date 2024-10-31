@@ -68,8 +68,8 @@ public:
 	void SetSize(float _size) { m_size = _size; }
 	const float GetSize()const {return m_size; }
 
-	void SetAngle(float _angle) { m_angle = _angle; }
-	const float GetAngle()const {return m_angle; }
+	void SetAngle(Math::Vector3 _angle) { m_angle = _angle; }
+	const Math::Vector3 GetAngle()const {return m_angle; }
 
 	const Math::Matrix& GetMatrix() const { return m_mWorld; }
 
@@ -129,7 +129,7 @@ protected:
 
 	float m_size = 0.0f;
 
-	float m_angle = 0.0f;
+	Math::Vector3 m_angle = Math::Vector3::Zero;
 
 	//ID
 	UINT m_id = 0;

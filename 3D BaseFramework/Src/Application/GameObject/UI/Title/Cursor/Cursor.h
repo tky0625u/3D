@@ -32,6 +32,7 @@ private:
 	float                      m_MaxAlpha = 1.0f;
 	float                      m_ChangeAlphaNum = 1.0f;
 	float                      m_alpha = 1.0f;
+	float                      m_SingleAngle = 0.0f;
 
 	enum Key
 	{

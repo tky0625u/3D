@@ -195,7 +195,7 @@ void Player_Attack::AttackDirCheck()
 			if (m_AttackDir == Math::Vector3::Zero)
 			{
 				//今の方向
-				Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(_player->GetAngle()));
+				Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(_player->GetAngle().y));
 				Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3(_player->GetForward().x, _player->GetForward().y, _player->GetForward().z), nowRot);
 				m_AttackDir = nowVec;
 			}
