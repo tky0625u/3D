@@ -1,6 +1,11 @@
 ﻿#pragma once
 
 class ObjectManager;
+class Player;
+class EnemyBase;
+class WeaponBase;
+class UIBase;
+class CameraBase;
 
 class BaseScene
 {
@@ -18,18 +23,27 @@ public :
 	void DrawSprite();
 	void DrawDebug();
 
+	void DeleteEnemyList();
+	void DeleteWeaponList();
+	void DeleteObjectList();
+	void DeleteUIList();
+
 	// オブジェクトリストを取得
-	const std::list<std::shared_ptr<KdGameObject>>& GetObjList()
-	{
-		return m_objList;
-	}
+	const std::shared_ptr<Player>&                  GetPlayer()    const { return m_player; }
+	const std::shared_ptr<CameraBase>&              GetCamera()    const { return m_camera; }
+	const std::list<std::shared_ptr<KdGameObject>>& GetObjList()   const { return m_ObjectList; }
+	const std::list<std::shared_ptr<EnemyBase>>&    GetEnemyList() const { return m_EnemyList; }
+	const std::list<std::shared_ptr<WeaponBase>>&   GetWeaponList()const { return m_WeaponList; }
+	const std::list<std::shared_ptr<UIBase>>&       GetUIList()    const { return m_UIList; }
 	
 	const std::shared_ptr<ObjectManager> GetObjectManager() const { return m_ObjManager; }
 	// オブジェクトリストに追加
-	void AddObject(const std::shared_ptr<KdGameObject>& obj)
-	{
-		m_objList.push_back(obj);
-	}
+	void SetPlayer(const std::shared_ptr<Player>& player)    { m_player = player; }
+	void SetCamera(const std::shared_ptr<CameraBase>& camera){ m_camera = camera; }
+	void AddObject(const std::shared_ptr<KdGameObject>& obj) { m_ObjectList.push_back(obj); }
+	void AddEnemy (const std::shared_ptr<EnemyBase>& enemy)  { m_EnemyList.push_back(enemy); }
+	void AddWeapon(const std::shared_ptr<WeaponBase>& weapon){ m_WeaponList.push_back(weapon); }
+	void AddUI    (const std::shared_ptr<UIBase>& ui)        { m_UIList.push_back(ui); }
 
 	virtual void Init();
 
@@ -40,7 +54,12 @@ protected :
 	
 
 	// 全オブジェクトのアドレスをリストで管理
-	std::list<std::shared_ptr<KdGameObject>> m_objList;
+	std::shared_ptr<Player>                  m_player = nullptr;
+	std::shared_ptr<CameraBase>              m_camera = nullptr;
+	std::list<std::shared_ptr<EnemyBase>>    m_EnemyList;
+	std::list<std::shared_ptr<WeaponBase>>   m_WeaponList;
+	std::list<std::shared_ptr<KdGameObject>> m_ObjectList;
+	std::list<std::shared_ptr<UIBase>>       m_UIList;
 
 	std::shared_ptr<ObjectManager>           m_ObjManager = nullptr;
 };

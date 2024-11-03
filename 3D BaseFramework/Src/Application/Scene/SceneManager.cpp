@@ -59,14 +59,64 @@ void SceneManager::DrawDebug()
 	m_currentScene->DrawDebug();
 }
 
+const std::shared_ptr<Player>& SceneManager::GetPlayer()
+{
+	return m_currentScene->GetPlayer();
+}
+
+const std::shared_ptr<CameraBase>& SceneManager::GetCamera()
+{
+	return m_currentScene->GetCamera();
+}
+
 const std::list<std::shared_ptr<KdGameObject>>& SceneManager::GetObjList()
 {
 	return m_currentScene->GetObjList();
 }
 
+const std::list<std::shared_ptr<EnemyBase>>& SceneManager::GetEnemyList()
+{
+	return m_currentScene->GetEnemyList();
+}
+
+const std::list<std::shared_ptr<WeaponBase>>& SceneManager::GetWeaponList()
+{
+	return m_currentScene->GetWeaponList();
+}
+
+const std::list<std::shared_ptr<UIBase>>& SceneManager::GetUIList()
+{
+	return m_currentScene->GetUIList();
+}
+
+void SceneManager::SetPlayer(const std::shared_ptr<Player>& player)
+{
+	m_currentScene->SetPlayer(player);
+}
+
+void SceneManager::SetCamera(const std::shared_ptr<CameraBase>& camera)
+{
+	m_currentScene->SetCamera(camera);
+}
+
 void SceneManager::AddObject(const std::shared_ptr<KdGameObject>& obj)
 {
 	m_currentScene->AddObject(obj);
+}
+
+void SceneManager::AddEnemy(const std::shared_ptr<EnemyBase>& enemy)
+{
+	m_currentScene->AddEnemy(enemy);
+}
+
+void SceneManager::AddWeapon(const std::shared_ptr<WeaponBase>& weapon)
+{
+	m_currentScene->AddWeapon(weapon);
+}
+
+void SceneManager::AddUI(const std::shared_ptr<UIBase>& ui)
+{
+	m_currentScene->AddUI(ui);
 }
 
 void SceneManager::ChangeScene(SceneType sceneType)

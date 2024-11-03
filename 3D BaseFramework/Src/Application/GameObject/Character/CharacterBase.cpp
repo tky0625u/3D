@@ -1,6 +1,8 @@
 ﻿#include "CharacterBase.h"
 #include"../ObjectManager.h"
 #include"../../Scene/SceneManager.h"
+#include"Enemy/EnemyBase.h"
+#include"Player/Player.h"
 #include"Action/ActionBase.h"
 
 void CharacterBase::Update()
@@ -102,11 +104,14 @@ void CharacterBase::PostUpdate()
 	std::list<KdCollider::CollisionResult>retSphereList;
 	for (auto& ret : SceneManager::Instance().GetObjList())
 	{
-		if (m_id != ret->GetID())
-		{
-			ret->Intersects(sphereInfo, &retSphereList);
-		}
+		ret->Intersects(sphereInfo, &retSphereList);
 	}
+	for (auto& ret : SceneManager::Instance().GetEnemyList())
+	{
+		if (m_id == ret->GetID())continue;
+		ret->Intersects(sphereInfo, &retSphereList);
+	}
+	if (m_id != SceneManager::Instance().GetPlayer()->GetID())SceneManager::Instance().GetPlayer()->Intersects(sphereInfo, &retSphereList);
 
 	Math::Vector3 HitDir = Math::Vector3::Zero;
 	float maxOverLap = 0.0f;

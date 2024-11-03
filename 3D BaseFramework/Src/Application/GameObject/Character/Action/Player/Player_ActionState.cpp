@@ -1,4 +1,5 @@
 ﻿#include "Player_ActionState.h"
+#include"../../../../Scene/SceneManager.h"
 #include"../../../ObjectManager.h"
 #include"../../Enemy/EnemyBase.h"
 #include"../Enemy/Enemy_ConText.h"
@@ -49,15 +50,16 @@ void Player_ActionState::AttackDamage()
 	std::list<KdCollider::CollisionResult> retSphereList;
 	std::vector<std::shared_ptr<EnemyBase>> hitEnemyList;
 
-	for (auto& sphere : m_ObjManager.lock()->GetEnemyList())
+	for (auto& sphere :  SceneManager::Instance().GetEnemyList())
 	{
-		if (sphere.expired())continue;
+		if (sphere->IsExpired())continue;
+		if (sphere->GetParam().Hp <= 0)continue;
 
 		for (int i = 0; i < sphereInfoList.size(); ++i)
 		{
-			if (sphere.lock()->Intersects(sphereInfoList[i], &retSphereList))
+			if (sphere->Intersects(sphereInfoList[i], &retSphereList))
 			{
-				hitEnemyList.push_back(sphere.lock());
+				hitEnemyList.push_back(sphere);
 			}
 		}
 	}

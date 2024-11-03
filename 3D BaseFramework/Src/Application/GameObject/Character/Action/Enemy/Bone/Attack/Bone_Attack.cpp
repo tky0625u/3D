@@ -1,5 +1,5 @@
 ﻿#include"Bone_Attack.h"
-#include"../../../../../ObjectManager.h"
+#include"../../../../../../Scene/SceneManager.h"
 #include"../../Enemy_ConText.h"
 #include"../../../../Enemy/Bone/Bone.h"
 #include"../../../../Player/Player.h"
@@ -68,7 +68,8 @@ void Bone_Attack::End()
 void Bone_Attack::Attack()
 {
 	if (m_target.expired())return;
-	if (m_ObjManager.lock()->GetPlayer().expired())return;
+	if (SceneManager::Instance().GetPlayer()->IsExpired())return;
+	if (SceneManager::Instance().GetPlayer()->GetParam().Hp <= 0)return;
 
 	std::vector<KdCollider::SphereInfo> sphereInfoList;
 	KdCollider::SphereInfo sphereInfo;
@@ -93,9 +94,9 @@ void Bone_Attack::Attack()
 
 	for (int i = 0; i < sphereInfoList.size(); ++i)
 	{
-		if (m_ObjManager.lock()->GetPlayer().lock()->Intersects(sphereInfo, nullptr))
+		if (SceneManager::Instance().GetPlayer()->Intersects(sphereInfo, nullptr))
 		{
-			m_ObjManager.lock()->GetPlayer().lock()->GetConText()->Hit(m_target.lock()->GetParam().Atk, m_target.lock());
+			SceneManager::Instance().GetPlayer()->GetConText()->Hit(m_target.lock()->GetParam().Atk, m_target.lock());
 		}
 	}
 }

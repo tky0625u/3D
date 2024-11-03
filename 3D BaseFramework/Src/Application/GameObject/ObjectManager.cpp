@@ -541,7 +541,7 @@ void ObjectManager::SetTitleCamera()
 		m_id++;
 
 		m_titleCamera = camera;
-		SceneManager::Instance().AddObject(camera);
+		SceneManager::Instance().SetCamera(camera);
 		KdEffekseerManager::GetInstance().SetCamera(m_titleCamera.lock()->GetCamera());
 	}
 
@@ -581,7 +581,7 @@ void ObjectManager::SetTitleParam()
 		m_id++;
 
 		m_title = title;
-		SceneManager::Instance().AddObject(title);
+		SceneManager::Instance().AddUI(title);
 	}
 
 	ifs.close();
@@ -620,7 +620,7 @@ void ObjectManager::SetGameParam()
 		m_id++;
 
 		m_game = game;
-		SceneManager::Instance().AddObject(game);
+		SceneManager::Instance().AddUI(game);
 	}
 
 	ifs.close();
@@ -659,7 +659,7 @@ void ObjectManager::SetExitParam()
 		m_id++;
 
 		m_exit = exit;
-		SceneManager::Instance().AddObject(exit);
+		SceneManager::Instance().AddUI(exit);
 	}
 
 	ifs.close();
@@ -698,7 +698,7 @@ void ObjectManager::SetTitleGuideParam()
 		m_id++;
 
 		m_titleGuide = guide;
-		SceneManager::Instance().AddObject(guide);
+		SceneManager::Instance().AddUI(guide);
 	}
 
 	ifs.close();
@@ -747,7 +747,7 @@ void ObjectManager::SetCursorParam()
 		m_id++;
 
 		m_cursor = cursor;
-		SceneManager::Instance().AddObject(cursor);
+		SceneManager::Instance().AddUI(cursor);
 	}
 
 	ifs.close();
@@ -811,13 +811,13 @@ void ObjectManager::SetGameCameraParam()
 		camera->SetDegAngList(_PlayerAngle, _FixedAngle, _ClearAngle);
 		camera->SetViewAngList(_PlayerViewAngle, _FixedViewAngle, _ClearViewAngle);
 		camera->SetName(_name);
-		camera->SetID(m_id);
 		camera->SetObjectManager(shared_from_this());
 		camera->Init();
+		camera->SetID(m_id);
 		m_id++;
 
 		m_camera = camera;
-		SceneManager::Instance().AddObject(camera);
+		SceneManager::Instance().SetCamera(camera);
 	}
 
 	ifs.close();
@@ -1050,13 +1050,10 @@ void ObjectManager::SetPlayerParam()
 		player->SetID(m_id);
 		m_id++;
 
-		SceneManager::Instance().AddObject(player);
+		SceneManager::Instance().SetPlayer(player);
 
 		m_camera.lock()->SetTarget(player);
-		m_camera.lock()->SetID(m_id);
-		m_id++;
 
-		SceneManager::Instance().AddObject(m_camera.lock());
 		KdEffekseerManager::GetInstance().SetCamera(m_camera.lock()->GetCamera());
 	}
 
@@ -1133,7 +1130,7 @@ void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponNam
 		weapon->SetID(m_id);
 		m_id++;
 
-		SceneManager::Instance().AddObject(weapon);
+		SceneManager::Instance().AddWeapon(weapon);
 		
 		//デバッグ
 		//break;
@@ -1228,7 +1225,7 @@ void ObjectManager::SetEnemyParam(std::string _filePath)
 			enemy->Init();
 			m_id++;
 
-			SceneManager::Instance().AddObject(enemy);
+			SceneManager::Instance().AddEnemy(enemy);
 			m_EnemyList.push_back(enemy);
 		}
 	}

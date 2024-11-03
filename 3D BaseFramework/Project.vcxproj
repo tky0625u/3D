@@ -196,6 +196,7 @@
     <ClInclude Include="Src\Application\GameObject\Character\CharacterBase.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\Bone\Bone.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\EnemyBase.h" />
+    <ClInclude Include="Src\Application\GameObject\Character\Enemy\EnemyManager.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\Golem\Golem.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\Golem\Laser\Laser.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Player\Player.h" />
@@ -308,6 +309,7 @@
     <ClCompile Include="Src\Application\GameObject\Character\CharacterBase.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\Bone\Bone.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\EnemyBase.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Character\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\Golem\Golem.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\Golem\Laser\Laser.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Player\Player.cpp" />

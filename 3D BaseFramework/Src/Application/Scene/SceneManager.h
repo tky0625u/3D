@@ -1,6 +1,11 @@
 ﻿#pragma once
 
 class BaseScene;
+class Player;
+class EnemyBase;
+class WeaponBase;
+class UIBase;
+class CameraBase;
 
 class SceneManager
 {
@@ -29,14 +34,24 @@ public :
 	}
 
 	// 現在のシーンのオブジェクトリストを取得
+	const std::shared_ptr<Player>&                  GetPlayer();
+	const std::shared_ptr<CameraBase>&              GetCamera();
 	const std::list<std::shared_ptr<KdGameObject>>& GetObjList();
+	const std::list<std::shared_ptr<EnemyBase>>&    GetEnemyList();
+	const std::list<std::shared_ptr<WeaponBase>>&   GetWeaponList();
+	const std::list<std::shared_ptr<UIBase>>&       GetUIList();
 
 	const SceneType GetNowSceneType()const { return m_currentSceneType; }
 
 	const std::shared_ptr<BaseScene> GetNowScene()const { return m_currentScene; }
 
 	// 現在のシーンにオブジェクトを追加
+	void SetPlayer(const std::shared_ptr<Player>& player);
+	void SetCamera(const std::shared_ptr<CameraBase>& camera);
 	void AddObject(const std::shared_ptr<KdGameObject>& obj);
+	void AddEnemy (const std::shared_ptr<EnemyBase>& enemy);
+	void AddWeapon(const std::shared_ptr<WeaponBase>& weapon);
+	void AddUI    (const std::shared_ptr<UIBase>& ui);
 
 	// マネージャーの初期化
 	// インスタンス生成(アプリ起動)時にコンストラクタで自動実行
