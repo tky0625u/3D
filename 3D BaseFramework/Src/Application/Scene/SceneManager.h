@@ -37,7 +37,7 @@ public :
 	const std::shared_ptr<Player>&                  GetPlayer();
 	const std::shared_ptr<CameraBase>&              GetCamera();
 	const std::list<std::shared_ptr<KdGameObject>>& GetObjList();
-	const std::list<std::shared_ptr<EnemyBase>>&    GetEnemyList();
+	const std::vector<std::shared_ptr<EnemyBase>>&  GetEnemyList();
 	const std::list<std::shared_ptr<WeaponBase>>&   GetWeaponList();
 	const std::list<std::shared_ptr<UIBase>>&       GetUIList();
 

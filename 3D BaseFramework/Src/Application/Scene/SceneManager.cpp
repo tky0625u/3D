@@ -74,7 +74,7 @@ const std::list<std::shared_ptr<KdGameObject>>& SceneManager::GetObjList()
 	return m_currentScene->GetObjList();
 }
 
-const std::list<std::shared_ptr<EnemyBase>>& SceneManager::GetEnemyList()
+const std::vector<std::shared_ptr<EnemyBase>>& SceneManager::GetEnemyList()
 {
 	return m_currentScene->GetEnemyList();
 }

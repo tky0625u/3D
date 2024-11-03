@@ -8,6 +8,7 @@
 #include"../../GameObject/ObjectManager.h"
 #include"../../GameObject/Loading/Loading.h"
 #include"../../GameObject/Camera/TPSCamera/TPSCamera.h"
+#include"../../GameObject/Character/Enemy/EnemyManager.h"
 
 void GameScene::Event()
 {
@@ -73,6 +74,7 @@ void LoadingTime()
 void GameScene::Init()
 {
 	loop = true;
+	m_EnemyManager = std::make_shared<EnemyManager>();
 
 	std::thread th_Obj(ObjLoad);
 	std::thread th_Load(LoadingTime);
