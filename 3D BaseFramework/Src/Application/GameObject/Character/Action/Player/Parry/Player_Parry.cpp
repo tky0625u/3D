@@ -13,6 +13,7 @@ void Player_Parry::Start()
 		{
 			m_target.lock()->SetAnime("Parrying", false, 1.0f);
 			KdEffekseerManager::GetInstance().Play("Player/hit_hanmado_0409.efkefc", m_target.lock()->GetShield().lock()->GetParryPoint().Translation(), 1.0f, 0.5f, false);
+			KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/maou_se_magic_ice05.WAV", 0.1f, false);
 			return;
 		}
 

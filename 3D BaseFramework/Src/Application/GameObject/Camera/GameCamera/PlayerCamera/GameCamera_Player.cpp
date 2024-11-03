@@ -17,7 +17,8 @@ void PlayerCamera::PostUpdate()
 	const std::shared_ptr<const KdGameObject>	_spTarget = m_target.lock()->GetwpTarget().lock();
 	if (_spTarget)
 	{
-		_targetMat = Math::Matrix::CreateTranslation(_spTarget->GetPos());
+		m_PlayerPosList.push_back(_spTarget->GetPos());
+		_targetMat = Math::Matrix::CreateTranslation(m_PlayerPosList[0]);
 	}
 
 	if (!m_target.lock()->GetwpTarget().lock()->GetConText()->GetLockONFlg())
@@ -34,6 +35,13 @@ void PlayerCamera::PostUpdate()
 
 	m_mWorld = m_mLocalPos * m_mRotation * _targetMat;
 	m_target.lock()->SetMatrix(m_mWorld);
+
+	auto pos = m_PlayerPosList.begin();
+
+	if (m_PlayerPosList.size() >= m_MaxPlayerPosListSize)
+	{
+		pos = m_PlayerPosList.erase(pos);
+	}
 }
 
 void PlayerCamera::LockON()

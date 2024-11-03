@@ -33,11 +33,6 @@ void GameScene::Update()
 void GameScene::PostUpdate()
 {
 	BaseScene::PostUpdate();
-	
-	if (m_ObjManager->GetStopTime() > 0)
-	{
-		m_ObjManager->StopTimeMinus();
-	}
 }
 
 bool loop;

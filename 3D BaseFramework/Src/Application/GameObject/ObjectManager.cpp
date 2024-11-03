@@ -3,6 +3,7 @@
 #include"../tinygltf/json.hpp"
 #include"Character/CharacterBase.h"
 #include"Character/Enemy/Bone/Bone.h"
+#include"Character/Action/Enemy/Enemy_ConText.h"
 #include<fstream>
 #include<sstream>
 

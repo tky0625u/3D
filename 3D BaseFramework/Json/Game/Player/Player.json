@@ -1,1 +1,24 @@
-{"Player":{"ATK":10,"ATKRange":30.0,"Angle":0.0,"DirX":0.0,"DirY":0.0,"DirZ":0.0,"ForwardX":0.0,"ForwardY":0.0,"ForwardZ":1.0,"HP":100,"InviTime":30,"Name":"Player","PosX":1.0,"PosY":0.14414995908737183,"PosZ":0.0,"ShieldName":"Shield","Size":1.0,"Speed":2.0,"Stamina":100,"SwordName":"Sword"}}
+{
+	"Player": {
+		"ATK": 10,
+		"ATKRange": 30.0,
+		"Angle": 0.0,
+		"DirX": 0.0,
+		"DirY": 0.0,
+		"DirZ": 0.0,
+		"ForwardX": 0.0,
+		"ForwardY": 0.0,
+		"ForwardZ": 1.0,
+		"HP": 100,
+		"InviTime": 30,
+		"Name": "Player",
+		"PosX": 1.0,
+		"PosY": 0.14414995908737183,
+		"PosZ": 0.0,
+		"ShieldName": "Shield",
+		"Size": 1.0,
+		"Speed": 1.5,
+		"Stamina": 100,
+		"SwordName": "Sword"
+	}
+}

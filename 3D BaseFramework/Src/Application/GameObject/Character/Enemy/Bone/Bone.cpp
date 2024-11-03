@@ -3,6 +3,24 @@
 #include"../../Action/Enemy/Enemy_ConText.h"
 #include"../../Action/Enemy/Bone/Appeal/Bone_Appeal.h"
 
+void Bone::CrushingAction()
+{
+	if (m_anime != "Death")
+	{
+		m_anime = "Death";
+		m_animeFlg = false;
+		m_animeSpeed = 1.0f;
+		//KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Enemy/Bone/骨を折る.WAV", 0.1f, false);
+	}
+
+	m_dossolve += 0.01f;
+	
+	if (m_dossolve >= 1.0f)
+	{
+		m_isExpired = true;
+	}
+}
+
 void Bone::Init()
 {
 	EnemyBase::Init();
