@@ -1219,6 +1219,7 @@ void ObjectManager::SetEnemyParam(std::string _filePath)
 			enemy->SetAngle(_angle);
 			enemy->SetAtkRange(_atkRange);
 			enemy->SetForward(_forward);
+			enemy->SetTarget(m_player.lock());
 			enemy->SetName(_name);
 			enemy->SetID(m_id);
 			enemy->SetObjectManager(shared_from_this());

@@ -18,6 +18,7 @@ public:
 	CharacterBase()                                   { Init(); }
 	~CharacterBase()                         override {};
 
+	void PreUpdate()                         override;
 	void Update()                            override;
 	void PostUpdate()                        override;
 	virtual void GenerateDepthMapFromLight() override;
@@ -58,6 +59,7 @@ public:
 	const Math::Vector3 GetDir() const { return m_dir; }
 	const Math::Vector3 GetForward() const { return m_forward; }
 	const float GetAtkRange() const { return m_AtkRange; }
+	const Math::Matrix& GetHitModelMat()const { return m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(m_mWorld.Translation()));}
 
 protected:
 	Param                        m_param;

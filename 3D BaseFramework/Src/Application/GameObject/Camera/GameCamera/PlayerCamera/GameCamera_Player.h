@@ -15,6 +15,5 @@ public:
 	void LockON();
 
 private:
-	std::vector<Math::Vector3> m_PlayerPosList;
-	int m_MaxPlayerPosListSize = 15;
+	
 };

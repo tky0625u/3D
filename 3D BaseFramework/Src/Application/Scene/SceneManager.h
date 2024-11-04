@@ -3,6 +3,7 @@
 class BaseScene;
 class Player;
 class EnemyBase;
+class EnemyManager;
 class WeaponBase;
 class UIBase;
 class CameraBase;
@@ -40,6 +41,7 @@ public :
 	const std::vector<std::shared_ptr<EnemyBase>>&  GetEnemyList();
 	const std::list<std::shared_ptr<WeaponBase>>&   GetWeaponList();
 	const std::list<std::shared_ptr<UIBase>>&       GetUIList();
+	const std::shared_ptr<EnemyManager>& GetEnemyManager();
 
 	const SceneType GetNowSceneType()const { return m_currentSceneType; }
 

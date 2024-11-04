@@ -35,7 +35,8 @@ public :
 	const std::list<std::shared_ptr<KdGameObject>>& GetObjList()   const { return m_ObjectList; }
 	const std::list<std::shared_ptr<WeaponBase>>&   GetWeaponList()const { return m_WeaponList; }
 	const std::list<std::shared_ptr<UIBase>>&       GetUIList()    const { return m_UIList; }
-	
+	const std::shared_ptr<EnemyManager>& GetEnemyManager()const { return m_EnemyManager; }
+
 	const std::shared_ptr<ObjectManager> GetObjectManager() const { return m_ObjManager; }
 	// オブジェクトリストに追加
 	void SetPlayer(const std::shared_ptr<Player>& player)    { m_player = player; }

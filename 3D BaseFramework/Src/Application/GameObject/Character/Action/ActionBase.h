@@ -28,6 +28,8 @@ public:
 
 	void Rotate(Math::Vector3 _moveDir, std::shared_ptr<CharacterBase> _target, float _angChange = 10.0f);
 
+	const UINT& GetFlow() const { return m_flow; }
+
 protected:
 	UINT m_flow      = Flow::StartType;
 };

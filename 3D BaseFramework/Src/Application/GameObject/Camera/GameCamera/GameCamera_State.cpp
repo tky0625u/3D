@@ -9,7 +9,7 @@
 // クリアカメラ
 #include"ClearCamera/GameCamera_Clear.h"
 
-void GameCamera_State::Player()
+void GameCamera_State::PlayerChange()
 {
 	std::shared_ptr<PlayerCamera> _player = std::make_shared<PlayerCamera>();
 	_player->SetTarget(m_target.lock());
@@ -18,7 +18,7 @@ void GameCamera_State::Player()
 	m_target.lock()->SetNextState(_player);
 }
 
-void GameCamera_State::Fixed()
+void GameCamera_State::FixedChange()
 {
 	std::shared_ptr<FixedCamera> _fixed = std::make_shared<FixedCamera>();
 	_fixed->SetTarget(m_target.lock());
@@ -27,7 +27,7 @@ void GameCamera_State::Fixed()
 	m_target.lock()->SetNextState(_fixed);
 }
 
-void GameCamera_State::Clear()
+void GameCamera_State::ClearChange()
 {
 	std::shared_ptr<ClearCamera> _clear = std::make_shared<ClearCamera>();
 	_clear->SetTarget(m_target.lock());

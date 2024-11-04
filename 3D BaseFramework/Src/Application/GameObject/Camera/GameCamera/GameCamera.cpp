@@ -63,6 +63,19 @@ void GameCamera::PostUpdate()
 
 	if (!m_state.expired())m_state.lock()->PostUpdate();
 
+	//KdCollider::RayInfo rayInfo;
+	//rayInfo.m_pos = m_mWorld.Translation();
+	//Math::Vector3 _dir = m_wpTarget.lock()->GetPos() - m_mWorld.Translation();
+	//_dir.Normalize();
+	//rayInfo.m_dir = _dir;
+	//rayInfo.m_range = (m_wpTarget.lock()->GetPos() - m_mWorld.Translation()).Length();
+	//rayInfo.m_type = KdCollider::TypeBump | KdCollider::TypeGround;
+
+
+	////デバッグ用
+	//Math::Color color = { 1,1,1,1 };
+	//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
+
 	m_spCamera->SetCameraMatrix(m_mWorld);
 	m_spCamera->SetProjectionMatrix(m_ViewAngList[m_CameraType]);
 	SetCursorPos(m_FixMousePos.x, m_FixMousePos.y);
@@ -78,6 +91,8 @@ void GameCamera::Init()
 	m_state = m_conText->GetState();
 	m_state.lock()->SetTarget(shared_from_this());
 	m_state.lock()->SetObjectManager(m_ObjManager.lock());
+
+	//m_pDebugWire = std::make_unique<KdDebugWireFrame>();
 
 }
 

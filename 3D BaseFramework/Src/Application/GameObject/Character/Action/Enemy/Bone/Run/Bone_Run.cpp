@@ -1,7 +1,9 @@
 ﻿#include "Bone_Run.h"
 #include"../../../../../ObjectManager.h"
+#include"../../../../../../Scene/SceneManager.h"
 #include"../../Enemy_ConText.h"
 #include"../../../../Enemy/Bone/Bone.h"
+#include"../../../../Enemy/EnemyManager.h"
 #include"../../../../Player/Player.h"
 #include"../../../../../../main.h"
 void Bone_Run::Start()
@@ -19,8 +21,6 @@ void Bone_Run::Start()
 			m_flow = Flow::CenterType;
 			return;
 		}
-
-		Chace();
 	}
 }
 
@@ -33,8 +33,6 @@ void Bone_Run::Center()
 			m_target.lock()->SetAnime("Run", true, 0.7f);
 			return;
 		}
-
-		Chace();
 	}
 }
 
@@ -52,7 +50,7 @@ void Bone_Run::End()
 		{
 			if (m_target.expired() == false)
 			{
-				m_target.lock()->GetConText()->Attack();
+				m_target.lock()->GetConText()->Idol();
 			}
 			return;
 		}
@@ -61,15 +59,6 @@ void Bone_Run::End()
 
 void Bone_Run::Chace()
 {
-	if (m_ObjManager.lock()->GetPlayer().expired())return;
-	std::shared_ptr<Player> _player = m_ObjManager.lock()->GetPlayer().lock();
-	Math::Vector3 _playerPos = _player->GetPos();
-	Math::Vector3 _pos = m_target.lock()->GetPos();
-	Math::Vector3 _moveDir = _playerPos - _pos;
-	float dist = _moveDir.Length();
-	_moveDir.Normalize();
 
-	if (dist >= m_target.lock()->GetAtkRange())m_target.lock()->SetMove(_moveDir);
-	if (m_target.expired() == false)Rotate(_moveDir, m_target.lock());
-	AttackCheck();
+
 }

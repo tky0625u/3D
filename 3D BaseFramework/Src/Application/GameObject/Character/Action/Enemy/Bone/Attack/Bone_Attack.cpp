@@ -41,7 +41,7 @@ void Bone_Attack::Center()
 			return;
 		}
 
-		Attack();
+		HitCheck();
 		MoveForward();
 	}
 }
@@ -57,15 +57,13 @@ void Bone_Attack::End()
 
 		if (m_target.lock()->GetIsAnimator())
 		{
-			//AttackCheck(m_atkFlg);
-			if (m_atkFlg) { m_flow = Flow::StartType; }
-			else { m_target.lock()->GetConText()->Idol(); }
+			m_target.lock()->GetConText()->Idol();
 			return;
 		}
 	}
 }
 
-void Bone_Attack::Attack()
+void Bone_Attack::HitCheck()
 {
 	if (m_target.expired())return;
 	if (SceneManager::Instance().GetPlayer()->IsExpired())return;

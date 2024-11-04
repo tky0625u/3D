@@ -9,8 +9,11 @@ public:
 	~EnemyManager()					override{};
 
 	void DeleteEnemyList();
+	void EnemyAttack();
+	void EnemyRun();
 
 	void AddEnemy(std::shared_ptr<EnemyBase> _enemy) { m_EnemyList.push_back(_enemy); }
+	void SetEnemyAttack(std::shared_ptr<EnemyBase> _enemy) { m_EnemyAttackList.push_back(_enemy); }
 
 	const std::vector<std::shared_ptr<EnemyBase>>& GetEnemyList()const { return m_EnemyList; }
 
@@ -29,4 +32,5 @@ public:
 
 private:
 	std::vector<std::shared_ptr<EnemyBase>> m_EnemyList;
+	std::vector<std::weak_ptr<EnemyBase>>   m_EnemyAttackList;
 };

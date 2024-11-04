@@ -11,8 +11,6 @@ void Bone_Idol::Center()
 			m_target.lock()->SetAnime("Idol", true, 1.0f);
 			return;
 		}
-
-		m_target.lock()->GetConText()->Run();
 	}
 }
 

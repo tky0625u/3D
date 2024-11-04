@@ -11,7 +11,7 @@ public:
 	void Center()   override;
 	void End()      override;
 
-	void Attack();
+	void HitCheck();
 	void MoveForward();
 
 private:

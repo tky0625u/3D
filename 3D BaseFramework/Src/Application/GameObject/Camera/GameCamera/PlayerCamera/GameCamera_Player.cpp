@@ -17,8 +17,7 @@ void PlayerCamera::PostUpdate()
 	const std::shared_ptr<const KdGameObject>	_spTarget = m_target.lock()->GetwpTarget().lock();
 	if (_spTarget)
 	{
-		m_PlayerPosList.push_back(_spTarget->GetPos());
-		_targetMat = Math::Matrix::CreateTranslation(m_PlayerPosList[0]);
+		_targetMat = Math::Matrix::CreateTranslation(_spTarget->GetPos());
 	}
 
 	if (!m_target.lock()->GetwpTarget().lock()->GetConText()->GetLockONFlg())
@@ -32,16 +31,49 @@ void PlayerCamera::PostUpdate()
 
 	m_mRotation = m_target.lock()->GetRotationMatrix();
 	m_mLocalPos = Math::Matrix::CreateTranslation(m_target.lock()->GetNowPos());
+	//Math::Matrix _mat = m_mLocalPos * m_mRotation * _targetMat;
+
+	//KdCollider::RayInfo rayInfo;
+	//rayInfo.m_pos = _mat.Translation();
+	//Math::Vector3 _dir = m_target.lock()->GetwpTarget().lock()->GetPos() - _mat.Translation();
+	//_dir.Normalize();
+	//rayInfo.m_dir = _dir;
+	//rayInfo.m_range = (m_target.lock()->GetwpTarget().lock()->GetPos()-_mat.Translation()).Length();
+	//rayInfo.m_type = KdCollider::TypeBump;
+
+	////デバッグ用
+	//Math::Color color = { 1,1,1,1 };
+	////m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
+
+	//std::list<KdCollider::CollisionResult> retRayList;
+	//for (auto& ret : SceneManager::Instance().GetObjList())
+	//{
+	//	ret->Intersects(rayInfo, &retRayList);
+	//}
+
+	//float _maxOverLap = -0.1f;
+	//Math::Vector3 _hitPos = Math::Vector3::Zero;
+	//bool _hitFlg = false;
+
+	//for (auto& ray : retRayList)
+	//{
+	//	if (_maxOverLap > ray.m_overlapDistance || _maxOverLap < 0.0f)
+	//	{
+	//		_maxOverLap = ray.m_overlapDistance;
+	//		_hitPos = ray.m_hitPos;
+	//		_hitFlg = true;
+	//	}
+	//}
+
+	//if (_hitFlg)
+	//{
+	//	Math::Vector3 _playerDist = _hitPos - _spTarget->GetPos();
+	//	m_mLocalPos = Math::Matrix::CreateTranslation(_playerDist);
+	//}
 
 	m_mWorld = m_mLocalPos * m_mRotation * _targetMat;
 	m_target.lock()->SetMatrix(m_mWorld);
 
-	auto pos = m_PlayerPosList.begin();
-
-	if (m_PlayerPosList.size() >= m_MaxPlayerPosListSize)
-	{
-		pos = m_PlayerPosList.erase(pos);
-	}
 }
 
 void PlayerCamera::LockON()

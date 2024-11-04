@@ -13,6 +13,8 @@ public:
 	void Init() { m_pDebugWire = std::make_unique<KdDebugWireFrame>(); }
 	void Chace();
 
+	void Run()override { return; }
+
 private:
 
 };

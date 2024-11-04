@@ -9,6 +9,9 @@ public:
 
 	void Start()override;
 
+	void Run()override { return; }
+	void Attack()override { return; }
+	void Stumble()override { return; }
 	void Hit(int _damage)override;
 
 private:

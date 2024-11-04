@@ -89,6 +89,11 @@ const std::list<std::shared_ptr<UIBase>>& SceneManager::GetUIList()
 	return m_currentScene->GetUIList();
 }
 
+const std::shared_ptr<EnemyManager>& SceneManager::GetEnemyManager()
+{
+	return m_currentScene->GetEnemyManager();
+}
+
 void SceneManager::SetPlayer(const std::shared_ptr<Player>& player)
 {
 	m_currentScene->SetPlayer(player);

@@ -12,6 +12,9 @@ public:
 
 	void Stumble();
 
+	void Run()override { return; }
+	void Attack()override { return; }
+
 private:
 
 };

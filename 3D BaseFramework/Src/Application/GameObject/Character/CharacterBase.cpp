@@ -5,15 +5,17 @@
 #include"Player/Player.h"
 #include"Action/ActionBase.h"
 
+void CharacterBase::PreUpdate()
+{
+	m_dir = Math::Vector3::Zero;
+	m_MoveSpeed = 0.0f;
+}
+
 void CharacterBase::Update()
 {
 	// デバッグ
 	if (!SceneManager::Instance().m_stop)
 	{
-		m_dir = Math::Vector3::Zero;
-		float Move = 0.0f;
-		m_MoveSpeed = 0.0f;
-
 		if (m_param.Hp <= 0)
 		{
 			CrushingAction();
@@ -34,7 +36,7 @@ void CharacterBase::Update()
 
 		m_gravity += m_gravityPow * _slow;
 		m_pos.y -= m_gravity;
-		Move = m_MoveSpeed * m_SpeedCorrection * _slow;
+		float Move = m_MoveSpeed * m_SpeedCorrection * _slow;
 		m_pos += Move * m_dir; //座標更新
 	}
 

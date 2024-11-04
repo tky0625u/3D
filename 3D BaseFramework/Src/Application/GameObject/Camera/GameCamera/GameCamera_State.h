@@ -16,9 +16,9 @@ public:
 		EndType
 	};
 
-	void Player();
-	void Fixed();
-	void Clear();
+	void PlayerChange();
+	void FixedChange();
+	void ClearChange();
 
 	void SetTarget(std::shared_ptr<GameCamera> _target) { m_target = _target; }
 	void SetDegAng(Math::Vector3 _deg) { m_DegAng = _deg; }
