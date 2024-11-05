@@ -738,7 +738,7 @@ void Application::ImGuiProcess()
 			{
 				if (ImGui::Button((const char*)u8"Player保存"))
 				{
-					SceneManager::Instance().GetNowScene()->GetObjectManager()->PlayerWrite(("Json/") + _filePath + ("/Player/Player.json"));
+					SceneManager::Instance().GetNowScene()->GetObjectManager()->PlayerWrite(("Asset/Json/") + _filePath + ("/Player/Player.json"));
 				}
 
 				if (SceneManager::Instance().GetNowScene()->GetObjectManager()->GetPlayer().expired() == false)
@@ -803,7 +803,7 @@ void Application::ImGuiProcess()
 							{
 								if (ImGui::Button((const char*)u8"Sword保存"))
 								{
-									SceneManager::Instance().GetNowScene()->GetObjectManager()->SwordWrite(_swordName, (("Json/") + _filePath + ("/Sword/Sword.json")));
+									SceneManager::Instance().GetNowScene()->GetObjectManager()->SwordWrite(_swordName, (("Asset/Json/") + _filePath + ("/Sword/Sword.json")));
 								}
 
 								ImGui::Text((const char*)u8"　剣 Sword=%s", _player->GetSword().lock()->GetName().c_str());
@@ -853,7 +853,7 @@ void Application::ImGuiProcess()
 								static float shieldSize = _shield->GetSize();
 								if (ImGui::Button((const char*)u8"Shield保存"))
 								{
-									SceneManager::Instance().GetNowScene()->GetObjectManager()->ShieldWrite(_shieldName, (("Json/") + _filePath + ("/Shield/Shield.json")));
+									SceneManager::Instance().GetNowScene()->GetObjectManager()->ShieldWrite(_shieldName, (("Asset/Json/") + _filePath + ("/Shield/Shield.json")));
 								}
 
 								ImGui::Text((const char*)u8"　盾 Shield=%s", _player->GetShield().lock()->GetName().c_str());
@@ -951,7 +951,7 @@ void Application::ImGuiProcess()
 
 				if (ImGui::Button((const char*)u8"Enemy保存"))
 				{
-					SceneManager::Instance().GetNowScene()->GetObjectManager()->EnemyWrite(_nowStage, _nowWave, (("Json/") + _filePath + ("/Enemy/Stage")));
+					SceneManager::Instance().GetNowScene()->GetObjectManager()->EnemyWrite(_nowStage, _nowWave, (("Asset/Json/") + _filePath + ("/Enemy/Stage")));
 					if (_nowWave == _wave)
 					{
 						_wave++;
@@ -1130,7 +1130,7 @@ void Application::ImGuiProcess()
 
 			if (ImGui::TreeNode("Object"))
 			{
-				if (ImGui::Button((const char*)u8"Object保存"))SceneManager::Instance().GetNowScene()->GetObjectManager()->ObjectWrite(("Json/") + _filePath + ("/Object/Object.json"));
+				if (ImGui::Button((const char*)u8"Object保存"))SceneManager::Instance().GetNowScene()->GetObjectManager()->ObjectWrite(("Asset/Json/") + _filePath + ("/Object/Object.json"));
 				static int Goperation = -1;
 				static int Coperation = -1;
 				static int Woperation = -1;

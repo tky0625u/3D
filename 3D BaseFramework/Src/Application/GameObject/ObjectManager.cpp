@@ -121,7 +121,7 @@ void ObjectManager::Clear()
 		SetGroundParam();
 		m_player.lock()->SetPos(m_circle.lock()->GetMatrix().Translation());
 		m_nowWave = 0;
-		std::string _filePath = ((std::string)"Json/Game/Enemy/Stage") + (std::to_string(m_nowStage).c_str()) + ((std::string)".json");
+		std::string _filePath = ((std::string)"Asset/Json/Game/Enemy/Stage") + (std::to_string(m_nowStage).c_str()) + ((std::string)".json");
 		SetEnemyParam(_filePath);
 	}
 }
@@ -146,7 +146,7 @@ void ObjectManager::TitleCameraWrite()
 	_json["TitleCamera"]["DegAngY"] = m_titleCamera.lock()->GetDegAng().y;
 	_json["TitleCamera"]["DegAngZ"] = m_titleCamera.lock()->GetDegAng().z;
 
-	std::ofstream _file("Json/Title/Camera/TitleCamera.json");
+	std::ofstream _file("Asset/Json/Title/Camera/TitleCamera.json");
 	if (_file.is_open())
 	{
 		_file << _json.dump();
@@ -165,7 +165,7 @@ void ObjectManager::TitleWrite()
 	_json["Title"]["PosY"] = m_title.lock()->GetVector2Pos().y;
 	_json["Title"]["Size"] = m_title.lock()->GetSize();
 
-	std::ofstream _file("Json/Title/Title/Title.json");
+	std::ofstream _file("Asset/Json/Title/Title/Title.json");
 	if (_file.is_open())
 	{
 		_file << _json.dump();
@@ -184,7 +184,7 @@ void ObjectManager::GameWrite()
 	_json["Game"]["PosY"] = m_game.lock()->GetVector2Pos().y;
 	_json["Game"]["Size"] = m_game.lock()->GetSize();
 
-	std::ofstream _file("Json/Title/Game/Game.json");
+	std::ofstream _file("Asset/Json/Title/Game/Game.json");
 	if (_file.is_open())
 	{
 		_file << _json.dump();
@@ -203,7 +203,7 @@ void ObjectManager::ExitWrite()
 	_json["Exit"]["PosY"] = m_exit.lock()->GetVector2Pos().y;
 	_json["Exit"]["Size"] = m_exit.lock()->GetSize();
 
-	std::ofstream _file("Json/Title/Exit/Exit.json");
+	std::ofstream _file("Asset/Json/Title/Exit/Exit.json");
 	if (_file.is_open())
 	{
 		_file << _json.dump();
@@ -222,7 +222,7 @@ void ObjectManager::TitleGuideWrite()
 	_json["TitleGuide"]["PosY"] = m_titleGuide.lock()->GetVector2Pos().y;
 	_json["TitleGuide"]["Size"] = m_titleGuide.lock()->GetSize();
 
-	std::ofstream _file("Json/Title/Guide/Guide.json");
+	std::ofstream _file("Asset/Json/Title/Guide/Guide.json");
 	if (_file.is_open())
 	{
 		_file << _json.dump();
@@ -242,7 +242,7 @@ void ObjectManager::CursorWrite()
 	_json["Cursor"]["MaxAlpha"] = m_cursor.lock()->GetMaxAlpha();
 	_json["Cursor"]["ChangeAlpha"] = m_cursor.lock()->GetChangeAlphaNum();
 
-	std::ofstream _file("Json/Title/Cursor/Cursor.json");
+	std::ofstream _file("Asset/Json/Title/Cursor/Cursor.json");
 	if (_file.is_open())
 	{
 		_file << _json.dump();
@@ -253,7 +253,7 @@ void ObjectManager::CursorWrite()
 void ObjectManager::GameCameraWrite()
 {
 	nlohmann::json _json;
-	std::ifstream _oldFile("Json/Game/Camera/Camera.json");
+	std::ifstream _oldFile("Asset/Json/Game/Camera/Camera.json");
 	if (_oldFile.is_open())
 	{
 		_oldFile >> _json;
@@ -284,7 +284,7 @@ void ObjectManager::GameCameraWrite()
 	_json["Camera"][_cameraType + "AngleY"] = m_camera.lock()->GetNowDegAng().y;
 	_json["Camera"][_cameraType + "ViewAngle"] = m_camera.lock()->GetNowViewAng();
 
-	std::ofstream _newfile("Json/Game/Camera/Camera.json");
+	std::ofstream _newfile("Asset/Json/Game/Camera/Camera.json");
 	if (_newfile.is_open())
 	{
 		_newfile << _json.dump();
@@ -507,7 +507,7 @@ void ObjectManager::ObjectWrite(std::string _fileName)
 void ObjectManager::SetTitleCamera()
 {
 	//jsonファイル
-	std::string fileName = "Json/Title/Camera/TitleCamera.json";
+	std::string fileName = "Asset/Json/Title/Camera/TitleCamera.json";
 
 	std::ifstream ifs(fileName.c_str());
 	nlohmann::json _json;
@@ -551,7 +551,7 @@ void ObjectManager::SetTitleCamera()
 void ObjectManager::SetTitleParam()
 {
 	//jsonファイル
-	std::string fileName = "Json/Title/Title/Title.json";
+	std::string fileName = "Asset/Json/Title/Title/Title.json";
 
 	std::ifstream ifs(fileName.c_str());
 	nlohmann::json _json;
