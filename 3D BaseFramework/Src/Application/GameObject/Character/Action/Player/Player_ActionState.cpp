@@ -84,6 +84,7 @@ void Player_ActionState::LockON()
 	if (m_target.lock()->GetConText()->GetLockONFlg() && !m_target.lock()->GetConText()->GetLockONTarget().expired() && m_target.lock()->GetConText()->GetLockONTarget().lock()->GetParam().Hp > 0)
 	{
 		m_target.lock()->GetConText()->SetLockONFlg(false);
+		m_target.lock()->GetConText()->GetLockONTarget().lock()->SetLockONFlg(false);
 		return;
 	}
 
@@ -117,6 +118,7 @@ void Player_ActionState::LockON()
 
 	if (HitFlg == true)
 	{
+		m_ObjManager.lock()->GetEnemyList()[listNum].lock()->SetLockONFlg(true);
 		m_target.lock()->GetConText()->SetLockONTarget(m_ObjManager.lock()->GetEnemyList()[listNum].lock());
 		m_target.lock()->GetConText()->SetLockONFlg(true);
 	}
@@ -135,7 +137,11 @@ void Player_ActionState::Update()
 	{
 		if (!m_target.lock()->GetConText()->GetLockONTarget().expired())
 		{
-			if (m_target.lock()->GetConText()->GetLockONTarget().lock()->GetParam().Hp <= 0)LockON();
+			if (m_target.lock()->GetConText()->GetLockONTarget().lock()->GetParam().Hp <= 0)
+			{
+				m_target.lock()->GetConText()->GetLockONTarget().lock()->SetLockONFlg(false);
+				LockON();
+			}
 		}
 	}
 	ChangeAction();

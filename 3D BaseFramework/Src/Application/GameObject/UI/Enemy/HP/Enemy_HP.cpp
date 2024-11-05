@@ -1,6 +1,8 @@
 ﻿#include "Enemy_HP.h"
 #include"../../../Camera/GameCamera/GameCamera.h"
 #include"../../../Character/Enemy/EnemyBase.h"
+#include"../../../Character/Player/Player.h"
+#include"../../../Character/Action/Player/Player_ConText.h"
 
 void Enemy_HP::Update()
 {
@@ -28,8 +30,13 @@ void Enemy_HP::Update()
 	Math::Vector3 _pos = { m_pos.x,m_pos.y,0.0f };
 	m_camera.lock()->WorkCamera()->ConvertWorldToScreenDetail(m_target.lock()->GetHPMat().Translation(), _pos);
 
-	if (_pos.z >= 0.0f)m_alpha = 1.0f;
-	else { m_alpha = -1.0f; }
+	if (!m_target.lock()->GetLockONFlg() && m_target.lock()->GetTarget().lock()->GetConText()->GetLockONFlg()){m_alpha = 0.0f;}
+	else
+	{
+		if (_pos.z >= 0.0f)m_alpha = 1.0f;
+		else { m_alpha = -1.0f; }
+	}
+
 	m_pos = { _pos.x,_pos.y };
 	m_color = { 1,1,1,m_alpha };
 }

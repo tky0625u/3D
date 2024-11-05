@@ -48,6 +48,12 @@ float4 main(VSOutput In) : SV_Target0
 	{
 		discard;
 	}
+
+	// アウトライン
+	if(g_EnableOutLineDraw)
+	{
+		return float4(1, 1, 1, 1); // 白
+	}
 	
 	// カメラへの方向
 	float3 vCam = g_CamPos - In.wPos;

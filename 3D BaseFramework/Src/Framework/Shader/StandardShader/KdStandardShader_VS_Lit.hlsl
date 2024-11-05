@@ -29,6 +29,12 @@ VSOutput main(
 		normal = mul(normal, (float3x3) mBones);
 	}
 	//<-------------------------スキニング
+
+	// アウトライン
+	if(g_EnableOutLineDraw)
+	{
+		pos.xyz = pos.xyz + normal * 0.01;
+	}
 	
 	VSOutput Out;
 

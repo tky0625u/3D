@@ -31,6 +31,10 @@ public:
 		float			DissolveEdgeRange = 0.03f;	// 0 ～ 1
 
 		Math::Vector3	DissolveEmissive = { 0.0f, 1.0f, 1.0f };
+
+		// アウトライン
+		int             EnableOutLineDraw = 0;
+		float           m_blank[3] = { 0.0f,0.0f,0.0f };
 	};
 
 	// 定数バッファ(メッシュ単位更新)
@@ -129,6 +133,13 @@ public:
 		SetDissolveTexture(*m_dissolveTex);
 	}
 
+	// アウトライン
+	void SetEnableOutLineDraw(const bool enableOutLineDraw)
+	{
+		m_cb0_Obj.Work().EnableOutLineDraw = enableOutLineDraw;
+		m_dirtyCBObj = true;
+	}
+
 	//================================================
 	// 各定数バッファの取得
 	//================================================
@@ -215,6 +226,9 @@ private:
 			m_dirtyCBObj = true;
 		}
 	}
+
+	// アウトライン
+	bool GetEnableOutLineDraw() { return m_cb0_Obj.Work().EnableOutLineDraw; }
 
 	// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
 	// Lit：陰影をつけるオブジェクトの描画用（不透明な物体やキャラクタの板ポリなど

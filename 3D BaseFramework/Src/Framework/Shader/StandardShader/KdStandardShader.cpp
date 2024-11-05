@@ -256,9 +256,19 @@ void KdStandardShader::DrawModel(KdModelWork& rModel, const Math::Matrix& mWorld
 	// 全描画用メッシュノードを描画
 	for (auto& nodeIdx : data->GetDrawMeshNodeIndices())
 	{
+		if (GetEnableOutLineDraw())
+		{
+			KdShaderManager::Instance().ChangeRasterizerState(KdRasterizerState::CullFront);
+		}
+
 		// 描画
 		DrawMesh(dataNodes[nodeIdx].m_spMesh.get(), workNodes[nodeIdx].m_worldTransform * mWorld,
 			data->GetMaterials(), colRate, emissive);
+
+		if (GetEnableOutLineDraw())
+		{
+			KdShaderManager::Instance().ChangeRasterizerState(KdRasterizerState::CullBack);
+		}
 	}
 
 	// 定数に変更があった場合は自動的に初期状態に戻す

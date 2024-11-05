@@ -26,6 +26,7 @@ public:
 	void PostUpdate()    override;
 	virtual void Action()override;
 	void DrawSprite()    override;
+	void DrawOutLine();
 	virtual void Init()  override;
 
 	void CrushingAction()override;
@@ -35,6 +36,7 @@ public:
 		m_NextState = _action;
 		m_actionType = _actionType;
 	}
+	void SetLockONFlg(bool _LockONFlg) { m_LockONFlg = _LockONFlg; }
 
 	const std::weak_ptr<Player>& GetTarget()const { return m_Target; }
 	std::shared_ptr<Enemy_ConText> GetConText()const { return m_conText; }
@@ -42,6 +44,7 @@ public:
 	Math::Matrix GetAttackStartPointMat()const { return m_model->FindWorkNode("AttackStartPoint")->m_worldTransform * m_mWorld; }
 	Math::Matrix GetLockPointMat()const { return m_model->FindWorkNode("LockONPoint")->m_worldTransform * m_mWorld; }
 	UINT GetActionType()const { return m_actionType; }
+	const bool& GetLockONFlg()const { return m_LockONFlg; }
 
 protected:
 	std::weak_ptr<Player>              m_Target;
@@ -51,4 +54,5 @@ protected:
 	std::shared_ptr<Enemy_ActionState> m_NextState;
 	std::weak_ptr<KdEffekseerObject>   m_Effect;
 	UINT                               m_actionType = Action::AppealType;
+	bool                               m_LockONFlg = false;
 };

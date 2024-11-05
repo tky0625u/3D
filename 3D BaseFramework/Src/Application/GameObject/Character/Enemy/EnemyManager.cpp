@@ -174,7 +174,11 @@ void EnemyManager::PreDraw()
 
 void EnemyManager::DrawLit()
 {
-	for (auto& enemy : m_EnemyList) enemy->DrawLit();
+	for (auto& enemy : m_EnemyList)
+	{
+		enemy->DrawLit();
+		enemy->DrawOutLine();
+	}
 }
 
 void EnemyManager::DrawUnLit()
