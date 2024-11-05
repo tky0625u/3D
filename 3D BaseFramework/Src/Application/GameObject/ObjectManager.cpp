@@ -590,7 +590,7 @@ void ObjectManager::SetTitleParam()
 void ObjectManager::SetGameParam()
 {
 	//jsonファイル
-	std::string fileName = "Json/Title/Game/Game.json";
+	std::string fileName = "Asset/Json/Title/Game/Game.json";
 
 	std::ifstream ifs(fileName.c_str());
 	nlohmann::json _json;
@@ -629,7 +629,7 @@ void ObjectManager::SetGameParam()
 void ObjectManager::SetExitParam()
 {
 	//jsonファイル
-	std::string fileName = "Json/Title/Exit/Exit.json";
+	std::string fileName = "Asset/Json/Title/Exit/Exit.json";
 
 	std::ifstream ifs(fileName.c_str());
 	nlohmann::json _json;
@@ -668,7 +668,7 @@ void ObjectManager::SetExitParam()
 void ObjectManager::SetTitleGuideParam()
 {
 	//jsonファイル
-	std::string fileName = "Json/Title/Guide/Guide.json";
+	std::string fileName = "Asset/Json/Title/Guide/Guide.json";
 
 	std::ifstream ifs(fileName.c_str());
 	nlohmann::json _json;
@@ -707,7 +707,7 @@ void ObjectManager::SetTitleGuideParam()
 void ObjectManager::SetCursorParam()
 {
 	//jsonファイル
-	std::string fileName = "Json/Title/Cursor/Cursor.json";
+	std::string fileName = "Asset/Json/Title/Cursor/Cursor.json";
 
 	std::ifstream ifs(fileName.c_str());
 	nlohmann::json _json;
@@ -756,7 +756,7 @@ void ObjectManager::SetCursorParam()
 void ObjectManager::SetGameCameraParam()
 {
 	//jsonファイル
-	std::string fileName = "Json/Game/Camera/Camera.json";
+	std::string fileName = "Asset/Json/Game/Camera/Camera.json";
 
 	std::ifstream ifs(fileName.c_str());
 	nlohmann::json _json;
@@ -826,7 +826,7 @@ void ObjectManager::SetGameCameraParam()
 void ObjectManager::SetObjectParam()
 {
 	//jsonファイル
-	std::string fileName = ("Json/") + m_nowScene + ("/Object/Object.json");
+	std::string fileName = ("Asset/Json/") + m_nowScene + ("/Object/Object.json");
 
 	std::ifstream ifs(fileName.c_str());
 	nlohmann::json _json;
@@ -912,7 +912,7 @@ void ObjectManager::SetObjectParam()
 void ObjectManager::SetGroundParam()
 {
 	//jsonファイル
-	std::string fileName = ("Json/") + m_nowScene + ("/Object/Object.json");
+	std::string fileName = ("Asset/Json/") + m_nowScene + ("/Object/Object.json");
 
 	std::ifstream ifs(fileName.c_str());
 	nlohmann::json _json;
@@ -981,7 +981,7 @@ void ObjectManager::SetGroundParam()
 void ObjectManager::SetPlayerParam()
 {
 	//jsonファイル
-	std::string fileName = ("Json/") + m_nowScene + ("/Player/Player.json");
+	std::string fileName = ("Asset/Json/") + m_nowScene + ("/Player/Player.json");
 
 	std::ifstream ifs(fileName.c_str());
 	nlohmann::json _json;
@@ -1032,8 +1032,8 @@ void ObjectManager::SetPlayerParam()
 		std::shared_ptr<Player> player = std::make_shared<Player>();
 		m_player = player;
 
-		SetWeaponParam((("Json/") + m_nowScene + ("/Weapon/Sword/Sword.json")), stage["SwordName"]);
-		SetWeaponParam((("Json/") + m_nowScene + ("/Weapon/Shield/Shield.json")), stage["ShieldName"]);
+		SetWeaponParam((("Asset/Json/") + m_nowScene + ("/Weapon/Sword/Sword.json")), stage["SwordName"]);
+		SetWeaponParam((("Asset/Json/") + m_nowScene + ("/Weapon/Shield/Shield.json")), stage["ShieldName"]);
 
 		player->SetCamera(m_camera.lock());
 		player->SetParam(_hp, player->GetSword().lock()->GetATK(), _speed, _stamina);
@@ -1595,13 +1595,13 @@ void ObjectManager::ChangeWeapon(std::string _swordName, std::string _shieldName
 	{
 		m_player.lock()->GetSword().lock()->Expired();
 
-		AddWeapon("Json/Weapon/Sword/Sword.json", _swordName);
+		AddWeapon("Asset/Json/Weapon/Sword/Sword.json", _swordName);
 	}
 
 	if (m_player.lock()->GetShield().lock()->GetName() != _shieldName)
 	{
 		m_player.lock()->GetShield().lock()->Expired();
 
-		AddWeapon("Json/Weapon/Shield/Shield", _shieldName);
+		AddWeapon("Asset/Json/Weapon/Shield/Shield", _shieldName);
 	}
 }

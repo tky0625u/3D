@@ -48,7 +48,7 @@ void ObjLoad()
 	_ObjManager->SetGameCameraParam();
 	_ObjManager->SetObjectParam();
 	_ObjManager->SetPlayerParam();
-	_ObjManager->SetEnemyParam("Json/Game/Enemy/Stage1.json");
+	_ObjManager->SetEnemyParam("Asset/Json/Game/Enemy/Stage1.json");
 
 	loop = false;
 }
