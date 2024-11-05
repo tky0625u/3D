@@ -41,6 +41,7 @@ public:
 	const int GetStaminaRecoveryTime()const { return m_StaminaRecoveryTime; }
 	const UINT GetParryID()const { return m_ParryID; }
 	const Math::Matrix& GetEnemyAttackPointMat() const { return (m_model->FindWorkNode("EnemyAttackPoint")->m_worldTransform) * m_mWorld; }
+	const std::weak_ptr<GameCamera>& GetCamera()const { return m_camera; }
 
 private:
 	std::weak_ptr<GameCamera>             m_camera;

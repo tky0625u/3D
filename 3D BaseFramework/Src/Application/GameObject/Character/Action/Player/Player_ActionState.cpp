@@ -4,6 +4,7 @@
 #include"../../Enemy/EnemyBase.h"
 #include"../Enemy/Enemy_ConText.h"
 #include"../../Player/Player.h"
+#include"../../../Camera/GameCamera/GameCamera.h"
 #include"Player_ConText.h"
 #include"../../../Weapon/Sword/Sword.h"
 
@@ -88,9 +89,9 @@ void Player_ActionState::LockON()
 		return;
 	}
 
-	float Dist = 0.0f;
 	bool HitFlg = false;
 	int listNum = 0;
+	Math::Vector3 _2dPos = Math::Vector3::Zero;
 
 	for (int e = 0; e < m_ObjManager.lock()->GetEnemyList().size(); ++e)
 	{
@@ -99,18 +100,26 @@ void Player_ActionState::LockON()
 		{
 			if (!HitFlg)
 			{
-				float d = (m_ObjManager.lock()->GetEnemyList()[e].lock()->GetPos() - m_target.lock()->GetPos()).Length();
-				Dist = d;
+				m_target.lock()->GetCamera().lock()->GetCamera()->ConvertWorldToScreenDetail(m_ObjManager.lock()->GetEnemyList()[e].lock()->GetPos(), _2dPos);
 				HitFlg = true;
 				listNum = e;
 			}
 			else
 			{
-				float d = (m_ObjManager.lock()->GetEnemyList()[e].lock()->GetPos() - m_target.lock()->GetPos()).Length();
-				if (d < Dist)
+				Math::Vector3 _tmp2dPos = Math::Vector3::Zero;
+				m_target.lock()->GetCamera().lock()->GetCamera()->ConvertWorldToScreenDetail(m_ObjManager.lock()->GetEnemyList()[e].lock()->GetPos(), _tmp2dPos);
+				if (_2dPos.z < 0.0f && _tmp2dPos.z >= 0.0f)
 				{
-					Dist = d;
+					_2dPos = _tmp2dPos;
 					listNum = e;
+				}
+				else if ((_2dPos.z >= 0.0f && _tmp2dPos.z >= 0.0f) || (_2dPos.z < 0.0f && _tmp2dPos.z < 0.0f))
+				{
+					if (_2dPos.Length() > _tmp2dPos.Length())
+					{
+						_2dPos = _tmp2dPos;
+						listNum = e;
+					}
 				}
 			}
 		}
