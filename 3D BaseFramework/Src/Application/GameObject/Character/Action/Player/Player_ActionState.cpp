@@ -5,6 +5,8 @@
 #include"../Enemy/Enemy_ConText.h"
 #include"../../Player/Player.h"
 #include"../../../Camera/GameCamera/GameCamera.h"
+#include"../../../Camera/GameCamera/GameCamera_ConText.h"
+#include"../../../Camera/GameCamera/GameCamera_State.h"
 #include"Player_ConText.h"
 #include"../../../Weapon/Sword/Sword.h"
 
@@ -68,8 +70,9 @@ void Player_ActionState::AttackDamage()
 	int enemy = 0;
 	for (auto& ret : retSphereList)
 	{
-		if (hitEnemyList[enemy]->GetParam().Hp > 0 && hitEnemyList[enemy]->GetActionType() != EnemyBase::Action::AppealType && hitEnemyList[enemy]->GetinviTime() == 0)
+		if (hitEnemyList[enemy]->GetParam().Hp > 0 && hitEnemyList[enemy]->GetActionType() != EnemyBase::Action::AppealType && hitEnemyList[enemy]->GetActionType() != EnemyBase::Action::HitType && hitEnemyList[enemy]->GetinviTime() == 0)
 		{
+			m_target.lock()->GetCamera().lock()->GetConText()->GetState()->SetShakeFlg(true);
 			hitEnemyList[enemy]->Hit(m_target.lock()->GetParam().Atk);
 			hitEnemyList[enemy]->GetConText()->Hit(m_target.lock()->GetParam().Atk);
 			hitEnemyList[enemy]->SetInviTime(m_target.lock()->GetinviTime());

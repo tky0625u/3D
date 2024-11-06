@@ -15,5 +15,5 @@ public:
 	void LockON();
 
 private:
-	
+
 };

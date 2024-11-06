@@ -35,3 +35,20 @@ void GameCamera_State::ClearChange()
 	m_target.lock()->SetCameraType(GameCamera::CameraType::ClearType);
 	m_target.lock()->SetNextState(_clear);
 }
+
+void GameCamera_State::Shake()
+{
+	Math::Vector3 _pos = m_target.lock()->GetNowPos();
+
+	m_angle.y += 100.0f;
+	if (m_angle.y > 360.0f)m_angle.y -= 360.0f;
+	_pos.y += m_move * (cos(DirectX::XMConvertToRadians(m_angle.y)));
+	m_mLocalPos = Math::Matrix::CreateTranslation(_pos);
+	m_shakeTime--;
+	if (m_shakeTime <= 0.0f)
+	{
+		m_shakeTime = 10.0f;
+		m_angle.y = 0.0f;
+		m_shakeFlg = false;
+	}
+}

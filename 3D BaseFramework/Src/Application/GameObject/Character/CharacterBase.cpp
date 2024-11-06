@@ -4,6 +4,9 @@
 #include"Enemy/EnemyBase.h"
 #include"Player/Player.h"
 #include"Action/ActionBase.h"
+#include"../Camera/GameCamera/GameCamera.h"
+#include"../Camera/GameCamera/GameCamera_ConText.h"
+#include"../Camera/GameCamera/GameCamera_State.h"
 
 void CharacterBase::PreUpdate()
 {
@@ -22,7 +25,7 @@ void CharacterBase::Update()
 		}
 		else
 		{
-			Action();
+			if(!m_ObjManager.lock()->GetCamera().lock()->GetConText()->GetState()->GetShakeFlg())Action();
 		}
 
 		float _slow = 1.0f;
@@ -135,6 +138,8 @@ void CharacterBase::PostUpdate()
 		HitDir.Normalize();
 		m_pos += maxOverLap * HitDir;
 	}
+
+	if (m_ObjManager.lock()->GetCamera().lock()->GetConText()->GetState()->GetShakeFlg())return;
 
 	//アニメーションの更新
 	if (m_anime != m_beforeAnime)

@@ -70,7 +70,7 @@ void PlayerCamera::PostUpdate()
 	//	Math::Vector3 _playerDist = _hitPos - _spTarget->GetPos();
 	//	m_mLocalPos = Math::Matrix::CreateTranslation(_playerDist);
 	//}
-
+	if (m_shakeFlg)Shake();
 	m_mWorld = m_mLocalPos * m_mRotation * _targetMat;
 	m_target.lock()->SetMatrix(m_mWorld);
 
