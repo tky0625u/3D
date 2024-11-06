@@ -148,21 +148,20 @@ void Player_Attack::AttackDirCheck()
 		bool HitFlg = false;
 		int listNum = 0;
 
-		for (int e = 0; e < m_ObjManager.lock()->GetEnemyList().size(); ++e)
+		for (int e = 0; e < SceneManager::Instance().GetEnemyList().size(); ++e)
 		{
-			if (!m_ObjManager.lock()->GetEnemyList()[e].expired() &&
-				m_ObjManager.lock()->GetEnemyList()[e].lock()->GetParam().Hp > 0)
+			if (SceneManager::Instance().GetEnemyList()[e]->GetParam().Hp > 0)
 			{
 				if (!HitFlg)
 				{
-					float d = (m_ObjManager.lock()->GetEnemyList()[e].lock()->GetPos() - m_target.lock()->GetPos()).Length();
+					float d = (SceneManager::Instance().GetEnemyList()[e]->GetPos() - m_target.lock()->GetPos()).Length();
 					Dist = d;
 					HitFlg = true;
 					listNum = e;
 				}
 				else
 				{
-					float d = (m_ObjManager.lock()->GetEnemyList()[e].lock()->GetPos() - m_target.lock()->GetPos()).Length();
+					float d = (SceneManager::Instance().GetEnemyList()[e]->GetPos() - m_target.lock()->GetPos()).Length();
 					if (d < Dist)
 					{
 						Dist = d;
@@ -174,7 +173,7 @@ void Player_Attack::AttackDirCheck()
 
 		if (HitFlg)
 		{
-			m_AttackDir = m_ObjManager.lock()->GetEnemyList()[listNum].lock()->GetPos() - _player->GetPos();
+			m_AttackDir = SceneManager::Instance().GetEnemyList()[listNum]->GetPos() - _player->GetPos();
 			m_AttackDir.y = 0.0f;
 		}
 		else
@@ -206,9 +205,9 @@ void Player_Attack::AttackDirCheck()
 			else
 			{
 				Math::Matrix cameraRotYMat = Math::Matrix::Identity;
-				if (m_ObjManager.lock()->GetCamera().expired() == false)
+				if (m_target.lock()->GetCamera().expired() == false)
 				{
-					cameraRotYMat = m_ObjManager.lock()->GetCamera().lock()->GetRotationYMatrix();
+					cameraRotYMat = m_target.lock()->GetCamera().lock()->GetRotationYMatrix();
 				}
 				m_AttackDir = m_AttackDir.TransformNormal(m_AttackDir, cameraRotYMat);
 			}

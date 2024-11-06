@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include"../../UIBase.h"
 
+class Game;
+class Exit;
+
 class Cursor :public UIBase
 {
 public:
@@ -16,6 +19,8 @@ public:
 	void SetChangeSizeNum(float _ChangeSizeNum) { m_ChangeSizeNum = _ChangeSizeNum; }
 	void SetMaxAlpha(float _MaxAlpha) { m_MaxAlpha = _MaxAlpha; }
 	void SetChangeAlphaNum(float _ChangeAlphaNum) { m_ChangeAlphaNum = _ChangeAlphaNum; }
+	void SetGame(std::shared_ptr<Game> _game) { m_game = _game; }
+	void SetExit(std::weak_ptr<Exit> _exit) { m_exit = _exit; }
 
 	const Math::Vector2 GetVector2Pos()const { return m_pos; }
 	const float GetMaxSize()const { return m_MaxSize; }
@@ -25,6 +30,8 @@ public:
 
 
 private:
+	std::weak_ptr<Game>        m_game;
+	std::weak_ptr<Exit>        m_exit;
 	std::vector<Math::Vector2> m_PosList;
 	int                        m_posNum = 0;
 	float                      m_MaxSize = 0.0f;

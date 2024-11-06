@@ -61,8 +61,8 @@ void Golem_Run::End()
 
 void Golem_Run::Chace()
 {
-	if (m_ObjManager.lock()->GetPlayer().expired())return;
-	std::shared_ptr<Player> _player = m_ObjManager.lock()->GetPlayer().lock();
+	if (m_target.lock()->GetTarget().expired())return;
+	std::shared_ptr<Player> _player = m_target.lock()->GetTarget().lock();
 	Math::Vector3 _playerPos = _player->GetPos();
 	Math::Vector3 _pos = m_target.lock()->GetPos();
 	Math::Vector3 _moveDir = _playerPos - _pos;

@@ -10,7 +10,7 @@
 
 void Player::Action()
 {
-	if (m_ObjManager.lock()->GetCamera().lock()->GetCameraType() == GameCamera::CameraType::FixedType)return;
+	if (m_camera.lock()->GetCameraType() == GameCamera::CameraType::FixedType)return;
 
 	if (m_NextState != nullptr)
 	{
@@ -29,8 +29,8 @@ void Player::Update()
 
 void Player::PostUpdate()
 {
-	if (m_ObjManager.lock()->GetEnemyList().size() == 0 &&
-		m_ObjManager.lock()->GetCamera().lock()->GetCameraType() != GameCamera::CameraType::FixedType)
+	if (SceneManager::Instance().GetEnemyList().size() == 0 &&
+		m_camera.lock()->GetCameraType() != GameCamera::CameraType::FixedType)
 	{
 		KdCollider::RayInfo rayInfo;
 		rayInfo.m_pos = m_pos;
@@ -45,10 +45,9 @@ void Player::PostUpdate()
 		//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
 
 		std::list<KdCollider::CollisionResult> retRayList;
-		for (auto& ret : m_ObjManager.lock()->GetObjectList())
+		for (auto& ret : SceneManager::Instance().GetObjList())
 		{
-			if (ret.expired())continue;
-			if (ret.lock()->Intersects(rayInfo, &retRayList))
+			if (ret->Intersects(rayInfo, &retRayList))
 			{
 				m_ObjManager.lock()->Clear();
 			}

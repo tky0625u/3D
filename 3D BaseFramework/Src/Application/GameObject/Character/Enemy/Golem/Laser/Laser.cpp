@@ -87,10 +87,10 @@ void Laser::PostUpdate()
 
 	std::list<KdCollider::CollisionResult> _retBoxList;
 
-	if (m_ObjManager.lock()->GetPlayer().lock()->Intersects(box, nullptr))
-	{
-		m_ObjManager.lock()->GetPlayer().lock()->Hit(m_damage);
-	}
+	//if (m_ObjManager.lock()->GetPlayer().lock()->Intersects(box, nullptr))
+	//{
+	//	m_target.lock()->GetPlayer().lock()->Hit(m_damage);
+	//}
 }
 
 void Laser::Init()

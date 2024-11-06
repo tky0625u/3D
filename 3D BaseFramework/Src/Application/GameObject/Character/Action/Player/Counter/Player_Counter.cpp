@@ -1,4 +1,5 @@
 ﻿#include "Player_Counter.h"
+#include"../../../../../Scene/SceneManager.h"
 #include"../../../Player/Player.h"
 #include"../Player_ConText.h"
 #include"../Player_ActionState.h"
@@ -129,15 +130,15 @@ void Player_Counter::CounterDamage()
 	std::list<KdCollider::CollisionResult> retSphereList;
 	std::shared_ptr<EnemyBase> hitEnemy;
 
-	for (auto& sphere : m_ObjManager.lock()->GetEnemyList())
+	for (auto& sphere : SceneManager::Instance().GetEnemyList())
 	{
-		if (sphere.expired() || sphere.lock()->GetID() != m_target.lock()->GetParryID())continue;
+		if (sphere->GetID() != m_target.lock()->GetParryID())continue;
 
 		for (int i = 0; i < sphereInfoList.size(); ++i)
 		{
-			if (sphere.lock()->Intersects(sphereInfoList[i], &retSphereList))
+			if (sphere->Intersects(sphereInfoList[i], &retSphereList))
 			{
-				hitEnemy = sphere.lock();
+				hitEnemy = sphere;
 			}
 		}
 	}

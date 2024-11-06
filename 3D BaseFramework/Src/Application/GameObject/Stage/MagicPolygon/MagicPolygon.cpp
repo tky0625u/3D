@@ -9,11 +9,11 @@ void MagicPolygon::Update()
 {
 	if (!SceneManager::Instance().m_stop)
 	{
-		if (m_ObjManager.lock()->GetEnemyList().size() == 0)
+		if (SceneManager::Instance().GetEnemyList().size() == 0 && m_ObjManager.lock()->IsWaveMax())
 		{
 			if (!m_rightFlg)
 			{
-				m_ObjManager.lock()->GetCamera().lock()->GetConText()->FixedCamera();
+				m_camera.lock()->GetConText()->FixedCamera();
 				KdEffekseerManager::GetInstance().Play("Circle/Circle.efkefc", m_mWorld.Translation(), m_size, 1.0f, false);
 				m_rightFlg = true;
 			}
@@ -22,10 +22,10 @@ void MagicPolygon::Update()
 			if (m_rgb < 1.0f)m_rgb += 0.01f;
 			else
 			{
-				if (m_ObjManager.lock()->GetCamera().lock()->GetCameraType() == GameCamera::CameraType::FixedType)
+				if (m_camera.lock()->GetCameraType() == GameCamera::CameraType::FixedType)
 				{
 					KdEffekseerManager::GetInstance().StopEffect("Circle/Circle.efkefc");
-					m_ObjManager.lock()->GetCamera().lock()->GetConText()->PlayerCamera();
+					m_camera.lock()->GetConText()->PlayerCamera();
 				}
 			}
 		}

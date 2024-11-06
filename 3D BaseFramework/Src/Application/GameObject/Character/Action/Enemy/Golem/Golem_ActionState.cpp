@@ -46,7 +46,6 @@ void Golem_ActionState::Hit(int _damage)
 	std::shared_ptr<Golem_Hit> hit = std::make_shared<Golem_Hit>();
 	hit->SetTarget(m_target.lock());
 	hit->SetObjectManager(m_ObjManager.lock());
-	m_ObjManager.lock()->SetStopTime(5);
 	m_target.lock()->SetNextAction(hit, EnemyBase::Action::HitType);
 }
 

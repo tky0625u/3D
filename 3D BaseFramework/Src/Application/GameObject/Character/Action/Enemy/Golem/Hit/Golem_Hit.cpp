@@ -26,5 +26,4 @@ void Golem_Hit::Hit(int _damage)
 	if (m_target.expired())return;
 	m_target.lock()->Hit(_damage);
 	if (m_target.lock()->GetParam().Hp <= 0)return;
-	m_ObjManager.lock()->SetStopTime(10);
 }

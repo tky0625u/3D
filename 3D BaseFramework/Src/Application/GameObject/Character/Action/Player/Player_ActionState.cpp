@@ -31,21 +31,20 @@ void Player_ActionState::LockON()
 	int listNum = 0;
 	Math::Vector3 _2dPos = Math::Vector3::Zero;
 
-	for (int e = 0; e < m_ObjManager.lock()->GetEnemyList().size(); ++e)
+	for (int e = 0; e < SceneManager::Instance().GetEnemyList().size(); ++e)
 	{
-		if (!m_ObjManager.lock()->GetEnemyList()[e].expired() &&
-			m_ObjManager.lock()->GetEnemyList()[e].lock()->GetParam().Hp > 0)
+		if (SceneManager::Instance().GetEnemyList()[e]->GetParam().Hp > 0)
 		{
 			if (!HitFlg)
 			{
-				m_target.lock()->GetCamera().lock()->GetCamera()->ConvertWorldToScreenDetail(m_ObjManager.lock()->GetEnemyList()[e].lock()->GetPos(), _2dPos);
+				m_target.lock()->GetCamera().lock()->GetCamera()->ConvertWorldToScreenDetail(SceneManager::Instance().GetEnemyList()[e]->GetPos(), _2dPos);
 				HitFlg = true;
 				listNum = e;
 			}
 			else
 			{
 				Math::Vector3 _tmp2dPos = Math::Vector3::Zero;
-				m_target.lock()->GetCamera().lock()->GetCamera()->ConvertWorldToScreenDetail(m_ObjManager.lock()->GetEnemyList()[e].lock()->GetPos(), _tmp2dPos);
+				m_target.lock()->GetCamera().lock()->GetCamera()->ConvertWorldToScreenDetail(SceneManager::Instance().GetEnemyList()[e]->GetPos(), _tmp2dPos);
 				if (_2dPos.z < 0.0f && _tmp2dPos.z >= 0.0f)
 				{
 					_2dPos = _tmp2dPos;
@@ -65,8 +64,8 @@ void Player_ActionState::LockON()
 
 	if (HitFlg == true)
 	{
-		m_ObjManager.lock()->GetEnemyList()[listNum].lock()->SetLockONFlg(true);
-		m_target.lock()->GetConText()->SetLockONTarget(m_ObjManager.lock()->GetEnemyList()[listNum].lock());
+		SceneManager::Instance().GetEnemyList()[listNum]->SetLockONFlg(true);
+		m_target.lock()->GetConText()->SetLockONTarget(SceneManager::Instance().GetEnemyList()[listNum]);
 		m_target.lock()->GetConText()->SetLockONFlg(true);
 	}
 	else

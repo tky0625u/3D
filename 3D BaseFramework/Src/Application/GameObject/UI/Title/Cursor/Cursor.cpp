@@ -41,12 +41,12 @@ void Cursor::Update()
 
 		if (GetAsyncKeyState(VK_RETURN) & 0x8000)
 		{
-			if (m_pos == m_ObjManager.lock()->GetGame().lock()->GetVector2Pos())
+			if (m_pos == m_game.lock()->GetVector2Pos())
 			{
 				KdAudioManager::Instance().Play("Asset/Sound/Title/SE/決定ボタンを押す33.WAV", 0.05f, false);
 				SceneManager::Instance().BlackAlphaChange(0.01f);
 			}
-			else if (m_pos == m_ObjManager.lock()->GetExit().lock()->GetVector2Pos())
+			else if (m_pos == m_exit.lock()->GetVector2Pos())
 			{
 				Application::Instance().End();
 			}

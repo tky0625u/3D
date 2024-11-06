@@ -13,15 +13,13 @@
 void GameScene::Event()
 {
 	m_ObjManager->DeleteEnemyList();
-	if(m_ObjManager->GetEnemyList().size()==0 && !m_ObjManager->IsWaveMax())m_ObjManager->SetEnemyParam();
+	if(GetEnemyList().size()==0 && !m_ObjManager->IsWaveMax())m_ObjManager->SetEnemyParam();
 
 	KdShaderManager::Instance().WorkAmbientController().SetDirLight(Math::Vector3{ 0.5f,-1.0f,0.5f }, Math::Vector3{ 1.5f,1.5f,1.3f });
 }
 
 void GameScene::Update()
 {
-	if (m_ObjManager->GetStopTime() > 0)return;
-
 	BaseScene::Update();
 	for (auto& effect : KdEffekseerManager::GetInstance().GetnowEffectPlayList())
 	{

@@ -31,11 +31,11 @@ void TitleScene::Init()
 	m_ObjManager->SetCursorParam();
 	m_ObjManager->SetObjectParam();
 	KdEffekseerManager::GetInstance().Create(1280, 720);
-	Math::Vector3 _pos = m_ObjManager->GetTitleCamera().lock()->GetPos();
+	Math::Vector3 _pos = SceneManager::Instance().GetCamera()->GetPos();
 	_pos.z -= 1.0f;
 	_pos.y -= 5.0f;
 	KdEffekseerManager::GetInstance().Play("Smoke.efkefc", _pos, 1.0f, 0.5f, true);
-	m_ObjManager->GetTitleCamera().lock()->WorkCamera()->SetFocus(8, 5, 600);
+	SceneManager::Instance().GetCamera()->WorkCamera()->SetFocus(8, 5, 600);
 
 	KdAudioManager::Instance().Play("Asset/Sound/Title/BGM/Formidable-Enemy.WAV", 0.01f, true);
 }

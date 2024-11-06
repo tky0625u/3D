@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-class ObjectManager;
+class GameCamera;
 class ActionBase;
 class Sword;
 
@@ -48,6 +48,7 @@ public:
 	}
 	void SetSword(std::shared_ptr<Sword> _sword) { m_sword = _sword; }
 	void SetInviTime(int _inviTime) { m_inviTime = _inviTime; }
+	void SetCamera(std::shared_ptr<GameCamera> a_camera) { m_camera = a_camera; }
 
 	Param GetParam() { return m_param; }
 	bool GetIsAnimator() { return m_animator->IsAnimationEnd(); }
@@ -60,6 +61,7 @@ public:
 	const Math::Vector3 GetForward() const { return m_forward; }
 	const float GetAtkRange() const { return m_AtkRange; }
 	const Math::Matrix& GetHitModelMat()const { return m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(m_mWorld.Translation()));}
+	const std::weak_ptr<GameCamera>& GetCamera()const { return m_camera; }
 
 protected:
 	Param                        m_param;
@@ -67,6 +69,7 @@ protected:
 	std::shared_ptr<KdAnimator>  m_animator        = nullptr;
 	std::shared_ptr<ActionBase>  m_action          = nullptr;
 	std::weak_ptr<Sword>         m_sword;
+	std::weak_ptr<GameCamera>    m_camera;
 	std::string                  m_anime           = "Idol";
 	std::string                  m_beforeAnime     = m_anime;
 	Math::Vector3 m_dir = Math::Vector3::Zero; //方向

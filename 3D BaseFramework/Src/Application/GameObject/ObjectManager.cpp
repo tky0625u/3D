@@ -4,6 +4,7 @@
 #include"Character/CharacterBase.h"
 #include"Character/Enemy/Bone/Bone.h"
 #include"Character/Action/Enemy/Enemy_ConText.h"
+#include"Camera/GameCamera/GameCamera_ConText.h"
 #include<fstream>
 #include<sstream>
 
@@ -130,6 +131,982 @@ bool ObjectManager::IsWaveMax()
 {
 	if (m_nowWave == m_MaxWave)return true;
 	return false;
+}
+
+void ObjectManager::DebugObject()
+{
+	// FPS
+//ImGui::Text("FPS : %d", m_fpsController.m_nowfps);
+
+	static bool stop = false;
+	ImGui::Checkbox((const char*)u8"ストップ", &stop);
+	SceneManager::Instance().m_stop = stop;
+
+	std::string _filePath;
+
+	switch (SceneManager::Instance().GetNowSceneType())
+	{
+	case SceneManager::SceneType::Title:
+		_filePath = "Title";
+		break;
+	case SceneManager::SceneType::Game:
+		_filePath = "Game";
+		break;
+	default:
+		break;
+	}
+
+	if (ImGui::TreeNode("Title"))
+	{
+		if (ImGui::TreeNode("Camera"))
+		{
+			if (ImGui::Button((const char*)u8"Camera保存"))
+			{
+				TitleCameraWrite();
+			}
+
+			if (ImGui::Button((const char*)u8"Camera追加"))
+			{
+				AddTitleCamera();
+			}
+
+			if (m_titleCamera.expired() == false)
+			{
+				std::shared_ptr<TitleCamera> _camera = m_titleCamera.lock();
+
+				// 位置
+				ImGui::Text((const char*)u8"　カメラ位置 　　x=%.2f,y=%.2f,z=%.2f", _camera->GetPos().x, _camera->GetPos().y, _camera->GetPos().z);
+				Math::Vector3 _TitleCameraPos = _camera->GetPos();
+				ImGui::SliderFloat("TitleCameraPosX", &_TitleCameraPos.x, -500, 500);
+				ImGui::SliderFloat("TitleCameraPosY", &_TitleCameraPos.y, -500, 500);
+				ImGui::SliderFloat("TitleCameraPosZ", &_TitleCameraPos.z, -500, 500);
+
+				// 角度
+				ImGui::Text((const char*)u8"　角度 　　DegAngX=%.2f, DegAngY=%.2f, DegAngZ=%.2f", _camera->GetDegAng().x, _camera->GetDegAng().y, _camera->GetDegAng().z);
+				float _DegAngX = _camera->GetDegAng().x;
+				float _DegAngY = _camera->GetDegAng().y;
+				float _DegAngZ = _camera->GetDegAng().z;
+				ImGui::SliderFloat("AngleX", &_DegAngX, -180, 180);
+				ImGui::SliderFloat("AngleY", &_DegAngY, -180, 180);
+				ImGui::SliderFloat("AngleZ", &_DegAngZ, -180, 180);
+
+				_camera->SetPos(_TitleCameraPos);
+				_camera->SetDegAng(Math::Vector3{ _DegAngX,_DegAngY,_DegAngZ });
+			}
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNode("TitleUI"))
+		{
+			if (ImGui::TreeNode("Title"))
+			{
+				if (ImGui::Button((const char*)u8"Title保存"))
+				{
+					TitleWrite();
+				}
+
+				if (ImGui::Button((const char*)u8"Title追加"))
+				{
+					AddTitle();
+				}
+
+				if (m_title.expired() == false)
+				{
+					std::shared_ptr<Title> _title = m_title.lock();
+
+					// 位置
+					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f", _title->GetVector2Pos().x, _title->GetVector2Pos().y);
+					Math::Vector2 _TitlePos = _title->GetVector2Pos();
+					ImGui::SliderFloat("PosX", &_TitlePos.x, -640, 640);
+					ImGui::SliderFloat("PosY", &_TitlePos.y, -360, 360);
+
+					// 大きさ
+					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _title->GetSize());
+					float _TitleSize = _title->GetSize();
+					ImGui::SliderFloat("Size", &_TitleSize, 1, 100);
+
+					_title->SetPos(_TitlePos);
+					_title->SetSize(_TitleSize);
+				}
+
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNode("Game"))
+			{
+				if (ImGui::Button((const char*)u8"Game保存"))
+				{
+					GameWrite();
+				}
+
+				if (ImGui::Button((const char*)u8"Game追加"))
+				{
+					AddGame();
+				}
+
+				if (m_game.expired() == false)
+				{
+					std::shared_ptr<Game> _game = m_game.lock();
+
+					// 位置
+					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f", _game->GetVector2Pos().x, _game->GetVector2Pos().y);
+					Math::Vector2 _GamePos = _game->GetVector2Pos();
+					ImGui::SliderFloat("PosX", &_GamePos.x, -640, 640);
+					ImGui::SliderFloat("PosY", &_GamePos.y, -360, 360);
+
+					// 大きさ
+					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _game->GetSize());
+					float _GameSize = _game->GetSize();
+					ImGui::SliderFloat("Size", &_GameSize, 0.01, 1);
+
+					_game->SetPos(_GamePos);
+					_game->SetSize(_GameSize);
+				}
+
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNode("Exit"))
+			{
+				if (ImGui::Button((const char*)u8"Exit保存"))
+				{
+					ExitWrite();
+				}
+
+				if (ImGui::Button((const char*)u8"Exit追加"))
+				{
+					AddExit();
+				}
+
+				if (m_exit.expired() == false)
+				{
+					std::shared_ptr<Exit> _exit = m_exit.lock();
+
+					// 位置
+					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f", _exit->GetVector2Pos().x, _exit->GetVector2Pos().y);
+					Math::Vector2 _ExitPos = _exit->GetVector2Pos();
+					ImGui::SliderFloat("PosX", &_ExitPos.x, -640, 640);
+					ImGui::SliderFloat("PosY", &_ExitPos.y, -360, 360);
+
+					// 大きさ
+					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _exit->GetSize());
+					float _ExitSize = _exit->GetSize();
+					ImGui::SliderFloat("Size", &_ExitSize, 0.01, 1);
+
+					_exit->SetPos(_ExitPos);
+					_exit->SetSize(_ExitSize);
+				}
+
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNode("Guide"))
+			{
+				if (ImGui::Button((const char*)u8"Guide保存"))
+				{
+					TitleGuideWrite();
+				}
+
+				if (ImGui::Button((const char*)u8"Guide追加"))
+				{
+					AddTitleGuide();
+				}
+
+				if (m_titleGuide.expired() == false)
+				{
+					std::shared_ptr<TitleGuide> _guide = m_titleGuide.lock();
+
+					// 位置
+					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f", _guide->GetVector2Pos().x, _guide->GetVector2Pos().y);
+					Math::Vector2 _TitleGuidePos = _guide->GetVector2Pos();
+					ImGui::SliderFloat("PosX", &_TitleGuidePos.x, -640, 640);
+					ImGui::SliderFloat("PosY", &_TitleGuidePos.y, -360, 360);
+
+					// 大きさ
+					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _guide->GetSize());
+					float _TitleGuideSize = _guide->GetSize();
+					ImGui::SliderFloat("Size", &_TitleGuideSize, 0.01, 1);
+
+					_guide->SetPos(_TitleGuidePos);
+					_guide->SetSize(_TitleGuideSize);
+				}
+
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNode("Cursor"))
+			{
+				if (ImGui::Button((const char*)u8"Cursor保存"))
+				{
+					CursorWrite();
+				}
+
+				if (ImGui::Button((const char*)u8"Cursor追加"))
+				{
+					AddCursor();
+				}
+
+				if (m_cursor.expired() == false)
+				{
+					std::shared_ptr<Cursor> _cursor = m_cursor.lock();
+
+					// 最大サイズ
+					ImGui::Text((const char*)u8"　最大サイズ 　MaxSize=%.2f", _cursor->GetMaxSize());
+					float _CursorMaxSize = _cursor->GetMaxSize();
+					ImGui::SliderFloat("MaxSize", &_CursorMaxSize, 0.01, 1);
+
+					// 大きさ変化量
+					ImGui::Text((const char*)u8"　大きさ変化量 　ChangeSizeNum=%.2f", _cursor->GetChangeSizeNum());
+					float _CursorChangeSize = _cursor->GetChangeSizeNum();
+					ImGui::SliderFloat("ChangeSize", &_CursorChangeSize, 0.01, 1);
+
+					// 最大アルファ値
+					ImGui::Text((const char*)u8"　最大アルファ値 　MaxAlpha=%.2f", _cursor->GetMaxAlpha());
+					float _CursorMaxAlpha = _cursor->GetMaxAlpha();
+					ImGui::SliderFloat("MaxAlpha", &_CursorMaxAlpha, 0.01, 1);
+
+					// アルファ値変化量
+					ImGui::Text((const char*)u8"　アルファ値変化量 　ChangeAlphaNum=%.2f", _cursor->GetChangeAlphaNum());
+					float _CursorChangeAlpha = _cursor->GetChangeAlphaNum();
+					ImGui::SliderFloat("ChangeAlpha", &_CursorChangeAlpha, 0.01, 1);
+
+					_cursor->SetMaxSize(_CursorMaxSize);
+					_cursor->SetChangeSizeNum(_CursorChangeSize);
+					_cursor->SetMaxAlpha(_CursorMaxAlpha);
+					_cursor->SetChangeAlphaNum(_CursorChangeAlpha);
+				}
+
+				ImGui::TreePop();
+			}
+
+			ImGui::TreePop();
+		}
+		ImGui::TreePop();
+	}
+
+	if (ImGui::TreeNode("Game"))
+	{
+		if (ImGui::TreeNode("Camera"))
+		{
+			if (ImGui::Button((const char*)u8"Camera保存"))
+			{
+				GameCameraWrite();
+			}
+
+
+			if (m_camera.expired() == false)
+			{
+				std::shared_ptr<GameCamera> _camera = m_camera.lock();
+
+				if (_camera->GetCameraType() != GameCamera::CameraType::PlayerType)
+				{
+					if (ImGui::Button((const char*)u8"Player"))
+					{
+						_camera->SetCameraType(GameCamera::CameraType::PlayerType);
+						_camera->GetConText()->PlayerCamera();
+					}
+				}
+				if (_camera->GetCameraType() != GameCamera::CameraType::FixedType)
+				{
+					if (ImGui::Button((const char*)u8"Fixed"))
+					{
+						_camera->SetCameraType(GameCamera::CameraType::FixedType);
+						_camera->GetConText()->FixedCamera();
+					}
+				}
+				if (_camera->GetCameraType() != GameCamera::CameraType::ClearType)
+				{
+					if (ImGui::Button((const char*)u8"Clear"))
+					{
+						_camera->SetCameraType(GameCamera::CameraType::ClearType);
+						_camera->GetConText()->ClearCamera();
+					}
+				}
+
+				// 位置
+				ImGui::Text((const char*)u8"　カメラ位置 　　x=%.2f,y=%.2f,z=%.2f", _camera->GetNowPos().x, _camera->GetNowPos().y, _camera->GetNowPos().z);
+				Math::Vector3 pos = _camera->GetNowPos();
+				ImGui::SliderFloat("PosX", &pos.x, -10, 10);
+				ImGui::SliderFloat("PosY", &pos.y, -10, 10);
+				ImGui::SliderFloat("PosZ", &pos.z, -100, 0);
+
+				// 角度
+				ImGui::Text((const char*)u8"　角度 　　AngleX=%.2f, AngleY=%.2f", _camera->GetNowDegAng().x, _camera->GetNowDegAng().y);
+				float angleX = _camera->GetNowDegAng().x;
+				float angleY = _camera->GetNowDegAng().y;
+
+				ImGui::SliderFloat("AngleX", &angleX, -180.0f, 180.0f);
+				ImGui::SliderFloat("AngleY", &angleY, 0, 360);
+
+				if (angleX > 180.0f)angleX -= 180.0f;
+				else if (angleX < -180.0f)angleX += 180.0f;
+				if (angleY > 360.0f)angleY -= 360.0f;
+				if (angleY < 0.0f)angleY += 360.0f;
+
+				// 視野角
+				ImGui::Text((const char*)u8"　視野角 　　ViewAngleX=%.2f", _camera->GetNowViewAng());
+				float ViewAngle = _camera->GetNowViewAng();
+
+				ImGui::SliderFloat("ViewAngle", &ViewAngle, 0, 360);
+
+				_camera->SetPos(pos);
+				_camera->SetDegAng(Math::Vector3{ angleX,angleY,0.0f });
+				_camera->SetViewAng(ViewAngle);
+			}
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNode("Player"))
+		{
+			if (ImGui::Button((const char*)u8"Player保存"))
+			{
+				PlayerWrite(("Asset/Json/") + _filePath + ("/Player/Player.json"));
+			}
+
+			if (m_player.expired() == false)
+			{
+				std::shared_ptr<Player> _player = m_player.lock();
+
+				// 体力
+				ImGui::Text((const char*)u8"　体力 　　HP=%d", _player->GetParam().Hp);
+				int hp = _player->GetParam().Hp;
+				ImGui::SliderInt("HP", &hp, 1, 100);
+				// 攻撃力
+				ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _player->GetParam().Atk);
+				// 素早さ
+				ImGui::Text((const char*)u8"　素早さ 　SP=%.2f", _player->GetParam().Sp);
+				float speed = _player->GetParam().Sp;
+				ImGui::SliderFloat("Speed", &speed, 1, 100);
+				// スタミナ
+				ImGui::Text((const char*)u8"　スタミナ SM=%d", _player->GetParam().Sm);
+				int stamina = _player->GetParam().Sm;
+				ImGui::SliderInt("Stamina", &stamina, 1, 100);
+				// 位置
+				ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _player->GetPos().x, _player->GetPos().y, _player->GetPos().z);
+				Math::Vector3 pos = _player->GetPos();
+				ImGui::SliderFloat("PosX", &pos.x, -100, 100);
+				ImGui::SliderFloat("PosY", &pos.y, 0, 400);
+				ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
+				// 方向
+				ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _player->GetDir().x, _player->GetDir().y, _player->GetDir().z);
+				// 角度
+				ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _player->GetAngle());
+				Math::Vector3 angle = _player->GetAngle();
+				ImGui::SliderFloat("Angle", &angle.y, 0, 360);
+				// 大きさ
+				ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _player->GetSize());
+				float size = _player->GetSize();
+				ImGui::SliderFloat("Size", &size, 1, 100);
+				// 攻撃範囲
+				ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _player->GetAtkRange());
+				float range = _player->GetAtkRange();
+				ImGui::SliderFloat("ATKRange", &range, 1, 100);
+				// 前方方向
+				ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _player->GetForward().x, _player->GetForward().y, _player->GetForward().z);
+				// 無敵時間
+				ImGui::Text((const char*)u8"　無敵付与時間 InviTime=%d", _player->GetinviTime());
+				int _inviTime = _player->GetinviTime();
+				ImGui::SliderInt("InviTIme", &_inviTime, 0, 300);
+
+				// 武器
+				static std::string _swordName = _player->GetSword().lock()->GetName().c_str();
+				static std::string _shieldName = _player->GetShield().lock()->GetName().c_str();
+				if (ImGui::TreeNode("Weapon"))
+				{
+					// 剣
+					if (_player->GetSword().expired() == false)
+					{
+						std::shared_ptr<Sword> _sword = _player->GetSword().lock();
+						static Math::Vector3 swordPos = _sword->GetPos();
+						static int swordAtk = _sword->GetATK();
+						static float swordSize = _sword->GetSize();
+						static int traje = _sword->GetTraject();
+						if (ImGui::TreeNode("Sword"))
+						{
+							if (ImGui::Button((const char*)u8"Sword保存"))
+							{
+								SwordWrite(_swordName, (("Asset/Json/") + _filePath + ("/Sword/Sword.json")));
+							}
+
+							ImGui::Text((const char*)u8"　剣 Sword=%s", _player->GetSword().lock()->GetName().c_str());
+							for (auto& sword : m_swordNameList)
+							{
+								if (ImGui::Button(sword.c_str()))
+								{
+									_swordName = sword;
+								}
+							}
+
+							// 位置
+							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _sword->GetPos().x, _sword->GetPos().y, _sword->GetPos().z);
+							swordPos = _sword->GetPos();
+							ImGui::SliderFloat("PosX", &swordPos.x, -0.5, 0.5);
+							ImGui::SliderFloat("PosY", &swordPos.y, -0.5, 0.5);
+							ImGui::SliderFloat("PosZ", &swordPos.z, -0.5, 0.5);
+							// 攻撃力
+							ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _sword->GetATK());
+							swordAtk = _sword->GetATK();
+							ImGui::SliderInt("ATK", &swordAtk, 1, 100);
+							// 大きさ
+							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _sword->GetSize());
+							swordSize = _sword->GetSize();
+							ImGui::SliderFloat("Size", &swordSize, 1, 100);
+							// トレイルポリゴン
+							ImGui::Text((const char*)u8"　トレイルポリゴン　Traject=%d", _sword->GetTraject());
+							traje = _sword->GetTraject();
+							ImGui::SliderInt("Traject", &traje, 1, 100);
+
+							_sword->SetPos(swordPos);
+							_sword->SetATK(swordAtk);
+							_sword->SetSize(swordSize);
+							_sword->SetTrajectPointNUM(traje);
+
+							ImGui::TreePop();
+						}
+					}
+
+					// 盾
+					if (_player->GetShield().expired() == false)
+					{
+						if (ImGui::TreeNode("Shield"))
+						{
+							std::shared_ptr<Shield> _shield = _player->GetShield().lock();
+							static Math::Vector3 shieldPos = _shield->GetPos();
+							static float shieldSize = _shield->GetSize();
+							if (ImGui::Button((const char*)u8"Shield保存"))
+							{
+								ShieldWrite(_shieldName, (("Asset/Json/") + _filePath + ("/Shield/Shield.json")));
+							}
+
+							ImGui::Text((const char*)u8"　盾 Shield=%s", _player->GetShield().lock()->GetName().c_str());
+							for (auto& shield : m_shieldNameList)
+							{
+								if (ImGui::Button(shield.c_str()))
+								{
+									_shieldName = shield;
+								}
+							}
+
+							// 位置
+							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _shield->GetPos().x, _shield->GetPos().y, _shield->GetPos().z);
+							shieldPos = _shield->GetPos();
+							ImGui::SliderFloat("PosX", &shieldPos.x, -0.5, 0.5);
+							ImGui::SliderFloat("PosY", &shieldPos.y, -0.5, 0.5);
+							ImGui::SliderFloat("PosZ", &shieldPos.z, -0.5, 0.5);
+
+							// 大きさ
+							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _shield->GetSize());
+							shieldSize = _shield->GetSize();
+							ImGui::SliderFloat("Size", &shieldSize, 1, 100);
+
+							_shield->SetPos(shieldPos);
+							_shield->SetSize(shieldSize);
+
+							ImGui::TreePop();
+						}
+					}
+
+					ImGui::TreePop();
+
+					ChangeWeapon(_swordName, _shieldName);
+				}
+
+				_player->SetParam(hp, _player->GetSword().lock()->GetATK(), speed, stamina);
+				_player->SetPos(pos);
+				_player->SetAngle(angle);
+				_player->SetSize(size);
+				_player->SetAtkRange(range);
+				_player->SetInviTime(_inviTime);
+
+				ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+				ImGui::TreePop();
+			}
+		}
+
+		if (ImGui::TreeNode("Enemy"))
+		{
+			std::vector<std::weak_ptr<EnemyBase>> _boneList;
+			std::vector<std::weak_ptr<EnemyBase>> _golemList;
+			for (auto& enemy : m_EnemyList)
+			{
+				if (enemy.expired() == false)
+				{
+					if (enemy.lock()->GetName() == "Bone")
+					{
+						_boneList.push_back(enemy);
+					}
+					if (enemy.lock()->GetName() == "Golem")
+					{
+						_golemList.push_back(enemy);
+					}
+				}
+			}
+
+			static int _stageNum = 1;
+			ImGui::Text((const char*)u8"ステージ数 : %d", _stageNum);
+			static int _nowStage = GetnowWave();
+			ImGui::SliderInt((const char*)u8"ステージ", &_nowStage, 1, _stageNum);
+			if (ImGui::Button((const char*)u8"ステージ追加"))
+			{
+				_stageNum++;
+				if (_stageNum - 1 == _nowStage)_nowStage = _stageNum;
+			}
+
+			static int _wave = GetMaxWave();
+			ImGui::Text((const char*)u8"ウェーブ数 : %d", _wave);
+			static int _nowWave = GetnowWave();
+			ImGui::SliderInt((const char*)u8"ウェーブ", &_nowWave, 1, _wave);
+			if (ImGui::Button((const char*)u8"ウェーブ追加"))
+			{
+				_wave++;
+				if (_wave - 1 == _nowWave)_nowWave = _wave;
+			}
+			if (ImGui::Button((const char*)u8"ウェーブ削除"))
+			{
+				if (_wave > 1)
+				{
+					_wave--;
+					if (_wave + 1 == _nowWave)_nowWave = _wave;
+				}
+			}
+
+			if (ImGui::Button((const char*)u8"Enemy保存"))
+			{
+				EnemyWrite(_nowStage, _nowWave, (("Asset/Json/") + _filePath + ("/Enemy/Stage")));
+				if (_nowWave == _wave)
+				{
+					_wave++;
+					_nowWave = _wave;
+				}
+			}
+
+			if (ImGui::TreeNode("Bone"))
+			{
+				if (ImGui::Button((const char*)u8"Bone追加"))
+				{
+					AddBone();
+				}
+
+				static int operation = -1;
+				if (!SceneManager::Instance().m_stop)operation = -1;
+
+				if (ImGui::TreeNode("Bone"))
+				{
+					ImGui::Text((const char*)u8"ボーン:%d体", _boneList.size());
+					for (int bone = 0; bone < _boneList.size(); ++bone)
+					{
+						if (ImGui::Button(std::to_string(bone + 1).c_str()))
+						{
+							operation = bone;
+						}
+					}
+
+					if (operation != -1)
+					{
+						ImGui::Text((const char*)u8"%d体目", operation + 1);
+						// 体力
+						ImGui::Text((const char*)u8"　体力 　　HP=%d", _boneList[operation].lock()->GetParam().Hp);
+						int hp = _boneList[operation].lock()->GetParam().Hp;
+						ImGui::SliderInt("HP", &hp, 1, 100);
+						// 攻撃力
+						ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _boneList[operation].lock()->GetParam().Atk);
+						int atk = _boneList[operation].lock()->GetParam().Atk;
+						ImGui::SliderInt("ATK", &atk, 1, 100);
+						// 素早さ
+						ImGui::Text((const char*)u8"　素早さ 　SP=%.2f", _boneList[operation].lock()->GetParam().Sp);
+						float speed = _boneList[operation].lock()->GetParam().Sp;
+						ImGui::SliderFloat("Speed", &speed, 1, 100);
+						// スタミナ
+						ImGui::Text((const char*)u8"　スタミナ SM=%d", _boneList[operation].lock()->GetParam().Sm);
+						int stamina = _boneList[operation].lock()->GetParam().Sm;
+						ImGui::SliderInt("Stamina", &stamina, 1, 100);
+						// 位置
+						ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetPos().x, _boneList[operation].lock()->GetPos().y, _boneList[operation].lock()->GetPos().z);
+						Math::Vector3 pos = _boneList[operation].lock()->GetPos();
+						ImGui::SliderFloat("PosX", &pos.x, -100, 100);
+						ImGui::SliderFloat("PosY", &pos.y, 0, 400);
+						ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
+						// 方向
+						ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetDir().x, _boneList[operation].lock()->GetDir().y, _boneList[operation].lock()->GetDir().z);
+						// 角度
+						ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _boneList[operation].lock()->GetAngle());
+						Math::Vector3 angle = _boneList[operation].lock()->GetAngle();
+						ImGui::SliderFloat("Angle", &angle.y, 0, 360);
+						// 大きさ
+						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _boneList[operation].lock()->GetSize());
+						float size = _boneList[operation].lock()->GetSize();
+						ImGui::SliderFloat("Size", &size, 1, 100);
+						// 攻撃範囲
+						ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _boneList[operation].lock()->GetAtkRange());
+						float range = _boneList[operation].lock()->GetAtkRange();
+						ImGui::SliderFloat("ATKRange", &range, 1, 100);
+						// 前方方向
+						ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetForward().x, _boneList[operation].lock()->GetForward().y, _boneList[operation].lock()->GetForward().z);
+
+						_boneList[operation].lock()->SetParam(hp, atk, speed, stamina);
+						_boneList[operation].lock()->SetPos(pos);
+						_boneList[operation].lock()->SetAngle(angle);
+						_boneList[operation].lock()->SetSize(size);
+						_boneList[operation].lock()->SetAtkRange(range);
+
+						if (ImGui::Button((const char*)u8"消滅"))
+						{
+							_boneList[operation].lock()->Expired();
+							operation = -1;
+						}
+
+						ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+					}
+					ImGui::TreePop();
+				}
+
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNode("Golem"))
+			{
+				if (ImGui::Button((const char*)u8"Golem追加"))
+				{
+					AddGolem();
+				}
+
+				static int operation = -1;
+				if (!SceneManager::Instance().m_stop)operation = -1;
+
+				if (ImGui::TreeNode("Golem"))
+				{
+					ImGui::Text((const char*)u8"Golem:%d体", _golemList.size());
+					for (int golem = 0; golem < _golemList.size(); ++golem)
+					{
+						if (ImGui::Button(std::to_string(golem + 1).c_str()))
+						{
+							operation = golem;
+						}
+					}
+
+					if (operation != -1)
+					{
+						ImGui::Text((const char*)u8"%d体目", operation + 1);
+						// 体力
+						ImGui::Text((const char*)u8"　体力 　　HP=%d", _golemList[operation].lock()->GetParam().Hp);
+						int hp = _golemList[operation].lock()->GetParam().Hp;
+						ImGui::SliderInt("HP", &hp, 1, 100);
+						// 攻撃力
+						ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _golemList[operation].lock()->GetParam().Atk);
+						int atk = _golemList[operation].lock()->GetParam().Atk;
+						ImGui::SliderInt("ATK", &atk, 1, 100);
+						// 素早さ
+						ImGui::Text((const char*)u8"　素早さ 　SP=%.2f", _golemList[operation].lock()->GetParam().Sp);
+						float speed = _golemList[operation].lock()->GetParam().Sp;
+						ImGui::SliderFloat("Speed", &speed, 1, 100);
+						// スタミナ
+						ImGui::Text((const char*)u8"　スタミナ SM=%d", _golemList[operation].lock()->GetParam().Sm);
+						int stamina = _golemList[operation].lock()->GetParam().Sm;
+						ImGui::SliderInt("Stamina", &stamina, 1, 100);
+						// 位置
+						ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _golemList[operation].lock()->GetPos().x, _golemList[operation].lock()->GetPos().y, _golemList[operation].lock()->GetPos().z);
+						Math::Vector3 pos = _golemList[operation].lock()->GetPos();
+						ImGui::SliderFloat("PosX", &pos.x, -100, 100);
+						ImGui::SliderFloat("PosY", &pos.y, 0, 400);
+						ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
+						// 方向
+						ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _golemList[operation].lock()->GetDir().x, _golemList[operation].lock()->GetDir().y, _golemList[operation].lock()->GetDir().z);
+						// 角度
+						ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _golemList[operation].lock()->GetAngle());
+						Math::Vector3 angle = _golemList[operation].lock()->GetAngle();
+						ImGui::SliderFloat("Angle", &angle.y, 0, 360);
+						// 大きさ
+						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _golemList[operation].lock()->GetSize());
+						float size = _golemList[operation].lock()->GetSize();
+						ImGui::SliderFloat("Size", &size, 0.01, 1.5);
+						// 攻撃範囲
+						ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _golemList[operation].lock()->GetAtkRange());
+						float range = _golemList[operation].lock()->GetAtkRange();
+						ImGui::SliderFloat("ATKRange", &range, 1, 100);
+						// 前方方向
+						ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _golemList[operation].lock()->GetForward().x, _golemList[operation].lock()->GetForward().y, _golemList[operation].lock()->GetForward().z);
+
+						_golemList[operation].lock()->SetParam(hp, atk, speed, stamina);
+						_golemList[operation].lock()->SetPos(pos);
+						_golemList[operation].lock()->SetAngle(angle);
+						_golemList[operation].lock()->SetSize(size);
+						_golemList[operation].lock()->SetAtkRange(range);
+
+						if (ImGui::Button((const char*)u8"消滅"))
+						{
+							_golemList[operation].lock()->Expired();
+							operation = -1;
+						}
+
+						ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+					}
+					ImGui::TreePop();
+				}
+
+				ImGui::TreePop();
+			}
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNode("Object"))
+		{
+			if (ImGui::Button((const char*)u8"Object保存")) ObjectWrite(("Asset/Json/") + _filePath + ("/Object/Object.json"));
+			static int Goperation = -1;
+			static int Coperation = -1;
+			static int Woperation = -1;
+
+			std::vector<std::weak_ptr<KdGameObject>> groundList;
+			std::vector<std::weak_ptr<KdGameObject>> circleList;
+			std::vector<std::weak_ptr<KdGameObject>> magicList;
+			std::vector<std::weak_ptr<KdGameObject>> wallList;
+			std::vector<std::weak_ptr<KdGameObject>> skyboxList;
+			for (auto& obj : m_ObjectList)
+			{
+				if (obj.expired() == false)
+				{
+					if (obj.lock()->GetName() == "Ground")
+					{
+						groundList.push_back(obj);
+					}
+					else if (obj.lock()->GetName() == "Circle")
+					{
+						circleList.push_back(obj);
+					}
+					else if (obj.lock()->GetName() == "Magic")
+					{
+						magicList.push_back(obj);
+					}
+					else if (obj.lock()->GetName() == "Wall")
+					{
+						wallList.push_back(obj);
+					}
+					else if (obj.lock()->GetName() == "SkyBox")
+					{
+						skyboxList.push_back(obj);
+					}
+				}
+			}
+
+			if (ImGui::TreeNode("Ground"))
+			{
+				if (ImGui::Button((const char*)u8"Ground追加")) AddGround();
+				for (int g = 0; g < groundList.size(); ++g)
+				{
+					if (ImGui::Button(std::to_string(g + 1).c_str()))Goperation = g;
+				}
+
+				if (Goperation != -1)
+				{
+					ImGui::Text((const char*)u8"%d個目", Goperation + 1);
+					// 位置
+					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", groundList[Goperation].lock()->GetPos().x, groundList[Goperation].lock()->GetPos().y, groundList[Goperation].lock()->GetPos().z);
+					Math::Vector3 pos = groundList[Goperation].lock()->GetPos();
+					ImGui::SliderFloat("PosX", &pos.x, -100, 100);
+					ImGui::SliderFloat("PosY", &pos.y, 0, 500);
+					ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
+					// 角度
+					ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", groundList[Goperation].lock()->GetAngle());
+					Math::Vector3 angle = groundList[Goperation].lock()->GetAngle();
+					ImGui::SliderFloat("Angle", &angle.y, 0, 360);
+					// 大きさ
+					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", groundList[Goperation].lock()->GetSize());
+					float size = groundList[Goperation].lock()->GetSize();
+					ImGui::SliderFloat("Size", &size, 1, 100);
+
+					groundList[Goperation].lock()->SetPos(pos);
+					groundList[Goperation].lock()->SetSize(size);
+					groundList[Goperation].lock()->SetAngle(angle);
+
+					if (ImGui::Button((const char*)u8"消滅"))
+					{
+						groundList[Goperation].lock()->Expired();
+						if (circleList.size() == groundList.size())
+						{
+							circleList[Goperation].lock()->Expired();
+							magicList[Goperation].lock()->Expired();
+						}
+						DeleteObjectList();
+						Goperation = -1;
+						Coperation = -1;
+					}
+
+					ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+				}
+				ImGui::TreePop();
+			}
+			if (ImGui::TreeNode("Circle"))
+			{
+				if (ImGui::Button((const char*)u8"Circle追加"))
+				{
+					if (groundList.size() > circleList.size()) AddCircle();
+				}
+
+				if (circleList.size() != 0)
+				{
+					// 角度
+					ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", circleList[0].lock()->GetAngle());
+					Math::Vector3 angle = circleList[0].lock()->GetAngle();
+					ImGui::SliderFloat("Angle", &angle.y, 0, 360);
+					// 大きさ
+					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", circleList[0].lock()->GetSize());
+					float size = circleList[0].lock()->GetSize();
+					ImGui::SliderFloat("Size", &size, 1, 100);
+
+					for (int c = 0; c < circleList.size(); ++c)
+					{
+						circleList[c].lock()->SetSize(size);
+						circleList[c].lock()->SetAngle(angle);
+
+						if (ImGui::Button(std::to_string(c + 1).c_str()))Coperation = c;
+					}
+
+					if (Coperation != -1)
+					{
+						if (circleList[Coperation].expired() == false)
+						{
+							ImGui::Text((const char*)u8"%d個目", Coperation + 1);
+							// 位置
+							Math::Vector3 pos;
+							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", circleList[Coperation].lock()->GetPos().x, circleList[Coperation].lock()->GetPos().y, circleList[Coperation].lock()->GetPos().z);
+							pos = circleList[Coperation].lock()->GetPos();
+							if (groundList[Coperation].expired() == false)pos.y = groundList[Coperation].lock()->GetPos().y;
+							ImGui::SliderFloat("PosX", &pos.x, -100, 100);
+							ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
+
+							circleList[Coperation].lock()->SetPos(pos);
+
+							if (ImGui::Button((const char*)u8"消滅"))
+							{
+								circleList[Coperation].lock()->Expired();
+								magicList[Coperation].lock()->Expired();
+								DeleteObjectList();
+								Coperation = -1;
+							}
+						}
+					}
+
+
+					ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+					if (ImGui::TreeNode("Magic"))
+					{
+						float size = 0.0f;
+						if (magicList[0].expired() == false)
+						{
+							// 大きさ
+							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", magicList[0].lock()->GetSize());
+							size = magicList[0].lock()->GetSize();
+							ImGui::SliderFloat("Size", &size, 1, 100);
+						}
+
+						for (int m = 0; m < magicList.size(); ++m)
+						{
+							if (circleList[m].expired() == false)
+							{
+								magicList[m].lock()->SetSize(size);
+							}
+						}
+						ImGui::TreePop();
+					}
+				}
+
+				ImGui::TreePop();
+			}
+			if (ImGui::TreeNode("Wall"))
+			{
+				if (ImGui::Button((const char*)u8"Wall追加")) AddWall();
+				for (int w = 0; w < wallList.size(); ++w)
+				{
+					if (ImGui::Button(std::to_string(w + 1).c_str()))Woperation = w;
+				}
+
+				if (Woperation != -1)
+				{
+					ImGui::Text((const char*)u8"%d個目", Woperation + 1);
+					// 位置
+					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", wallList[Woperation].lock()->GetPos().x, wallList[Woperation].lock()->GetPos().y, wallList[Woperation].lock()->GetPos().z);
+					Math::Vector3 pos = wallList[Woperation].lock()->GetPos();
+					ImGui::SliderFloat("PosX", &pos.x, -100, 100);
+					ImGui::SliderFloat("PosY", &pos.y, 0, 500);
+					ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
+					// 角度
+					ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", wallList[Woperation].lock()->GetAngle());
+					Math::Vector3 angle = wallList[Woperation].lock()->GetAngle();
+					ImGui::SliderFloat("Angle", &angle.y, 0, 360);
+					// 大きさ
+					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", wallList[Woperation].lock()->GetSize());
+					float size = wallList[Woperation].lock()->GetSize();
+					ImGui::SliderFloat("Size", &size, 1, 100);
+
+					wallList[Woperation].lock()->SetPos(pos);
+					wallList[Woperation].lock()->SetSize(size);
+					wallList[Woperation].lock()->SetAngle(angle);
+
+					if (ImGui::Button((const char*)u8"消滅"))
+					{
+						wallList[Woperation].lock()->Expired();
+						DeleteObjectList();
+						Woperation = -1;
+					}
+
+					ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+				}
+				ImGui::TreePop();
+			}
+			if (ImGui::TreeNode("SkyBox"))
+			{
+				if (ImGui::Button((const char*)u8"SkyBox追加")) AddSkyBox();
+
+				if (skyboxList.size() > 0)
+				{
+					// 位置
+					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", skyboxList[0].lock()->GetPos().x, skyboxList[0].lock()->GetPos().y, skyboxList[0].lock()->GetPos().z);
+					Math::Vector3 pos = skyboxList[0].lock()->GetPos();
+					ImGui::SliderFloat("PosX", &pos.x, -500, 500);
+					ImGui::SliderFloat("PosY", &pos.y, 0, 500);
+					ImGui::SliderFloat("PosZ", &pos.z, -500, 500);
+					// 角度
+					ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", skyboxList[0].lock()->GetAngle());
+					Math::Vector3 angle = skyboxList[0].lock()->GetAngle();
+					ImGui::SliderFloat("Angle", &angle.y, 0, 360);
+					// 大きさ
+					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", skyboxList[0].lock()->GetSize());
+					float size = skyboxList[0].lock()->GetSize();
+					ImGui::SliderFloat("Size", &size, 1, 100);
+
+					skyboxList[0].lock()->SetPos(pos);
+					skyboxList[0].lock()->SetSize(size);
+					skyboxList[0].lock()->SetAngle(angle);
+
+					ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+				}
+				ImGui::TreePop();
+			}
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNode((const char*)u8"シーン切替"))
+		{
+			if (ImGui::Button("Title"))
+			{
+				SceneManager::Instance().SetNextScene(SceneManager::SceneType::Title);
+				KdEffekseerManager::GetInstance().StopAllEffect();
+			}
+			if (ImGui::Button("Game"))
+			{
+				SceneManager::Instance().SetNextScene(SceneManager::SceneType::Game);
+				KdEffekseerManager::GetInstance().StopAllEffect();
+			}
+
+			ImGui::TreePop();
+		}
+		ImGui::TreePop();
+	}
 }
 
 void ObjectManager::TitleCameraWrite()
@@ -315,8 +1292,8 @@ void ObjectManager::PlayerWrite(std::string _fileName)
 	_json["Player"]["ForwardZ"] = m_player.lock()->GetForward().z;
 	_json["Player"]["InviTime"] = m_player.lock()->GetinviTime();
 	_json["Player"]["SwordName"] = m_player.lock()->GetSword().lock()->GetName();
-	_json["Player"]["ShieldName"]= m_player.lock()->GetShield().lock()->GetName();
-	
+	_json["Player"]["ShieldName"] = m_player.lock()->GetShield().lock()->GetName();
+
 
 	std::ofstream _file(_fileName);
 	if (_file.is_open())
@@ -326,9 +1303,9 @@ void ObjectManager::PlayerWrite(std::string _fileName)
 	}
 }
 
-void ObjectManager::EnemyWrite(int _stage, int _wave,std::string _fileName)
+void ObjectManager::EnemyWrite(int _stage, int _wave, std::string _fileName)
 {
-	std::string _stagePath = (_fileName) + std::to_string(_stage).c_str() + ((std::string)".json");
+	std::string _stagePath = (_fileName)+std::to_string(_stage).c_str() + ((std::string)".json");
 	nlohmann::json _json;
 	std::ifstream _oldFile(_stagePath);
 	if (_oldFile.is_open())
@@ -340,7 +1317,7 @@ void ObjectManager::EnemyWrite(int _stage, int _wave,std::string _fileName)
 	std::string wave = (std::to_string(_wave).c_str()) + ((std::string)"Wave");
 	_json[wave].clear();
 
-	for (auto& enemy:m_EnemyList)
+	for (auto& enemy : m_EnemyList)
 	{
 		std::string _category;
 		std::string _name;
@@ -396,7 +1373,7 @@ void ObjectManager::SwordWrite(std::string _swordName, std::string _fileName)
 		_oldFile.close();
 	}
 
-	for(auto& _sword: _json)
+	for (auto& _sword : _json)
 	{
 		if (_sword["Name"] != _swordName)continue;
 
@@ -448,7 +1425,7 @@ void ObjectManager::ObjectWrite(std::string _fileName)
 {
 	nlohmann::json _json;
 
-	for (auto& obj:m_ObjectList)
+	for (auto& obj : m_ObjectList)
 	{
 		std::string _category;
 		std::string _name;
@@ -532,11 +1509,11 @@ void ObjectManager::SetTitleCamera()
 		_name = stage["Name"];
 		std::shared_ptr<TitleCamera> camera = std::make_shared<TitleCamera>();
 
+		camera->SetObjectManager(shared_from_this());
 		camera->SetPos(_pos);
 		camera->SetDegAng(_DegAng);
 		camera->SetName(_name);
 		camera->SetID(m_id);
-		camera->SetObjectManager(shared_from_this());
 		camera->Init();
 		m_id++;
 
@@ -573,6 +1550,7 @@ void ObjectManager::SetTitleParam()
 		_name = stage["Name"];
 		std::shared_ptr<Title> title = std::make_shared<Title>();
 
+		title->SetObjectManager(shared_from_this());
 		title->SetPos(_pos);
 		title->SetSize(_size);
 		title->SetName(_name);
@@ -612,6 +1590,7 @@ void ObjectManager::SetGameParam()
 		_name = stage["Name"];
 		std::shared_ptr<Game> game = std::make_shared<Game>();
 
+		game->SetObjectManager(shared_from_this());
 		game->SetPos(_pos);
 		game->SetSize(_size);
 		game->SetName(_name);
@@ -651,6 +1630,7 @@ void ObjectManager::SetExitParam()
 		_name = stage["Name"];
 		std::shared_ptr<Exit> exit = std::make_shared<Exit>();
 
+		exit->SetObjectManager(shared_from_this());
 		exit->SetPos(_pos);
 		exit->SetSize(_size);
 		exit->SetName(_name);
@@ -690,6 +1670,7 @@ void ObjectManager::SetTitleGuideParam()
 		_name = stage["Name"];
 		std::shared_ptr<TitleGuide> guide = std::make_shared<TitleGuide>();
 
+		guide->SetObjectManager(shared_from_this());
 		guide->SetPos(_pos);
 		guide->SetSize(_size);
 		guide->SetName(_name);
@@ -736,12 +1717,14 @@ void ObjectManager::SetCursorParam()
 
 		if (!m_game.expired())cursor->SetPosList(m_game.lock()->GetVector2Pos());
 		if (!m_exit.expired())cursor->SetPosList(m_exit.lock()->GetVector2Pos());
+		cursor->SetObjectManager(shared_from_this());
 		cursor->SetMaxSize(_MaxSize);
 		cursor->SetChangeSizeNum(_ChangeSize);
 		cursor->SetMaxAlpha(_MaxAlpha);
 		cursor->SetChangeAlphaNum(_ChangeAlpha);
 		cursor->SetName(_name);
-		cursor->SetObjectManager(shared_from_this());
+		cursor->SetGame(m_game.lock());
+		cursor->SetExit(m_exit.lock());
 		cursor->SetID(m_id);
 		cursor->Init();
 		m_id++;
@@ -807,11 +1790,11 @@ void ObjectManager::SetGameCameraParam()
 		_name = stage["Name"];
 		std::shared_ptr<GameCamera> camera = std::make_shared<GameCamera>();
 
+		camera->SetObjectManager(shared_from_this());
 		camera->SetPosList(_PlayerPos, _FixedPos, _ClearPos);
 		camera->SetDegAngList(_PlayerAngle, _FixedAngle, _ClearAngle);
 		camera->SetViewAngList(_PlayerViewAngle, _FixedViewAngle, _ClearViewAngle);
 		camera->SetName(_name);
-		camera->SetObjectManager(shared_from_this());
 		camera->Init();
 		camera->SetID(m_id);
 		m_id++;
@@ -859,25 +1842,23 @@ void ObjectManager::SetObjectParam()
 			std::shared_ptr<KdGameObject> obj;
 			if (_name == "Ground")
 			{
-				std::shared_ptr<Ground> g = std::make_shared<Ground>();
-				ground = g;
-				m_ground = g;
-				obj = g;
+				std::shared_ptr<Ground> ground = std::make_shared<Ground>();
+				m_ground = ground;
+				obj = ground;
 			}
 			if (_name == "Circle")
 			{
-				std::shared_ptr<Circle> c = std::make_shared<Circle>();
-				circle = c;
-				m_circle = c;
-				if (m_camera.expired() == false)m_camera.lock()->SetFixedTarget(c);
-				obj = c;
+				circle = std::make_shared<Circle>();
+				m_circle = circle;
+				if (m_camera.expired() == false)m_camera.lock()->SetFixedTarget(circle);
+				obj = circle;
 			}
 			if (_name == "Magic")
 			{
-				std::shared_ptr<MagicPolygon> m = std::make_shared<MagicPolygon>();
-				magic = m;
-				m_magic = m;
-				obj = m;
+				std::shared_ptr<MagicPolygon> magic = std::make_shared<MagicPolygon>();
+				magic->SetCamera(m_camera.lock());
+				m_magic = magic;
+				obj = magic;
 			}
 			if (_name == "Wall")
 			{
@@ -888,12 +1869,12 @@ void ObjectManager::SetObjectParam()
 				obj = std::make_shared<SkyBox>();
 			}
 
+			obj->SetObjectManager(shared_from_this());
 			obj->SetPos(_pos);
 			obj->SetSize(_size);
 			obj->SetAngle(_angle);
 			obj->SetName(_name);
 			obj->SetID(m_id);
-			obj->SetObjectManager(shared_from_this());
 			obj->Init();
 			m_id++;
 
@@ -905,8 +1886,8 @@ void ObjectManager::SetObjectParam()
 
 	ifs.close();
 
-	if(circle && ground)circle->SetGround(ground);
-	if(magic && circle)magic->SetCircle(circle);
+	if (circle && ground)circle->SetGround(ground);
+	if (magic && circle)magic->SetCircle(circle);
 }
 
 void ObjectManager::SetGroundParam()
@@ -972,7 +1953,7 @@ void ObjectManager::SetGroundParam()
 	_Scale = Math::Matrix::CreateScale(m_magic.lock()->GetSize());
 	_Rot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_magic.lock()->GetAngle().y));
 	_Trans = Math::Matrix::CreateTranslation(m_magic.lock()->GetPos());
-	Math::Matrix _MagicMat  = _Scale * _Rot * _Trans * _CircleMat;
+	Math::Matrix _MagicMat = _Scale * _Rot * _Trans * _CircleMat;
 	m_magic.lock()->SetMatrix(_MagicMat);
 
 	ifs.close();
@@ -1036,6 +2017,7 @@ void ObjectManager::SetPlayerParam()
 		SetWeaponParam((("Asset/Json/") + m_nowScene + ("/Weapon/Shield/Shield.json")), stage["ShieldName"]);
 
 		player->SetCamera(m_camera.lock());
+		player->SetObjectManager(shared_from_this());
 		player->SetParam(_hp, player->GetSword().lock()->GetATK(), _speed, _stamina);
 		player->SetPos(_pos);
 		player->SetSize(_size);
@@ -1043,7 +2025,6 @@ void ObjectManager::SetPlayerParam()
 		player->SetAngle(_angle);
 		player->SetAtkRange(_atkRange);
 		player->SetForward(_forward);
-		player->SetObjectManager(shared_from_this());
 		player->Init();
 		player->SetInviTime(_inviTime);
 		player->SetName(_name);
@@ -1119,8 +2100,8 @@ void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponNam
 		std::string _modelPath;
 		_modelPath = stage["Path"];
 
-		weapon->SetModelPath(_modelPath);
 		weapon->SetObjectManager(shared_from_this());
+		weapon->SetModelPath(_modelPath);
 		weapon->Init();
 		weapon->SetPos(_pos);
 		weapon->SetSize(_size);
@@ -1131,7 +2112,7 @@ void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponNam
 		m_id++;
 
 		SceneManager::Instance().AddWeapon(weapon);
-		
+
 		//デバッグ
 		//break;
 	}
@@ -1212,6 +2193,8 @@ void ObjectManager::SetEnemyParam(std::string _filePath)
 				std::shared_ptr<Golem> golem = std::make_shared<Golem>();
 				enemy = golem;
 			}
+			enemy->SetObjectManager(shared_from_this());
+			enemy->SetCamera(m_camera.lock());
 			enemy->SetParam(_hp, _atk, _speed, _stamina);
 			enemy->SetPos(_pos);
 			enemy->SetSize(_size);
@@ -1222,7 +2205,6 @@ void ObjectManager::SetEnemyParam(std::string _filePath)
 			enemy->SetTarget(m_player.lock());
 			enemy->SetName(_name);
 			enemy->SetID(m_id);
-			enemy->SetObjectManager(shared_from_this());
 			enemy->Init();
 			m_id++;
 
@@ -1241,6 +2223,7 @@ void ObjectManager::AddTitleCamera()
 	Math::Vector3 _degAng = Math::Vector3::Zero;
 
 	std::shared_ptr<TitleCamera> _camera = std::make_shared<TitleCamera>();
+	_camera->SetObjectManager(shared_from_this());
 	_camera->SetPos(_pos);
 	_camera->SetDegAng(_degAng);
 	_camera->Init();
@@ -1258,6 +2241,7 @@ void ObjectManager::AddTitle()
 	float _size = 1.0f;
 
 	std::shared_ptr<Title> _title = std::make_shared<Title>();
+	_title->SetObjectManager(shared_from_this());
 	_title->SetPos(_pos);
 	_title->SetSize(_size);
 	_title->Init();
@@ -1275,6 +2259,7 @@ void ObjectManager::AddGame()
 	float _size = 1.0f;
 
 	std::shared_ptr<Game> _game = std::make_shared<Game>();
+	_game->SetObjectManager(shared_from_this());
 	_game->SetPos(_pos);
 	_game->SetSize(_size);
 	_game->Init();
@@ -1292,6 +2277,7 @@ void ObjectManager::AddExit()
 	float _size = 1.0f;
 
 	std::shared_ptr<Exit> _exit = std::make_shared<Exit>();
+	_exit->SetObjectManager(shared_from_this());
 	_exit->SetPos(_pos);
 	_exit->SetSize(_size);
 	_exit->Init();
@@ -1309,6 +2295,7 @@ void ObjectManager::AddTitleGuide()
 	float _size = 1.0f;
 
 	std::shared_ptr<TitleGuide> _guide = std::make_shared<TitleGuide>();
+	_guide->SetObjectManager(shared_from_this());
 	_guide->SetPos(_pos);
 	_guide->SetSize(_size);
 	_guide->Init();
@@ -1330,6 +2317,7 @@ void ObjectManager::AddCursor()
 	std::shared_ptr<Cursor> _cursor = std::make_shared<Cursor>();
 	if (!m_game.expired())_cursor->SetPosList(m_game.lock()->GetVector2Pos());
 	if (!m_exit.expired())_cursor->SetPosList(m_exit.lock()->GetVector2Pos());
+	_cursor->SetObjectManager(shared_from_this());
 	_cursor->SetMaxSize(_MaxSize);
 	_cursor->SetChangeSizeNum(_ChangeSize);
 	_cursor->SetMaxAlpha(_MaxAlpha);
@@ -1358,6 +2346,7 @@ void ObjectManager::AddBone()
 
 	std::shared_ptr<Bone> enemy = nullptr;
 	enemy = std::make_shared<Bone>();
+	enemy->SetObjectManager(shared_from_this());
 	enemy->SetParam(_hp, _atk, _speed, _stamina);
 	enemy->SetPos(_pos);
 	enemy->SetSize(_size);
@@ -1393,6 +2382,7 @@ void ObjectManager::AddGolem()
 
 	std::shared_ptr<Golem> enemy = nullptr;
 	enemy = std::make_shared<Golem>();
+	enemy->SetObjectManager(shared_from_this());
 	enemy->SetParam(_hp, _atk, _speed, _stamina);
 	enemy->SetPos(_pos);
 	enemy->SetSize(_size);
@@ -1409,7 +2399,7 @@ void ObjectManager::AddGolem()
 	m_EnemyList.push_back(enemy);
 }
 
-void ObjectManager::AddWeapon(std::string _filePath,std::string _weaponName)
+void ObjectManager::AddWeapon(std::string _filePath, std::string _weaponName)
 {
 	//jsonファイル
 	std::string fileName = _filePath;
@@ -1458,7 +2448,8 @@ void ObjectManager::AddWeapon(std::string _filePath,std::string _weaponName)
 
 		std::string _modelPath;
 		_modelPath = stage["Path"];
-
+		
+		weapon->SetObjectManager(shared_from_this());
 		weapon->SetModelPath(_modelPath);
 		weapon->Init();
 		weapon->SetPos(_pos);
@@ -1485,6 +2476,7 @@ void ObjectManager::AddGround()
 	Math::Vector3 _angle = Math::Vector3::Zero;
 	std::shared_ptr<Ground> obj = std::make_shared<Ground>();
 
+	obj->SetObjectManager(shared_from_this());
 	obj->SetPos(_pos);
 	obj->SetSize(_size);
 	obj->SetAngle(_angle);
@@ -1533,6 +2525,7 @@ void ObjectManager::AddCircle()
 			break;
 		}
 
+		obj->SetObjectManager(shared_from_this());
 		obj->SetPos(_pos);
 		obj->SetSize(_size);
 		obj->SetAngle(_angle);
@@ -1555,6 +2548,7 @@ void ObjectManager::AddWall()
 	Math::Vector3 _angle = Math::Vector3::Zero;
 	std::shared_ptr<Wall> obj = std::make_shared<Wall>();
 
+	obj->SetObjectManager(shared_from_this());
 	obj->SetPos(_pos);
 	obj->SetSize(_size);
 	obj->SetAngle(_angle);
@@ -1576,6 +2570,7 @@ void ObjectManager::AddSkyBox()
 	Math::Vector3 _angle = Math::Vector3::Zero;
 	std::shared_ptr<SkyBox> obj = std::make_shared<SkyBox>();
 
+	obj->SetObjectManager(shared_from_this());
 	obj->SetPos(_pos);
 	obj->SetSize(_size);
 	obj->SetAngle(_angle);

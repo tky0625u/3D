@@ -36,7 +36,7 @@ void LockON::Update()
 
 	//座標変換
 	Math::Vector3 _pos = { m_pos.x,m_pos.y,0.0f };
-	m_ObjManager.lock()->GetCamera().lock()->WorkCamera()->ConvertWorldToScreenDetail(_targetEnemy->GetLockPointMat().Translation(), _pos);
+	m_target.lock()->GetCamera().lock()->WorkCamera()->ConvertWorldToScreenDetail(_targetEnemy->GetLockPointMat().Translation(), _pos);
 
 	if (_pos.z <= -1.0f)
 	{

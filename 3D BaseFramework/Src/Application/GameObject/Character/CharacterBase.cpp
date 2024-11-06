@@ -25,7 +25,7 @@ void CharacterBase::Update()
 		}
 		else
 		{
-			if(!m_ObjManager.lock()->GetCamera().lock()->GetConText()->GetState()->GetShakeFlg())Action();
+			if(!m_camera.lock()->GetConText()->GetState()->GetShakeFlg())Action();
 		}
 
 		float _slow = 1.0f;
@@ -96,7 +96,6 @@ void CharacterBase::PostUpdate()
 		m_animeSpeed = 1.0f;
 	}
 
-	if (m_ObjManager.lock()->GetStopTime() > 0)return;
 	KdCollider::SphereInfo sphereInfo;
 	Math::Matrix _mat = m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(m_mWorld.Translation()));
 	sphereInfo.m_sphere.Center = _mat.Translation();
@@ -139,7 +138,7 @@ void CharacterBase::PostUpdate()
 		m_pos += maxOverLap * HitDir;
 	}
 
-	if (m_ObjManager.lock()->GetCamera().lock()->GetConText()->GetState()->GetShakeFlg())return;
+	if (m_camera.lock()->GetConText()->GetState()->GetShakeFlg())return;
 
 	//アニメーションの更新
 	if (m_anime != m_beforeAnime)
