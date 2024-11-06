@@ -18,7 +18,9 @@ public:
 	void Attack2();
 	void Attack3();
 	void AttackDirCheck();
+	void AttackDamage();
 	void ChangeAction()override;
+
 
 private:
 	Math::Vector3    m_AttackDir = Math::Vector3::Zero;

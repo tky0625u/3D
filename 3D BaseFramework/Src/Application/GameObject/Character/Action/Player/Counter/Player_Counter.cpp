@@ -6,6 +6,9 @@
 #include"../../../../ObjectManager.h"
 #include"../../../Enemy/EnemyBase.h"
 #include"../../../Action/Enemy/Enemy_ConText.h"
+#include"../../../../Camera/GameCamera/GameCamera.h"
+#include"../../../../Camera/GameCamera/GameCamera_ConText.h"
+#include"../../../../Camera/GameCamera/GameCamera_State.h"
 
 void Player_Counter::Start()
 {
@@ -143,6 +146,7 @@ void Player_Counter::CounterDamage()
 	{
 		if (hitEnemy->GetParam().Hp > 0 && hitEnemy->GetActionType() != EnemyBase::Action::AppealType && hitEnemy->GetinviTime() == 0)
 		{
+			m_target.lock()->GetCamera().lock()->GetConText()->GetState()->SetShakeFlg(true);
 			hitEnemy->Hit(m_target.lock()->GetParam().Atk);
 			hitEnemy->GetConText()->Hit(m_target.lock()->GetParam().Atk);
 			hitEnemy->SetInviTime(m_target.lock()->GetinviTime());

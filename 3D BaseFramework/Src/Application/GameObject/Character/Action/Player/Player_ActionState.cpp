@@ -5,8 +5,6 @@
 #include"../Enemy/Enemy_ConText.h"
 #include"../../Player/Player.h"
 #include"../../../Camera/GameCamera/GameCamera.h"
-#include"../../../Camera/GameCamera/GameCamera_ConText.h"
-#include"../../../Camera/GameCamera/GameCamera_State.h"
 #include"Player_ConText.h"
 #include"../../../Weapon/Sword/Sword.h"
 
@@ -19,69 +17,6 @@
 #include"Parry/Player_Parry.h"
 #include"Counter/Player_Counter.h"
 #include"Hit/Player_Hit.h"
-
-void Player_ActionState::AttackDamage()
-{
-	if (m_target.expired())return;
-
-	std::vector<KdCollider::SphereInfo> sphereInfoList;
-	KdCollider::SphereInfo sphereInfo;
-
-	if (m_target.lock()->GetSword().expired() == false)
-	{
-		sphereInfo.m_sphere.Center = m_target.lock()->GetSword().lock()->GetModelTop().Translation();
-		sphereInfoList.push_back(sphereInfo);
-
-		sphereInfo.m_sphere.Center = m_target.lock()->GetSword().lock()->GetModelCenter().Translation();
-		sphereInfoList.push_back(sphereInfo);
-
-		sphereInfo.m_sphere.Center = m_target.lock()->GetSword().lock()->GetModelBottom().Translation();
-		sphereInfoList.push_back(sphereInfo);
-	}
-	else
-	{
-		sphereInfo.m_sphere.Center = m_target.lock()->GetSwordMat().Translation();
-		sphereInfoList.push_back(sphereInfo);
-	}
-
-	for (int i = 0; i < sphereInfoList.size(); ++i)
-	{
-		sphereInfoList[i].m_sphere.Radius = 0.8f;
-		sphereInfoList[i].m_type = KdCollider::TypeDamage;
-	}
-
-	std::list<KdCollider::CollisionResult> retSphereList;
-	std::vector<std::shared_ptr<EnemyBase>> hitEnemyList;
-
-	for (auto& sphere :  SceneManager::Instance().GetEnemyList())
-	{
-		if (sphere->IsExpired())continue;
-		if (sphere->GetParam().Hp <= 0)continue;
-
-		for (int i = 0; i < sphereInfoList.size(); ++i)
-		{
-			if (sphere->Intersects(sphereInfoList[i], &retSphereList))
-			{
-				hitEnemyList.push_back(sphere);
-			}
-		}
-	}
-
-	int enemy = 0;
-	for (auto& ret : retSphereList)
-	{
-		if (hitEnemyList[enemy]->GetParam().Hp > 0 && hitEnemyList[enemy]->GetActionType() != EnemyBase::Action::AppealType && hitEnemyList[enemy]->GetActionType() != EnemyBase::Action::HitType && hitEnemyList[enemy]->GetinviTime() == 0)
-		{
-			m_target.lock()->GetCamera().lock()->GetConText()->GetState()->SetShakeFlg(true);
-			hitEnemyList[enemy]->Hit(m_target.lock()->GetParam().Atk);
-			hitEnemyList[enemy]->GetConText()->Hit(m_target.lock()->GetParam().Atk);
-			hitEnemyList[enemy]->SetInviTime(m_target.lock()->GetinviTime());
-			KdEffekseerManager::GetInstance().Play("hit_eff.efkefc", ret.m_hitPos, 0.8f, 0.5f, false);
-			KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/刀で斬る2.WAV", 0.05f, false);
-		}
-		enemy++;
-	}
-}
 
 void Player_ActionState::LockON()
 {
