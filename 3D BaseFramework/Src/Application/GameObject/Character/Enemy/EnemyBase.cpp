@@ -34,7 +34,7 @@ void EnemyBase::Action()
 void EnemyBase::DrawOutLine()
 {
 	KdShaderManager::Instance().m_StandardShader.SetEnableOutLineDraw(m_LockONFlg);
-	KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
+	if(m_LockONFlg)KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
 }
 
 void EnemyBase::Init()
