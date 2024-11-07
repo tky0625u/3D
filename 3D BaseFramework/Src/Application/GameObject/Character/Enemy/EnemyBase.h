@@ -22,10 +22,8 @@ public:
 	EnemyBase() {}
 	~EnemyBase()override {};
 
-	void Update()        override;
 	void PostUpdate()    override;
 	virtual void Action()override;
-	void DrawSprite()    override;
 	void DrawOutLine();
 	virtual void Init()  override;
 
@@ -48,7 +46,6 @@ public:
 
 protected:
 	std::weak_ptr<Player>              m_Target;
-	std::shared_ptr<Enemy_HP>          m_hp         = nullptr;
 	std::shared_ptr<Enemy_ConText>     m_conText    = nullptr;
 	std::weak_ptr<Enemy_ActionState>   m_state;
 	std::shared_ptr<Enemy_ActionState> m_NextState;

@@ -272,7 +272,7 @@ void Player_Attack::AttackDamage()
 	int enemy = 0;
 	for (auto& ret : retSphereList)
 	{
-		if (hitEnemyList[enemy]->GetParam().Hp > 0 && hitEnemyList[enemy]->GetActionType() != EnemyBase::Action::AppealType && hitEnemyList[enemy]->GetActionType() != EnemyBase::Action::HitType && hitEnemyList[enemy]->GetinviTime() == 0)
+		if (hitEnemyList[enemy]->GetParam().Hp > 0 && hitEnemyList[enemy]->GetActionType() != EnemyBase::Action::AppealType && hitEnemyList[enemy]->GetinviTime() == 0)
 		{
 			m_target.lock()->GetCamera().lock()->GetConText()->GetState()->SetShakeFlg(true);
 			hitEnemyList[enemy]->Hit(m_target.lock()->GetParam().Atk);

@@ -528,9 +528,6 @@
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble\Bone_Stumble.h">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\UI\Player\Player_UI_Manager.h">
-      <Filter>Src\Application\GameObject\UI\Player</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\UI\UIBase.h">
       <Filter>Src\Application\GameObject\UI</Filter>
     </ClInclude>
@@ -859,9 +856,6 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble\Bone_Stumble.cpp">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\UI\Player\Player_UI_Manager.cpp">
-      <Filter>Src\Application\GameObject\UI\Player</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\UI\UIBase.cpp">
       <Filter>Src\Application\GameObject\UI</Filter>

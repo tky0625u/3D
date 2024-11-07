@@ -5,7 +5,6 @@
 class ActionBase;
 class Player_ActionConText;
 class Player_ActionState;
-class Player_UI_Manager;
 class EnemyBase;
 class Shield;
 
@@ -16,9 +15,7 @@ public:
 	~Player()        override {};
 
 	void Action()    override;
-	void Update()    override;
 	void PostUpdate()override;
-	void DrawSprite()override;
 	void Init()      override;
 
 	void CrushingAction()override;
@@ -44,7 +41,6 @@ private:
 	std::shared_ptr<Player_ActionConText> m_context        = nullptr;
 	std::weak_ptr<Player_ActionState>     m_state;
 	std::shared_ptr<Player_ActionState>   m_NextState;
-	std::shared_ptr<Player_UI_Manager>    m_ui             = nullptr;
 	std::weak_ptr<Shield>                 m_shield;
 	float                                 m_FocusBackRange = 2000.0f;
 	int                                   m_MaxStamina     = 0;

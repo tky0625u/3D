@@ -41,6 +41,8 @@ public :
 	const std::vector<std::shared_ptr<EnemyBase>>&  GetEnemyList();
 	const std::list<std::shared_ptr<WeaponBase>>&   GetWeaponList();
 	const std::list<std::shared_ptr<UIBase>>&       GetUIList();
+	const std::list<std::shared_ptr<UIBase>>&       GetPlayerUIList();
+	const std::list<std::shared_ptr<UIBase>>&       GetEnemyUIList();
 	const std::shared_ptr<EnemyManager>& GetEnemyManager();
 
 	const SceneType GetNowSceneType()const { return m_currentSceneType; }
@@ -54,6 +56,8 @@ public :
 	void AddEnemy (const std::shared_ptr<EnemyBase>& enemy);
 	void AddWeapon(const std::shared_ptr<WeaponBase>& weapon);
 	void AddUI    (const std::shared_ptr<UIBase>& ui);
+	void AddPlayerUI    (const std::shared_ptr<UIBase>& ui);
+	void AddEnemyUI    (const std::shared_ptr<UIBase>& ui);
 
 	// マネージャーの初期化
 	// インスタンス生成(アプリ起動)時にコンストラクタで自動実行

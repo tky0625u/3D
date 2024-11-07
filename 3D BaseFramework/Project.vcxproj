@@ -211,7 +211,6 @@
     <ClInclude Include="Src\Application\GameObject\UI\Player\Floor\Floor.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Player\HP\Player_HP.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Player\LockON\LockON.h" />
-    <ClInclude Include="Src\Application\GameObject\UI\Player\Player_UI_Manager.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Player\Stamina\Player_Stamina.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Title\Cursor\Cursor.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Title\Exit\Exit.h" />
@@ -324,7 +323,6 @@
     <ClCompile Include="Src\Application\GameObject\UI\Player\Floor\Floor.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\HP\Player_HP.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\LockON\LockON.cpp" />
-    <ClCompile Include="Src\Application\GameObject\UI\Player\Player_UI_Manager.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\Stamina\Player_Stamina.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Title\Cursor\Cursor.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Title\Exit\Exit.cpp" />

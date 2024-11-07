@@ -1842,7 +1842,7 @@ void ObjectManager::SetObjectParam()
 			std::shared_ptr<KdGameObject> obj;
 			if (_name == "Ground")
 			{
-				std::shared_ptr<Ground> ground = std::make_shared<Ground>();
+				ground = std::make_shared<Ground>();
 				m_ground = ground;
 				obj = ground;
 			}
@@ -1855,7 +1855,7 @@ void ObjectManager::SetObjectParam()
 			}
 			if (_name == "Magic")
 			{
-				std::shared_ptr<MagicPolygon> magic = std::make_shared<MagicPolygon>();
+				magic = std::make_shared<MagicPolygon>();
 				magic->SetCamera(m_camera.lock());
 				m_magic = magic;
 				obj = magic;

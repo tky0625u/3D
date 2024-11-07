@@ -7,7 +7,11 @@
 void Enemy_HP::Update()
 {
 	if (m_camera.expired())return;
-	if (m_target.expired())return;
+	if (m_target.expired())
+	{
+		if (!IsExpired())Expired();
+		return;
+	}
 
 	if (m_rect[HP::hp].width > m_rect[HP::down].width)m_rect[HP::down].width = m_rect[HP::hp].width;
 

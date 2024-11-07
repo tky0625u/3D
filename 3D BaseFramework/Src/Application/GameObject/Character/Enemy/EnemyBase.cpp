@@ -5,13 +5,6 @@
 #include"../Action/Enemy/Enemy_ConText.h"
 #include"../../UI/Enemy/HP/Enemy_HP.h"
 
-void EnemyBase::Update()
-{
-	CharacterBase::Update();
-
-	m_hp->Update();
-}
-
 void EnemyBase::PostUpdate()
 {
 	CharacterBase::PostUpdate();
@@ -33,11 +26,6 @@ void EnemyBase::Action()
 	if (m_state.expired() == false)m_state.lock()->Update();
 }
 
-void EnemyBase::DrawSprite()
-{
-	m_hp->DrawSprite();
-}
-
 void EnemyBase::DrawOutLine()
 {
 	KdShaderManager::Instance().m_StandardShader.SetEnableOutLineDraw(m_LockONFlg);
@@ -53,11 +41,12 @@ void EnemyBase::Init()
 
 	m_ObjType = ObjType::oEnemy;
 
-	m_hp = std::make_shared<Enemy_HP>();
-	m_hp->SetTarget(shared_from_this());
-	m_hp->SetCamera(m_camera.lock());
-	m_hp->SetObjectManager(m_ObjManager.lock());
-	m_hp->Init();
+	std::shared_ptr<Enemy_HP> _hp = std::make_shared<Enemy_HP>();
+	_hp->SetTarget(shared_from_this());
+	_hp->SetCamera(m_camera.lock());
+	_hp->SetObjectManager(m_ObjManager.lock());
+	_hp->Init();
+	SceneManager::Instance().AddEnemyUI(_hp);
 }
 
 void EnemyBase::CrushingAction()

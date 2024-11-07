@@ -4,9 +4,13 @@
 #include"../Action/Player/Idol/Player_Idol.h"
 #include"Application/main.h"
 #include"../Action/Player/Player_ConText.h"
-#include"../../UI/Player/Player_UI_Manager.h"
 #include"../../../Scene/SceneManager.h"
 #include"../Enemy/EnemyBase.h"
+
+#include"../../UI/Player/HP/Player_HP.h"
+#include"../../UI/Player/Stamina/Player_Stamina.h"
+#include"../../UI/Player/LockON/LockON.h"
+#include"../../UI/Player/Floor/Floor.h"
 
 void Player::Action()
 {
@@ -19,12 +23,6 @@ void Player::Action()
 		m_NextState.reset();
 	}
 	if (!m_state.expired())m_state.lock()->Update();
-}
-
-void Player::Update()
-{
-	CharacterBase::Update();
-	m_ui->Update();
 }
 
 void Player::PostUpdate()
@@ -72,11 +70,6 @@ void Player::PostUpdate()
 	if (m_StaminaRecoveryTime > 0)m_StaminaRecoveryTime--;
 }
 
-void Player::DrawSprite()
-{
-	m_ui->DrawSprite();
-}
-
 void Player::Init()
 {
 	CharacterBase::Init();
@@ -92,10 +85,28 @@ void Player::Init()
 	m_state = m_context->GetState();
 	m_state.lock()->SetObjectManager(m_ObjManager.lock());
 
-	m_ui = std::make_shared<Player_UI_Manager>();
-	m_ui->SetPlayer(shared_from_this());
-	m_ui->SetObjectManager(m_ObjManager.lock());
-	m_ui->Init();
+	std::shared_ptr<Player_HP> _hp = std::make_shared<Player_HP>();
+	_hp->SetTraget(shared_from_this());
+	_hp->SetObjectManager(m_ObjManager.lock());
+	_hp->Init();
+	SceneManager::Instance().AddPlayerUI(_hp);
+
+	std::shared_ptr<Player_Stamina> _stamina = std::make_shared<Player_Stamina>();
+	_stamina->SetTraget(shared_from_this());
+	_stamina->SetObjectManager(m_ObjManager.lock());
+	_stamina->Init();
+	SceneManager::Instance().AddPlayerUI(_stamina);
+
+	std::shared_ptr<LockON> _lock = std::make_shared<LockON>();
+	_lock->SetTraget(shared_from_this());
+	_lock->SetObjectManager(m_ObjManager.lock());
+	_lock->Init();
+	SceneManager::Instance().AddPlayerUI(_lock);
+
+	std::shared_ptr<Floor> _floor = std::make_shared<Floor>();
+	_floor->SetObjectManager(m_ObjManager.lock());
+	_floor->Init();
+	SceneManager::Instance().AddPlayerUI(_floor);
 
 	m_pCollider = std::make_unique<KdCollider>();
 	m_pCollider->RegisterCollisionShape("Player", m_model, KdCollider::TypeBump | KdCollider::TypeDamage | KdCollider::TypeEvent);

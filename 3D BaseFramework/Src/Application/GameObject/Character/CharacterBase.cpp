@@ -150,7 +150,6 @@ void CharacterBase::PostUpdate()
 	_slow = m_ObjManager.lock()->GetSlow();
 	m_animator->AdvanceTime(m_model->WorkNodes(), m_animeSpeed * _slow);
 	m_model->CalcNodeMatrices();
-
 }
 
 void CharacterBase::GenerateDepthMapFromLight()

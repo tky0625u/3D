@@ -89,6 +89,16 @@ const std::list<std::shared_ptr<UIBase>>& SceneManager::GetUIList()
 	return m_currentScene->GetUIList();
 }
 
+const std::list<std::shared_ptr<UIBase>>& SceneManager::GetPlayerUIList()
+{
+	return m_currentScene->GetPlayerUIList();
+}
+
+const std::list<std::shared_ptr<UIBase>>& SceneManager::GetEnemyUIList()
+{
+	return m_currentScene->GetEnemyUIList();
+}
+
 const std::shared_ptr<EnemyManager>& SceneManager::GetEnemyManager()
 {
 	return m_currentScene->GetEnemyManager();
@@ -122,6 +132,16 @@ void SceneManager::AddWeapon(const std::shared_ptr<WeaponBase>& weapon)
 void SceneManager::AddUI(const std::shared_ptr<UIBase>& ui)
 {
 	m_currentScene->AddUI(ui);
+}
+
+void SceneManager::AddPlayerUI(const std::shared_ptr<UIBase>& ui)
+{
+	m_currentScene->AddPlayerUI(ui);
+}
+
+void SceneManager::AddEnemyUI(const std::shared_ptr<UIBase>& ui)
+{
+	m_currentScene->AddEnemyUI(ui);
 }
 
 void SceneManager::ChangeScene(SceneType sceneType)

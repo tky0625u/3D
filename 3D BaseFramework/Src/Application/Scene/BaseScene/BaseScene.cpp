@@ -11,7 +11,7 @@ void BaseScene::PreUpdate()
 	DeleteObjectList();
 	if(m_EnemyManager)m_EnemyManager->DeleteEnemyList();
 	DeleteWeaponList();
-	DeleteUIList();
+	DeleteEnemyUIList();
 
 	if (SceneManager::Instance().m_stop)return;
 	
@@ -20,6 +20,8 @@ void BaseScene::PreUpdate()
 	if (m_EnemyManager)m_EnemyManager      ->PreUpdate();
 	for (auto& weapon : m_WeaponList)weapon->PreUpdate();
 	for (auto& ui     : m_UIList)    ui    ->PreUpdate();
+	for (auto& player     : m_PlayerUIList)player->PreUpdate();
+	for (auto& enemy     : m_EnemyUIList)  enemy ->PreUpdate();
 	if (m_camera)m_camera->PreUpdate();
 }
 
@@ -29,7 +31,9 @@ void BaseScene::Update()
 	for (auto& obj    : m_ObjectList)obj   ->Update();
 	if (m_EnemyManager)m_EnemyManager      ->Update();
 	for (auto& weapon : m_WeaponList)weapon->Update();
-	for (auto& ui     : m_UIList)    ui    ->Update();
+	for (auto& ui : m_UIList)        ui    ->Update();
+	for (auto& player : m_PlayerUIList)player->Update();
+	for (auto& enemy : m_EnemyUIList)  enemy ->Update();
 	if (m_camera)m_camera->Update();
 
 	// シーン毎のイベント処理
@@ -42,7 +46,9 @@ void BaseScene::PostUpdate()
 	for (auto& obj    : m_ObjectList)obj   ->PostUpdate();
 	if (m_EnemyManager)m_EnemyManager      ->PostUpdate();
 	for (auto& weapon : m_WeaponList)weapon->PostUpdate();
-	for (auto& ui     : m_UIList)    ui    ->PostUpdate();
+	for (auto& ui : m_UIList)        ui    ->PostUpdate();
+	for (auto& player : m_PlayerUIList)player->PostUpdate();
+	for (auto& enemy : m_EnemyUIList)  enemy ->PostUpdate();
 	if (m_camera)m_camera->PostUpdate();
 }
 
@@ -52,7 +58,9 @@ void BaseScene::PreDraw()
 	for (auto& obj    : m_ObjectList)obj   ->PreDraw();
 	if (m_EnemyManager)m_EnemyManager      ->PreDraw();
 	for (auto& weapon : m_WeaponList)weapon->PreDraw();
-	for (auto& ui     : m_UIList)    ui    ->PreDraw();
+	for (auto& ui : m_UIList)        ui    ->PreDraw();
+	for (auto& enemy : m_EnemyUIList)  enemy ->PreDraw();
+	for (auto& player : m_PlayerUIList)player->PreDraw();
 	if (m_camera)m_camera->PreDraw();
 }
 
@@ -63,10 +71,9 @@ void BaseScene::Draw()
 	KdShaderManager::Instance().m_StandardShader.BeginGenerateDepthMapFromLight();
 	{
 		if (m_player)m_player->GenerateDepthMapFromLight();
-		for (auto& obj    : m_ObjectList)obj   ->GenerateDepthMapFromLight();
-		if (m_EnemyManager)m_EnemyManager      ->GenerateDepthMapFromLight();
-		for (auto& weapon : m_WeaponList)weapon->GenerateDepthMapFromLight();
-		for (auto& ui     : m_UIList)    ui    ->GenerateDepthMapFromLight();
+		for (auto& obj    : m_ObjectList)obj     ->GenerateDepthMapFromLight();
+		if (m_EnemyManager)m_EnemyManager        ->GenerateDepthMapFromLight();
+		for (auto& weapon : m_WeaponList)weapon  ->GenerateDepthMapFromLight();
 		if (m_camera)m_camera->GenerateDepthMapFromLight();
 	}
 	KdShaderManager::Instance().m_StandardShader.EndGenerateDepthMapFromLight();
@@ -79,7 +86,6 @@ void BaseScene::Draw()
 		for (auto& obj    : m_ObjectList)obj   ->DrawLit();
 		if (m_EnemyManager)m_EnemyManager      ->DrawLit();
 		for (auto& weapon : m_WeaponList)weapon->DrawLit();
-		for (auto& ui     : m_UIList)    ui    ->DrawLit();
 		if (m_camera)m_camera->DrawLit();
 	}
 	KdShaderManager::Instance().m_StandardShader.EndLit();
@@ -91,8 +97,6 @@ void BaseScene::Draw()
 		if (m_player)m_player->DrawUnLit();
 		for (auto& obj    : m_ObjectList)obj   ->DrawUnLit();
 		if (m_EnemyManager)m_EnemyManager      ->DrawUnLit();
-		for (auto& weapon : m_WeaponList)weapon->DrawUnLit();
-		for (auto& ui     : m_UIList)    ui    ->DrawUnLit();
 		if (m_camera)m_camera->DrawUnLit();
 	}
 	KdShaderManager::Instance().m_StandardShader.EndUnLit();
@@ -105,7 +109,6 @@ void BaseScene::Draw()
 		for (auto& obj    : m_ObjectList)obj   ->DrawBright();
 		if (m_EnemyManager)m_EnemyManager      ->DrawBright();
 		for (auto& weapon : m_WeaponList)weapon->DrawBright();
-		for (auto& ui     : m_UIList)    ui    ->DrawBright();
 		if (m_camera)m_camera->DrawBright();
 	}
 	KdShaderManager::Instance().m_postProcessShader.EndBright();
@@ -120,10 +123,12 @@ void BaseScene::DrawSprite()
 	KdShaderManager::Instance().m_spriteShader.Begin();
 	{
 		if (m_player)m_player->DrawSprite();
-		for (auto& obj    : m_ObjectList)obj   ->DrawSprite();
-		if (m_EnemyManager)m_EnemyManager      ->DrawSprite();
-		for (auto& weapon : m_WeaponList)weapon->DrawSprite();
-		for (auto& ui     : m_UIList)    ui    ->DrawSprite();
+		for (auto& obj    : m_ObjectList)obj     ->DrawSprite();
+		if (m_EnemyManager)m_EnemyManager        ->DrawSprite();
+		for (auto& weapon : m_WeaponList)weapon  ->DrawSprite();
+		for (auto& ui : m_UIList)        ui      ->DrawSprite();
+		for (auto& enemy : m_EnemyUIList)  enemy ->DrawSprite();
+		for (auto& player : m_PlayerUIList)player->DrawSprite();
 		if (m_camera)m_camera->DrawSprite();
 	}
 	KdShaderManager::Instance().m_spriteShader.End();
@@ -136,10 +141,12 @@ void BaseScene::DrawDebug()
 	KdShaderManager::Instance().m_StandardShader.BeginUnLit();
 	{
 		if (m_player)m_player->DrawDebug();
-		for (auto& obj    : m_ObjectList)obj   ->DrawDebug();
-		if (m_EnemyManager)m_EnemyManager      ->DrawDebug();
-		for (auto& weapon : m_WeaponList)weapon->DrawDebug();
-		for (auto& ui     : m_UIList)    ui    ->DrawDebug();
+		for (auto& obj    : m_ObjectList)obj     ->DrawDebug();
+		if (m_EnemyManager)m_EnemyManager        ->DrawDebug();
+		for (auto& weapon : m_WeaponList)weapon  ->DrawDebug();
+		for (auto& ui : m_UIList)        ui      ->DrawDebug();
+		for (auto& enemy : m_EnemyUIList)  enemy ->DrawDebug();
+		for (auto& player : m_PlayerUIList)player->DrawDebug();
 		if (m_camera)m_camera->DrawDebug();
 	}
 	KdShaderManager::Instance().m_StandardShader.EndUnLit();
@@ -181,15 +188,15 @@ void BaseScene::DeleteObjectList()
 
 }
 
-void BaseScene::DeleteUIList()
+void BaseScene::DeleteEnemyUIList()
 {
-	auto ui = m_UIList.begin();
+	auto ui = m_EnemyUIList.begin();
 
-	while (ui != m_UIList.end())
+	while (ui != m_EnemyUIList.end())
 	{
 		if ((*ui)->IsExpired())
 		{
-			ui = m_UIList.erase(ui);
+			ui = m_EnemyUIList.erase(ui);
 		}
 		else
 		{
