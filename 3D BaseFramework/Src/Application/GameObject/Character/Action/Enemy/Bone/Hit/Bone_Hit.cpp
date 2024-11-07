@@ -26,5 +26,9 @@ void Bone_Hit::Hit(int _damage)
 	if (m_target.expired())return;
 	m_target.lock()->SetAnime("Hit", false, 1.5f);
 	m_target.lock()->Hit(_damage);
-	if (m_target.lock()->GetParam().Hp <= 0)return;
+	if (m_target.lock()->GetParam().Hp <= 0)
+	{
+		Crushing();
+		return;
+	}
 }

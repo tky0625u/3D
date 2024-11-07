@@ -16,17 +16,11 @@ void CharacterBase::PreUpdate()
 
 void CharacterBase::Update()
 {
+	if (m_camera.lock()->GetConText()->GetState()->GetShakeFlg())return;
 	// デバッグ
 	if (!SceneManager::Instance().m_stop)
 	{
-		if (m_param.Hp <= 0)
-		{
-			CrushingAction();
-		}
-		else
-		{
-			if(!m_camera.lock()->GetConText()->GetState()->GetShakeFlg())Action();
-		}
+		Action();
 
 		float _slow = 1.0f;
 
@@ -52,6 +46,8 @@ void CharacterBase::Update()
 
 void CharacterBase::PostUpdate()
 {
+	if (m_camera.lock()->GetConText()->GetState()->GetShakeFlg())return;
+
 	KdCollider::RayInfo rayInfo;
 	rayInfo.m_pos = m_pos;
 	float LitleUP = 1.0f;
@@ -186,13 +182,6 @@ void CharacterBase::Init()
 
 void CharacterBase::CrushingAction()
 {
-	if (m_anime != "Death")
-	{
-		m_anime = "Death";
-		m_animeFlg = false;
-		m_animeSpeed = 1.0f;
-	}
-
 	m_dossolve += 0.01f;
 }
 

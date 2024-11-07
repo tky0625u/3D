@@ -11,11 +11,12 @@ public:
 
 	std::shared_ptr<Enemy_ActionState> GetState()const { return m_state; }
 
-	void Idol()   { m_state->Idol(); }    //待ち
-	void Run()    { m_state->Run(); }     //走り
-	void Attack() { m_state->Attack(); }  //攻撃
-	void Hit(int _damage)    { m_state->Hit(_damage); }     //被弾
-	void Stumble(){ m_state->Stumble(); } //のけぞり
+	void Idol()              { m_state->Idol(); }        // 待ち
+	void Run()               { m_state->Run(); }         // 走り
+	void Attack()            { m_state->Attack(); }      // 攻撃
+	void Hit(int _damage)    { m_state->Hit(_damage); }  // 被弾
+	void Stumble()           { m_state->Stumble(); }     // のけぞり
+	void Crushing()          { m_state->Crushing(); }    // 撃破
 
 private:
 	std::shared_ptr<Enemy_ActionState> m_state;

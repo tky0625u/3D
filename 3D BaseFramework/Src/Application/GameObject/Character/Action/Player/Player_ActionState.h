@@ -20,15 +20,16 @@ public:
 	void SetActionType(UINT _ActionType) { m_ActionType = _ActionType; }
 	void SetTarget(std::shared_ptr<Player> target) { m_target = target; }
 
-	virtual void Idol();  //待ち
-	virtual void Run();  //走り
-	virtual void Attack();  //攻撃
-	virtual void Guard();  //ガード
-	virtual void GuardReaction();  //ガード時の反応
-	virtual void Parry(std::shared_ptr<EnemyBase> _enemy);  //パリィ
-	virtual void Counter();  //追撃
-	virtual void Roll();  //回避
-	virtual void Hit(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr);  //被弾
+	virtual void Idol();                                                             // 待ち
+	virtual void Run();                                                              // 走り
+	virtual void Attack();                                                           // 攻撃
+	virtual void Guard();                                                            // ガード
+	virtual void GuardReaction();                                                    // ガード時の反応
+	virtual void Parry(std::shared_ptr<EnemyBase> _enemy);                           // パリィ
+	virtual void Counter();                                                          // 追撃
+	virtual void Roll();                                                             // 回避
+	virtual void Hit(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr);  // 被弾
+	virtual void Crushing();                                                         // 撃破
 
 protected:
 	std::weak_ptr<Player> m_target;

@@ -7,7 +7,6 @@ public:
 	Bone() {}
 	~Bone()override {};
 
-	void CrushingAction()override;
 	void Init()override;
 	
 private:

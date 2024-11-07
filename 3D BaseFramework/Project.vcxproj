@@ -169,6 +169,7 @@
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal\Bone_Appeal.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Attack\Bone_Attack.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Bone_ActionState.h" />
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Crushing\Bone_Crushing.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Hit\Bone_Hit.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Idol\Bone_Idol.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Run\Bone_Run.h" />
@@ -184,6 +185,7 @@
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Stumble\Golem_Stumble.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Attack\Player_Attack.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Counter\Player_Counter.h" />
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Crushing\Player_Crushing.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Player\GuardReaction\Player_GuardReaction.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Guard\Player_Guard.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Hit\Player_Hit.h" />
@@ -283,6 +285,7 @@
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal\Bone_Appeal.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Attack\Bone_Attack.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Bone_ActionState.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Crushing\Bone_Crushing.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Hit\Bone_Hit.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Idol\Bone_Idol.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Run\Bone_Run.cpp" />
@@ -297,6 +300,7 @@
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Stumble\Golem_Stumble.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Attack\Player_Attack.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Counter\Player_Counter.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Crushing\Player_Crushing.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\GuardReaction\Player_GuardReaction.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Guard\Player_Guard.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Hit\Player_Hit.cpp" />

@@ -10,6 +10,7 @@
 #include"Attack/Bone_Attack.h"
 #include"Hit/Bone_Hit.h"
 #include"Stumble/Bone_Stumble.h"
+#include"Crushing/Bone_Crushing.h"
 
 void Bone_ActionState::Idol()
 {
@@ -42,7 +43,11 @@ void Bone_ActionState::Hit(int _damage)
 {
 	if (m_target.expired())return;
 	m_target.lock()->Hit(_damage);
-	if (m_target.lock()->GetParam().Hp <= 0)return;
+	if (m_target.lock()->GetParam().Hp <= 0)
+	{
+		Crushing();
+		return;
+	}
 	std::shared_ptr<Bone_Hit> hit = std::make_shared<Bone_Hit>();
 	hit->SetTarget(m_target.lock());
 	hit->SetObjectManager(m_ObjManager.lock());
@@ -56,4 +61,13 @@ void Bone_ActionState::Stumble()
 	stumble->SetTarget(m_target.lock());
 	stumble->SetObjectManager(m_ObjManager.lock());
 	m_target.lock()->SetNextAction(stumble, EnemyBase::Action::StumbleType);
+}
+
+void Bone_ActionState::Crushing()
+{
+	std::shared_ptr<Bone_Crushing> crushing = std::make_shared<Bone_Crushing>();
+	if (m_target.expired())return;
+	crushing->SetTarget(m_target.lock());
+	crushing->SetObjectManager(m_ObjManager.lock());
+	m_target.lock()->SetNextAction(crushing, EnemyBase::Action::CrushingType);
 }

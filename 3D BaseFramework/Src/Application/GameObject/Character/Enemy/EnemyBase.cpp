@@ -4,9 +4,14 @@
 #include"../Player/Player.h"
 #include"../Action/Enemy/Enemy_ConText.h"
 #include"../../UI/Enemy/HP/Enemy_HP.h"
+#include"../../Camera/GameCamera/GameCamera.h"
+#include"../../Camera/GameCamera/GameCamera_ConText.h"
+#include"../../Camera/GameCamera/GameCamera_State.h"
 
 void EnemyBase::PostUpdate()
 {
+	if (m_camera.lock()->GetConText()->GetState()->GetShakeFlg())return;
+
 	CharacterBase::PostUpdate();
 
 	if (m_inviTime > 0)

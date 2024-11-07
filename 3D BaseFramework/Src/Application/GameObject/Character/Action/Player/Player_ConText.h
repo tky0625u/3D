@@ -13,11 +13,11 @@ public:
 
 	enum ActionType
 	{
-		IdolType = 1 << 0,
-		MoveType = 1 << 1,
+		IdolType   = 1 << 0,
+		MoveType   = 1 << 1,
 		AttackType = 1 << 2,
-		GuardType = 1 << 3,
-		RollType = 1 << 4,
+		GuardType  = 1 << 3,
+		RollType   = 1 << 4,
 		LockONType = 1 << 5,
 	};
 
@@ -31,15 +31,16 @@ public:
 	const std::weak_ptr<EnemyBase> GetLockONTarget()const { return m_lockONTarget; }
 	const bool GetLockONFlg()const { return m_lockONFlg; }
 
-	void Idol() { m_state->Idol(); }                   //待ち
-	void Run() { m_state->Run(); }            //走り
-	void Attack() {m_state->Attack(); }                //攻撃
-	void Guard() {m_state->Guard(); }                  //ガード
-	void GuardReaction() {m_state->GuardReaction(); }  //ガード時の反応
-	void Parry(std::shared_ptr<EnemyBase> _enemy) { m_state->Parry(_enemy); }//パリィ
-	void Counter() { m_state->Counter(); }             //追撃
-	void Roll() { m_state->Roll(); }          //回避
-	void Hit(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr) { m_state->Hit(_damage, _enemy); } //被弾
+	void Idol()                                                            { m_state->Idol(); }               // 待ち
+	void Run()                                                             { m_state->Run(); }                // 走り
+	void Attack()                                                          { m_state->Attack(); }             // 攻撃
+	void Guard()                                                           { m_state->Guard(); }              // ガード
+	void GuardReaction()                                                   { m_state->GuardReaction(); }      // ガード時の反応
+	void Parry(std::shared_ptr<EnemyBase> _enemy)                          { m_state->Parry(_enemy); }        // パリィ
+	void Counter()                                                         { m_state->Counter(); }            // 追撃
+	void Roll()                                                            { m_state->Roll(); }               // 回避
+	void Hit(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr) { m_state->Hit(_damage, _enemy); } // 被弾
+	void Crushing()                                                        { m_state->Crushing(); }           // 撃破
 
 private:
 	std::shared_ptr<Player_ActionState> m_state;

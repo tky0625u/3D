@@ -17,6 +17,7 @@
 #include"Parry/Player_Parry.h"
 #include"Counter/Player_Counter.h"
 #include"Hit/Player_Hit.h"
+#include"Crushing/Player_Crushing.h"
 
 void Player_ActionState::LockON()
 {
@@ -242,5 +243,19 @@ void Player_ActionState::Hit(int _damage, std::shared_ptr<EnemyBase> _enemy)
 	hit->SetTarget(m_target.lock());
 	hit->SetObjectManager(m_ObjManager.lock());
 	m_target.lock()->Hit(_damage);
+	if (m_target.lock()->GetParam().Hp <= 0)
+	{
+		Crushing();
+		return;
+	}
 	m_target.lock()->SetNextState(hit);
+}
+
+void Player_ActionState::Crushing()
+{
+	std::shared_ptr<Player_Crushing> crushing = std::make_shared<Player_Crushing>();
+	if (m_target.expired())return;
+	crushing->SetTarget(m_target.lock());
+	crushing->SetObjectManager(m_ObjManager.lock());
+	m_target.lock()->SetNextState(crushing);
 }

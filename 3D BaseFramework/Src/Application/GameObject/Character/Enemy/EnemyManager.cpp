@@ -48,7 +48,7 @@ void EnemyManager::EnemyRun()
 {
 	for (auto& enemy : m_EnemyList)
 	{
-		if (enemy->GetActionType() != EnemyBase::Action::RunType &&
+		if (enemy->GetActionType() != EnemyBase::Action::RunType  &&
 			enemy->GetActionType() != EnemyBase::Action::IdolType)continue;
 
 		KdCollider::RayInfo rayInfo;

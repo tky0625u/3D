@@ -16,7 +16,8 @@ public:
 		RunType,
 		StumbleType,
 		HitType,
-		AppealType
+		AppealType,
+		CrushingType
 	};
 
 	EnemyBase() {}
