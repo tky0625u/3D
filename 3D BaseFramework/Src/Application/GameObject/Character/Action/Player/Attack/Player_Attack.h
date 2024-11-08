@@ -18,7 +18,6 @@ public:
 	void Attack2();
 	void Attack3();
 	void AttackDirCheck();
-	void AttackDamage();
 	void ChangeAction()override;
 
 

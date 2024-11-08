@@ -45,5 +45,5 @@ private:
 	float                                 m_FocusBackRange = 2000.0f;
 	int                                   m_MaxStamina     = 0;
 	int                                   m_StaminaRecoveryTime = 0;
-	UINT                                  m_ParryID = 0;
+	UINT                                  m_ParryID = -1;
 };

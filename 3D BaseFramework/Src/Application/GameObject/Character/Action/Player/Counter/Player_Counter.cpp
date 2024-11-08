@@ -53,7 +53,7 @@ void Player_Counter::Center()
 		{
 			m_target.lock()->GetSword().lock()->SetTrajectMat();
 		}
-		CounterDamage();
+		AttackDamage();
 	}
 }
 
@@ -94,65 +94,5 @@ void Player_Counter::ChangeAction()
 	else if (m_ActionType & Player_ActionConText::ActionType::RollType && !(m_target.lock()->GetConText()->GetBeforeActionType() & Player_ActionConText::ActionType::RollType))
 	{
 		m_target.lock()->GetConText()->Roll();
-	}
-}
-
-void Player_Counter::CounterDamage()
-{
-	if (m_target.expired())return;
-
-	std::vector<KdCollider::SphereInfo> sphereInfoList;
-	KdCollider::SphereInfo sphereInfo;
-
-	if (m_target.lock()->GetSword().expired() == false)
-	{
-		sphereInfo.m_sphere.Center = m_target.lock()->GetSword().lock()->GetModelTop().Translation();
-		sphereInfoList.push_back(sphereInfo);
-
-		sphereInfo.m_sphere.Center = m_target.lock()->GetSword().lock()->GetModelCenter().Translation();
-		sphereInfoList.push_back(sphereInfo);
-
-		sphereInfo.m_sphere.Center = m_target.lock()->GetSword().lock()->GetModelBottom().Translation();
-		sphereInfoList.push_back(sphereInfo);
-	}
-	else
-	{
-		sphereInfo.m_sphere.Center = m_target.lock()->GetSwordMat().Translation();
-		sphereInfoList.push_back(sphereInfo);
-	}
-
-	for (int i = 0; i < sphereInfoList.size(); ++i)
-	{
-		sphereInfoList[i].m_sphere.Radius = 0.8f;
-		sphereInfoList[i].m_type = KdCollider::TypeDamage;
-	}
-
-	std::list<KdCollider::CollisionResult> retSphereList;
-	std::shared_ptr<EnemyBase> hitEnemy;
-
-	for (auto& sphere : SceneManager::Instance().GetEnemyList())
-	{
-		if (sphere->GetID() != m_target.lock()->GetParryID())continue;
-
-		for (int i = 0; i < sphereInfoList.size(); ++i)
-		{
-			if (sphere->Intersects(sphereInfoList[i], &retSphereList))
-			{
-				hitEnemy = sphere;
-			}
-		}
-	}
-
-	for (auto& ret : retSphereList)
-	{
-		if (hitEnemy->GetParam().Hp > 0 && hitEnemy->GetActionType() != EnemyBase::Action::AppealType && hitEnemy->GetinviTime() == 0)
-		{
-			m_target.lock()->GetCamera().lock()->GetConText()->GetState()->SetShakeFlg(true);
-			hitEnemy->Hit(m_target.lock()->GetParam().Atk);
-			hitEnemy->GetConText()->Hit(m_target.lock()->GetParam().Atk);
-			hitEnemy->SetInviTime(m_target.lock()->GetinviTime());
-			KdEffekseerManager::GetInstance().Play("hit_eff.efkefc", ret.m_hitPos, 0.4f, 0.8f, false);
-			KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/刀で斬る2.WAV", 0.05f, false);
-		}
 	}
 }

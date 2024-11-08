@@ -5,6 +5,8 @@
 #include"../Enemy/Enemy_ConText.h"
 #include"../../Player/Player.h"
 #include"../../../Camera/GameCamera/GameCamera.h"
+#include"../../../Camera/GameCamera/GameCamera_ConText.h"
+#include"../../../Camera/GameCamera/GameCamera_State.h"
 #include"Player_ConText.h"
 #include"../../../Weapon/Sword/Sword.h"
 
@@ -18,6 +20,68 @@
 #include"Counter/Player_Counter.h"
 #include"Hit/Player_Hit.h"
 #include"Crushing/Player_Crushing.h"
+
+void Player_ActionState::AttackDamage()
+{
+	if (m_target.expired())return;
+
+	std::vector<KdCollider::SphereInfo> sphereInfoList;
+	KdCollider::SphereInfo sphereInfo;
+
+	if (m_target.lock()->GetSword().expired() == false)
+	{
+		sphereInfo.m_sphere.Center = m_target.lock()->GetSword().lock()->GetModelTop().Translation();
+		sphereInfoList.push_back(sphereInfo);
+
+		sphereInfo.m_sphere.Center = m_target.lock()->GetSword().lock()->GetModelCenter().Translation();
+		sphereInfoList.push_back(sphereInfo);
+
+		sphereInfo.m_sphere.Center = m_target.lock()->GetSword().lock()->GetModelBottom().Translation();
+		sphereInfoList.push_back(sphereInfo);
+	}
+	else
+	{
+		sphereInfo.m_sphere.Center = m_target.lock()->GetSwordMat().Translation();
+		sphereInfoList.push_back(sphereInfo);
+	}
+
+	for (int i = 0; i < sphereInfoList.size(); ++i)
+	{
+		sphereInfoList[i].m_sphere.Radius = 0.8f;
+		sphereInfoList[i].m_type = KdCollider::TypeDamage;
+	}
+
+	std::list<KdCollider::CollisionResult> retSphereList;
+	std::shared_ptr<EnemyBase> hitEnemy;
+
+	for (auto& sphere : SceneManager::Instance().GetEnemyList())
+	{
+		if (m_target.lock()->GetParryID() != -1 && sphere->GetID() != m_target.lock()->GetParryID())continue;
+
+		for (int i = 0; i < sphereInfoList.size(); ++i)
+		{
+			if (sphere->Intersects(sphereInfoList[i], &retSphereList))
+			{
+				hitEnemy = sphere;
+			}
+		}
+	}
+
+	for (auto& ret : retSphereList)
+	{
+		if (hitEnemy->GetParam().Hp > 0 && hitEnemy->GetActionType() != EnemyBase::Action::AppealType && hitEnemy->GetinviTime() == 0)
+		{
+			m_target.lock()->GetCamera().lock()->GetConText()->GetState()->SetShakeFlg(true);
+			hitEnemy->Hit(m_target.lock()->GetParam().Atk);
+			hitEnemy->GetConText()->Hit(m_target.lock()->GetParam().Atk);
+			hitEnemy->SetInviTime(m_target.lock()->GetinviTime());
+			KdEffekseerManager::GetInstance().Play("hit_eff.efkefc", ret.m_hitPos, 0.4f, 0.8f, false);
+			KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/刀で斬る2.WAV", 0.05f, false);
+		}
+	}
+
+	if (m_target.lock()->GetParryID() != -1)m_target.lock()->SetParryID(-1);
+}
 
 void Player_ActionState::LockON()
 {
