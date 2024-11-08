@@ -3,6 +3,7 @@
 #include"../BaseScene/BaseScene.h"
 
 class ObjectManager;
+class StageManager;
 
 class GameScene : public BaseScene
 {
@@ -20,4 +21,6 @@ public :
 private:
 
 	void Event() override;
+
+	std::shared_ptr<StageManager> m_StageManager = nullptr;
 };

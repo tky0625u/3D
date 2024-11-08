@@ -13,6 +13,7 @@ class TitleCamera;
 class Ground;
 class Circle;
 class MagicPolygon;
+class StageManager;
 
 #include"../tinygltf/json.hpp"
 class ObjectManager :public std::enable_shared_from_this<ObjectManager>
@@ -25,8 +26,6 @@ public:
 	void DeleteEnemyList();
 	void DeleteObjectList();
 	void SlowChange();
-	void Clear();
-	bool IsWaveMax();
 
 	void DebugObject();
 
@@ -51,10 +50,10 @@ public:
 	void SetCursorParam();
 	void SetGameCameraParam();
 	void SetObjectParam();
-	void SetGroundParam();
+	void SetStageParam(std::shared_ptr<StageManager> _stage);
 	void SetPlayerParam();
 	void SetWeaponParam(std::string _filePath, std::string _weaponName);
-	void SetEnemyParam(std::string _filePath = "none");
+	void SetEnemyParam(std::string _filePath = "none", std::shared_ptr<StageManager> _stage = nullptr);
 
 	// デバッグ
 	void AddTitleCamera();
@@ -74,11 +73,6 @@ public:
 
 	const float GetSlow()const { return m_slow; }
 	const bool GetSlowFlg()const { return m_slowFlg; }
-	const int GetnowStage()const { return m_nowStage; }
-
-	// デバッグ
-	int GetMaxWave()const { return m_MaxWave; }
-	int GetnowWave()const { return m_nowWave; }
 
 private:
 	std::weak_ptr<TitleCamera>               m_titleCamera;
@@ -97,16 +91,13 @@ private:
 	bool                                     m_slowFlg = false;
 	std::vector<std::weak_ptr<EnemyBase>>    m_EnemyList;
 	std::vector<std::weak_ptr<KdGameObject>> m_ObjectList;
-	int                                      m_MaxStage = 3;
-	int                                      m_nowStage = 1;
-
 	nlohmann::json                           m_EnemyJson;
-	int                                      m_MaxWave = 0;
-	int                                      m_nowWave = 0;
 
 	//デバッグ							     
 	std::vector<std::string>                 m_swordNameList;
 	std::vector<std::string>                 m_shieldNameList;
+	int                                      m_MaxWave = 0;
+	int                                      m_nowWave = 0;
 
 	std::string                              m_nowScene;
 

@@ -6,6 +6,7 @@
 
 //オブジェクトマネジャ
 #include"../../GameObject/ObjectManager.h"
+#include"../../GameObject/StageManager.h"
 #include"../../GameObject/Loading/Loading.h"
 #include"../../GameObject/Camera/TPSCamera/TPSCamera.h"
 #include"../../GameObject/Character/Enemy/EnemyManager.h"
@@ -13,7 +14,7 @@
 void GameScene::Event()
 {
 	m_ObjManager->DeleteEnemyList();
-	if(GetEnemyList().size()==0 && !m_ObjManager->IsWaveMax())m_ObjManager->SetEnemyParam();
+	m_StageManager->WaveCheck();
 
 	KdShaderManager::Instance().WorkAmbientController().SetDirLight(Math::Vector3{ 0.5f,-1.0f,0.5f }, Math::Vector3{ 1.5f,1.5f,1.3f });
 }
@@ -36,17 +37,16 @@ void GameScene::PostUpdate()
 
 bool loop;
 std::shared_ptr<ObjectManager> _ObjManager = nullptr;
+std::shared_ptr<StageManager> _StageManager = nullptr;
 
-void ObjLoad()
+void StageLoad()
 {
 	//オブジェクトマネジャ
 	_ObjManager = std::make_shared<ObjectManager>();
-
-	_ObjManager->SceneCheck();
-	_ObjManager->SetGameCameraParam();
-	_ObjManager->SetObjectParam();
-	_ObjManager->SetPlayerParam();
-	_ObjManager->SetEnemyParam("Asset/Json/Game/Enemy/Stage1.json");
+	_StageManager = std::make_shared<StageManager>();
+	
+	_StageManager->SetObjManager(_ObjManager);
+	_StageManager->Load();
 
 	loop = false;
 }
@@ -74,13 +74,14 @@ void GameScene::Init()
 	loop = true;
 	m_EnemyManager = std::make_shared<EnemyManager>();
 
-	std::thread th_Obj(ObjLoad);
+	std::thread th_Obj(StageLoad);
 	std::thread th_Load(LoadingTime);
 
 	th_Obj.join();
 	th_Load.join();
 
 	m_ObjManager = _ObjManager;
+	m_StageManager = _StageManager;
 	ShowCursor(false);
 	KdEffekseerManager::GetInstance().Create(1280, 720);
 	KdAudioManager::Instance().Play("Asset/Sound/Game/BGM/orchestral_mission.WAV", 0.01f, true);

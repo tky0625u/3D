@@ -5,6 +5,7 @@
 #include"Character/Enemy/Bone/Bone.h"
 #include"Character/Action/Enemy/Enemy_ConText.h"
 #include"Camera/GameCamera/GameCamera_ConText.h"
+#include"StageManager.h"
 #include<fstream>
 #include<sstream>
 
@@ -105,32 +106,6 @@ void ObjectManager::SlowChange()
 		m_slowFlg = true;
 		m_slow = 0.5f;
 	}
-}
-
-void ObjectManager::Clear()
-{
-	if (m_MaxStage == m_nowStage)
-	{
-		SceneManager::Instance().SetNextScene
-		(
-			SceneManager::SceneType::Title
-		);
-	}
-	else
-	{
-		m_nowStage++;
-		SetGroundParam();
-		m_player.lock()->SetPos(m_circle.lock()->GetMatrix().Translation());
-		m_nowWave = 0;
-		std::string _filePath = ((std::string)"Asset/Json/Game/Enemy/Stage") + (std::to_string(m_nowStage).c_str()) + ((std::string)".json");
-		SetEnemyParam(_filePath);
-	}
-}
-
-bool ObjectManager::IsWaveMax()
-{
-	if (m_nowWave == m_MaxWave)return true;
-	return false;
 }
 
 void ObjectManager::DebugObject()
@@ -647,7 +622,7 @@ void ObjectManager::DebugObject()
 
 			static int _stageNum = 1;
 			ImGui::Text((const char*)u8"ステージ数 : %d", _stageNum);
-			static int _nowStage = GetnowWave();
+			static int _nowStage = m_nowWave;
 			ImGui::SliderInt((const char*)u8"ステージ", &_nowStage, 1, _stageNum);
 			if (ImGui::Button((const char*)u8"ステージ追加"))
 			{
@@ -655,9 +630,9 @@ void ObjectManager::DebugObject()
 				if (_stageNum - 1 == _nowStage)_nowStage = _stageNum;
 			}
 
-			static int _wave = GetMaxWave();
+			static int _wave = m_MaxWave;
 			ImGui::Text((const char*)u8"ウェーブ数 : %d", _wave);
-			static int _nowWave = GetnowWave();
+			static int _nowWave = m_nowWave;
 			ImGui::SliderInt((const char*)u8"ウェーブ", &_nowWave, 1, _wave);
 			if (ImGui::Button((const char*)u8"ウェーブ追加"))
 			{
@@ -1890,7 +1865,7 @@ void ObjectManager::SetObjectParam()
 	if (magic && circle)magic->SetCircle(circle);
 }
 
-void ObjectManager::SetGroundParam()
+void ObjectManager::SetStageParam(std::shared_ptr<StageManager> _stage)
 {
 	//jsonファイル
 	std::string fileName = ("Asset/Json/") + m_nowScene + ("/Object/Object.json");
@@ -1905,7 +1880,7 @@ void ObjectManager::SetGroundParam()
 	int _stageNum = 1;
 	for (auto& stage : _json["Ground"])
 	{
-		if (m_nowStage != _stageNum)
+		if (_stage->GetnowStage() != _stageNum)
 		{
 			_stageNum++;
 			continue;
@@ -1957,6 +1932,10 @@ void ObjectManager::SetGroundParam()
 	m_magic.lock()->SetMatrix(_MagicMat);
 
 	ifs.close();
+
+	m_player.lock()->SetPos(m_ground.lock()->GetPos());
+
+	SetEnemyParam("Asset/Json/Game/Enemy/Stage1.json", _stage);
 }
 
 void ObjectManager::SetPlayerParam()
@@ -2120,97 +2099,100 @@ void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponNam
 	ifs.close();
 }
 
-void ObjectManager::SetEnemyParam(std::string _filePath)
+void ObjectManager::SetEnemyParam(std::string _filePath,std::shared_ptr<StageManager> _stage)
 {
-	if (m_nowWave == 0)
+	//jsonファイル
+	std::string fileName = _filePath;
+
+	std::ifstream ifs(fileName.c_str());
+	if (ifs.is_open())
 	{
-		//jsonファイル
-		std::string fileName = _filePath;
-
-		std::ifstream ifs(fileName.c_str());
-		if (ifs.is_open())
-		{
-			ifs >> m_EnemyJson;
-			ifs.close();
-		}
-
-		m_MaxWave = m_EnemyJson.size();
+		ifs >> m_EnemyJson;
+		ifs.close();
 	}
-	m_nowWave++;
 
-	std::string _wave = std::to_string(m_nowWave).c_str() + ((std::string)"Wave");
-	for (auto& category : m_EnemyJson[_wave])
+	for (auto& wave : m_EnemyJson)
 	{
-		for (auto& stage : category)
+		std::vector<std::weak_ptr<EnemyBase>> _enemyList;
+		for (auto& category : wave)
 		{
-			std::string _name;
-			_name = stage["Name"];
-
-			Math::Vector3 _pos = Math::Vector3::Zero;
-			_pos.x = stage["PosX"];
-			_pos.y = m_ground.lock()->GetPos().y;
-			_pos.z = stage["PosZ"];
-
-			Math::Vector3 _dir = Math::Vector3::Zero;
-			_dir.x = stage["DirX"];
-			_dir.y = stage["DirY"];
-			_dir.z = stage["DirZ"];
-
-			float _size = 0.0f;
-			_size = stage["Size"];
-
-			Math::Vector3 _angle = Math::Vector3::Zero;
-			_angle.y = stage["Angle"];
-
-			int _hp = 0;
-			_hp = stage["HP"];
-
-			int _atk = 0;
-			_atk = stage["ATK"];
-
-			float _speed = 0.0f;
-			_speed = stage["Speed"];
-
-			int _stamina = 0;
-			_stamina = stage["Stamina"];
-
-			float _atkRange = 0.0f;
-			_atkRange = stage["ATKRange"];
-
-			Math::Vector3 _forward = Math::Vector3::Zero;
-			_forward.x = stage["ForwardX"];
-			_forward.y = stage["ForwardY"];
-			_forward.z = stage["ForwardZ"];
-
-			std::shared_ptr<EnemyBase> enemy = nullptr;
-			if (stage["Name"] == "Bone")
+			for (auto& stage : category)
 			{
-				std::shared_ptr<Bone> bone = std::make_shared<Bone>();
-				enemy = bone;
-			}
-			else if (stage["Name"] == "Golem")
-			{
-				std::shared_ptr<Golem> golem = std::make_shared<Golem>();
-				enemy = golem;
-			}
-			enemy->SetObjectManager(shared_from_this());
-			enemy->SetCamera(m_camera.lock());
-			enemy->SetParam(_hp, _atk, _speed, _stamina);
-			enemy->SetPos(_pos);
-			enemy->SetSize(_size);
-			enemy->SetDir(_dir);
-			enemy->SetAngle(_angle);
-			enemy->SetAtkRange(_atkRange);
-			enemy->SetForward(_forward);
-			enemy->SetTarget(m_player.lock());
-			enemy->SetName(_name);
-			enemy->SetID(m_id);
-			enemy->Init();
-			m_id++;
+				std::string _name;
+				_name = stage["Name"];
 
-			SceneManager::Instance().AddEnemy(enemy);
-			m_EnemyList.push_back(enemy);
+				Math::Vector3 _pos = Math::Vector3::Zero;
+				_pos.x = stage["PosX"];
+				_pos.y = m_ground.lock()->GetPos().y;
+				_pos.z = stage["PosZ"];
+
+				Math::Vector3 _dir = Math::Vector3::Zero;
+				_dir.x = stage["DirX"];
+				_dir.y = stage["DirY"];
+				_dir.z = stage["DirZ"];
+
+				float _size = 0.0f;
+				_size = stage["Size"];
+
+				Math::Vector3 _angle = Math::Vector3::Zero;
+				_angle.y = stage["Angle"];
+
+				int _hp = 0;
+				_hp = stage["HP"];
+
+				int _atk = 0;
+				_atk = stage["ATK"];
+
+				float _speed = 0.0f;
+				_speed = stage["Speed"];
+
+				int _stamina = 0;
+				_stamina = stage["Stamina"];
+
+				float _atkRange = 0.0f;
+				_atkRange = stage["ATKRange"];
+
+				Math::Vector3 _forward = Math::Vector3::Zero;
+				_forward.x = stage["ForwardX"];
+				_forward.y = stage["ForwardY"];
+				_forward.z = stage["ForwardZ"];
+
+				std::shared_ptr<EnemyBase> enemy = nullptr;
+				if (stage["Name"] == "Bone")
+				{
+					std::shared_ptr<Bone> bone = std::make_shared<Bone>();
+					enemy = bone;
+				}
+				else if (stage["Name"] == "Golem")
+				{
+					std::shared_ptr<Golem> golem = std::make_shared<Golem>();
+					enemy = golem;
+				}
+				enemy->SetObjectManager(shared_from_this());
+				enemy->SetCamera(m_camera.lock());
+				enemy->SetParam(_hp, _atk, _speed, _stamina);
+				enemy->SetPos(_pos);
+				enemy->SetSize(_size);
+				enemy->SetDir(_dir);
+				enemy->SetAngle(_angle);
+				enemy->SetAtkRange(_atkRange);
+				enemy->SetForward(_forward);
+				enemy->SetTarget(m_player.lock());
+				enemy->SetName(_name);
+				enemy->SetID(m_id);
+				enemy->Init();
+				m_id++;
+
+				if (_stage->GetStageEnemyListNum() == 0)
+				{
+					SceneManager::Instance().AddEnemy(enemy);
+					m_EnemyList.push_back(enemy);
+				}
+				_enemyList.push_back(enemy);
+			}
 		}
+		_stage->SetStageEnemyList(_enemyList);
+		m_MaxWave++;
 	}
 }
 
