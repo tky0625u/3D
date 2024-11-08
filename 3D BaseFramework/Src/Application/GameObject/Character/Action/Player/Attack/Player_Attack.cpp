@@ -226,18 +226,18 @@ void Player_Attack::ChangeAction()
 {
 	if (m_flow != Flow::EndType)return;
 
-	if (m_ActionType & Player_ActionConText::ActionType::AttackType && !(m_target.lock()->GetConText()->GetBeforeActionType() & Player_ActionConText::ActionType::AttackType))
+	if (m_KeyType & Player_ActionConText::KeyType::AttackKey && !(m_target.lock()->GetConText()->GetBeforeKeyType() & Player_ActionConText::KeyType::AttackKey))
 	{
 		m_atkNum++;
 		m_flow = Flow::StartType;
 		if (m_atkNum > AttackNUM)m_atkNum = 1;
 		AttackDirCheck();
 	}
-	else if (m_ActionType & Player_ActionConText::ActionType::GuardType)
+	else if (m_KeyType & Player_ActionConText::KeyType::GuardKey)
 	{
 		m_target.lock()->GetConText()->Guard();
 	}
-	else if (m_ActionType & Player_ActionConText::ActionType::RollType && !(m_target.lock()->GetConText()->GetBeforeActionType() & Player_ActionConText::ActionType::RollType))
+	else if (m_KeyType & Player_ActionConText::KeyType::RollKey && !(m_target.lock()->GetConText()->GetBeforeKeyType() & Player_ActionConText::KeyType::RollKey))
 	{
 		m_target.lock()->GetConText()->Roll();
 	}

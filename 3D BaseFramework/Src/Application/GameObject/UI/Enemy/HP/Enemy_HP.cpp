@@ -34,11 +34,17 @@ void Enemy_HP::Update()
 	Math::Vector3 _pos = { m_pos.x,m_pos.y,0.0f };
 	m_camera.lock()->WorkCamera()->ConvertWorldToScreenDetail(m_target.lock()->GetHPMat().Translation(), _pos);
 
-	if (!m_target.lock()->GetLockONFlg() && m_target.lock()->GetTarget().lock()->GetConText()->GetLockONFlg()){m_alpha = 0.1f;}
+	if (_pos.z >= 0.0f)
+	{
+		if (!m_target.lock()->GetLockONFlg() && m_target.lock()->GetTarget().lock()->GetConText()->GetLockONFlg()) { m_alpha = 0.1f; }
+		else
+		{
+			m_alpha = 1.0f;
+		}
+	}
 	else
 	{
-		if (_pos.z >= 0.0f)m_alpha = 1.0f;
-		else { m_alpha = -1.0f; }
+		m_alpha = -1.0f;
 	}
 
 	m_pos = { _pos.x,_pos.y };

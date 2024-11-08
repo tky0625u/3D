@@ -17,7 +17,7 @@ public:
 	virtual void KeyCheck();
 	virtual void ChangeAction() {};
 
-	void SetActionType(UINT _ActionType) { m_ActionType = _ActionType; }
+	void SetKeyType(UINT _KeyType) { m_KeyType = _KeyType; }
 	void SetTarget(std::shared_ptr<Player> target) { m_target = target; }
 
 	virtual void Idol();                                                             // 待ち
@@ -33,5 +33,5 @@ public:
 
 protected:
 	std::weak_ptr<Player> m_target;
-	UINT                  m_ActionType = 0;
+	UINT                  m_KeyType = 0;
 };

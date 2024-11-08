@@ -65,9 +65,14 @@ void Bone_Attack::End()
 
 void Bone_Attack::HitCheck()
 {
-	if (m_target.expired())return;
-	if (SceneManager::Instance().GetPlayer()->IsExpired())return;
-	if (SceneManager::Instance().GetPlayer()->GetParam().Hp <= 0)return;
+	if (m_target.expired()                                                                         ||
+	    SceneManager::Instance().GetPlayer()->IsExpired()                                          ||
+	    SceneManager::Instance().GetPlayer()->GetParam().Hp <= 0                                   ||
+	    SceneManager::Instance().GetPlayer()->GetActionType() == Player::Action::HitType           ||
+	    SceneManager::Instance().GetPlayer()->GetActionType() == Player::Action::GuardReactionType ||
+	    SceneManager::Instance().GetPlayer()->GetActionType() == Player::Action::ParryType         ||
+	    SceneManager::Instance().GetPlayer()->GetActionType() == Player::Action::CounterType       ||
+	    SceneManager::Instance().GetPlayer()->GetActionType() == Player::Action::RollType)return;
 
 	std::vector<KdCollider::SphereInfo> sphereInfoList;
 	KdCollider::SphereInfo sphereInfo;
@@ -89,11 +94,21 @@ void Bone_Attack::HitCheck()
 	}
 	sphereInfo.m_sphere.Radius = 1.0f;
 	sphereInfo.m_type = KdCollider::TypeDamage;
+	std::list<KdCollider::CollisionResult> _List;
 
 	for (int i = 0; i < sphereInfoList.size(); ++i)
 	{
-		if (SceneManager::Instance().GetPlayer()->Intersects(sphereInfo, nullptr))
+		SceneManager::Instance().GetPlayer()->Intersects(sphereInfo, &_List);
+	}
+
+	if (_List.size() != 0)
+	{
+		for (auto& ret : _List)
 		{
+			if (SceneManager::Instance().GetPlayer()->GetActionType() != Player::Action::GuardType)
+			{
+				KdEffekseerManager::GetInstance().Play("Player/hit_effe.efkefc", ret.m_hitPos, 1.0f, 0.8f, false);
+			}
 			SceneManager::Instance().GetPlayer()->GetConText()->Hit(m_target.lock()->GetParam().Atk, m_target.lock());
 		}
 	}

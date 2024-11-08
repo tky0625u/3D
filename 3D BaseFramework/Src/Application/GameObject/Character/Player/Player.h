@@ -11,6 +11,20 @@ class Shield;
 class Player :public CharacterBase, public std::enable_shared_from_this<Player>
 {
 public:
+	enum Action
+	{
+		IdolType,
+		AttackType,
+		RunType,
+		RollType,
+		GuardType,
+		GuardReactionType,
+		ParryType,
+		CounterType,
+		HitType,
+		CrushingType
+	};
+
 	Player()                  {}
 	~Player()        override {};
 
@@ -25,7 +39,11 @@ public:
 		if (m_param.Sm >= m_MaxStamina)m_param.Sm = m_MaxStamina;
 	}
 
-	void SetNextState(std::shared_ptr<Player_ActionState> _next) { m_NextState = _next; }
+	void SetNextState(std::shared_ptr<Player_ActionState> _next,UINT _action) 
+	{
+		m_NextState = _next;
+		m_actionType = _action;
+	}
 	void SetShield(std::shared_ptr<Shield> _shield) { m_shield = _shield; }
 	void SetStaminaRecoveryTime(int _time) { m_StaminaRecoveryTime = _time; }
 	void SetParryID(UINT _id) { m_ParryID = _id; }
@@ -36,6 +54,7 @@ public:
 	const int GetStaminaRecoveryTime()const { return m_StaminaRecoveryTime; }
 	const UINT GetParryID()const { return m_ParryID; }
 	const Math::Matrix& GetEnemyAttackPointMat() const { return (m_model->FindWorkNode("EnemyAttackPoint")->m_worldTransform) * m_mWorld; }
+	const UINT& GetActionType()const { return m_actionType; }
 
 private:
 	std::shared_ptr<Player_ActionConText> m_context        = nullptr;
@@ -46,4 +65,5 @@ private:
 	int                                   m_MaxStamina     = 0;
 	int                                   m_StaminaRecoveryTime = 0;
 	UINT                                  m_ParryID = -1;
+	UINT                                  m_actionType = Action::IdolType;
 };

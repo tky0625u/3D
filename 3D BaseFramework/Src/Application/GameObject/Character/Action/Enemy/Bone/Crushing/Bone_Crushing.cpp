@@ -18,11 +18,11 @@ void Bone_Crushing::Start()
 			return;
 		}
 
-		m_target.lock()->CrushingAction();
+		CrushingAction();
 	}
 }
 
 void Bone_Crushing::CrushingAction()
 {
-	
+	m_target.lock()->CrushingAction();
 }

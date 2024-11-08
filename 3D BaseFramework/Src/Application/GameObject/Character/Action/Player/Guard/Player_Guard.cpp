@@ -22,7 +22,7 @@ void Player_Guard::Start()
 			return;
 		}
 
-		if (!(m_ActionType & Player_ActionConText::ActionType::GuardType))
+		if (!(m_KeyType & Player_ActionConText::KeyType::GuardKey))
 		{
 			m_flow = Flow::EndType;
 			return;
@@ -42,7 +42,7 @@ void Player_Guard::Center()
 			return;
 		}
 
-		if (!(m_ActionType & Player_ActionConText::ActionType::GuardType))
+		if (!(m_KeyType & Player_ActionConText::KeyType::GuardKey))
 		{
 			m_flow = Flow::EndType;
 			return;
@@ -68,7 +68,7 @@ void Player_Guard::End()
 			return;
 		}
 
-		if (m_ActionType & Player_ActionConText::ActionType::GuardType)
+		if (m_KeyType & Player_ActionConText::KeyType::GuardKey)
 		{
 			m_flow = Flow::StartType;
 			return;

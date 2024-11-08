@@ -22,7 +22,7 @@ void Player_Run::Start()
 			return;
 		}
 
-		if (!(m_ActionType & Player_ActionConText::ActionType::MoveType))
+		if (!(m_KeyType & Player_ActionConText::KeyType::MoveKey))
 		{
 			m_flow = Flow::EndType;
 			return;
@@ -43,7 +43,7 @@ void Player_Run::Center()
 			return;
 		}
 
-		if (!(m_ActionType & Player_ActionConText::ActionType::MoveType))
+		if (!(m_KeyType & Player_ActionConText::KeyType::MoveKey))
 		{
 			m_flow = Flow::EndType;
 			return;
@@ -70,7 +70,7 @@ void Player_Run::End()
 			return;
 		}
 
-		if (m_ActionType & Player_ActionConText::MoveType)
+		if (m_KeyType & Player_ActionConText::MoveKey)
 		{
 			m_flow = Flow::StartType;
 			return;
@@ -119,15 +119,15 @@ void Player_Run::CameraTransform(Math::Vector3& _dir)
 
 void Player_Run::ChangeAction()
 {
-	if (m_ActionType & Player_ActionConText::ActionType::AttackType && !(m_target.lock()->GetConText()->GetBeforeActionType() & Player_ActionConText::ActionType::AttackType))
+	if (m_KeyType & Player_ActionConText::KeyType::AttackKey && !(m_target.lock()->GetConText()->GetBeforeKeyType() & Player_ActionConText::KeyType::AttackKey))
 	{
 		m_target.lock()->GetConText()->Attack();
 	}
-	else if (m_ActionType & Player_ActionConText::ActionType::GuardType)
+	else if (m_KeyType & Player_ActionConText::KeyType::GuardKey)
 	{
 		m_target.lock()->GetConText()->Guard();
 	}
-	else if (m_ActionType & Player_ActionConText::ActionType::RollType && !(m_target.lock()->GetConText()->GetBeforeActionType() & Player_ActionConText::ActionType::RollType))
+	else if (m_KeyType & Player_ActionConText::KeyType::RollKey && !(m_target.lock()->GetConText()->GetBeforeKeyType() & Player_ActionConText::KeyType::RollKey))
 	{
 		m_target.lock()->GetConText()->Roll();
 	}

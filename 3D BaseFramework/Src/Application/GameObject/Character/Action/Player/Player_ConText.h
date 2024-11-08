@@ -11,23 +11,22 @@ public:
 	Player_ActionConText(std::shared_ptr<Player_ActionState> initialState):m_state(initialState){}
 	~Player_ActionConText() {};
 
-	enum ActionType
+	enum KeyType
 	{
-		IdolType   = 1 << 0,
-		MoveType   = 1 << 1,
-		AttackType = 1 << 2,
-		GuardType  = 1 << 3,
-		RollType   = 1 << 4,
-		LockONType = 1 << 5,
+		MoveKey   = 1 << 0,
+		AttackKey = 1 << 1,
+		GuardKey  = 1 << 2,
+		RollKey   = 1 << 3,
+		LockONKey = 1 << 4,
 	};
 
 	void SetState(std::shared_ptr<Player_ActionState> _state) { m_state = _state; }
-	void SetBeforeActionType(UINT _ActionType) { m_BeforeActionType = _ActionType; }
+	void SetBeforeKeyType(UINT _KeyType) { m_BeforeKeyType = _KeyType; }
 	void SetLockONFlg(bool _lockONFlg) { m_lockONFlg = _lockONFlg; }
 	void SetLockONTarget(std::shared_ptr<EnemyBase> _lockONTarget) { m_lockONTarget = _lockONTarget; }
 
 	std::shared_ptr<Player_ActionState> GetState()const { return m_state; }
-	UINT GetBeforeActionType()const { return m_BeforeActionType; }
+	UINT GetBeforeKeyType()const { return m_BeforeKeyType; }
 	const std::weak_ptr<EnemyBase> GetLockONTarget()const { return m_lockONTarget; }
 	const bool GetLockONFlg()const { return m_lockONFlg; }
 
@@ -44,7 +43,7 @@ public:
 
 private:
 	std::shared_ptr<Player_ActionState> m_state;
-	UINT m_BeforeActionType = 0;
+	UINT m_BeforeKeyType = 0;
 	std::weak_ptr<EnemyBase>m_lockONTarget;
 	bool                    m_lockONFlg = false;
 };

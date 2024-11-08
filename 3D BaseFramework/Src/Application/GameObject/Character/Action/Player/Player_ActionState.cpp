@@ -75,7 +75,7 @@ void Player_ActionState::AttackDamage()
 			hitEnemy->Hit(m_target.lock()->GetParam().Atk);
 			hitEnemy->GetConText()->Hit(m_target.lock()->GetParam().Atk);
 			hitEnemy->SetInviTime(m_target.lock()->GetinviTime());
-			KdEffekseerManager::GetInstance().Play("hit_eff.efkefc", ret.m_hitPos, 0.4f, 0.8f, false);
+			KdEffekseerManager::GetInstance().Play("Enemy/hit_eff.efkefc", ret.m_hitPos, 1.0f, 0.8f, false);
 			KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/刀で斬る2.WAV", 0.05f, false);
 		}
 	}
@@ -156,7 +156,7 @@ void Player_ActionState::Update()
 		}
 	}
 	ChangeAction();
-	m_target.lock()->GetConText()->SetBeforeActionType(m_ActionType);
+	m_target.lock()->GetConText()->SetBeforeKeyType(m_KeyType);
 }
 
 void Player_ActionState::KeyCheck()
@@ -164,52 +164,52 @@ void Player_ActionState::KeyCheck()
 	//移動
 	if (GetAsyncKeyState('W') & 0x8000 | GetAsyncKeyState('A') & 0x8000 | GetAsyncKeyState('S') & 0x8000 | GetAsyncKeyState('D') & 0x8000)
 	{
-		m_ActionType |= Player_ActionConText::ActionType::MoveType;
+		m_KeyType |= Player_ActionConText::KeyType::MoveKey;
 	}
-	else if (m_ActionType & Player_ActionConText::ActionType::MoveType)
+	else if (m_KeyType & Player_ActionConText::KeyType::MoveKey)
 	{
-		m_ActionType ^= Player_ActionConText::ActionType::MoveType;
+		m_KeyType ^= Player_ActionConText::KeyType::MoveKey;
 	}
 
 	//攻撃
 	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 	{
-		m_ActionType |= Player_ActionConText::ActionType::AttackType;
+		m_KeyType |= Player_ActionConText::KeyType::AttackKey;
 	}
-	else if (m_ActionType & Player_ActionConText::ActionType::AttackType)
+	else if (m_KeyType & Player_ActionConText::KeyType::AttackKey)
 	{
-		m_ActionType ^= Player_ActionConText::ActionType::AttackType;
+		m_KeyType ^= Player_ActionConText::KeyType::AttackKey;
 	}
 
 	//防御
 	if (GetAsyncKeyState(VK_RBUTTON) & 0x8000)
 	{
-		m_ActionType |= Player_ActionConText::ActionType::GuardType;
+		m_KeyType |= Player_ActionConText::KeyType::GuardKey;
 	}
-	else if (m_ActionType & Player_ActionConText::ActionType::GuardType)
+	else if (m_KeyType & Player_ActionConText::KeyType::GuardKey)
 	{
-		m_ActionType ^= Player_ActionConText::ActionType::GuardType;
+		m_KeyType ^= Player_ActionConText::KeyType::GuardKey;
 	}
 
 	//回避
 	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 	{
-		m_ActionType |= Player_ActionConText::ActionType::RollType;
+		m_KeyType |= Player_ActionConText::KeyType::RollKey;
 	}
-	else if (m_ActionType & Player_ActionConText::ActionType::RollType)
+	else if (m_KeyType & Player_ActionConText::KeyType::RollKey)
 	{
-		m_ActionType ^= Player_ActionConText::ActionType::RollType;
+		m_KeyType ^= Player_ActionConText::KeyType::RollKey;
 	}
 
 	//ロックオン
 	if (GetAsyncKeyState(VK_LSHIFT) & 0x8000)
 	{
-		if(!(m_target.lock()->GetConText()->GetBeforeActionType() & Player_ActionConText::ActionType::LockONType))LockON();
-		m_ActionType |= Player_ActionConText::ActionType::LockONType;
+		if(!(m_target.lock()->GetConText()->GetBeforeKeyType() & Player_ActionConText::KeyType::LockONKey))LockON();
+		m_KeyType |= Player_ActionConText::KeyType::LockONKey;
 	}
-	else if (m_ActionType & Player_ActionConText::ActionType::LockONType)
+	else if (m_KeyType & Player_ActionConText::KeyType::LockONKey)
 	{
-		m_ActionType ^= Player_ActionConText::ActionType::LockONType;
+		m_KeyType ^= Player_ActionConText::KeyType::LockONKey;
 	}
 }
 
@@ -219,7 +219,7 @@ void Player_ActionState::Idol()
 	if (m_target.expired())return;
 	idol->SetTarget(m_target.lock());
 	idol->SetObjectManager(m_ObjManager.lock());
-	m_target.lock()->SetNextState(idol);
+	m_target.lock()->SetNextState(idol,Player::Action::IdolType);
 }
 
 void Player_ActionState::Run()
@@ -228,7 +228,7 @@ void Player_ActionState::Run()
 	if (m_target.expired())return;
 	run->SetTarget(m_target.lock());
 	run->SetObjectManager(m_ObjManager.lock());
-	m_target.lock()->SetNextState(run);
+	m_target.lock()->SetNextState(run, Player::Action::RunType);
 }
 
 void Player_ActionState::Attack()
@@ -238,7 +238,7 @@ void Player_ActionState::Attack()
 	attack->SetTarget(m_target.lock());
 	attack->SetObjectManager(m_ObjManager.lock());
 	attack->AttackDirCheck();
-	m_target.lock()->SetNextState(attack);
+	m_target.lock()->SetNextState(attack, Player::Action::AttackType);
 }
 
 void Player_ActionState::Guard()
@@ -247,7 +247,7 @@ void Player_ActionState::Guard()
 	if (m_target.expired())return;
 	guard->SetTarget(m_target.lock());
 	guard->SetObjectManager(m_ObjManager.lock());
-	m_target.lock()->SetNextState(guard);
+	m_target.lock()->SetNextState(guard, Player::Action::GuardType);
 }
 
 void Player_ActionState::GuardReaction()
@@ -262,7 +262,7 @@ void Player_ActionState::GuardReaction()
 	m_target.lock()->SetStaminaRecoveryTime(60);
 	guardReaction->SetTarget(m_target.lock());
 	guardReaction->SetObjectManager(m_ObjManager.lock());
-	m_target.lock()->SetNextState(guardReaction);
+	m_target.lock()->SetNextState(guardReaction, Player::Action::GuardReactionType);
 }
 
 void Player_ActionState::Parry(std::shared_ptr<EnemyBase> _enemy)
@@ -272,7 +272,7 @@ void Player_ActionState::Parry(std::shared_ptr<EnemyBase> _enemy)
 	parry->SetTarget(m_target.lock());
 	parry->SetObjectManager(m_ObjManager.lock());
 	m_target.lock()->SetParryID(_enemy->GetID());
-	m_target.lock()->SetNextState(parry);
+	m_target.lock()->SetNextState(parry, Player::Action::ParryType);
 	_enemy->GetConText()->Stumble();
 }
 
@@ -282,7 +282,7 @@ void Player_ActionState::Counter()
 	if (m_target.expired())return;
 	counter->SetTarget(m_target.lock());
 	counter->SetObjectManager(m_ObjManager.lock());
-	m_target.lock()->SetNextState(counter);
+	m_target.lock()->SetNextState(counter, Player::Action::CounterType);
 }
 
 void Player_ActionState::Roll()
@@ -297,7 +297,7 @@ void Player_ActionState::Roll()
 	m_target.lock()->SetStaminaRecoveryTime(60);
 	roll->SetTarget(m_target.lock());
 	roll->SetObjectManager(m_ObjManager.lock());
-	m_target.lock()->SetNextState(roll);
+	m_target.lock()->SetNextState(roll, Player::Action::RollType);
 }
 
 void Player_ActionState::Hit(int _damage, std::shared_ptr<EnemyBase> _enemy)
@@ -312,7 +312,7 @@ void Player_ActionState::Hit(int _damage, std::shared_ptr<EnemyBase> _enemy)
 		Crushing();
 		return;
 	}
-	m_target.lock()->SetNextState(hit);
+	m_target.lock()->SetNextState(hit, Player::Action::HitType);
 }
 
 void Player_ActionState::Crushing()
@@ -321,5 +321,5 @@ void Player_ActionState::Crushing()
 	if (m_target.expired())return;
 	crushing->SetTarget(m_target.lock());
 	crushing->SetObjectManager(m_ObjManager.lock());
-	m_target.lock()->SetNextState(crushing);
+	m_target.lock()->SetNextState(crushing, Player::Action::CrushingType);
 }

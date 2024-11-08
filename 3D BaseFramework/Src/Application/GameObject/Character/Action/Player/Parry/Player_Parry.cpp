@@ -48,7 +48,7 @@ void Player_Parry::ChangeAction()
 {
 	//if (m_flow != Flow::EndType)return;
 
-	if (m_ActionType & Player_ActionConText::ActionType::AttackType && !(m_target.lock()->GetConText()->GetBeforeActionType() & Player_ActionConText::ActionType::AttackType))
+	if (m_KeyType & Player_ActionConText::KeyType::AttackKey && !(m_target.lock()->GetConText()->GetBeforeKeyType() & Player_ActionConText::KeyType::AttackKey))
 	{
 		m_target.lock()->GetConText()->Counter();
 		m_ObjManager.lock()->SlowChange();
@@ -57,17 +57,17 @@ void Player_Parry::ChangeAction()
 
 	if (m_flow != Flow::EndType)return;
 
-	if (m_ActionType & Player_ActionConText::ActionType::MoveType)
+	if (m_KeyType & Player_ActionConText::KeyType::MoveKey)
 	{
 		m_target.lock()->GetConText()->Run();
 		m_ObjManager.lock()->SlowChange();
 	}
-	else if (m_ActionType & Player_ActionConText::ActionType::GuardType)
+	else if (m_KeyType & Player_ActionConText::KeyType::GuardKey)
 	{
 		m_target.lock()->GetConText()->Guard();
 		m_ObjManager.lock()->SlowChange();
 	}
-	else if (m_ActionType & Player_ActionConText::ActionType::RollType && !(m_target.lock()->GetConText()->GetBeforeActionType() & Player_ActionConText::ActionType::RollType))
+	else if (m_KeyType & Player_ActionConText::KeyType::RollKey && !(m_target.lock()->GetConText()->GetBeforeKeyType() & Player_ActionConText::KeyType::RollKey))
 	{
 		m_target.lock()->GetConText()->Roll();
 		m_ObjManager.lock()->SlowChange();
