@@ -44,8 +44,10 @@ void StageLoad()
 	//オブジェクトマネジャ
 	_ObjManager = std::make_shared<ObjectManager>();
 	_StageManager = std::make_shared<StageManager>();
-	
-	_StageManager->SetObjManager(_ObjManager);
+
+	SceneManager::Instance().SetObjectManager(_ObjManager);
+	SceneManager::Instance().SetStageManager(_StageManager);
+
 	_StageManager->Load();
 
 	loop = false;
@@ -80,8 +82,6 @@ void GameScene::Init()
 	th_Obj.join();
 	th_Load.join();
 
-	m_ObjManager = _ObjManager;
-	m_StageManager = _StageManager;
 	ShowCursor(false);
 	KdEffekseerManager::GetInstance().Create(1280, 720);
 	KdAudioManager::Instance().Play("Asset/Sound/Game/BGM/orchestral_mission.WAV", 0.01f, true);

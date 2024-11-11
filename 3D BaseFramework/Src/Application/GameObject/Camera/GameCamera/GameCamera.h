@@ -22,7 +22,6 @@ public:
 	void Init()      override;
 
 	void UpdateRotateByMouse()override;
-	void SlowChange(bool _slowFlg);
 
 	void SetMatrix(Math::Matrix _mWorld) { m_mWorld = _mWorld; }
 	void SetDegAng(Math::Vector3 _deg)   { m_DegAngList[m_CameraType] = _deg; }

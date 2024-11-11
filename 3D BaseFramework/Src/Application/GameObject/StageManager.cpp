@@ -4,11 +4,11 @@
 #include"Character/Enemy/EnemyBase.h"
 void StageManager::Load()
 {
-	m_ObjManager.lock()->SceneCheck();
-	m_ObjManager.lock()->SetGameCameraParam();
-	m_ObjManager.lock()->SetObjectParam();
-	m_ObjManager.lock()->SetPlayerParam();
-	m_ObjManager.lock()->SetEnemyParam("Asset/Json/Game/Enemy/Stage1.json",shared_from_this());
+	SceneManager::Instance().GetObjectManager()->SceneCheck();
+	SceneManager::Instance().GetObjectManager()->SetGameCameraParam();
+	SceneManager::Instance().GetObjectManager()->SetObjectParam();
+	SceneManager::Instance().GetObjectManager()->SetPlayerParam();
+	SceneManager::Instance().GetObjectManager()->SetEnemyParam("Asset/Json/Game/Enemy/Stage1.json");
 }
 void StageManager::Clear()
 {
@@ -21,26 +21,23 @@ void StageManager::Clear()
 	}
 	else
 	{
-		m_ObjManager.lock()->SetStageParam(shared_from_this());
+		m_IsWaveMax = false;
+		m_nowStage++;
+		m_MaxWave = 0;
+		m_nowWave = 0;
+		SceneManager::Instance().GetObjectManager()->SetStageParam();
 	}
 }
 
 void StageManager::WaveCheck()
 {
-	for (auto& enemy : m_StageEnemyList)
-	{
-		if (!enemy[0].lock()->IsExpired())return;
-	}
+	if (SceneManager::Instance().GetEnemyList().size() > 0)return;
 
-	auto enemy = m_StageEnemyList.begin();
-	enemy = m_StageEnemyList.erase(enemy);
-
-	if (m_StageEnemyList.size() == 0)Clear();
+	if (m_MaxWave == m_nowWave)m_IsWaveMax = true;
 	else
 	{
-		for (auto& _enemy : m_StageEnemyList[0])
-		{
-			SceneManager::Instance().AddEnemy(_enemy.lock());
-		}
+		m_nowWave++;
+		std::string _filePath = ("Asset/Json/Game/Enemy/Stage") + (std::to_string(m_nowStage)) + (".json");
+		SceneManager::Instance().GetObjectManager()->SetEnemyParam(_filePath);
 	}
 }

@@ -1,5 +1,6 @@
 ﻿#include "GameCamera.h"
 #include"../../../Scene/SceneManager.h"
+#include"../../ObjectManager.h"
 #include"GameCamera_State.h"
 #include"GameCamera_ConText.h"
 #include"PlayerCamera/GameCamera_Player.h"
@@ -76,6 +77,35 @@ void GameCamera::PostUpdate()
 	//Math::Color color = { 1,1,1,1 };
 	//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
 
+	if (SceneManager::Instance().GetObjectManager()->GetSlowFlg())
+	{
+		if (m_FocusBackRange != 10.0f)m_FocusBackRange = 10.0f;
+
+		if (m_ViewAngList[m_CameraType] > 45)
+		{
+			m_ViewAngList[m_CameraType] -= 2;
+		}
+		else
+		{
+			m_ViewAngList[m_CameraType] = 45;
+		}
+	}
+	else
+	{
+		if (m_FocusBackRange != 2000.0f)m_FocusBackRange = 2000.0f;
+
+		if (m_ViewAngList[m_CameraType] < 60)
+		{
+			m_ViewAngList[m_CameraType] += 2;
+		}
+		else
+		{
+			m_ViewAngList[m_CameraType] = 60;
+		}
+	}
+
+	m_spCamera->SetFocus(8, 5, m_FocusBackRange);
+
 	m_spCamera->SetCameraMatrix(m_mWorld);
 	m_spCamera->SetProjectionMatrix(m_ViewAngList[m_CameraType]);
 	SetCursorPos(m_FixMousePos.x, m_FixMousePos.y);
@@ -90,7 +120,6 @@ void GameCamera::Init()
 	m_conText = std::make_shared<GameCamera_ConText>(_player);
 	m_state = m_conText->GetState();
 	m_state.lock()->SetTarget(shared_from_this());
-	m_state.lock()->SetObjectManager(m_ObjManager.lock());
 
 	//m_pDebugWire = std::make_unique<KdDebugWireFrame>();
 
@@ -112,32 +141,6 @@ void GameCamera::UpdateRotateByMouse()
 
 	// 回転制御
 	m_DegAngList[m_CameraType].x = std::clamp(m_DegAngList[m_CameraType].x, -20.f, 45.f);
-}
-
-void GameCamera::SlowChange(bool _slowFlg)
-{
-	if (_slowFlg)
-	{
-		if (m_ViewAngList[m_CameraType] > 45)
-		{
-			m_ViewAngList[m_CameraType] -= 2;
-		}
-		else
-		{
-			m_ViewAngList[m_CameraType] = 45;
-		}
-	}
-	else
-	{
-		if (m_ViewAngList[m_CameraType] < 60)
-		{
-			m_ViewAngList[m_CameraType] += 2;
-		}
-		else
-		{
-			m_ViewAngList[m_CameraType] = 60;
-		}
-	}
 }
 
 void GameCamera::SetDegAngList(Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _clear)

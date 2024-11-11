@@ -1,6 +1,6 @@
 ﻿#include "MagicPolygon.h"
 #include"../../../Scene/SceneManager.h"
-#include"../../ObjectManager.h"
+#include"../../StageManager.h"
 #include"../Circle/Circle.h"
 #include"../../Camera/GameCamera/GameCamera.h"
 #include"../../Camera/GameCamera/GameCamera_ConText.h"
@@ -9,7 +9,7 @@ void MagicPolygon::Update()
 {
 	if (!SceneManager::Instance().m_stop)
 	{
-		if (SceneManager::Instance().GetEnemyList().size() == 0 && m_ObjManager.lock()->IsWaveMax())
+		if (SceneManager::Instance().GetEnemyList().size() == 0 && SceneManager::Instance().GetStageManager()->IsWaveMax())
 		{
 			if (!m_rightFlg)
 			{

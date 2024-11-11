@@ -61,6 +61,7 @@ protected:
 	Math::Matrix				m_mRotation     = Math::Matrix::Identity;
 
 	float                       m_ViewingAngle;
+	float                       m_FocusBackRange = 0.0f;
 
 	// カメラ回転用マウス座標の差分
 	POINT						m_FixMousePos{};

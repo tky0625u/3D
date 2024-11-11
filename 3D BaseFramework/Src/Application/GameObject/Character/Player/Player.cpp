@@ -1,10 +1,10 @@
 ﻿#include "Player.h"
-#include"../../ObjectManager.h"
+#include"../../../Scene/SceneManager.h"
+#include"../../StageManager.h"
 #include"../../Camera/GameCamera/GameCamera.h"
 #include"../Action/Player/Idol/Player_Idol.h"
 #include"Application/main.h"
 #include"../Action/Player/Player_ConText.h"
-#include"../../../Scene/SceneManager.h"
 #include"../Enemy/EnemyBase.h"
 
 #include"../../UI/Player/HP/Player_HP.h"
@@ -47,25 +47,12 @@ void Player::PostUpdate()
 		{
 			if (ret->Intersects(rayInfo, &retRayList))
 			{
-				m_ObjManager.lock()->Clear();
+				SceneManager::Instance().GetStageManager()->Clear();
 			}
 		}
 	}
 
 	CharacterBase::PostUpdate();
-
-	m_camera.lock()->SlowChange(m_ObjManager.lock()->GetSlowFlg());
-
-	if (m_ObjManager.lock()->GetSlowFlg())
-	{
-		if (m_FocusBackRange != 10.0f)m_FocusBackRange = 10.0f;
-	}
-	else
-	{
-		if (m_FocusBackRange != 2000.0f)m_FocusBackRange = 2000.0f;
-	}
-
-	m_camera.lock()->WorkCamera()->SetFocus(8, 5, m_FocusBackRange);
 
 	if (m_StaminaRecoveryTime > 0)m_StaminaRecoveryTime--;
 }
@@ -83,28 +70,23 @@ void Player::Init()
 
 	m_context = std::make_shared<Player_ActionConText>(idol);
 	m_state = m_context->GetState();
-	m_state.lock()->SetObjectManager(m_ObjManager.lock());
 
 	std::shared_ptr<Player_HP> _hp = std::make_shared<Player_HP>();
 	_hp->SetTraget(shared_from_this());
-	_hp->SetObjectManager(m_ObjManager.lock());
 	_hp->Init();
 	SceneManager::Instance().AddPlayerUI(_hp);
 
 	std::shared_ptr<Player_Stamina> _stamina = std::make_shared<Player_Stamina>();
 	_stamina->SetTraget(shared_from_this());
-	_stamina->SetObjectManager(m_ObjManager.lock());
 	_stamina->Init();
 	SceneManager::Instance().AddPlayerUI(_stamina);
 
 	std::shared_ptr<LockON> _lock = std::make_shared<LockON>();
 	_lock->SetTraget(shared_from_this());
-	_lock->SetObjectManager(m_ObjManager.lock());
 	_lock->Init();
 	SceneManager::Instance().AddPlayerUI(_lock);
 
 	std::shared_ptr<Floor> _floor = std::make_shared<Floor>();
-	_floor->SetObjectManager(m_ObjManager.lock());
 	_floor->Init();
 	SceneManager::Instance().AddPlayerUI(_floor);
 

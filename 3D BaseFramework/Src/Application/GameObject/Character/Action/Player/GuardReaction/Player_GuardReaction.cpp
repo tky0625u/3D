@@ -36,6 +36,5 @@ void Player_GuardReaction::Guard()
 	guard->SetTarget(m_target.lock());
 	guard->SetFlow(Flow::CenterType);
 	guard->SetGuardTime(m_guardTime);
-	guard->SetObjectManager(m_ObjManager.lock());
 	m_target.lock()->SetNextState(guard, Player::Action::GuardType);
 }

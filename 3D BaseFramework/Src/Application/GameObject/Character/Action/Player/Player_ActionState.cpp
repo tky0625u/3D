@@ -1,6 +1,5 @@
 ﻿#include "Player_ActionState.h"
 #include"../../../../Scene/SceneManager.h"
-#include"../../../ObjectManager.h"
 #include"../../Enemy/EnemyBase.h"
 #include"../Enemy/Enemy_ConText.h"
 #include"../../Player/Player.h"
@@ -218,7 +217,6 @@ void Player_ActionState::Idol()
 	std::shared_ptr<Player_Idol> idol = std::make_shared<Player_Idol>();
 	if (m_target.expired())return;
 	idol->SetTarget(m_target.lock());
-	idol->SetObjectManager(m_ObjManager.lock());
 	m_target.lock()->SetNextState(idol,Player::Action::IdolType);
 }
 
@@ -227,7 +225,6 @@ void Player_ActionState::Run()
 	std::shared_ptr<Player_Run> run = std::make_shared<Player_Run>();
 	if (m_target.expired())return;
 	run->SetTarget(m_target.lock());
-	run->SetObjectManager(m_ObjManager.lock());
 	m_target.lock()->SetNextState(run, Player::Action::RunType);
 }
 
@@ -236,7 +233,6 @@ void Player_ActionState::Attack()
 	std::shared_ptr<Player_Attack> attack = std::make_shared<Player_Attack>();
 	if (m_target.expired())return;
 	attack->SetTarget(m_target.lock());
-	attack->SetObjectManager(m_ObjManager.lock());
 	attack->AttackDirCheck();
 	m_target.lock()->SetNextState(attack, Player::Action::AttackType);
 }
@@ -246,7 +242,6 @@ void Player_ActionState::Guard()
 	std::shared_ptr<Player_Guard> guard = std::make_shared<Player_Guard>();
 	if (m_target.expired())return;
 	guard->SetTarget(m_target.lock());
-	guard->SetObjectManager(m_ObjManager.lock());
 	m_target.lock()->SetNextState(guard, Player::Action::GuardType);
 }
 
@@ -261,7 +256,6 @@ void Player_ActionState::GuardReaction()
 	m_target.lock()->SetStamina(sta);
 	m_target.lock()->SetStaminaRecoveryTime(60);
 	guardReaction->SetTarget(m_target.lock());
-	guardReaction->SetObjectManager(m_ObjManager.lock());
 	m_target.lock()->SetNextState(guardReaction, Player::Action::GuardReactionType);
 }
 
@@ -270,7 +264,6 @@ void Player_ActionState::Parry(std::shared_ptr<EnemyBase> _enemy)
 	std::shared_ptr<Player_Parry> parry = std::make_shared<Player_Parry>();
 	if (m_target.expired())return;
 	parry->SetTarget(m_target.lock());
-	parry->SetObjectManager(m_ObjManager.lock());
 	m_target.lock()->SetParryID(_enemy->GetID());
 	m_target.lock()->SetNextState(parry, Player::Action::ParryType);
 	_enemy->GetConText()->Stumble();
@@ -281,7 +274,6 @@ void Player_ActionState::Counter()
 	std::shared_ptr<Player_Counter> counter = std::make_shared<Player_Counter>();
 	if (m_target.expired())return;
 	counter->SetTarget(m_target.lock());
-	counter->SetObjectManager(m_ObjManager.lock());
 	m_target.lock()->SetNextState(counter, Player::Action::CounterType);
 }
 
@@ -296,7 +288,6 @@ void Player_ActionState::Roll()
 	m_target.lock()->SetStamina(sta);
 	m_target.lock()->SetStaminaRecoveryTime(60);
 	roll->SetTarget(m_target.lock());
-	roll->SetObjectManager(m_ObjManager.lock());
 	m_target.lock()->SetNextState(roll, Player::Action::RollType);
 }
 
@@ -305,7 +296,6 @@ void Player_ActionState::Hit(int _damage, std::shared_ptr<EnemyBase> _enemy)
 	std::shared_ptr<Player_Hit> hit = std::make_shared<Player_Hit>();
 	if (m_target.expired())return;
 	hit->SetTarget(m_target.lock());
-	hit->SetObjectManager(m_ObjManager.lock());
 	m_target.lock()->Hit(_damage);
 	if (m_target.lock()->GetParam().Hp <= 0)
 	{
@@ -320,6 +310,5 @@ void Player_ActionState::Crushing()
 	std::shared_ptr<Player_Crushing> crushing = std::make_shared<Player_Crushing>();
 	if (m_target.expired())return;
 	crushing->SetTarget(m_target.lock());
-	crushing->SetObjectManager(m_ObjManager.lock());
 	m_target.lock()->SetNextState(crushing, Player::Action::CrushingType);
 }

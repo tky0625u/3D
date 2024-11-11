@@ -159,6 +159,7 @@ void EnemyManager::Update()
 
 void EnemyManager::PostUpdate()
 {
+	DeleteEnemyList();
 	for (auto& enemy : m_EnemyList) enemy->PostUpdate();
 }
 

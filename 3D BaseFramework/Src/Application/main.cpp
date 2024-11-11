@@ -411,7 +411,7 @@ void Application::ImGuiProcess()
 		// デバッグウィンドウ
 	if (ImGui::Begin("Debug Window"))
 	{
-		SceneManager::Instance().GetNowScene()->GetObjectManager()->DebugObject();
+		SceneManager::Instance().GetObjectManager()->DebugObject();
 	}
 	ImGui::End();
 

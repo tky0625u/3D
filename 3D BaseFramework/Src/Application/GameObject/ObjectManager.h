@@ -13,7 +13,6 @@ class TitleCamera;
 class Ground;
 class Circle;
 class MagicPolygon;
-class StageManager;
 
 #include"../tinygltf/json.hpp"
 class ObjectManager :public std::enable_shared_from_this<ObjectManager>
@@ -50,10 +49,10 @@ public:
 	void SetCursorParam();
 	void SetGameCameraParam();
 	void SetObjectParam();
-	void SetStageParam(std::shared_ptr<StageManager> _stage);
+	void SetStageParam();
 	void SetPlayerParam();
 	void SetWeaponParam(std::string _filePath, std::string _weaponName);
-	void SetEnemyParam(std::string _filePath = "none", std::shared_ptr<StageManager> _stage = nullptr);
+	void SetEnemyParam(std::string _filePath = "none");
 
 	// デバッグ
 	void AddTitleCamera();
@@ -96,8 +95,6 @@ private:
 	//デバッグ							     
 	std::vector<std::string>                 m_swordNameList;
 	std::vector<std::string>                 m_shieldNameList;
-	int                                      m_MaxWave = 0;
-	int                                      m_nowWave = 0;
 
 	std::string                              m_nowScene;
 

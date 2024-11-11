@@ -1,4 +1,5 @@
 ﻿#include "Player_Guard.h"
+#include"../../../../../Scene/SceneManager.h"
 #include"../../../../ObjectManager.h"
 #include"../../../Enemy/EnemyBase.h"
 #include"../../Enemy/Enemy_ConText.h"
@@ -129,7 +130,7 @@ void Player_Guard::Hit(int _damage, std::shared_ptr<EnemyBase> _enemy)
 
 	if (m_guardTime <= 30)
 	{
-		m_ObjManager.lock()->SlowChange();
+		SceneManager::Instance().GetObjectManager()->SlowChange();
 		m_target.lock()->GetConText()->Parry(_enemy);
 	}
 	else 

@@ -49,7 +49,6 @@ void EnemyBase::Init()
 	std::shared_ptr<Enemy_HP> _hp = std::make_shared<Enemy_HP>();
 	_hp->SetTarget(shared_from_this());
 	_hp->SetCamera(m_camera.lock());
-	_hp->SetObjectManager(m_ObjManager.lock());
 	_hp->Init();
 	SceneManager::Instance().AddEnemyUI(_hp);
 }

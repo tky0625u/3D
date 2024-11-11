@@ -14,7 +14,6 @@ void Bone::Init()
 
 	m_conText = std::make_shared<Enemy_ConText>(appeal);
 	m_state = appeal;
-	m_state.lock()->SetObjectManager(m_ObjManager.lock());
 
 	m_animator->SetAnimation(m_model->GetData()->GetAnimation(m_anime), m_animeFlg);
 

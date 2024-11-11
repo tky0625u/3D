@@ -622,7 +622,7 @@ void ObjectManager::DebugObject()
 
 			static int _stageNum = 1;
 			ImGui::Text((const char*)u8"ステージ数 : %d", _stageNum);
-			static int _nowStage = m_nowWave;
+			static int _nowStage = SceneManager::Instance().GetStageManager()->GetnowStage();
 			ImGui::SliderInt((const char*)u8"ステージ", &_nowStage, 1, _stageNum);
 			if (ImGui::Button((const char*)u8"ステージ追加"))
 			{
@@ -630,9 +630,9 @@ void ObjectManager::DebugObject()
 				if (_stageNum - 1 == _nowStage)_nowStage = _stageNum;
 			}
 
-			static int _wave = m_MaxWave;
+			static int _wave = SceneManager::Instance().GetStageManager()->GetMaxWave();
 			ImGui::Text((const char*)u8"ウェーブ数 : %d", _wave);
-			static int _nowWave = m_nowWave;
+			static int _nowWave = SceneManager::Instance().GetStageManager()->GetnowWave();
 			ImGui::SliderInt((const char*)u8"ウェーブ", &_nowWave, 1, _wave);
 			if (ImGui::Button((const char*)u8"ウェーブ追加"))
 			{
@@ -1484,7 +1484,6 @@ void ObjectManager::SetTitleCamera()
 		_name = stage["Name"];
 		std::shared_ptr<TitleCamera> camera = std::make_shared<TitleCamera>();
 
-		camera->SetObjectManager(shared_from_this());
 		camera->SetPos(_pos);
 		camera->SetDegAng(_DegAng);
 		camera->SetName(_name);
@@ -1524,8 +1523,6 @@ void ObjectManager::SetTitleParam()
 		std::string _name;
 		_name = stage["Name"];
 		std::shared_ptr<Title> title = std::make_shared<Title>();
-
-		title->SetObjectManager(shared_from_this());
 		title->SetPos(_pos);
 		title->SetSize(_size);
 		title->SetName(_name);
@@ -1565,7 +1562,6 @@ void ObjectManager::SetGameParam()
 		_name = stage["Name"];
 		std::shared_ptr<Game> game = std::make_shared<Game>();
 
-		game->SetObjectManager(shared_from_this());
 		game->SetPos(_pos);
 		game->SetSize(_size);
 		game->SetName(_name);
@@ -1605,7 +1601,6 @@ void ObjectManager::SetExitParam()
 		_name = stage["Name"];
 		std::shared_ptr<Exit> exit = std::make_shared<Exit>();
 
-		exit->SetObjectManager(shared_from_this());
 		exit->SetPos(_pos);
 		exit->SetSize(_size);
 		exit->SetName(_name);
@@ -1645,7 +1640,6 @@ void ObjectManager::SetTitleGuideParam()
 		_name = stage["Name"];
 		std::shared_ptr<TitleGuide> guide = std::make_shared<TitleGuide>();
 
-		guide->SetObjectManager(shared_from_this());
 		guide->SetPos(_pos);
 		guide->SetSize(_size);
 		guide->SetName(_name);
@@ -1692,7 +1686,6 @@ void ObjectManager::SetCursorParam()
 
 		if (!m_game.expired())cursor->SetPosList(m_game.lock()->GetVector2Pos());
 		if (!m_exit.expired())cursor->SetPosList(m_exit.lock()->GetVector2Pos());
-		cursor->SetObjectManager(shared_from_this());
 		cursor->SetMaxSize(_MaxSize);
 		cursor->SetChangeSizeNum(_ChangeSize);
 		cursor->SetMaxAlpha(_MaxAlpha);
@@ -1765,7 +1758,6 @@ void ObjectManager::SetGameCameraParam()
 		_name = stage["Name"];
 		std::shared_ptr<GameCamera> camera = std::make_shared<GameCamera>();
 
-		camera->SetObjectManager(shared_from_this());
 		camera->SetPosList(_PlayerPos, _FixedPos, _ClearPos);
 		camera->SetDegAngList(_PlayerAngle, _FixedAngle, _ClearAngle);
 		camera->SetViewAngList(_PlayerViewAngle, _FixedViewAngle, _ClearViewAngle);
@@ -1844,7 +1836,6 @@ void ObjectManager::SetObjectParam()
 				obj = std::make_shared<SkyBox>();
 			}
 
-			obj->SetObjectManager(shared_from_this());
 			obj->SetPos(_pos);
 			obj->SetSize(_size);
 			obj->SetAngle(_angle);
@@ -1859,13 +1850,21 @@ void ObjectManager::SetObjectParam()
 		}
 	}
 
+	int _maxStage = 0;
+	for (auto& stage : _json["Ground"])
+	{
+		_maxStage++;
+	}
+
+	if (m_nowScene == "Game")SceneManager::Instance().GetStageManager()->SetMaxStage(_maxStage);
+
 	ifs.close();
 
 	if (circle && ground)circle->SetGround(ground);
 	if (magic && circle)magic->SetCircle(circle);
 }
 
-void ObjectManager::SetStageParam(std::shared_ptr<StageManager> _stage)
+void ObjectManager::SetStageParam()
 {
 	//jsonファイル
 	std::string fileName = ("Asset/Json/") + m_nowScene + ("/Object/Object.json");
@@ -1880,7 +1879,7 @@ void ObjectManager::SetStageParam(std::shared_ptr<StageManager> _stage)
 	int _stageNum = 1;
 	for (auto& stage : _json["Ground"])
 	{
-		if (_stage->GetnowStage() != _stageNum)
+		if (SceneManager::Instance().GetStageManager()->GetnowStage() != _stageNum)
 		{
 			_stageNum++;
 			continue;
@@ -1935,7 +1934,8 @@ void ObjectManager::SetStageParam(std::shared_ptr<StageManager> _stage)
 
 	m_player.lock()->SetPos(m_ground.lock()->GetPos());
 
-	SetEnemyParam("Asset/Json/Game/Enemy/Stage1.json", _stage);
+	std::string _filePath = ("Asset/Json/Game/Enemy/Stage") + (std::to_string(SceneManager::Instance().GetStageManager()->GetnowStage())) + (".json");
+	SceneManager::Instance().GetObjectManager()->SetEnemyParam(_filePath);
 }
 
 void ObjectManager::SetPlayerParam()
@@ -1996,7 +1996,6 @@ void ObjectManager::SetPlayerParam()
 		SetWeaponParam((("Asset/Json/") + m_nowScene + ("/Weapon/Shield/Shield.json")), stage["ShieldName"]);
 
 		player->SetCamera(m_camera.lock());
-		player->SetObjectManager(shared_from_this());
 		player->SetParam(_hp, player->GetSword().lock()->GetATK(), _speed, _stamina);
 		player->SetPos(_pos);
 		player->SetSize(_size);
@@ -2079,7 +2078,6 @@ void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponNam
 		std::string _modelPath;
 		_modelPath = stage["Path"];
 
-		weapon->SetObjectManager(shared_from_this());
 		weapon->SetModelPath(_modelPath);
 		weapon->Init();
 		weapon->SetPos(_pos);
@@ -2099,7 +2097,7 @@ void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponNam
 	ifs.close();
 }
 
-void ObjectManager::SetEnemyParam(std::string _filePath,std::shared_ptr<StageManager> _stage)
+void ObjectManager::SetEnemyParam(std::string _filePath)
 {
 	//jsonファイル
 	std::string fileName = _filePath;
@@ -2111,89 +2109,96 @@ void ObjectManager::SetEnemyParam(std::string _filePath,std::shared_ptr<StageMan
 		ifs.close();
 	}
 
+	int _wave = 0;
+	int _nowWave = 0;
+
 	for (auto& wave : m_EnemyJson)
 	{
-		std::vector<std::weak_ptr<EnemyBase>> _enemyList;
-		for (auto& category : wave)
+		if (SceneManager::Instance().GetStageManager()->GetnowWave() != 0 && _nowWave != SceneManager::Instance().GetStageManager()->GetnowWave())
 		{
-			for (auto& stage : category)
+			_nowWave++;
+			continue;
+		}
+
+		if (SceneManager::Instance().GetEnemyList().size() == 0)
+		{
+			for (auto& category : wave)
 			{
-				std::string _name;
-				_name = stage["Name"];
-
-				Math::Vector3 _pos = Math::Vector3::Zero;
-				_pos.x = stage["PosX"];
-				_pos.y = m_ground.lock()->GetPos().y;
-				_pos.z = stage["PosZ"];
-
-				Math::Vector3 _dir = Math::Vector3::Zero;
-				_dir.x = stage["DirX"];
-				_dir.y = stage["DirY"];
-				_dir.z = stage["DirZ"];
-
-				float _size = 0.0f;
-				_size = stage["Size"];
-
-				Math::Vector3 _angle = Math::Vector3::Zero;
-				_angle.y = stage["Angle"];
-
-				int _hp = 0;
-				_hp = stage["HP"];
-
-				int _atk = 0;
-				_atk = stage["ATK"];
-
-				float _speed = 0.0f;
-				_speed = stage["Speed"];
-
-				int _stamina = 0;
-				_stamina = stage["Stamina"];
-
-				float _atkRange = 0.0f;
-				_atkRange = stage["ATKRange"];
-
-				Math::Vector3 _forward = Math::Vector3::Zero;
-				_forward.x = stage["ForwardX"];
-				_forward.y = stage["ForwardY"];
-				_forward.z = stage["ForwardZ"];
-
-				std::shared_ptr<EnemyBase> enemy = nullptr;
-				if (stage["Name"] == "Bone")
+				for (auto& stage : category)
 				{
-					std::shared_ptr<Bone> bone = std::make_shared<Bone>();
-					enemy = bone;
-				}
-				else if (stage["Name"] == "Golem")
-				{
-					std::shared_ptr<Golem> golem = std::make_shared<Golem>();
-					enemy = golem;
-				}
-				enemy->SetObjectManager(shared_from_this());
-				enemy->SetCamera(m_camera.lock());
-				enemy->SetParam(_hp, _atk, _speed, _stamina);
-				enemy->SetPos(_pos);
-				enemy->SetSize(_size);
-				enemy->SetDir(_dir);
-				enemy->SetAngle(_angle);
-				enemy->SetAtkRange(_atkRange);
-				enemy->SetForward(_forward);
-				enemy->SetTarget(m_player.lock());
-				enemy->SetName(_name);
-				enemy->SetID(m_id);
-				enemy->Init();
-				m_id++;
+					std::string _name;
+					_name = stage["Name"];
 
-				if (_stage->GetStageEnemyListNum() == 0)
-				{
+					Math::Vector3 _pos = Math::Vector3::Zero;
+					_pos.x = stage["PosX"];
+					_pos.y = m_ground.lock()->GetPos().y;
+					_pos.z = stage["PosZ"];
+
+					Math::Vector3 _dir = Math::Vector3::Zero;
+					_dir.x = stage["DirX"];
+					_dir.y = stage["DirY"];
+					_dir.z = stage["DirZ"];
+
+					float _size = 0.0f;
+					_size = stage["Size"];
+
+					Math::Vector3 _angle = Math::Vector3::Zero;
+					_angle.y = stage["Angle"];
+
+					int _hp = 0;
+					_hp = stage["HP"];
+
+					int _atk = 0;
+					_atk = stage["ATK"];
+
+					float _speed = 0.0f;
+					_speed = stage["Speed"];
+
+					int _stamina = 0;
+					_stamina = stage["Stamina"];
+
+					float _atkRange = 0.0f;
+					_atkRange = stage["ATKRange"];
+
+					Math::Vector3 _forward = Math::Vector3::Zero;
+					_forward.x = stage["ForwardX"];
+					_forward.y = stage["ForwardY"];
+					_forward.z = stage["ForwardZ"];
+
+					std::shared_ptr<EnemyBase> enemy = nullptr;
+					if (stage["Name"] == "Bone")
+					{
+						std::shared_ptr<Bone> bone = std::make_shared<Bone>();
+						enemy = bone;
+					}
+					else if (stage["Name"] == "Golem")
+					{
+						std::shared_ptr<Golem> golem = std::make_shared<Golem>();
+						enemy = golem;
+					}
+					enemy->SetCamera(m_camera.lock());
+					enemy->SetParam(_hp, _atk, _speed, _stamina);
+					enemy->SetPos(_pos);
+					enemy->SetSize(_size);
+					enemy->SetDir(_dir);
+					enemy->SetAngle(_angle);
+					enemy->SetAtkRange(_atkRange);
+					enemy->SetForward(_forward);
+					enemy->SetTarget(m_player.lock());
+					enemy->SetName(_name);
+					enemy->SetID(m_id);
+					enemy->Init();
+					m_id++;
+
 					SceneManager::Instance().AddEnemy(enemy);
 					m_EnemyList.push_back(enemy);
 				}
-				_enemyList.push_back(enemy);
 			}
 		}
-		_stage->SetStageEnemyList(_enemyList);
-		m_MaxWave++;
+		_wave++;
 	}
+
+	if (SceneManager::Instance().GetStageManager()->GetMaxWave() == 0)SceneManager::Instance().GetStageManager()->SetMaxWave(_wave);
 }
 
 void ObjectManager::AddTitleCamera()
@@ -2205,7 +2210,6 @@ void ObjectManager::AddTitleCamera()
 	Math::Vector3 _degAng = Math::Vector3::Zero;
 
 	std::shared_ptr<TitleCamera> _camera = std::make_shared<TitleCamera>();
-	_camera->SetObjectManager(shared_from_this());
 	_camera->SetPos(_pos);
 	_camera->SetDegAng(_degAng);
 	_camera->Init();
@@ -2223,7 +2227,6 @@ void ObjectManager::AddTitle()
 	float _size = 1.0f;
 
 	std::shared_ptr<Title> _title = std::make_shared<Title>();
-	_title->SetObjectManager(shared_from_this());
 	_title->SetPos(_pos);
 	_title->SetSize(_size);
 	_title->Init();
@@ -2241,7 +2244,6 @@ void ObjectManager::AddGame()
 	float _size = 1.0f;
 
 	std::shared_ptr<Game> _game = std::make_shared<Game>();
-	_game->SetObjectManager(shared_from_this());
 	_game->SetPos(_pos);
 	_game->SetSize(_size);
 	_game->Init();
@@ -2259,7 +2261,6 @@ void ObjectManager::AddExit()
 	float _size = 1.0f;
 
 	std::shared_ptr<Exit> _exit = std::make_shared<Exit>();
-	_exit->SetObjectManager(shared_from_this());
 	_exit->SetPos(_pos);
 	_exit->SetSize(_size);
 	_exit->Init();
@@ -2277,7 +2278,6 @@ void ObjectManager::AddTitleGuide()
 	float _size = 1.0f;
 
 	std::shared_ptr<TitleGuide> _guide = std::make_shared<TitleGuide>();
-	_guide->SetObjectManager(shared_from_this());
 	_guide->SetPos(_pos);
 	_guide->SetSize(_size);
 	_guide->Init();
@@ -2299,7 +2299,6 @@ void ObjectManager::AddCursor()
 	std::shared_ptr<Cursor> _cursor = std::make_shared<Cursor>();
 	if (!m_game.expired())_cursor->SetPosList(m_game.lock()->GetVector2Pos());
 	if (!m_exit.expired())_cursor->SetPosList(m_exit.lock()->GetVector2Pos());
-	_cursor->SetObjectManager(shared_from_this());
 	_cursor->SetMaxSize(_MaxSize);
 	_cursor->SetChangeSizeNum(_ChangeSize);
 	_cursor->SetMaxAlpha(_MaxAlpha);
@@ -2328,7 +2327,6 @@ void ObjectManager::AddBone()
 
 	std::shared_ptr<Bone> enemy = nullptr;
 	enemy = std::make_shared<Bone>();
-	enemy->SetObjectManager(shared_from_this());
 	enemy->SetParam(_hp, _atk, _speed, _stamina);
 	enemy->SetPos(_pos);
 	enemy->SetSize(_size);
@@ -2364,7 +2362,6 @@ void ObjectManager::AddGolem()
 
 	std::shared_ptr<Golem> enemy = nullptr;
 	enemy = std::make_shared<Golem>();
-	enemy->SetObjectManager(shared_from_this());
 	enemy->SetParam(_hp, _atk, _speed, _stamina);
 	enemy->SetPos(_pos);
 	enemy->SetSize(_size);
@@ -2431,7 +2428,6 @@ void ObjectManager::AddWeapon(std::string _filePath, std::string _weaponName)
 		std::string _modelPath;
 		_modelPath = stage["Path"];
 		
-		weapon->SetObjectManager(shared_from_this());
 		weapon->SetModelPath(_modelPath);
 		weapon->Init();
 		weapon->SetPos(_pos);
@@ -2458,7 +2454,6 @@ void ObjectManager::AddGround()
 	Math::Vector3 _angle = Math::Vector3::Zero;
 	std::shared_ptr<Ground> obj = std::make_shared<Ground>();
 
-	obj->SetObjectManager(shared_from_this());
 	obj->SetPos(_pos);
 	obj->SetSize(_size);
 	obj->SetAngle(_angle);
@@ -2507,7 +2502,6 @@ void ObjectManager::AddCircle()
 			break;
 		}
 
-		obj->SetObjectManager(shared_from_this());
 		obj->SetPos(_pos);
 		obj->SetSize(_size);
 		obj->SetAngle(_angle);
@@ -2530,7 +2524,6 @@ void ObjectManager::AddWall()
 	Math::Vector3 _angle = Math::Vector3::Zero;
 	std::shared_ptr<Wall> obj = std::make_shared<Wall>();
 
-	obj->SetObjectManager(shared_from_this());
 	obj->SetPos(_pos);
 	obj->SetSize(_size);
 	obj->SetAngle(_angle);
@@ -2552,8 +2545,6 @@ void ObjectManager::AddSkyBox()
 	Math::Vector3 _angle = Math::Vector3::Zero;
 	std::shared_ptr<SkyBox> obj = std::make_shared<SkyBox>();
 
-	obj->SetObjectManager(shared_from_this());
-	obj->SetPos(_pos);
 	obj->SetSize(_size);
 	obj->SetAngle(_angle);
 	obj->SetName(_name);
