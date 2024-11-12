@@ -2215,6 +2215,11 @@ void ObjectManager::SetEnemyParam(std::string _filePath)
 	if (SceneManager::Instance().GetStageManager()->GetMaxWave() == 0)SceneManager::Instance().GetStageManager()->SetMaxWave(_wave);
 }
 
+const bool& ObjectManager::GetTeleportFlg()
+{
+	return m_magic.lock()->GetTeleport();
+}
+
 void ObjectManager::AddTitleCamera()
 {
 	if (!m_titleCamera.expired())return;

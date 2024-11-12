@@ -14,6 +14,7 @@ void MagicPolygon_Next::Center()
 	m_angle += 0.01f;
 	if (m_angle > 360.0f)m_angle -= 360.0f;
 	if (m_rgb < 1.0f)    m_rgb += 0.01f;
+	if (!KdEffekseerManager::GetInstance().IsPlaying(m_handle) && !m_target.lock()->GetTeleport())m_target.lock()->SetTeleportFlg(true);
 
 	m_target.lock()->SetAngle(Math::Vector3{ 0.0f,m_angle,0.0f });
 	m_target.lock()->SetRBG(m_rgb);

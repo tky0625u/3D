@@ -1,6 +1,7 @@
 ﻿#include "Player.h"
 #include"../../../Scene/SceneManager.h"
 #include"../../StageManager.h"
+#include"../../ObjectManager.h"
 #include"../../Camera/GameCamera/GameCamera.h"
 #include"../Action/Player/Idol/Player_Idol.h"
 #include"Application/main.h"
@@ -25,7 +26,7 @@ void Player::Action()
 
 void Player::PostUpdate()
 {
-	if (m_camera.lock()->GetCameraType() == GameCamera::CameraType::PlayerType)
+	if (SceneManager::Instance().GetObjectManager()->GetTeleportFlg())
 	{
 		NextStageCheck();
 	}

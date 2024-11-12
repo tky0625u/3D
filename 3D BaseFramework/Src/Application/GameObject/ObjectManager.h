@@ -56,6 +56,8 @@ public:
 	void SetWeaponParam(std::string _filePath, std::string _weaponName);
 	void SetEnemyParam(std::string _filePath = "none");
 
+	const bool& GetTeleportFlg();
+
 	// デバッグ
 	void AddTitleCamera();
 	void AddTitle();

@@ -20,9 +20,11 @@ public:
 	void SetMatrix(Math::Matrix _mat) { m_mWorld = _mat; }
 	void SetNextState(std::shared_ptr<MagicPolygon_State> _nextState) { m_NextState = _nextState; }
 	void SetRBG(float _rgb) { m_rgb = _rgb; }
+	void SetTeleportFlg(bool _teleport) { m_TeleportFlg = _teleport; }
 
 	const float& GetRGB() const { return m_rgb; }
 	const std::shared_ptr<MagicPolygon_ConText>& GetConText()const { return m_conText; }
+	const bool& GetTeleport()const { return m_TeleportFlg; }
 
 private:
 	std::shared_ptr<MagicPolygon_ConText> m_conText   = nullptr;
@@ -33,5 +35,5 @@ private:
 	std::shared_ptr<KdSquarePolygon> m_spPolygon = nullptr;
 	Math::Color                      m_color;
 	float                            m_rgb       = 0.0f;
-	bool                             m_rightFlg  = false;
+	bool                             m_TeleportFlg  = false;
 };
