@@ -26,7 +26,7 @@ void Player::Action()
 
 void Player::PostUpdate()
 {
-	if (SceneManager::Instance().GetObjectManager()->GetTeleportFlg())
+	if (m_ObjectManager.lock()->GetTeleportFlg())
 	{
 		NextStageCheck();
 	}
@@ -66,6 +66,7 @@ void Player::Init()
 	SceneManager::Instance().AddPlayerUI(_lock);
 
 	std::shared_ptr<Floor> _floor = std::make_shared<Floor>();
+	_floor->SetStageManager(m_StageManager.lock());
 	_floor->Init();
 	SceneManager::Instance().AddPlayerUI(_floor);
 
@@ -103,7 +104,7 @@ void Player::NextStageCheck()
 		{
 			if (ret->Intersects(rayInfo, &retRayList))
 			{
-				SceneManager::Instance().GetStageManager()->NextStage();
+				m_StageManager.lock()->NextStage();
 			}
 		}
 	}

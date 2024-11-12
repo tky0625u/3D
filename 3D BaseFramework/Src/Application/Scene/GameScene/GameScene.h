@@ -13,6 +13,8 @@ public :
 	void PostUpdate()override;
 	void Init()      override;
 
+	void DebugObject()override;
+
 private:
 
 	void Event() override;

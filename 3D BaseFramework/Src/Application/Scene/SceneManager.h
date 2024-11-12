@@ -47,9 +47,6 @@ public :
 	const std::list<std::shared_ptr<UIBase>>&       GetEnemyUIList();
 	const std::shared_ptr<EnemyManager>&            GetEnemyManager();
 
-	const std::shared_ptr<StageManager>&            GetStageManager();
-	const std::shared_ptr<ObjectManager>&           GetObjectManager();
-
 	const SceneType GetNowSceneType()const { return m_currentSceneType; }
 	
 	// 現在のシーンにオブジェクトを追加
@@ -62,8 +59,7 @@ public :
 	void AddPlayerUI    (const std::shared_ptr<UIBase>& ui);
 	void AddEnemyUI    (const std::shared_ptr<UIBase>& ui);
 
-	void SetStageManager(std::shared_ptr<StageManager> _stageMaanger);
-	void SetObjectManager(std::shared_ptr<ObjectManager> _objMaanger);
+	void DebugObject();
 
 	// マネージャーの初期化
 	// インスタンス生成(アプリ起動)時にコンストラクタで自動実行

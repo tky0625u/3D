@@ -330,7 +330,6 @@
     <ClCompile Include="Src\Application\GameObject\Stage\MagicPolygon\Next\MagicPolygon_Next.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\MagicPolygon\Normal\MagicPolygon_Normal.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Wall\Wall.cpp" />
-    <ClCompile Include="Src\Application\GameObject\StateManager.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Enemy\HP\Enemy_HP.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\Floor\Floor.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\HP\Player_HP.cpp" />

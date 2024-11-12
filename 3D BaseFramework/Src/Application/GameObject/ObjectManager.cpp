@@ -122,7 +122,7 @@ void ObjectManager::GameClear()
 	m_camera.lock()->GetConText()->ClearCamera();
 }
 
-void ObjectManager::CreateStage()
+void ObjectManager::CreateStage(std::shared_ptr<StageManager> _stage)
 {
 	//jsonファイル
 	std::string fileName = ("Asset/Json/") + m_nowScene + ("/Object/Object.json");
@@ -137,7 +137,7 @@ void ObjectManager::CreateStage()
 	int _stageNum = 1;
 	for (auto& stage : _json["Ground"])
 	{
-		if (SceneManager::Instance().GetStageManager()->GetnowStage() != _stageNum)
+		if (_stage->GetnowStage() != _stageNum)
 		{
 			_stageNum++;
 			continue;
@@ -190,14 +190,14 @@ void ObjectManager::CreateStage()
 
 	ifs.close();
 
-	std::string _filePath = ("Asset/Json/Game/Enemy/Stage") + (std::to_string(SceneManager::Instance().GetStageManager()->GetnowStage())) + (".json");
-	SceneManager::Instance().GetObjectManager()->SetEnemyParam(_filePath);
+	std::string _filePath = ("Asset/Json/Game/Enemy/Stage") + (std::to_string(_stage->GetnowStage())) + (".json");
+	SetEnemyParam(_filePath, _stage);
 
 	m_player.lock()->SetPos(m_ground.lock()->GetPos());
 	m_magic.lock()->GetConText()->Normal();
 }
 
-void ObjectManager::DebugObject()
+void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 {
 	// FPS
 //ImGui::Text("FPS : %d", m_fpsController.m_nowfps);
@@ -711,7 +711,7 @@ void ObjectManager::DebugObject()
 
 			static int _stageNum = 1;
 			ImGui::Text((const char*)u8"ステージ数 : %d", _stageNum);
-			static int _nowStage = SceneManager::Instance().GetStageManager()->GetnowStage();
+			static int _nowStage = _stage->GetnowStage();
 			ImGui::SliderInt((const char*)u8"ステージ", &_nowStage, 1, _stageNum);
 			if (ImGui::Button((const char*)u8"ステージ追加"))
 			{
@@ -719,9 +719,9 @@ void ObjectManager::DebugObject()
 				if (_stageNum - 1 == _nowStage)_nowStage = _stageNum;
 			}
 
-			static int _wave = SceneManager::Instance().GetStageManager()->GetMaxWave();
+			static int _wave = _stage->GetMaxWave();
 			ImGui::Text((const char*)u8"ウェーブ数 : %d", _wave);
-			static int _nowWave = SceneManager::Instance().GetStageManager()->GetnowWave();
+			static int _nowWave = _stage->GetnowWave();
 			ImGui::SliderInt((const char*)u8"ウェーブ", &_nowWave, 1, _wave);
 			if (ImGui::Button((const char*)u8"ウェーブ追加"))
 			{
@@ -1851,6 +1851,7 @@ void ObjectManager::SetGameCameraParam()
 		camera->SetDegAngList(_PlayerAngle, _FixedAngle, _ClearAngle);
 		camera->SetViewAngList(_PlayerViewAngle, _FixedViewAngle, _ClearViewAngle);
 		camera->SetName(_name);
+		camera->SetObjManager(shared_from_this());
 		camera->Init();
 		camera->SetID(m_id);
 		m_id++;
@@ -1862,7 +1863,7 @@ void ObjectManager::SetGameCameraParam()
 	ifs.close();
 }
 
-void ObjectManager::SetObjectParam()
+void ObjectManager::SetObjectParam(std::shared_ptr<StageManager> _stage)
 {
 	//jsonファイル
 	std::string fileName = ("Asset/Json/") + m_nowScene + ("/Object/Object.json");
@@ -1944,7 +1945,7 @@ void ObjectManager::SetObjectParam()
 		_maxStage++;
 	}
 
-	if (m_nowScene == "Game")SceneManager::Instance().GetStageManager()->SetMaxStage(_maxStage);
+	if (m_nowScene == "Game")_stage->SetMaxStage(_maxStage);
 
 	ifs.close();
 
@@ -1952,7 +1953,7 @@ void ObjectManager::SetObjectParam()
 	if (magic && circle)magic->SetCircle(circle);
 }
 
-void ObjectManager::SetPlayerParam()
+void ObjectManager::SetPlayerParam(std::shared_ptr<StageManager> _stage)
 {
 	//jsonファイル
 	std::string fileName = ("Asset/Json/") + m_nowScene + ("/Player/Player.json");
@@ -2017,6 +2018,8 @@ void ObjectManager::SetPlayerParam()
 		player->SetAngle(_angle);
 		player->SetAtkRange(_atkRange);
 		player->SetForward(_forward);
+		player->SetObjManager(shared_from_this());
+		player->SetStageManager(_stage);
 		player->Init();
 		player->SetInviTime(_inviTime);
 		player->SetName(_name);
@@ -2111,7 +2114,7 @@ void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponNam
 	ifs.close();
 }
 
-void ObjectManager::SetEnemyParam(std::string _filePath)
+void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageManager> _stage)
 {
 	//jsonファイル
 	std::string fileName = _filePath;
@@ -2128,7 +2131,7 @@ void ObjectManager::SetEnemyParam(std::string _filePath)
 
 	for (auto& wave : m_EnemyJson)
 	{
-		if (SceneManager::Instance().GetStageManager()->GetnowWave() != 0 && _nowWave != SceneManager::Instance().GetStageManager()->GetnowWave())
+		if (_stage->GetnowWave() != 0 && _nowWave != _stage->GetnowWave())
 		{
 			_nowWave++;
 			continue;
@@ -2201,6 +2204,7 @@ void ObjectManager::SetEnemyParam(std::string _filePath)
 					enemy->SetTarget(m_player.lock());
 					enemy->SetName(_name);
 					enemy->SetID(m_id);
+					enemy->SetObjManager(shared_from_this());
 					enemy->Init();
 					m_id++;
 
@@ -2212,7 +2216,7 @@ void ObjectManager::SetEnemyParam(std::string _filePath)
 		_wave++;
 	}
 
-	if (SceneManager::Instance().GetStageManager()->GetMaxWave() == 0)SceneManager::Instance().GetStageManager()->SetMaxWave(_wave);
+	if (_stage->GetMaxWave() == 0)_stage->SetMaxWave(_wave);
 }
 
 const bool& ObjectManager::GetTeleportFlg()
@@ -2355,6 +2359,7 @@ void ObjectManager::AddBone()
 	enemy->SetForward(_forward);
 	enemy->SetName(_name);
 	enemy->SetID(m_id);
+	enemy->SetObjManager(shared_from_this());
 	enemy->Init();
 	m_id++;
 
@@ -2390,6 +2395,7 @@ void ObjectManager::AddGolem()
 	enemy->SetForward(_forward);
 	enemy->SetName(_name);
 	enemy->SetID(m_id);
+	enemy->SetObjManager(shared_from_this());
 	enemy->Init();
 	m_id++;
 

@@ -245,6 +245,7 @@ void Player_ActionState::Guard()
 	std::shared_ptr<Player_Guard> guard = std::make_shared<Player_Guard>();
 	if (m_target.expired())return;
 	guard->SetTarget(m_target.lock());
+	guard->SetObjManager(m_target.lock()->GetObjectManager().lock());
 	m_target.lock()->SetNextState(guard, Player::Action::GuardType);
 }
 
@@ -267,6 +268,7 @@ void Player_ActionState::Parry(std::shared_ptr<EnemyBase> _enemy)
 	std::shared_ptr<Player_Parry> parry = std::make_shared<Player_Parry>();
 	if (m_target.expired())return;
 	parry->SetTarget(m_target.lock());
+	parry->SetObjManager(m_target.lock()->GetObjectManager().lock());
 	m_target.lock()->SetParryID(_enemy->GetID());
 	m_target.lock()->SetNextState(parry, Player::Action::ParryType);
 	_enemy->GetConText()->Stumble();

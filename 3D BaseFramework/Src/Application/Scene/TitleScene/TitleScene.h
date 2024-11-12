@@ -10,7 +10,8 @@ public :
 	~TitleScene() {}
 
 	void Update()override;
-	
+	void DebugObject()override;
+
 private :
 
 	void Event() override;

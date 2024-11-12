@@ -980,7 +980,6 @@
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Crushing\Player_Crushing.cpp">
       <Filter>Src\Application\GameObject\Character\Action\Player\Crushing</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\StateManager.cpp" />
     <ClCompile Include="Src\Application\GameObject\StageManager.cpp">
       <Filter>Src\Application\GameObject</Filter>
     </ClCompile>

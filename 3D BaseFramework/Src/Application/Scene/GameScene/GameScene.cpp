@@ -44,11 +44,13 @@ void StageLoad()
 	//オブジェクトマネジャ
 	_ObjManager = std::make_shared<ObjectManager>();
 	_StageManager = std::make_shared<StageManager>();
+	_StageManager->SetObjectManager(_ObjManager);
 
-	SceneManager::Instance().SetObjectManager(_ObjManager);
-	SceneManager::Instance().SetStageManager(_StageManager);
-
-	_StageManager->Load();
+	_ObjManager->SceneCheck();
+	_ObjManager->SetGameCameraParam();
+	_ObjManager->SetObjectParam(_StageManager);
+	_ObjManager->SetPlayerParam(_StageManager);
+	_ObjManager->SetEnemyParam("Asset/Json/Game/Enemy/Stage1.json",_StageManager);
 
 	loop = false;
 }
@@ -82,9 +84,17 @@ void GameScene::Init()
 	th_Obj.join();
 	th_Load.join();
 
+	m_StageManager = _StageManager;
+	m_ObjManager = _ObjManager;
+
 	ShowCursor(false);
 	KdEffekseerManager::GetInstance().Create(1280, 720);
 	KdAudioManager::Instance().Play("Asset/Sound/Game/BGM/orchestral_mission.WAV", 0.01f, true);
 
 	SceneManager::Instance().BlackAlphaChange(0.01f);
+}
+
+void GameScene::DebugObject()
+{
+	m_ObjManager->DebugObject(m_StageManager);
 }

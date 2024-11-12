@@ -130,7 +130,7 @@ void Player_Guard::Hit(int _damage, std::shared_ptr<EnemyBase> _enemy)
 
 	if (m_guardTime <= 30)
 	{
-		SceneManager::Instance().GetObjectManager()->SlowChange();
+		m_ObjectManager.lock()->SlowChange();
 		m_target.lock()->GetConText()->Parry(_enemy);
 	}
 	else 

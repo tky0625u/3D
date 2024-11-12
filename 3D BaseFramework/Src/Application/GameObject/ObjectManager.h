@@ -13,6 +13,7 @@ class TitleCamera;
 class Ground;
 class Circle;
 class MagicPolygon;
+class StageManager;
 
 #include"../tinygltf/json.hpp"
 class ObjectManager :public std::enable_shared_from_this<ObjectManager>
@@ -27,9 +28,9 @@ public:
 	void SlowChange();
 	void NextStageLiberation();
 	void GameClear();
-	void CreateStage();
+	void CreateStage(std::shared_ptr<StageManager> _stage);
 
-	void DebugObject();
+	void DebugObject(std::shared_ptr<StageManager> _stage = nullptr);
 
 	void TitleCameraWrite();
 	void TitleWrite();
@@ -51,10 +52,10 @@ public:
 	void SetTitleGuideParam();
 	void SetCursorParam();
 	void SetGameCameraParam();
-	void SetObjectParam();
-	void SetPlayerParam();
+	void SetObjectParam(std::shared_ptr<StageManager> _stage = nullptr);
+	void SetPlayerParam(std::shared_ptr<StageManager> _stage);
 	void SetWeaponParam(std::string _filePath, std::string _weaponName);
-	void SetEnemyParam(std::string _filePath = "none");
+	void SetEnemyParam(std::string _filePath = "none", std::shared_ptr<StageManager> _stage = nullptr);
 
 	const bool& GetTeleportFlg();
 

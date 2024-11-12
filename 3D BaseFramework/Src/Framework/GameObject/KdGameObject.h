@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 class CharacterBase;
+class ObjectManager;
 
 // ゲーム上に存在するすべてのオブジェクトの基底となるクラス
 class KdGameObject //: public std::enable_shared_from_this<KdGameObject>
@@ -70,6 +71,8 @@ public:
 	void SetAngle(Math::Vector3 _angle) { m_angle = _angle; }
 	const Math::Vector3 GetAngle()const {return m_angle; }
 
+	void SetObjManager(std::shared_ptr<ObjectManager> _Obj) { m_ObjectManager = _Obj; }
+
 	const Math::Matrix& GetMatrix() const { return m_mWorld; }
 
 	// デバッグ
@@ -130,4 +133,6 @@ protected:
 
 	//ID
 	UINT m_id = 0;
+
+	std::weak_ptr<ObjectManager> m_ObjectManager;
 };

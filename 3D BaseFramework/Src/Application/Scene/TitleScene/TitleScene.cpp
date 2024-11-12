@@ -13,6 +13,11 @@ void TitleScene::Update()
 	KdEffekseerManager::GetInstance().Update();
 }
 
+void TitleScene::DebugObject()
+{
+	m_ObjManager->DebugObject();
+}
+
 void TitleScene::Event()
 {
 
@@ -23,7 +28,6 @@ void TitleScene::Init()
 	m_ObjManager = std::make_shared<ObjectManager>();
 	m_ObjManager->SceneCheck();
 	m_ObjManager->SetTitleCamera();
-	m_ObjManager->SetPlayerParam();
 	m_ObjManager->SetTitleParam();
 	m_ObjManager->SetGameParam();
 	m_ObjManager->SetExitParam();

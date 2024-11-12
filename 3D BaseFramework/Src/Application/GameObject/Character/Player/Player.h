@@ -7,6 +7,9 @@ class Player_ActionConText;
 class Player_ActionState;
 class EnemyBase;
 class Shield;
+class StageManager;
+class ObjectManager;
+class StageManager;
 
 class Player :public CharacterBase, public std::enable_shared_from_this<Player>
 {
@@ -48,6 +51,7 @@ public:
 	void SetShield(std::shared_ptr<Shield> _shield) { m_shield = _shield; }
 	void SetStaminaRecoveryTime(int _time) { m_StaminaRecoveryTime = _time; }
 	void SetParryID(UINT _id) { m_ParryID = _id; }
+	void SetStageManager(std::shared_ptr<StageManager> _stage) { m_StageManager = _stage; }
 
 	std::shared_ptr<Player_ActionConText>GetConText()const { return m_context; }
 	int GetMaxStamina()const { return m_MaxStamina; }
@@ -56,8 +60,10 @@ public:
 	const UINT GetParryID()const { return m_ParryID; }
 	const Math::Matrix& GetEnemyAttackPointMat() const { return (m_model->FindWorkNode("EnemyAttackPoint")->m_worldTransform) * m_mWorld; }
 	const UINT& GetActionType()const { return m_actionType; }
+	const std::weak_ptr<ObjectManager>& GetObjectManager()const { return m_ObjectManager; }
 
 private:
+	std::weak_ptr<StageManager>           m_StageManager;
 	std::shared_ptr<Player_ActionConText> m_context        = nullptr;
 	std::weak_ptr<Player_ActionState>     m_state;
 	std::shared_ptr<Player_ActionState>   m_NextState;

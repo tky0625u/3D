@@ -55,6 +55,8 @@ public :
 	void SetStageManager(std::shared_ptr<StageManager> _stageMaanger) { m_StageManager = _stageMaanger; }
 	void SetObjectManager(std::shared_ptr<ObjectManager> _objMaanger) { m_ObjManager = _objMaanger; }
 
+	virtual void DebugObject() {};
+
 	virtual void Init();
 
 protected :

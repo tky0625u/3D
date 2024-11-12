@@ -77,7 +77,7 @@ void GameCamera::PostUpdate()
 	//Math::Color color = { 1,1,1,1 };
 	//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
 
-	if (SceneManager::Instance().GetObjectManager()->GetSlowFlg())
+	if (m_ObjectManager.lock()->GetSlowFlg())
 	{
 		if (m_FocusBackRange != 10.0f)m_FocusBackRange = 10.0f;
 

@@ -104,16 +104,6 @@ const std::shared_ptr<EnemyManager>& SceneManager::GetEnemyManager()
 	return m_currentScene->GetEnemyManager();
 }
 
-const std::shared_ptr<StageManager>& SceneManager::GetStageManager()
-{
-	return m_currentScene->GetStageManager();
-}
-
-const std::shared_ptr<ObjectManager>& SceneManager::GetObjectManager()
-{
-	return m_currentScene->GetObjectManager();
-}
-
 void SceneManager::SetPlayer(const std::shared_ptr<Player>& player)
 {
 	m_currentScene->SetPlayer(player);
@@ -154,14 +144,9 @@ void SceneManager::AddEnemyUI(const std::shared_ptr<UIBase>& ui)
 	m_currentScene->AddEnemyUI(ui);
 }
 
-void SceneManager::SetStageManager(std::shared_ptr<StageManager> _stageMaanger)
+void SceneManager::DebugObject()
 {
-	m_currentScene->SetStageManager(_stageMaanger);
-}
-
-void SceneManager::SetObjectManager(std::shared_ptr<ObjectManager> _objMaanger)
-{
-	m_currentScene->SetObjectManager(_objMaanger);
+	m_currentScene->DebugObject();
 }
 
 void SceneManager::ChangeScene(SceneType sceneType)
