@@ -142,6 +142,9 @@ void Player_ActionState::Update()
 {
 	ActionBase::Update();
 	if (m_target.lock()->GetStaminaRecoveryTime() <= 0)m_target.lock()->StaminaRecovery();
+	
+	if (m_target.lock()->GetCamera().lock()->GetCameraType() != GameCamera::CameraType::PlayerType)return;
+
 	KeyCheck();
 	if (m_target.lock()->GetConText()->GetLockONFlg())
 	{

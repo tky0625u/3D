@@ -9,13 +9,6 @@ public:
 	GameCamera_State() {};
 	~GameCamera_State() override {};
 
-	enum Flow
-	{
-		StartType,
-		CenterType,
-		EndType
-	};
-
 	void PlayerChange();
 	void FixedChange();
 	void ClearChange();
@@ -31,7 +24,6 @@ public:
 
 protected:
 	std::weak_ptr<GameCamera> m_target;
-	Flow                      m_flow = StartType;
 	float                     m_move = 0.1f;
 	float                     m_shakeTime = 10.0f;
 	bool                      m_shakeFlg = false;

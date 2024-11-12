@@ -25,6 +25,9 @@ public:
 	void DeleteEnemyList();
 	void DeleteObjectList();
 	void SlowChange();
+	void NextStageLiberation();
+	void GameClear();
+	void CreateStage();
 
 	void DebugObject();
 
@@ -49,7 +52,6 @@ public:
 	void SetCursorParam();
 	void SetGameCameraParam();
 	void SetObjectParam();
-	void SetStageParam();
 	void SetPlayerParam();
 	void SetWeaponParam(std::string _filePath, std::string _weaponName);
 	void SetEnemyParam(std::string _filePath = "none");

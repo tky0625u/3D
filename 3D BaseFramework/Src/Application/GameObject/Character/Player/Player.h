@@ -33,6 +33,7 @@ public:
 	void Init()      override;
 
 	void CrushingAction()override;
+	void NextStageCheck();
 	void StaminaRecovery() { 
 		if (m_StaminaRecoveryTime > 0)return;
 		m_param.Sm++;

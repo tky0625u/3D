@@ -9,7 +9,7 @@ public:
 	~StageManager() {};
 
 	void Load();
-	void Clear();
+	void NextStage();
 	void WaveCheck();
 	bool IsWaveMax() { return m_IsWaveMax; }
 	
@@ -19,6 +19,7 @@ public:
 	const int& GetnowWave()const  { return m_nowWave; }
 	const int& GetMaxWave()const  { return m_MaxWave; }
 	const int& GetnowStage()const { return m_nowStage; }
+	const int& GetMaxStage()const { return m_MaxStage; }
 
 private:
 	int                          m_nowWave = 0;

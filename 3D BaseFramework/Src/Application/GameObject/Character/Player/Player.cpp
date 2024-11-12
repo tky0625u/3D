@@ -14,8 +14,6 @@
 
 void Player::Action()
 {
-	if (m_camera.lock()->GetCameraType() == GameCamera::CameraType::FixedType)return;
-
 	if (m_NextState != nullptr)
 	{
 		m_state = m_NextState;
@@ -27,29 +25,9 @@ void Player::Action()
 
 void Player::PostUpdate()
 {
-	if (SceneManager::Instance().GetEnemyList().size() == 0 &&
-		m_camera.lock()->GetCameraType() != GameCamera::CameraType::FixedType)
+	if (m_camera.lock()->GetCameraType() == GameCamera::CameraType::PlayerType)
 	{
-		KdCollider::RayInfo rayInfo;
-		rayInfo.m_pos = m_pos;
-		float LitleUP = 1.0f;
-		rayInfo.m_pos.y += LitleUP;
-		rayInfo.m_dir = Math::Vector3::Down;
-		rayInfo.m_range = m_gravity + LitleUP;
-		rayInfo.m_type = KdCollider::TypeEvent;
-
-		//デバッグ用
-		Math::Color color = { 1,1,1,1 };
-		//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
-
-		std::list<KdCollider::CollisionResult> retRayList;
-		for (auto& ret : SceneManager::Instance().GetObjList())
-		{
-			if (ret->Intersects(rayInfo, &retRayList))
-			{
-				SceneManager::Instance().GetStageManager()->Clear();
-			}
-		}
+		NextStageCheck();
 	}
 
 	CharacterBase::PostUpdate();
@@ -100,4 +78,32 @@ void Player::CrushingAction()
 {
 	CharacterBase::CrushingAction();
 	if (m_dossolve >= 1.0f)m_dossolve = 1.0f;
+}
+
+void Player::NextStageCheck()
+{
+	if (SceneManager::Instance().GetEnemyList().size() == 0 &&
+		m_camera.lock()->GetCameraType() == GameCamera::CameraType::PlayerType)
+	{
+		KdCollider::RayInfo rayInfo;
+		rayInfo.m_pos = m_pos;
+		float LitleUP = 1.0f;
+		rayInfo.m_pos.y += LitleUP;
+		rayInfo.m_dir = Math::Vector3::Down;
+		rayInfo.m_range = m_gravity + LitleUP;
+		rayInfo.m_type = KdCollider::TypeEvent;
+
+		//デバッグ用
+		Math::Color color = { 1,1,1,1 };
+		//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
+
+		std::list<KdCollider::CollisionResult> retRayList;
+		for (auto& ret : SceneManager::Instance().GetObjList())
+		{
+			if (ret->Intersects(rayInfo, &retRayList))
+			{
+				SceneManager::Instance().GetStageManager()->NextStage();
+			}
+		}
+	}
 }

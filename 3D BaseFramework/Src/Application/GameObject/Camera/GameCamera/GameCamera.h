@@ -3,6 +3,7 @@
 
 class GameCamera_ConText;
 class GameCamera_State;
+class MagicPolygon;
 
 class GameCamera :public CameraBase,public std::enable_shared_from_this<GameCamera>
 {
@@ -30,7 +31,7 @@ public:
 	void SetDegAngList(Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _clear);
 	void SetPosList(Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _clear);
 	void SetViewAngList(float _player, float _fixed, float _clear);
-	void SetFixedTarget(std::shared_ptr<KdGameObject> _Obj) { m_FixedTarget = _Obj; }
+	void SetFixedTarget(std::shared_ptr<MagicPolygon> _Obj) { m_FixedTarget = _Obj; }
 	void SetNextState(std::shared_ptr<GameCamera_State> _state) { m_NextState = _state; }
 	void SetCameraType(UINT _cameraType) { m_CameraType = _cameraType; }
 
@@ -41,7 +42,7 @@ public:
 	const UINT GetCameraType()const { return m_CameraType; }
 	const std::shared_ptr<GameCamera_ConText> GetConText()const { return m_conText; }
 	const POINT GetFixMousePos()const { return m_FixMousePos; }
-	const std::shared_ptr<KdGameObject> GetFixedTarget()const { return m_FixedTarget; }
+	const std::shared_ptr<MagicPolygon> GetFixedTarget()const { return m_FixedTarget; }
 	const Math::Matrix GetRotationMatrix()const override
 	{
 		return Math::Matrix::CreateFromYawPitchRoll(
@@ -62,13 +63,13 @@ public:
 	}
 
 private:
-	std::shared_ptr<GameCamera_ConText> m_conText = nullptr;
+	std::shared_ptr<GameCamera_ConText> m_conText   = nullptr;
 	std::weak_ptr<GameCamera_State>     m_state;
-	std::shared_ptr<GameCamera_State>   m_NextState;
+	std::shared_ptr<GameCamera_State>   m_NextState = nullptr;
 
 	UINT                           m_CameraType = CameraType::PlayerType;
 	std::vector<Math::Vector3>     m_PosList;
 	std::vector<Math::Vector3>     m_DegAngList;
 	std::vector<float>             m_ViewAngList;
-	std::shared_ptr<KdGameObject> m_FixedTarget;
+	std::shared_ptr<MagicPolygon>  m_FixedTarget;
 };

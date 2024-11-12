@@ -8,8 +8,6 @@
 #include"../../../Enemy/EnemyBase.h"
 #include"../../../Action/Enemy/Enemy_ConText.h"
 #include"../../../../Camera/GameCamera/GameCamera.h"
-#include"../../../../Camera/GameCamera/GameCamera_ConText.h"
-#include"../../../../Camera/GameCamera/GameCamera_State.h"
 
 void Player_Counter::Start()
 {

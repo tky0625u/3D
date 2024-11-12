@@ -14,7 +14,7 @@
 void GameScene::Event()
 {
 	m_ObjManager->DeleteEnemyList();
-	m_StageManager->WaveCheck();
+	if (SceneManager::Instance().GetEnemyList().size() == 0)m_StageManager->WaveCheck();
 
 	KdShaderManager::Instance().WorkAmbientController().SetDirLight(Math::Vector3{ 0.5f,-1.0f,0.5f }, Math::Vector3{ 1.5f,1.5f,1.3f });
 }

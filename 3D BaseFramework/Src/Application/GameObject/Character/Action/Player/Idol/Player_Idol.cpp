@@ -1,4 +1,7 @@
 ﻿#include "Player_Idol.h"
+#include"../../../../../Scene/SceneManager.h"
+#include"../../../../ObjectManager.h"
+#include"../../../../StageManager.h"
 #include"../../../Player/Player.h"
 #include"../Player_ConText.h"
 

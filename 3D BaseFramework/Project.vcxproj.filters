@@ -265,6 +265,12 @@
     <Filter Include="Src\Application\GameObject\Character\Action\Player\Crushing">
       <UniqueIdentifier>{6e6b4405-85a2-45cd-8a54-7e4cb0747e5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\Stage\MagicPolygon\Normal">
+      <UniqueIdentifier>{60ea4359-35c8-4165-b2b3-12e22fced7c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Stage\MagicPolygon\Next">
+      <UniqueIdentifier>{8fce30fd-bd55-4560-ba13-a79ca82dfe49}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -633,6 +639,18 @@
     <ClInclude Include="Src\Application\GameObject\StageManager.h">
       <Filter>Src\Application\GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Stage\MagicPolygon\MagicPolygon_ConText.h">
+      <Filter>Src\Application\GameObject\Stage\MagicPolygon</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Stage\MagicPolygon\MagicPolygon_State.h">
+      <Filter>Src\Application\GameObject\Stage\MagicPolygon</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Stage\MagicPolygon\Normal\MagicPolygon_Normal.h">
+      <Filter>Src\Application\GameObject\Stage\MagicPolygon\Normal</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Stage\MagicPolygon\Next\MagicPolygon_Next.h">
+      <Filter>Src\Application\GameObject\Stage\MagicPolygon\Next</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -965,6 +983,15 @@
     <ClCompile Include="Src\Application\GameObject\StateManager.cpp" />
     <ClCompile Include="Src\Application\GameObject\StageManager.cpp">
       <Filter>Src\Application\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Stage\MagicPolygon\MagicPolygon_State.cpp">
+      <Filter>Src\Application\GameObject\Stage\MagicPolygon</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Stage\MagicPolygon\Normal\MagicPolygon_Normal.cpp">
+      <Filter>Src\Application\GameObject\Stage\MagicPolygon\Normal</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Stage\MagicPolygon\Next\MagicPolygon_Next.cpp">
+      <Filter>Src\Application\GameObject\Stage\MagicPolygon\Next</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -4,36 +4,21 @@
 #include"../Circle/Circle.h"
 #include"../../Camera/GameCamera/GameCamera.h"
 #include"../../Camera/GameCamera/GameCamera_ConText.h"
+#include"MagicPolygon_ConText.h"
+#include"MagicPolygon_State.h"
+#include"Normal/MagicPolygon_Normal.h"
 
 void MagicPolygon::Update()
 {
 	if (!SceneManager::Instance().m_stop)
 	{
-		if (SceneManager::Instance().GetEnemyList().size() == 0 && SceneManager::Instance().GetStageManager()->IsWaveMax())
+		if (m_NextState)
 		{
-			if (!m_rightFlg)
-			{
-				m_camera.lock()->GetConText()->FixedCamera();
-				KdEffekseerManager::GetInstance().Play("Circle/Circle.efkefc", m_mWorld.Translation(), m_size, 1.0f, false);
-				m_rightFlg = true;
-			}
-			m_angle.y += 0.1f;
-			if (m_angle.y > 360.0f)m_angle.y -= 360.0f;
-			if (m_rgb < 1.0f)m_rgb += 0.01f;
-			else
-			{
-				if (m_camera.lock()->GetCameraType() == GameCamera::CameraType::FixedType)
-				{
-					KdEffekseerManager::GetInstance().StopEffect("Circle/Circle.efkefc");
-					m_camera.lock()->GetConText()->PlayerCamera();
-				}
-			}
+			m_conText->SetState(m_NextState);
+			m_state = m_NextState;
+			m_NextState.reset();
 		}
-		else
-		{
-			m_rgb = 0.0f;
-			m_rightFlg = false;
-		}
+		m_state.lock()->Update();
 
 		m_color = { m_rgb,m_rgb ,m_rgb ,1 };
 	}
@@ -66,4 +51,10 @@ void MagicPolygon::Init()
 	m_color = { m_rgb,m_rgb ,m_rgb ,1 };
 
 	m_angle = Math::Vector3::Zero;
+
+	std::shared_ptr<MagicPolygon_Normal> _normal = std::make_shared<MagicPolygon_Normal>();
+	m_conText = std::make_shared<MagicPolygon_ConText>(_normal);
+	m_state = _normal;
+	m_state.lock()->SetTarget(shared_from_this());
+	
 }

@@ -15,6 +15,7 @@
 #include"Stage/Circle/Circle.h"
 //魔法陣
 #include"Stage/MagicPolygon/MagicPolygon.h"
+#include"Stage/MagicPolygon/MagicPolygon_ConText.h"
 //壁
 #include"Stage/Wall/Wall.h"
 //スカイボックス
@@ -25,6 +26,7 @@
 #include"Weapon/Shield/Shield.h"
 //プレイヤー
 #include"Character/Player/Player.h"
+#include"Character/Action/Player/Player_ConText.h"
 //ゲームカメラ
 #include"Camera/GameCamera/GameCamera.h"
 //骨
@@ -106,6 +108,93 @@ void ObjectManager::SlowChange()
 		m_slowFlg = true;
 		m_slow = 0.5f;
 	}
+}
+
+void ObjectManager::NextStageLiberation()
+{
+	m_magic.lock()->GetConText()->Next();
+	m_camera.lock()->GetConText()->FixedCamera();
+}
+
+void ObjectManager::GameClear()
+{
+	m_player.lock()->GetConText()->Idol();
+	m_camera.lock()->GetConText()->ClearCamera();
+}
+
+void ObjectManager::CreateStage()
+{
+	//jsonファイル
+	std::string fileName = ("Asset/Json/") + m_nowScene + ("/Object/Object.json");
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	int _stageNum = 1;
+	for (auto& stage : _json["Ground"])
+	{
+		if (SceneManager::Instance().GetStageManager()->GetnowStage() != _stageNum)
+		{
+			_stageNum++;
+			continue;
+		}
+		Math::Vector3 _pos = Math::Vector3::Zero;
+		_pos.x = stage["PosX"];
+		_pos.y = stage["PosY"];
+		_pos.z = stage["PosZ"];
+
+		float _size = 0.0f;
+		_size = stage["Size"];
+
+		Math::Vector3 _angle = Math::Vector3::Zero;
+		_angle.y = stage["Angle"];
+
+		std::string _name;
+		_name = stage["Name"];
+
+		if (!m_ground.expired())
+		{
+			m_ground.lock()->SetPos(_pos);
+			m_ground.lock()->SetSize(_size);
+			m_ground.lock()->SetAngle(_angle);
+		}
+
+		break;
+	}
+
+	Math::Matrix _Scale;
+	Math::Matrix _Rot;
+	Math::Matrix _Trans;
+
+	_Scale = Math::Matrix::CreateScale(m_ground.lock()->GetSize());
+	_Rot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_ground.lock()->GetAngle().y));
+	_Trans = Math::Matrix::CreateTranslation(m_ground.lock()->GetPos());
+	Math::Matrix _GroundMat = _Scale * _Rot * _Trans;
+	m_ground.lock()->SetMatrix(_GroundMat);
+
+	_Scale = Math::Matrix::CreateScale(m_circle.lock()->GetSize());
+	_Rot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_circle.lock()->GetAngle().y));
+	_Trans = Math::Matrix::CreateTranslation(m_circle.lock()->GetPos());
+	Math::Matrix _CircleMat = _Scale * _Rot * _Trans * _GroundMat;
+	m_circle.lock()->SetMatrix(_CircleMat);
+
+	_Scale = Math::Matrix::CreateScale(m_magic.lock()->GetSize());
+	_Rot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_magic.lock()->GetAngle().y));
+	_Trans = Math::Matrix::CreateTranslation(m_magic.lock()->GetPos());
+	Math::Matrix _MagicMat = _Scale * _Rot * _Trans * _CircleMat;
+	m_magic.lock()->SetMatrix(_MagicMat);
+
+	ifs.close();
+
+	std::string _filePath = ("Asset/Json/Game/Enemy/Stage") + (std::to_string(SceneManager::Instance().GetStageManager()->GetnowStage())) + (".json");
+	SceneManager::Instance().GetObjectManager()->SetEnemyParam(_filePath);
+
+	m_player.lock()->SetPos(m_ground.lock()->GetPos());
+	m_magic.lock()->GetConText()->Normal();
 }
 
 void ObjectManager::DebugObject()
@@ -1817,14 +1906,13 @@ void ObjectManager::SetObjectParam()
 			{
 				circle = std::make_shared<Circle>();
 				m_circle = circle;
-				if (m_camera.expired() == false)m_camera.lock()->SetFixedTarget(circle);
 				obj = circle;
 			}
 			if (_name == "Magic")
 			{
 				magic = std::make_shared<MagicPolygon>();
-				magic->SetCamera(m_camera.lock());
 				m_magic = magic;
+				if (m_camera.expired() == false)m_camera.lock()->SetFixedTarget(magic);
 				obj = magic;
 			}
 			if (_name == "Wall")
@@ -1862,80 +1950,6 @@ void ObjectManager::SetObjectParam()
 
 	if (circle && ground)circle->SetGround(ground);
 	if (magic && circle)magic->SetCircle(circle);
-}
-
-void ObjectManager::SetStageParam()
-{
-	//jsonファイル
-	std::string fileName = ("Asset/Json/") + m_nowScene + ("/Object/Object.json");
-
-	std::ifstream ifs(fileName.c_str());
-	nlohmann::json _json;
-	if (ifs.is_open())
-	{
-		ifs >> _json;
-	}
-
-	int _stageNum = 1;
-	for (auto& stage : _json["Ground"])
-	{
-		if (SceneManager::Instance().GetStageManager()->GetnowStage() != _stageNum)
-		{
-			_stageNum++;
-			continue;
-		}
-		Math::Vector3 _pos = Math::Vector3::Zero;
-		_pos.x = stage["PosX"];
-		_pos.y = stage["PosY"];
-		_pos.z = stage["PosZ"];
-
-		float _size = 0.0f;
-		_size = stage["Size"];
-
-		Math::Vector3 _angle = Math::Vector3::Zero;
-		_angle.y = stage["Angle"];
-
-		std::string _name;
-		_name = stage["Name"];
-
-		if (!m_ground.expired())
-		{
-			m_ground.lock()->SetPos(_pos);
-			m_ground.lock()->SetSize(_size);
-			m_ground.lock()->SetAngle(_angle);
-		}
-
-		break;
-	}
-
-	Math::Matrix _Scale;
-	Math::Matrix _Rot;
-	Math::Matrix _Trans;
-
-	_Scale = Math::Matrix::CreateScale(m_ground.lock()->GetSize());
-	_Rot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_ground.lock()->GetAngle().y));
-	_Trans = Math::Matrix::CreateTranslation(m_ground.lock()->GetPos());
-	Math::Matrix _GroundMat = _Scale * _Rot * _Trans;
-	m_ground.lock()->SetMatrix(_GroundMat);
-
-	_Scale = Math::Matrix::CreateScale(m_circle.lock()->GetSize());
-	_Rot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_circle.lock()->GetAngle().y));
-	_Trans = Math::Matrix::CreateTranslation(m_circle.lock()->GetPos());
-	Math::Matrix _CircleMat = _Scale * _Rot * _Trans * _GroundMat;
-	m_circle.lock()->SetMatrix(_CircleMat);
-
-	_Scale = Math::Matrix::CreateScale(m_magic.lock()->GetSize());
-	_Rot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_magic.lock()->GetAngle().y));
-	_Trans = Math::Matrix::CreateTranslation(m_magic.lock()->GetPos());
-	Math::Matrix _MagicMat = _Scale * _Rot * _Trans * _CircleMat;
-	m_magic.lock()->SetMatrix(_MagicMat);
-
-	ifs.close();
-
-	m_player.lock()->SetPos(m_ground.lock()->GetPos());
-
-	std::string _filePath = ("Asset/Json/Game/Enemy/Stage") + (std::to_string(SceneManager::Instance().GetStageManager()->GetnowStage())) + (".json");
-	SceneManager::Instance().GetObjectManager()->SetEnemyParam(_filePath);
 }
 
 void ObjectManager::SetPlayerParam()
