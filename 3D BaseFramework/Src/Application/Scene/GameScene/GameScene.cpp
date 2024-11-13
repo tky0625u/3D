@@ -8,13 +8,29 @@
 #include"../../GameObject/ObjectManager.h"
 #include"../../GameObject/StageManager.h"
 #include"../../GameObject/Loading/Loading.h"
-#include"../../GameObject/Camera/TPSCamera/TPSCamera.h"
 #include"../../GameObject/Character/Enemy/EnemyManager.h"
 
 void GameScene::Event()
 {
+	if (SceneManager::Instance().GetBlackAlphaFlg())
+	{
+		if (SceneManager::Instance().GetBlackAlpha() >= 1.0f)
+		{
+			SceneManager::Instance().SetNextScene(SceneManager::SceneType::Title);
+		}
+		return;
+	}
+
 	m_ObjManager->DeleteEnemyList();
 	if (SceneManager::Instance().GetEnemyList().size() == 0)m_StageManager->WaveCheck();
+
+	if (m_StageManager->GetnowStage() == m_StageManager->GetMaxStage() && SceneManager::Instance().GetEnemyList().size() == 0)
+	{
+		if (GetAsyncKeyState(VK_RETURN) & 0x8000)
+		{
+			SceneManager::Instance().BlackAlphaChange(0.01f, true);
+		}
+	}
 
 	KdShaderManager::Instance().WorkAmbientController().SetDirLight(Math::Vector3{ 0.5f,-1.0f,0.5f }, Math::Vector3{ 1.5f,1.5f,1.3f });
 }
@@ -91,7 +107,7 @@ void GameScene::Init()
 	KdEffekseerManager::GetInstance().Create(1280, 720);
 	KdAudioManager::Instance().Play("Asset/Sound/Game/BGM/orchestral_mission.WAV", 0.01f, true);
 
-	SceneManager::Instance().BlackAlphaChange(0.01f);
+	SceneManager::Instance().BlackAlphaChange(0.01f, false);
 }
 
 void GameScene::DebugObject()

@@ -112,6 +112,7 @@ void ObjectManager::SlowChange()
 
 void ObjectManager::NextStageLiberation()
 {
+	m_player.lock()->GetConText()->Idol();
 	m_magic.lock()->GetConText()->Next();
 	m_camera.lock()->GetConText()->FixedCamera();
 }

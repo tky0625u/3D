@@ -70,10 +70,9 @@ public :
 	}
 
 
-	void BlackAlphaChange(float _change)
+	void BlackAlphaChange(float _change, bool _flg)
 	{
-		if (m_blackChangeFlg)m_blackChangeFlg = false;
-		else { m_blackChangeFlg = true; }
+		m_blackChangeFlg = _flg;
 
 		m_blackChange = _change;
 	}

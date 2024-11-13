@@ -44,7 +44,7 @@ void Cursor::Update()
 			if (m_pos == m_game.lock()->GetVector2Pos())
 			{
 				KdAudioManager::Instance().Play("Asset/Sound/Title/SE/決定ボタンを押す33.WAV", 0.05f, false);
-				SceneManager::Instance().BlackAlphaChange(0.01f);
+				SceneManager::Instance().BlackAlphaChange(0.01f, true);
 			}
 			else if (m_pos == m_exit.lock()->GetVector2Pos())
 			{

@@ -42,4 +42,6 @@ void TitleScene::Init()
 	SceneManager::Instance().GetCamera()->WorkCamera()->SetFocus(8, 5, 600);
 
 	KdAudioManager::Instance().Play("Asset/Sound/Title/BGM/Formidable-Enemy.WAV", 0.01f, true);
+
+	SceneManager::Instance().BlackAlphaChange(0.01f, false);
 }
