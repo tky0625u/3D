@@ -9,8 +9,9 @@ public:
 	MagicPolygon_ConText(std::shared_ptr<MagicPolygon_State> _state) :m_state(_state) {};
 	~MagicPolygon_ConText() {};
 
-	void Normal() { m_state->Normal(); }
-	void Next()   { m_state->Next(); }
+	void Normal()   { m_state->Normal(); }
+	void Next()     { m_state->Next(); }
+	void Teleport() { m_state->Teleport(); }
 
 	void SetState(std::shared_ptr<MagicPolygon_State> _state) { m_state = _state; }
 

@@ -123,6 +123,11 @@ void ObjectManager::GameClear()
 	m_camera.lock()->GetConText()->ClearCamera();
 }
 
+void ObjectManager::Teleport()
+{
+	m_magic.lock()->GetConText()->Teleport();
+}
+
 void ObjectManager::CreateStage(std::shared_ptr<StageManager> _stage)
 {
 	//jsonファイル
@@ -195,6 +200,8 @@ void ObjectManager::CreateStage(std::shared_ptr<StageManager> _stage)
 	SetEnemyParam(_filePath, _stage);
 
 	m_player.lock()->SetPos(m_ground.lock()->GetPos());
+	m_player.lock()->SetTeleportFlg(false);
+
 	m_magic.lock()->GetConText()->Normal();
 }
 

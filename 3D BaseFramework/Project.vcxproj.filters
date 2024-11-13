@@ -271,6 +271,12 @@
     <Filter Include="Src\Application\GameObject\Stage\MagicPolygon\Next">
       <UniqueIdentifier>{8fce30fd-bd55-4560-ba13-a79ca82dfe49}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\UI\Player\Teleport">
+      <UniqueIdentifier>{2c0df679-32d7-4eec-bd37-139c32a93e7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Stage\MagicPolygon\Teleport">
+      <UniqueIdentifier>{27d8307f-79a0-49e2-b176-9a566c43df28}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -651,6 +657,12 @@
     <ClInclude Include="Src\Application\GameObject\Stage\MagicPolygon\Next\MagicPolygon_Next.h">
       <Filter>Src\Application\GameObject\Stage\MagicPolygon\Next</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\UI\Player\Teleport\Teleport.h">
+      <Filter>Src\Application\GameObject\UI\Player\Teleport</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Stage\MagicPolygon\Teleport\MagicPolygon_Teleport.h">
+      <Filter>Src\Application\GameObject\Stage\MagicPolygon\Teleport</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -991,6 +1003,12 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Stage\MagicPolygon\Next\MagicPolygon_Next.cpp">
       <Filter>Src\Application\GameObject\Stage\MagicPolygon\Next</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\UI\Player\Teleport\Teleport.cpp">
+      <Filter>Src\Application\GameObject\UI\Player\Teleport</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Stage\MagicPolygon\Teleport\MagicPolygon_Teleport.cpp">
+      <Filter>Src\Application\GameObject\Stage\MagicPolygon\Teleport</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

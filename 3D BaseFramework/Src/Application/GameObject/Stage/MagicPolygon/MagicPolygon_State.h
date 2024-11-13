@@ -39,6 +39,7 @@ public:
 
 	void Normal();
 	void Next();
+	void Teleport();
 
 	void SetTarget(std::shared_ptr<MagicPolygon> _target) { m_target = _target; }
 

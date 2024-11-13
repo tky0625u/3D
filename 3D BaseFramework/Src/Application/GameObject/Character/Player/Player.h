@@ -31,6 +31,7 @@ public:
 	Player()                  {}
 	~Player()        override {};
 
+	void Update()    override;
 	void Action()    override;
 	void PostUpdate()override;
 	void Init()      override;
@@ -52,6 +53,7 @@ public:
 	void SetStaminaRecoveryTime(int _time) { m_StaminaRecoveryTime = _time; }
 	void SetParryID(UINT _id) { m_ParryID = _id; }
 	void SetStageManager(std::shared_ptr<StageManager> _stage) { m_StageManager = _stage; }
+	void SetTeleportFlg(bool _teleport) { m_TeleportFlg = _teleport; }
 
 	std::shared_ptr<Player_ActionConText>GetConText()const { return m_context; }
 	int GetMaxStamina()const { return m_MaxStamina; }
@@ -61,6 +63,7 @@ public:
 	const Math::Matrix& GetEnemyAttackPointMat() const { return (m_model->FindWorkNode("EnemyAttackPoint")->m_worldTransform) * m_mWorld; }
 	const UINT& GetActionType()const { return m_actionType; }
 	const std::weak_ptr<ObjectManager>& GetObjectManager()const { return m_ObjectManager; }
+	const bool& GetTeleportFlg()const { return m_TeleportFlg; }
 
 private:
 	std::weak_ptr<StageManager>           m_StageManager;
@@ -71,6 +74,7 @@ private:
 	float                                 m_FocusBackRange = 2000.0f;
 	int                                   m_MaxStamina     = 0;
 	int                                   m_StaminaRecoveryTime = 0;
+	bool                                  m_TeleportFlg    = false;
 	UINT                                  m_ParryID = -1;
 	UINT                                  m_actionType = Action::IdolType;
 };

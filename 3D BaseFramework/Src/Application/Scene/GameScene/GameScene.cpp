@@ -16,7 +16,14 @@ void GameScene::Event()
 	{
 		if (SceneManager::Instance().GetBlackAlpha() >= 1.0f)
 		{
-			SceneManager::Instance().SetNextScene(SceneManager::SceneType::Title);
+			if (m_StageManager->GetnowStage() == m_StageManager->GetMaxStage())
+			{
+				SceneManager::Instance().SetNextScene(SceneManager::SceneType::Title);
+			}
+			else
+			{
+				m_StageManager->NextStage();
+			}
 		}
 		return;
 	}

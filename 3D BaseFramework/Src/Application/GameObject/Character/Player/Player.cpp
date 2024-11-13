@@ -12,6 +12,16 @@
 #include"../../UI/Player/Stamina/Player_Stamina.h"
 #include"../../UI/Player/LockON/LockON.h"
 #include"../../UI/Player/Floor/Floor.h"
+#include"../../UI/Player/Teleport/Teleport.h"
+
+void Player::Update()
+{
+	if (m_TeleportFlg)
+	{
+		if (GetAsyncKeyState('E') & 0x8000)m_ObjectManager.lock()->Teleport();
+	}
+	CharacterBase::Update();
+}
 
 void Player::Action()
 {
@@ -70,6 +80,11 @@ void Player::Init()
 	_floor->Init();
 	SceneManager::Instance().AddPlayerUI(_floor);
 
+	std::shared_ptr<Teleport> _teleport = std::make_shared<Teleport>();
+	_teleport->SetPlayer(shared_from_this());
+	_teleport->Init();
+	SceneManager::Instance().AddPlayerUI(_teleport);
+
 	m_pCollider = std::make_unique<KdCollider>();
 	m_pCollider->RegisterCollisionShape("Player", m_model, KdCollider::TypeBump | KdCollider::TypeDamage | KdCollider::TypeEvent);
 
@@ -104,8 +119,12 @@ void Player::NextStageCheck()
 		{
 			if (ret->Intersects(rayInfo, &retRayList))
 			{
-				m_StageManager.lock()->NextStage();
+				/*m_StageManager.lock()->NextStage();*/
+				m_TeleportFlg = true;
+				return;
 			}
 		}
 	}
+
+	m_TeleportFlg = false;
 }

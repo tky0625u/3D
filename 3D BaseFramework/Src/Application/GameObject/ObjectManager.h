@@ -28,6 +28,7 @@ public:
 	void SlowChange();
 	void NextStageLiberation();
 	void GameClear();
+	void Teleport();
 	void CreateStage(std::shared_ptr<StageManager> _stage);
 
 	void DebugObject(std::shared_ptr<StageManager> _stage = nullptr);
