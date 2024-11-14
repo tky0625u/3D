@@ -194,6 +194,7 @@
     <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Player_ConText.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Roll\Player_Roll.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Run\Player_Run.h" />
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Teleport\Player_Teleport.h" />
     <ClInclude Include="Src\Application\GameObject\Character\CharacterBase.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\Bone\Bone.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\EnemyBase.h" />
@@ -314,6 +315,7 @@
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Player_ActionState.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Roll\Player_Roll.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Run\Player_Run.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Teleport\Player_Teleport.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\CharacterBase.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\Bone\Bone.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\EnemyBase.cpp" />

@@ -30,6 +30,7 @@ public:
 	virtual void Roll();                                                             // 回避
 	virtual void Hit(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr);  // 被弾
 	virtual void Crushing();                                                         // 撃破
+	virtual void Teleport();                                                         // テレポート
 
 protected:
 	std::weak_ptr<Player> m_target;

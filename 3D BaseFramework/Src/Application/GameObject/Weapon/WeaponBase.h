@@ -25,6 +25,6 @@ protected:
 	std::weak_ptr<CharacterBase> m_target;
 	std::shared_ptr<KdModelWork> m_spModel  = nullptr;
 	std::string                  m_modelPath;
-	float                        m_dossolve = 0.0f;
+	float                        m_dissolve = 0.0f;
 
 };

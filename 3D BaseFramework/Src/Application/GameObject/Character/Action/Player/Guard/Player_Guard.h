@@ -16,7 +16,6 @@ public:
 
 	void GuardRotate(Math::Vector3 _pos);
 
-	void SetFlow(Flow _flow) { m_flow = _flow; }
 	void SetGuardTime(int _guardTime) { m_guardTime = _guardTime; }
 
 	void Hit(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)override; //被弾

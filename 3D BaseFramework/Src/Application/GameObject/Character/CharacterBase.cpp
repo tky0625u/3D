@@ -151,7 +151,7 @@ void CharacterBase::PostUpdate()
 
 void CharacterBase::GenerateDepthMapFromLight()
 {
-	KdShaderManager::Instance().m_StandardShader.SetDissolve(m_dossolve);
+	KdShaderManager::Instance().m_StandardShader.SetDissolve(m_dissolve);
 
 	KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
 }
@@ -159,7 +159,7 @@ void CharacterBase::GenerateDepthMapFromLight()
 void CharacterBase::DrawLit()
 {
 	Math::Vector3 _color = { 1,0.5f,0 };
-	KdShaderManager::Instance().m_StandardShader.SetDissolve(m_dossolve, nullptr, &_color);
+	KdShaderManager::Instance().m_StandardShader.SetDissolve(m_dissolve, nullptr, &_color);
 
 	//オブジェクトを裏返す==========================================================
 	KdShaderManager::Instance().ChangeRasterizerState(KdRasterizerState::CullNone);
@@ -183,7 +183,7 @@ void CharacterBase::Init()
 
 void CharacterBase::CrushingAction()
 {
-	m_dossolve += 0.01f;
+	m_dissolve += 0.01f;
 }
 
 void CharacterBase::Hit(int _damege)

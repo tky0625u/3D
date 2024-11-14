@@ -19,6 +19,7 @@
 #include"Counter/Player_Counter.h"
 #include"Hit/Player_Hit.h"
 #include"Crushing/Player_Crushing.h"
+#include"Teleport/Player_Teleport.h"
 
 void Player_ActionState::AttackDamage()
 {
@@ -316,4 +317,12 @@ void Player_ActionState::Crushing()
 	if (m_target.expired())return;
 	crushing->SetTarget(m_target.lock());
 	m_target.lock()->SetNextState(crushing, Player::Action::CrushingType);
+}
+
+void Player_ActionState::Teleport()
+{
+	std::shared_ptr<Player_Teleport> teleport = std::make_shared<Player_Teleport>();
+	if (m_target.expired())return;
+	teleport->SetTarget(m_target.lock());
+	m_target.lock()->SetNextState(teleport, Player::Action::TeleportType);
 }

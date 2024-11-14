@@ -25,7 +25,8 @@ public:
 		ParryType,
 		CounterType,
 		HitType,
-		CrushingType
+		CrushingType,
+		TeleportType
 	};
 
 	Player()                  {}

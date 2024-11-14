@@ -40,6 +40,7 @@ public:
 	void Roll()                                                            { m_state->Roll(); }               // 回避
 	void Hit(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr) { m_state->Hit(_damage, _enemy); } // 被弾
 	void Crushing()                                                        { m_state->Crushing(); }           // 撃破
+	void Teleport()                                                        { m_state->Teleport(); }           // テレポート
 
 private:
 	std::shared_ptr<Player_ActionState> m_state;

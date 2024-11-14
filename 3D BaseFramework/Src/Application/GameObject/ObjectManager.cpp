@@ -125,7 +125,8 @@ void ObjectManager::GameClear()
 
 void ObjectManager::Teleport()
 {
-	m_magic.lock()->GetConText()->Teleport();
+	//m_magic.lock()->GetConText()->Teleport();
+	m_player.lock()->GetConText()->Teleport();
 }
 
 void ObjectManager::CreateStage(std::shared_ptr<StageManager> _stage)
@@ -199,6 +200,7 @@ void ObjectManager::CreateStage(std::shared_ptr<StageManager> _stage)
 	std::string _filePath = ("Asset/Json/Game/Enemy/Stage") + (std::to_string(_stage->GetnowStage())) + (".json");
 	SetEnemyParam(_filePath, _stage);
 
+	m_player.lock()->GetConText()->GetState()->SetFlow(ActionBase::Flow::EndType);
 	m_player.lock()->SetPos(m_ground.lock()->GetPos());
 	m_player.lock()->SetTeleportFlg(false);
 

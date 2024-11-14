@@ -12,5 +12,5 @@ public:
 	void End()   override;
 
 private:
-	int a = 0;
+	
 };

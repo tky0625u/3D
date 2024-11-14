@@ -97,6 +97,7 @@ void BaseScene::Draw()
 		if (m_player)m_player->DrawUnLit();
 		for (auto& obj    : m_ObjectList)obj   ->DrawUnLit();
 		if (m_EnemyManager)m_EnemyManager      ->DrawUnLit();
+		for (auto& weapon : m_WeaponList)weapon->DrawUnLit();
 		if (m_camera)m_camera->DrawUnLit();
 	}
 	KdShaderManager::Instance().m_StandardShader.EndUnLit();

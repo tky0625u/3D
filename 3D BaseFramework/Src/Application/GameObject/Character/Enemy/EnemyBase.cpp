@@ -57,7 +57,7 @@ void EnemyBase::CrushingAction()
 {
 	CharacterBase::CrushingAction();
 
-	if (m_dossolve >= 1.0f)
+	if (m_dissolve >= 1.0f)
 	{
 		m_isExpired = true;
 	}

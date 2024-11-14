@@ -277,6 +277,9 @@
     <Filter Include="Src\Application\GameObject\Stage\MagicPolygon\Teleport">
       <UniqueIdentifier>{27d8307f-79a0-49e2-b176-9a566c43df28}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Player\Teleport">
+      <UniqueIdentifier>{ddbf7311-d7ba-4a3a-84ed-c9f32082310c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -663,6 +666,9 @@
     <ClInclude Include="Src\Application\GameObject\Stage\MagicPolygon\Teleport\MagicPolygon_Teleport.h">
       <Filter>Src\Application\GameObject\Stage\MagicPolygon\Teleport</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Teleport\Player_Teleport.h">
+      <Filter>Src\Application\GameObject\Character\Action\Player\Teleport</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -1009,6 +1015,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Stage\MagicPolygon\Teleport\MagicPolygon_Teleport.cpp">
       <Filter>Src\Application\GameObject\Stage\MagicPolygon\Teleport</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Teleport\Player_Teleport.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Player\Teleport</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

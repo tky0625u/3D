@@ -49,6 +49,7 @@ public:
 	void SetSword(std::shared_ptr<Sword> _sword) { m_sword = _sword; }
 	void SetInviTime(int _inviTime) { m_inviTime = _inviTime; }
 	void SetCamera(std::shared_ptr<GameCamera> a_camera) { m_camera = a_camera; }
+	void SetDissolve(float _dissolve) { m_dissolve = _dissolve; }
 
 	Param GetParam() { return m_param; }
 	bool GetIsAnimator() { return m_animator->IsAnimationEnd(); }
@@ -62,6 +63,7 @@ public:
 	const float GetAtkRange() const { return m_AtkRange; }
 	const Math::Matrix& GetHitModelMat()const { return m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(m_mWorld.Translation()));}
 	const std::weak_ptr<GameCamera>& GetCamera()const { return m_camera; }
+	const float& GetDissolve()const { return m_dissolve; }
 
 protected:
 	Param                        m_param;
@@ -79,7 +81,7 @@ protected:
 	float                        m_gravity         = 0.0f;
 	float                        m_animeSpeed      = 1.0f;
 	float                        m_MoveSpeed       = 0.0f;
-	float                        m_dossolve        = 0.0f;
+	float                        m_dissolve        = 0.0f;
 	float                        m_AtkRange = 0.0f; //攻撃範囲
 	const float                  m_SpeedCorrection = 0.2f;
 	const float                  m_gravityPow      = 0.1f;
