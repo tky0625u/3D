@@ -316,6 +316,7 @@ void Player_ActionState::Crushing()
 	std::shared_ptr<Player_Crushing> crushing = std::make_shared<Player_Crushing>();
 	if (m_target.expired())return;
 	crushing->SetTarget(m_target.lock());
+	crushing->SetObjManager(m_target.lock()->GetObjectManager().lock());
 	m_target.lock()->SetNextState(crushing, Player::Action::CrushingType);
 }
 

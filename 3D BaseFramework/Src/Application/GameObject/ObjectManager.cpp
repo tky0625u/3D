@@ -57,6 +57,8 @@
 #include"UI/Player/Teleport/Teleport.h"
 //敵HP
 #include"UI/Enemy/HP/Enemy_HP.h"
+//ゲームオーバー
+#include"UI/Player/GameOver/GameOver.h"
 
 void ObjectManager::SceneCheck()
 {
@@ -884,6 +886,41 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 						ImGui::TreePop();
 					}
 
+					if (ImGui::TreeNode("GameOver"))
+					{
+						if (ImGui::Button((const char*)u8"GameOver保存"))
+						{
+							GameOverWrite();
+						}
+
+						if (m_gameOver.expired() == false)
+						{
+							std::shared_ptr<GameOver> _over = m_gameOver.lock();
+
+							// 位置
+							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f", _over->GetVector2Pos().x, _over->GetVector2Pos().y);
+							Math::Vector2 _GameOverPos = _over->GetVector2Pos();
+							ImGui::SliderFloat("PosX", &_GameOverPos.x, -640, 640);
+							ImGui::SliderFloat("PosY", &_GameOverPos.y, -360, 360);
+
+							// 大きさ
+							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _over->GetSize());
+							float _GameOverSize = _over->GetSize();
+							ImGui::SliderFloat("Size", &_GameOverSize, 1, 100);
+
+							// アルファ値変化量
+							ImGui::Text((const char*)u8"　アルファ値変化量 　ChangeAlpha=%.2f", _over->GetAlphaChange());
+							float _GameOverAlphaChange = _over->GetAlphaChange();
+							ImGui::SliderFloat("AlphaChange", &_GameOverAlphaChange, 0.01, 1.00);
+
+							_over->SetPos(_GameOverPos);
+							_over->SetSize(_GameOverSize);
+							_over->SetChangeAlpha(_GameOverAlphaChange);
+						}
+
+						ImGui::TreePop();
+					}
+
 					ImGui::TreePop();
 				}
 				ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
@@ -1697,6 +1734,26 @@ void ObjectManager::TeleportWrite()
 	_json["Teleport"]["AlphaChange"] = m_teleport.lock()->GetChangeAlpha();
 
 	std::ofstream _file("Asset/Json/Game/UI/Player/Teleport/Teleport.json");
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
+	}
+}
+
+void ObjectManager::GameOverWrite()
+{
+	if (m_gameOver.expired())return;
+
+	nlohmann::json _json;
+
+	_json["GameOver"]["Name"] = "gameOver";
+	_json["GameOver"]["PosX"] = m_gameOver.lock()->GetVector2Pos().x;
+	_json["GameOver"]["PosY"] = m_gameOver.lock()->GetVector2Pos().y;
+	_json["GameOver"]["Size"] = m_gameOver.lock()->GetSize();
+	_json["GameOver"]["AlphaChange"] = m_gameOver.lock()->GetAlphaChange();
+
+	std::ofstream _file("Asset/Json/Game/UI/Player/GameOver/GameOver.json");
 	if (_file.is_open())
 	{
 		_file << _json.dump();
@@ -2610,6 +2667,51 @@ void ObjectManager::SetTeleportParam()
 
 		m_teleport = teleport;
 		SceneManager::Instance().AddPlayerUI(teleport);
+	}
+
+	ifs.close();
+}
+
+void ObjectManager::SetGameOverParam()
+{
+	if (!m_gameOver.expired())return;
+
+	//jsonファイル
+	std::string fileName = "Asset/Json/Game/UI/Player/GameOver/GameOver.json";
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& stage : _json)
+	{
+		Math::Vector2 _pos = Math::Vector2::Zero;
+		_pos.x = stage["PosX"];
+		_pos.y = stage["PosY"];
+
+		float _size = 1.0f;
+		_size = stage["Size"];
+
+		float _alphaChange = 0.0f;
+		_alphaChange = stage["AlphaChange"];
+
+		std::string _name;
+		_name = stage["Name"];
+		std::shared_ptr<GameOver> over = std::make_shared<GameOver>();
+
+		over->SetPos(_pos);
+		over->SetSize(_size);
+		over->SetChangeAlpha(_alphaChange);
+		over->SetName(_name);
+		over->SetID(m_id);
+		over->Init();
+		m_id++;
+
+		m_gameOver = over;
+		SceneManager::Instance().AddPlayerUI(over);
 	}
 
 	ifs.close();

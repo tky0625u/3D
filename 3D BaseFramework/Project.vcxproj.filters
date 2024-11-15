@@ -280,6 +280,9 @@
     <Filter Include="Src\Application\GameObject\Character\Action\Player\Teleport">
       <UniqueIdentifier>{ddbf7311-d7ba-4a3a-84ed-c9f32082310c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\UI\Player\GameOver">
+      <UniqueIdentifier>{52949f5a-c768-4fdb-ad67-a8892628cc71}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -669,6 +672,9 @@
     <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Teleport\Player_Teleport.h">
       <Filter>Src\Application\GameObject\Character\Action\Player\Teleport</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\UI\Player\GameOver\GameOver.h">
+      <Filter>Src\Application\GameObject\UI\Player\GameOver</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -1018,6 +1024,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Teleport\Player_Teleport.cpp">
       <Filter>Src\Application\GameObject\Character\Action\Player\Teleport</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\UI\Player\GameOver\GameOver.cpp">
+      <Filter>Src\Application\GameObject\UI\Player\GameOver</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

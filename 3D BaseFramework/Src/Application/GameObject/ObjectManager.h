@@ -20,6 +20,7 @@ class LockON;
 class Floor;
 class Teleport;
 class Enemy_HP;
+class GameOver;
 
 #include"../tinygltf/json.hpp"
 class ObjectManager :public std::enable_shared_from_this<ObjectManager>
@@ -52,6 +53,7 @@ public:
 	void LockONWrite();
 	void FloorWrite();
 	void TeleportWrite();
+	void GameOverWrite();
 	void EnemyWrite(int _stage, int _wave, std::string _fileName);
 	void EnemyHPWrite();
 	void SwordWrite(std::string _swordName, std::string _fileName);
@@ -73,6 +75,7 @@ public:
 	void SetLockONParam();
 	void SetFloorParam(std::shared_ptr<StageManager> _stage);
 	void SetTeleportParam();
+	void SetGameOverParam();
 	void SetWeaponParam(std::string _filePath, std::string _weaponName);
 	void SetEnemyParam(std::string _filePath = "none", std::shared_ptr<StageManager> _stage = nullptr);
 	void SetEnemyHPParam(std::shared_ptr<EnemyBase> _enemy);
@@ -115,6 +118,7 @@ private:
 	std::weak_ptr<LockON>                    m_lockON;
 	std::weak_ptr<Floor>                     m_floor;
 	std::weak_ptr<Teleport>                  m_teleport;
+	std::weak_ptr<GameOver>                  m_gameOver;
 	std::vector<std::weak_ptr<Enemy_HP>>     m_EnemyHPList;
 	UINT                                     m_id = 0;
 	float                                    m_slow = 1.0f;

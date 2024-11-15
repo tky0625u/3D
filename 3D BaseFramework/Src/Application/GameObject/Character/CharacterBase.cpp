@@ -183,7 +183,7 @@ void CharacterBase::Init()
 
 void CharacterBase::CrushingAction()
 {
-	m_dissolve += 0.01f;
+	if (m_dissolve < 1.0f)m_dissolve += 0.01f;
 }
 
 void CharacterBase::Hit(int _damege)

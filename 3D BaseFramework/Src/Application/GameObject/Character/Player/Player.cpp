@@ -63,7 +63,10 @@ void Player::Init()
 void Player::CrushingAction()
 {
 	CharacterBase::CrushingAction();
-	if (m_dissolve >= 1.0f)m_dissolve = 1.0f;
+	if (m_dissolve >= 1.0f)
+	{
+		m_dissolve = 1.0f;
+	}
 }
 
 void Player::NextStageCheck()

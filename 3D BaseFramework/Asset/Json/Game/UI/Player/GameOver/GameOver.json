@@ -1,0 +1,9 @@
+{
+	"GameOver": {
+		"Name": "GameOver",
+		"PosX": 0.0,
+		"PosY": 0.0,
+		"Size": 1.0,
+		"AlphaChange": 0.05
+	}
+}
