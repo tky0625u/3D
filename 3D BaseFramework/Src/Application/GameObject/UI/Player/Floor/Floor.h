@@ -14,6 +14,7 @@ public:
 	void Init()       override;
 
 	void SetStageManager(std::shared_ptr<StageManager> _stage) { m_StageManager = _stage; }
+	void SetPos(Math::Vector2 _pos);
 
 private:
 	std::weak_ptr<StageManager>m_StageManager;

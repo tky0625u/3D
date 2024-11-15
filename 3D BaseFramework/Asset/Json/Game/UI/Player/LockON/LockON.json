@@ -1,0 +1,10 @@
+{
+	"LockON": {
+		"Name": "LockON",
+		"PosX": 0.0,
+		"PosY": 0.0,
+		"Size": 5.0,
+		"SizeChange": 0.5,
+		"AlphaChange": 0.05
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"Teleport": {
+		"Name": "Teleport",
+		"PosX": 0.0,
+		"PosY": -300.0,
+		"Size": 1.0,
+		"AlphaChange": 0.05
+	}
+}

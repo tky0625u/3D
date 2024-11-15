@@ -25,13 +25,12 @@ void Player_HP::DrawSprite()
 {
 	for (int h = 0; h < HP::num; ++h)
 	{
-		KdShaderManager::Instance().m_spriteShader.DrawTex(m_pTex[h], (int)m_pos.x, (int)m_pos.y, (int)m_rect[h].width, (int)m_rect[h].height, &m_rect[h], &m_color, m_pivot);
+		KdShaderManager::Instance().m_spriteShader.DrawTex(m_pTex[h], (int)m_pos.x, (int)m_pos.y, (int)m_rect[h].width * m_size, (int)m_rect[h].height * m_size, &m_rect[h], &m_color, m_pivot);
 	}
 }
 
 void Player_HP::Init()
 {
-	m_pos = { -600.0f,340.0f };
 	m_pivot = { 0.0f,0.5f };
 	m_MaxWidth = 800;
 	m_color = { 1,1,1,1 };

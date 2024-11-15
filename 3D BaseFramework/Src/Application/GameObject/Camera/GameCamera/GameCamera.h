@@ -72,4 +72,7 @@ private:
 	std::vector<Math::Vector3>     m_DegAngList;
 	std::vector<float>             m_ViewAngList;
 	std::shared_ptr<MagicPolygon>  m_FixedTarget;
+
+	// デバッグ
+	bool showFlg = false;
 };

@@ -10,14 +10,25 @@
 void GameCamera::Update()
 {
 	// デバッグ
-	if (GetAsyncKeyState(VK_LCONTROL) & 0x8000)
+	static bool key = false;
+	if (GetAsyncKeyState('C') & 0x8000)
 	{
-		ShowCursor(true);
-		return;
+		if (!key)
+		{
+			if (showFlg)
+			{
+				showFlg = false;
+			}
+			else
+			{
+				showFlg = true;
+			}
+			key = true;
+		}
 	}
-	else if(!SceneManager::Instance().m_stop)
+	else
 	{
-		ShowCursor(false);
+		key = false;
 	}
 
 	// デバッグ
@@ -54,12 +65,14 @@ void GameCamera::Update()
 		}
 		m_state.lock()->Update();
 	}
+
+	ShowCursor(showFlg);
 }
 
 void GameCamera::PostUpdate()
 {
 	// デバッグ
-	if (GetAsyncKeyState(VK_LCONTROL) & 0x8000)return;
+	if (showFlg)return;
 	if (!m_spCamera) { return; }
 
 	if (!m_state.expired())m_state.lock()->PostUpdate();

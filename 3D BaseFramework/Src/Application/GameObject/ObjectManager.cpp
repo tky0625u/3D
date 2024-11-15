@@ -45,7 +45,18 @@
 #include"UI/Title/Cursor/Cursor.h"
 //タイトルカメラ
 #include"Camera/TitleCamera/TitleCamera.h"
-
+//プレイヤーHP
+#include"UI/Player/HP/Player_HP.h"
+//プレイヤースタミナ
+#include"UI/Player/Stamina/Player_Stamina.h"
+//ロックオン
+#include"UI/Player/LockON/LockON.h"
+//階数
+#include"UI/Player/Floor/Floor.h"
+//テレポート
+#include"UI/Player/Teleport/Teleport.h"
+//敵HP
+#include"UI/Enemy/HP/Enemy_HP.h"
 
 void ObjectManager::SceneCheck()
 {
@@ -64,6 +75,20 @@ void ObjectManager::SceneCheck()
 
 void ObjectManager::DeleteEnemyList()
 {
+	auto hp = m_EnemyHPList.begin();
+
+	while (hp != m_EnemyHPList.end())
+	{
+		if (hp->expired())
+		{
+			hp = m_EnemyHPList.erase(hp);
+		}
+		else
+		{
+			++hp;
+		}
+	}
+
 	auto enemy = m_EnemyList.begin();
 
 	while (enemy != m_EnemyList.end())
@@ -123,7 +148,7 @@ void ObjectManager::GameClear()
 	m_camera.lock()->GetConText()->ClearCamera();
 }
 
-void ObjectManager::Teleport()
+void ObjectManager::NextTeleport()
 {
 	//m_magic.lock()->GetConText()->Teleport();
 	m_player.lock()->GetConText()->Teleport();
@@ -694,6 +719,173 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				_player->SetAtkRange(range);
 				_player->SetInviTime(_inviTime);
 
+				if (ImGui::TreeNode("UI"))
+				{
+					if (ImGui::TreeNode("HP"))
+					{
+						if (ImGui::Button((const char*)u8"HP保存"))
+						{
+							PlayerHPWrite();
+						}
+
+						if (m_PlayerHP.expired() == false)
+						{
+							std::shared_ptr<Player_HP> _hp = m_PlayerHP.lock();
+
+							// 位置
+							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f", _hp->GetVector2Pos().x, _hp->GetVector2Pos().y);
+							Math::Vector2 _HPPos = _hp->GetVector2Pos();
+							ImGui::SliderFloat("PosX", &_HPPos.x, -640, 640);
+							ImGui::SliderFloat("PosY", &_HPPos.y, -360, 360);
+
+							// 大きさ
+							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _hp->GetSize());
+							float _HPSize = _hp->GetSize();
+							ImGui::SliderFloat("Size", &_HPSize, 1, 100);
+
+							_hp->SetPos(_HPPos);
+							_hp->SetSize(_HPSize);
+						}
+
+						ImGui::TreePop();
+					}
+
+					if (ImGui::TreeNode("Stamina"))
+					{
+						if (ImGui::Button((const char*)u8"Stamina保存"))
+						{
+							PlayerStaminaWrite();
+						}
+
+						if (m_PlayerStamina.expired() == false)
+						{
+							std::shared_ptr<Player_Stamina> _stamina = m_PlayerStamina.lock();
+
+							// 位置
+							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f", _stamina->GetVector2Pos().x, _stamina->GetVector2Pos().y);
+							Math::Vector2 _StaminaPos = _stamina->GetVector2Pos();
+							ImGui::SliderFloat("PosX", &_StaminaPos.x, -640, 640);
+							ImGui::SliderFloat("PosY", &_StaminaPos.y, -360, 360);
+
+							// 大きさ
+							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _stamina->GetSize());
+							float _StaminaSize = _stamina->GetSize();
+							ImGui::SliderFloat("Size", &_StaminaSize, 1, 100);
+
+							_stamina->SetPos(_StaminaPos);
+							_stamina->SetSize(_StaminaSize);
+						}
+
+						ImGui::TreePop();
+					}
+
+					if (ImGui::TreeNode("LockON"))
+					{
+						if (ImGui::Button((const char*)u8"LockON保存"))
+						{
+							LockONWrite();
+						}
+
+						if (m_lockON.expired() == false)
+						{
+							std::shared_ptr<LockON> _lock = m_lockON.lock();
+
+							// 位置
+							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f", _lock->GetVector2Pos().x, _lock->GetVector2Pos().y);
+							Math::Vector2 _LockPos = _lock->GetVector2Pos();
+							ImGui::SliderFloat("PosX", &_LockPos.x, -640, 640);
+							ImGui::SliderFloat("PosY", &_LockPos.y, -360, 360);
+
+							// 大きさ
+							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _lock->GetSize());
+							float _LockSize = _lock->GetSize();
+							ImGui::SliderFloat("Size", &_LockSize, 1, 100);
+
+							// 大きさ変化量
+							ImGui::Text((const char*)u8"　大きさ変化量 　ChangeSize=%.2f", _lock->GetChangeSize());
+							float _LockSizeChange = _lock->GetChangeSize();
+							ImGui::SliderFloat("SizeChange", &_LockSizeChange, 0.01, 1.00);
+
+							// アルファ値変化量
+							ImGui::Text((const char*)u8"　アルファ値変化量 　ChangeAlpha=%.2f", _lock->GetChangeAlpha());
+							float _LockAlphaChange = _lock->GetChangeAlpha();
+							ImGui::SliderFloat("AlphaChange", &_LockAlphaChange, 0.01, 1.00);
+
+							_lock->SetPos(_LockPos);
+							_lock->SetSize(_LockSize);
+							_lock->SetChangeSize(_LockSizeChange);
+							_lock->SetChangeAlpha(_LockAlphaChange);
+						}
+
+						ImGui::TreePop();
+					}
+
+					if (ImGui::TreeNode("Floor"))
+					{
+						if (ImGui::Button((const char*)u8"Floor保存"))
+						{
+							FloorWrite();
+						}
+
+						if (m_floor.expired() == false)
+						{
+							std::shared_ptr<Floor> _floor = m_floor.lock();
+
+							// 位置
+							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f", _floor->GetVector2Pos().x, _floor->GetVector2Pos().y);
+							Math::Vector2 _FloorPos = _floor->GetVector2Pos();
+							ImGui::SliderFloat("PosX", &_FloorPos.x, -640, 640);
+							ImGui::SliderFloat("PosY", &_FloorPos.y, -360, 360);
+
+							// 大きさ
+							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _floor->GetSize());
+							float _FloorSize = _floor->GetSize();
+							ImGui::SliderFloat("Size", &_FloorSize, 1, 100);
+
+							_floor->SetPos(_FloorPos);
+							_floor->SetSize(_FloorSize);
+						}
+
+						ImGui::TreePop();
+					}
+
+					if (ImGui::TreeNode("Teleport"))
+					{
+						if (ImGui::Button((const char*)u8"Teleport保存"))
+						{
+							TeleportWrite();
+						}
+
+						if (m_teleport.expired() == false)
+						{
+							std::shared_ptr<Teleport> _teleport = m_teleport.lock();
+
+							// 位置
+							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f", _teleport->GetVector2Pos().x, _teleport->GetVector2Pos().y);
+							Math::Vector2 _TeleportPos = _teleport->GetVector2Pos();
+							ImGui::SliderFloat("PosX", &_TeleportPos.x, -640, 640);
+							ImGui::SliderFloat("PosY", &_TeleportPos.y, -360, 360);
+
+							// 大きさ
+							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _teleport->GetSize());
+							float _TeleportSize = _teleport->GetSize();
+							ImGui::SliderFloat("Size", &_TeleportSize, 1, 100);
+
+							// アルファ値変化量
+							ImGui::Text((const char*)u8"　アルファ値変化量 　ChangeAlpha=%.2f", _teleport->GetChangeAlpha());
+							float _TeleportAlphaChange = _teleport->GetChangeAlpha();
+							ImGui::SliderFloat("AlphaChange", &_TeleportAlphaChange, 0.01, 1.00);
+
+							_teleport->SetPos(_TeleportPos);
+							_teleport->SetSize(_TeleportSize);
+							_teleport->SetChangeAlpha(_TeleportAlphaChange);
+						}
+
+						ImGui::TreePop();
+					}
+
+					ImGui::TreePop();
+				}
 				ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
 				ImGui::TreePop();
@@ -917,6 +1109,43 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 
 						ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 					}
+					ImGui::TreePop();
+				}
+
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNode("UI"))
+			{
+				if (ImGui::TreeNode("HP"))
+				{
+					if (ImGui::Button((const char*)u8"HP保存"))
+					{
+						EnemyHPWrite();
+					}
+
+					for (auto& enemy : m_EnemyHPList)
+					{
+						if (enemy.expired() == false)
+						{
+							std::shared_ptr<Enemy_HP> _hp = enemy.lock();
+
+							// 位置
+							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f", _hp->GetVector2Pos().x, _hp->GetVector2Pos().y);
+							Math::Vector2 _HPPos = _hp->GetVector2Pos();
+							ImGui::SliderFloat("PosX", &_HPPos.x, -640, 640);
+							ImGui::SliderFloat("PosY", &_HPPos.y, -360, 360);
+
+							// 大きさ
+							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _hp->GetSize());
+							float _HPSize = _hp->GetSize();
+							ImGui::SliderFloat("Size", &_HPSize, 1, 100);
+
+							_hp->SetPos(_HPPos);
+							_hp->SetSize(_HPSize);
+						}
+					}
+
 					ImGui::TreePop();
 				}
 
@@ -1377,6 +1606,104 @@ void ObjectManager::PlayerWrite(std::string _fileName)
 	}
 }
 
+void ObjectManager::PlayerHPWrite()
+{
+	if (m_PlayerHP.expired())return;
+
+	nlohmann::json _json;
+
+	_json["HP"]["Name"] = "HP";
+	_json["HP"]["PosX"] = m_PlayerHP.lock()->GetVector2Pos().x;
+	_json["HP"]["PosY"] = m_PlayerHP.lock()->GetVector2Pos().y;
+	_json["HP"]["Size"] = m_PlayerHP.lock()->GetSize();
+
+	std::ofstream _file("Asset/Json/Game/UI/Player/HP/HP.json");
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
+	}
+}
+
+void ObjectManager::PlayerStaminaWrite()
+{
+	if (m_PlayerStamina.expired())return;
+
+	nlohmann::json _json;
+
+	_json["Stamina"]["Name"] = "Stamina";
+	_json["Stamina"]["PosX"] = m_PlayerStamina.lock()->GetVector2Pos().x;
+	_json["Stamina"]["PosY"] = m_PlayerStamina.lock()->GetVector2Pos().y;
+	_json["Stamina"]["Size"] = m_PlayerStamina.lock()->GetSize();
+
+	std::ofstream _file("Asset/Json/Game/UI/Player/Stamina/Stamina.json");
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
+	}
+}
+
+void ObjectManager::LockONWrite()
+{
+	if (m_lockON.expired())return;
+
+	nlohmann::json _json;
+
+	_json["LockON"]["Name"] = "LockON";
+	_json["LockON"]["PosX"] = m_lockON.lock()->GetVector2Pos().x;
+	_json["LockON"]["PosY"] = m_lockON.lock()->GetVector2Pos().y;
+	_json["LockON"]["Size"] = m_lockON.lock()->GetSize();
+	_json["LockON"]["SizeChange"] = m_lockON.lock()->GetChangeSize();
+	_json["LockON"]["AlphaChange"] = m_lockON.lock()->GetChangeAlpha();
+
+	std::ofstream _file("Asset/Json/Game/UI/Player/LockON/LockON.json");
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
+	}
+}
+
+void ObjectManager::FloorWrite()
+{
+	if (m_floor.expired())return;
+
+	nlohmann::json _json;
+
+	_json["Floor"]["Name"] = "Floor";
+	_json["Floor"]["PosX"] = m_floor.lock()->GetVector2Pos().x;
+	_json["Floor"]["PosY"] = m_floor.lock()->GetVector2Pos().y;
+	_json["Floor"]["Size"] = m_floor.lock()->GetSize();
+
+	std::ofstream _file("Asset/Json/Game/UI/Player/Floor/Floor.json");
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
+	}
+}
+
+void ObjectManager::TeleportWrite()
+{
+	if (m_teleport.expired())return;
+
+	nlohmann::json _json;
+
+	_json["Teleport"]["Name"] = "Teleport";
+	_json["Teleport"]["PosX"] = m_teleport.lock()->GetVector2Pos().x;
+	_json["Teleport"]["PosY"] = m_teleport.lock()->GetVector2Pos().y;
+	_json["Teleport"]["Size"] = m_teleport.lock()->GetSize();
+	_json["Teleport"]["AlphaChange"] = m_teleport.lock()->GetChangeAlpha();
+
+	std::ofstream _file("Asset/Json/Game/UI/Player/Teleport/Teleport.json");
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
+	}
+}
+
 void ObjectManager::EnemyWrite(int _stage, int _wave, std::string _fileName)
 {
 	std::string _stagePath = (_fileName)+std::to_string(_stage).c_str() + ((std::string)".json");
@@ -1434,6 +1761,25 @@ void ObjectManager::EnemyWrite(int _stage, int _wave, std::string _fileName)
 	{
 		_newFile << _json.dump();
 		_newFile.close();
+	}
+}
+
+void ObjectManager::EnemyHPWrite()
+{
+	if (m_EnemyHPList[0].expired())return;
+
+	nlohmann::json _json;
+
+	_json["HP"]["Name"] = "HP";
+	_json["HP"]["PosX"] = m_EnemyHPList[0].lock()->GetVector2Pos().x;
+	_json["HP"]["PosY"] = m_EnemyHPList[0].lock()->GetVector2Pos().y;
+	_json["HP"]["Size"] = m_EnemyHPList[0].lock()->GetSize();
+
+	std::ofstream _file("Asset/Json/Game/UI/Enemy/HP/HP.json");
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
 	}
 }
 
@@ -2044,6 +2390,229 @@ void ObjectManager::SetPlayerParam(std::shared_ptr<StageManager> _stage)
 	}
 
 	ifs.close();
+
+	SetPlayerUI(_stage);
+}
+
+void ObjectManager::SetPlayerUI(std::shared_ptr<StageManager> _stage)
+{
+	SetPlayerHPParam();
+	SetPlayerStaminaParam();
+	SetLockONParam();
+	SetFloorParam(_stage);
+	SetTeleportParam();
+}
+
+void ObjectManager::SetPlayerHPParam()
+{
+	//jsonファイル
+	std::string fileName = "Asset/Json/Game/UI/Player/HP/HP.json";
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& stage : _json)
+	{
+		Math::Vector2 _pos = Math::Vector2::Zero;
+		_pos.x = stage["PosX"];
+		_pos.y = stage["PosY"];
+
+		float _size = 1.0f;
+		_size = stage["Size"];
+
+		std::string _name;
+		_name = stage["Name"];
+		std::shared_ptr<Player_HP> hp = std::make_shared<Player_HP>();
+
+		hp->SetPos(_pos);
+		hp->SetSize(_size);
+		hp->SetName(_name);
+		hp->SetTraget(m_player.lock());
+		hp->SetID(m_id);
+		hp->Init();
+		m_id++;
+
+		m_PlayerHP = hp;
+		SceneManager::Instance().AddPlayerUI(hp);
+	}
+
+	ifs.close();
+}
+
+void ObjectManager::SetPlayerStaminaParam()
+{
+	//jsonファイル
+	std::string fileName = "Asset/Json/Game/UI/Player/Stamina/Stamina.json";
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& stage : _json)
+	{
+		Math::Vector2 _pos = Math::Vector2::Zero;
+		_pos.x = stage["PosX"];
+		_pos.y = stage["PosY"];
+
+		float _size = 1.0f;
+		_size = stage["Size"];
+
+		std::string _name;
+		_name = stage["Name"];
+		std::shared_ptr<Player_Stamina> stamina = std::make_shared<Player_Stamina>();
+
+		stamina->SetPos(_pos);
+		stamina->SetSize(_size);
+		stamina->SetName(_name);
+		stamina->SetTraget(m_player.lock());
+		stamina->SetID(m_id);
+		stamina->Init();
+		m_id++;
+
+		m_PlayerStamina = stamina;
+		SceneManager::Instance().AddPlayerUI(stamina);
+	}
+
+	ifs.close();
+}
+
+void ObjectManager::SetLockONParam()
+{
+	//jsonファイル
+	std::string fileName = "Asset/Json/Game/UI/Player/LockON/LockON.json";
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& stage : _json)
+	{
+		Math::Vector2 _pos = Math::Vector2::Zero;
+		_pos.x = stage["PosX"];
+		_pos.y = stage["PosY"];
+
+		float _size = 1.0f;
+		_size = stage["Size"];
+
+		float _sizeChange = 0.0f;
+		_sizeChange = stage["SizeChange"];
+
+		float _alphaChange = 0.0f;
+		_alphaChange = stage["AlphaChange"];
+
+		std::string _name;
+		_name = stage["Name"];
+		std::shared_ptr<LockON> lockON = std::make_shared<LockON>();
+
+		lockON->SetPos(_pos);
+		lockON->SetSize(_size);
+		lockON->SetChangeSize(_sizeChange);
+		lockON->SetChangeAlpha(_alphaChange);
+		lockON->SetName(_name);
+		lockON->SetTraget(m_player.lock());
+		lockON->SetID(m_id);
+		lockON->Init();
+		m_id++;
+
+		m_lockON = lockON;
+		SceneManager::Instance().AddPlayerUI(lockON);
+	}
+
+	ifs.close();
+}
+
+void ObjectManager::SetFloorParam(std::shared_ptr<StageManager> _stage)
+{
+	//jsonファイル
+	std::string fileName = "Asset/Json/Game/UI/Player/Floor/Floor.json";
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& stage : _json)
+	{
+		Math::Vector2 _pos = Math::Vector2::Zero;
+		_pos.x = stage["PosX"];
+		_pos.y = stage["PosY"];
+
+		float _size = 1.0f;
+		_size = stage["Size"];
+
+		std::string _name;
+		_name = stage["Name"];
+		std::shared_ptr<Floor> floor = std::make_shared<Floor>();
+
+		floor->SetSize(_size);
+		floor->SetPos(_pos);
+		floor->SetName(_name);
+		floor->SetStageManager(_stage);
+		floor->SetID(m_id);
+		floor->Init();
+		m_id++;
+
+		m_floor = floor;
+		SceneManager::Instance().AddPlayerUI(floor);
+	}
+
+	ifs.close();
+}
+
+void ObjectManager::SetTeleportParam()
+{
+	//jsonファイル
+	std::string fileName = "Asset/Json/Game/UI/Player/Teleport/Teleport.json";
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& stage : _json)
+	{
+		Math::Vector2 _pos = Math::Vector2::Zero;
+		_pos.x = stage["PosX"];
+		_pos.y = stage["PosY"];
+
+		float _size = 1.0f;
+		_size = stage["Size"];
+
+		float _alphaChange = 0.0f;
+		_alphaChange = stage["AlphaChange"];
+
+		std::string _name;
+		_name = stage["Name"];
+		std::shared_ptr<Teleport> teleport = std::make_shared<Teleport>();
+
+		teleport->SetPos(_pos);
+		teleport->SetSize(_size);
+		teleport->SetChangeAlpha(_alphaChange);
+		teleport->SetName(_name);
+		teleport->SetPlayer(m_player.lock());
+		teleport->SetID(m_id);
+		teleport->Init();
+		m_id++;
+
+		m_teleport = teleport;
+		SceneManager::Instance().AddPlayerUI(teleport);
+	}
+
+	ifs.close();
 }
 
 void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponName)
@@ -2220,6 +2789,8 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 
 					SceneManager::Instance().AddEnemy(enemy);
 					m_EnemyList.push_back(enemy);
+
+					SetEnemyHPParam(enemy);
 				}
 			}
 		}
@@ -2227,6 +2798,47 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 	}
 
 	if (_stage->GetMaxWave() == 0)_stage->SetMaxWave(_wave);
+}
+
+void ObjectManager::SetEnemyHPParam(std::shared_ptr<EnemyBase> _enemy)
+{
+	//jsonファイル
+	std::string fileName = "Asset/Json/Game/UI/Enemy/HP/HP.json";
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& stage : _json)
+	{
+		Math::Vector2 _pos = Math::Vector2::Zero;
+		_pos.x = stage["PosX"];
+		_pos.y = stage["PosY"];
+
+		float _size = 1.0f;
+		_size = stage["Size"];
+
+		std::string _name;
+		_name = stage["Name"];
+		std::shared_ptr<Enemy_HP> hp = std::make_shared<Enemy_HP>();
+
+		hp->SetPos(_pos);
+		hp->SetSize(_size);
+		hp->SetName(_name);
+		hp->SetCamera(m_camera.lock());
+		hp->SetTarget(_enemy);
+		hp->SetID(m_id);
+		hp->Init();
+		m_id++;
+
+		m_EnemyHPList.push_back(hp);
+		SceneManager::Instance().AddEnemyUI(hp);
+	}
+
+	ifs.close();
 }
 
 const bool& ObjectManager::GetTeleportFlg()
@@ -2375,6 +2987,8 @@ void ObjectManager::AddBone()
 
 	SceneManager::Instance().AddObject(enemy);
 	m_EnemyList.push_back(enemy);
+
+	SetEnemyHPParam(enemy);
 }
 
 void ObjectManager::AddGolem()
@@ -2411,6 +3025,8 @@ void ObjectManager::AddGolem()
 
 	SceneManager::Instance().AddObject(enemy);
 	m_EnemyList.push_back(enemy);
+
+	SetEnemyHPParam(enemy);
 }
 
 void ObjectManager::AddWeapon(std::string _filePath, std::string _weaponName)

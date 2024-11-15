@@ -22,7 +22,6 @@ public:
 	void SetGame(std::shared_ptr<Game> _game) { m_game = _game; }
 	void SetExit(std::weak_ptr<Exit> _exit) { m_exit = _exit; }
 
-	const Math::Vector2 GetVector2Pos()const { return m_pos; }
 	const float GetMaxSize()const { return m_MaxSize; }
 	const float GetChangeSizeNum()const { return m_ChangeSizeNum; }
 	const float GetMaxAlpha()const { return m_MaxAlpha; }

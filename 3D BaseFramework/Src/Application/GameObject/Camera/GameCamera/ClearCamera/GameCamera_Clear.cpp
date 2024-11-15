@@ -17,7 +17,9 @@ void ClearCamera::PostUpdate()
 	const std::shared_ptr<const KdGameObject>	_spTarget = m_target.lock()->GetwpTarget().lock();
 	if (_spTarget)
 	{
-		_targetMat = Math::Matrix::CreateTranslation(_spTarget->GetPos());
+		Math::Matrix _rotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(_spTarget->GetAngle().y + 180.0f));
+		Math::Matrix _trans = Math::Matrix::CreateTranslation(_spTarget->GetPos());
+		_targetMat = _rotY * _trans;
 	}
 
 	m_mRotation = m_target.lock()->GetRotationMatrix();

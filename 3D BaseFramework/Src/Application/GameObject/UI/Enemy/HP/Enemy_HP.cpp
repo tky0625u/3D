@@ -55,13 +55,12 @@ void Enemy_HP::DrawSprite()
 {
 	for (int h = 0; h < HP::num; ++h)
 	{
-		KdShaderManager::Instance().m_spriteShader.DrawTex(m_pTex[h], (int)(m_pos.x - (m_MaxWidth / 2)), (int)m_pos.y, (int)m_rect[h].width, (int)m_rect[h].height, &m_rect[h], &m_color, m_pivot);
+		KdShaderManager::Instance().m_spriteShader.DrawTex(m_pTex[h], (int)(m_pos.x - (m_MaxWidth / 2)), (int)m_pos.y, (int)m_rect[h].width * m_size, (int)m_rect[h].height * m_size, &m_rect[h], &m_color, m_pivot);
 	}
 }
 
 void Enemy_HP::Init()
 {
-	m_pos = Math::Vector2::Zero;
 	m_pivot = { 0.0f,0.5f };
 	m_MaxWidth = 200;
 	m_alpha = 1.0f;

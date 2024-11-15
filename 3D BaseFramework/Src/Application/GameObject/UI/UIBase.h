@@ -10,6 +10,10 @@ public:
 	virtual void DrawSprite()override;
 	virtual void Init()      override {};
 
+	virtual void SetPos(Math::Vector2 _pos) { m_pos = _pos; }
+
+	const Math::Vector2 GetVector2Pos()const { return m_pos; }
+
 protected:
 	std::shared_ptr<KdTexture> m_pTex  = nullptr;
 	Math::Vector2              m_pos   = Math::Vector2::Zero;

@@ -267,7 +267,7 @@ void KdStandardShader::DrawModel(KdModelWork& rModel, const Math::Matrix& mWorld
 
 		if (GetEnableOutLineDraw())
 		{
-			KdShaderManager::Instance().ChangeRasterizerState(KdRasterizerState::CullBack);
+			KdShaderManager::Instance().UndoRasterizerState();
 		}
 	}
 

@@ -25,12 +25,12 @@ void LockON::Update()
 
 	if (m_size ==1.0f)
 	{
-		m_alpha -= 0.05f;
+		m_alpha -= m_alphaChange;
 		if (m_alpha <= 0.0f)m_alpha = 0.0f;
 	}
 	else
 	{
-		m_size -= 0.5f;
+		m_size -= m_sizeChange;
 		if (m_size <= 1.0f)m_size = 1.0f;
 	}
 
@@ -58,7 +58,6 @@ void LockON::Init()
 {
 	m_pivot = { 0.5f,0.5f };
 	m_color = { 1,1,1,m_alpha };
-	m_size = 5.0f;
 	m_rect = { 0,0,256,256 };
 	m_pTex = std::make_shared<KdTexture>();
 	m_pTex->Load("Asset/Textures/UI/Player/LockON/Cursor_Move2.png");

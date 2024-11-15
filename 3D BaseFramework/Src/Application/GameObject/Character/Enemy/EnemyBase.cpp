@@ -3,7 +3,6 @@
 #include"../../../Scene/SceneManager.h"
 #include"../Player/Player.h"
 #include"../Action/Enemy/Enemy_ConText.h"
-#include"../../UI/Enemy/HP/Enemy_HP.h"
 #include"../../Camera/GameCamera/GameCamera.h"
 #include"../../Camera/GameCamera/GameCamera_ConText.h"
 #include"../../Camera/GameCamera/GameCamera_State.h"
@@ -45,12 +44,6 @@ void EnemyBase::Init()
 	m_mWorld = Trans;
 
 	m_ObjType = ObjType::oEnemy;
-
-	std::shared_ptr<Enemy_HP> _hp = std::make_shared<Enemy_HP>();
-	_hp->SetTarget(shared_from_this());
-	_hp->SetCamera(m_camera.lock());
-	_hp->Init();
-	SceneManager::Instance().AddEnemyUI(_hp);
 }
 
 void EnemyBase::CrushingAction()

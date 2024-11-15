@@ -8,17 +8,11 @@
 #include"../Action/Player/Player_ConText.h"
 #include"../Enemy/EnemyBase.h"
 
-#include"../../UI/Player/HP/Player_HP.h"
-#include"../../UI/Player/Stamina/Player_Stamina.h"
-#include"../../UI/Player/LockON/LockON.h"
-#include"../../UI/Player/Floor/Floor.h"
-#include"../../UI/Player/Teleport/Teleport.h"
-
 void Player::Update()
 {
 	if (m_TeleportFlg)
 	{
-		if (GetAsyncKeyState('E') & 0x8000)m_ObjectManager.lock()->Teleport();
+		if (GetAsyncKeyState('E') & 0x8000)m_ObjectManager.lock()->NextTeleport();
 	}
 	CharacterBase::Update();
 }
@@ -59,31 +53,6 @@ void Player::Init()
 
 	m_context = std::make_shared<Player_ActionConText>(idol);
 	m_state = m_context->GetState();
-
-	std::shared_ptr<Player_HP> _hp = std::make_shared<Player_HP>();
-	_hp->SetTraget(shared_from_this());
-	_hp->Init();
-	SceneManager::Instance().AddPlayerUI(_hp);
-
-	std::shared_ptr<Player_Stamina> _stamina = std::make_shared<Player_Stamina>();
-	_stamina->SetTraget(shared_from_this());
-	_stamina->Init();
-	SceneManager::Instance().AddPlayerUI(_stamina);
-
-	std::shared_ptr<LockON> _lock = std::make_shared<LockON>();
-	_lock->SetTraget(shared_from_this());
-	_lock->Init();
-	SceneManager::Instance().AddPlayerUI(_lock);
-
-	std::shared_ptr<Floor> _floor = std::make_shared<Floor>();
-	_floor->SetStageManager(m_StageManager.lock());
-	_floor->Init();
-	SceneManager::Instance().AddPlayerUI(_floor);
-
-	std::shared_ptr<Teleport> _teleport = std::make_shared<Teleport>();
-	_teleport->SetPlayer(shared_from_this());
-	_teleport->Init();
-	SceneManager::Instance().AddPlayerUI(_teleport);
 
 	m_pCollider = std::make_unique<KdCollider>();
 	m_pCollider->RegisterCollisionShape("Player", m_model, KdCollider::TypeBump | KdCollider::TypeDamage | KdCollider::TypeEvent);
