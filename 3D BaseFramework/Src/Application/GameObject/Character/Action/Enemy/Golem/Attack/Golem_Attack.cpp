@@ -72,35 +72,5 @@ void Golem_Attack::End()
 
 void Golem_Attack::Attack()
 {
-	if (m_target.expired())return;
-	if (m_target.lock()->GetTarget().expired())return;
 
-	std::vector<KdCollider::SphereInfo> sphereInfoList;
-	KdCollider::SphereInfo sphereInfo;
-	if (m_target.lock()->GetSword().expired() == false)
-	{
-		sphereInfo.m_sphere.Center = m_target.lock()->GetSword().lock()->GetModelTop().Translation();
-		sphereInfoList.push_back(sphereInfo);
-
-		sphereInfo.m_sphere.Center = m_target.lock()->GetSword().lock()->GetModelCenter().Translation();
-		sphereInfoList.push_back(sphereInfo);
-
-		sphereInfo.m_sphere.Center = m_target.lock()->GetSword().lock()->GetModelBottom().Translation();
-		sphereInfoList.push_back(sphereInfo);
-	}
-	else
-	{
-		sphereInfo.m_sphere.Center = m_target.lock()->GetSwordMat().Translation();
-		sphereInfoList.push_back(sphereInfo);
-	}
-	sphereInfo.m_sphere.Radius = 1.0f;
-	sphereInfo.m_type = KdCollider::TypeDamage;
-
-	for (int i = 0; i < sphereInfoList.size(); ++i)
-	{
-		if (m_target.lock()->GetTarget().lock()->Intersects(sphereInfo, nullptr))
-		{
-			m_target.lock()->GetTarget().lock()->GetConText()->Hit(m_target.lock()->GetParam().Atk, m_target.lock());
-		}
-	}
 }

@@ -18,5 +18,5 @@ void Golem::Init()
 	m_animator->SetAnimation(m_model->GetData()->GetAnimation(m_anime), m_animeFlg);
 
 	m_pCollider = std::make_unique<KdCollider>();
-	m_pCollider->RegisterCollisionShape("Enemy", m_model, KdCollider::TypeBump);
+	m_pCollider->RegisterCollisionShape("Enemy", m_model, KdCollider::TypeDamage | KdCollider::TypeBump | KdCollider::TypeSight);
 }

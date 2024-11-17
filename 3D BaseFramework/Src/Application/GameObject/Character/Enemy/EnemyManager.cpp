@@ -86,62 +86,6 @@ void EnemyManager::EnemyRun()
 		{
 			enemy->GetConText()->Run();
 		}
-		else if (enemy->GetActionType() == EnemyBase::Action::RunType && enemy->GetConText()->GetState()->GetFlow() != ActionBase::Flow::EndType)
-		{
-			std::shared_ptr<Player> _player = enemy->GetTarget().lock();
-			Math::Vector3 _playerPos = _player->GetPos();
-			Math::Vector3 _pos = enemy->GetPos();
-			Math::Vector3 _moveDir = _playerPos - _pos;
-			float dist = _moveDir.Length();
-			_moveDir.Normalize();
-
-
-
-			//KdCollider::SphereInfo sphereInfo;
-			//Math::Matrix _mat = enemy->GetHitModelMat();
-			//sphereInfo.m_sphere.Center = _mat.Translation();
-			//sphereInfo.m_sphere.Radius = 3.0f;
-			//sphereInfo.m_type = KdCollider::TypeBump;
-
-			////デバッグ用
-			////m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
-
-			//std::list<KdCollider::CollisionResult>retSphereList;
-			//for (auto& ret : m_EnemyList)
-			//{
-			//	if (enemy->GetID() == ret->GetID())continue;
-			//	ret->Intersects(sphereInfo, &retSphereList);
-			//}
-	
-			//Math::Vector3 HitDir = Math::Vector3::Zero;
-			//Math::Vector3 HitPos = Math::Vector3::Zero;
-			//float maxOverLap = 0.0f;
-			//bool HitFlg = false;
-
-			//for (auto& sphere : retSphereList)
-			//{
-			//	if (maxOverLap < sphere.m_overlapDistance)
-			//	{
-			//		maxOverLap = sphere.m_overlapDistance;
-			//		HitDir = sphere.m_hitDir;
-			//		HitPos = sphere.m_hitPos;
-			//		HitFlg = true;
-			//	}
-			//}
-
-			//if (HitFlg == true)
-			//{
-			//	HitDir.y = 0.0f;
-			//	HitDir.Normalize();
-
-			//	_moveDir = HitDir;
-			//}
-
-
-
-			if (dist >= enemy->GetAtkRange())enemy->SetMove(_moveDir);
-			if (enemy)enemy->GetConText()->GetState()->Rotate(_moveDir, enemy);
-		}
 	}
 }
 

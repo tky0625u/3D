@@ -3082,12 +3082,14 @@ void ObjectManager::AddBone()
 	enemy->SetAtkRange(_atkRange);
 	enemy->SetForward(_forward);
 	enemy->SetName(_name);
+	enemy->SetCamera(m_camera.lock());
+	enemy->SetTarget(m_player.lock());
 	enemy->SetID(m_id);
 	enemy->SetObjManager(shared_from_this());
 	enemy->Init();
 	m_id++;
 
-	SceneManager::Instance().AddObject(enemy);
+	SceneManager::Instance().AddEnemy(enemy);
 	m_EnemyList.push_back(enemy);
 
 	SetEnemyHPParam(enemy);
@@ -3107,7 +3109,7 @@ void ObjectManager::AddGolem()
 	int _stamina = 50;
 	float _atkRange = 3.0f;
 	Math::Vector3 _forward = Math::Vector3::Zero;
-	_forward.z = 1.0f;
+	_forward.z = -1.0f;
 	float _chaseRange = 1000.0f;
 
 	std::shared_ptr<Golem> enemy = nullptr;
@@ -3120,12 +3122,14 @@ void ObjectManager::AddGolem()
 	enemy->SetAtkRange(_atkRange);
 	enemy->SetForward(_forward);
 	enemy->SetName(_name);
+	enemy->SetCamera(m_camera.lock());
+	enemy->SetTarget(m_player.lock());
 	enemy->SetID(m_id);
 	enemy->SetObjManager(shared_from_this());
 	enemy->Init();
 	m_id++;
 
-	SceneManager::Instance().AddObject(enemy);
+	SceneManager::Instance().AddEnemy(enemy);
 	m_EnemyList.push_back(enemy);
 
 	SetEnemyHPParam(enemy);
