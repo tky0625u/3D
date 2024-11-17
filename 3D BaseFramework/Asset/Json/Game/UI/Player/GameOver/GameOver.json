@@ -1,9 +1,1 @@
-{
-	"GameOver": {
-		"Name": "GameOver",
-		"PosX": 0.0,
-		"PosY": 0.0,
-		"Size": 1.0,
-		"AlphaChange": 0.05
-	}
-}
+{"GameOver":{"AlphaChange":0.014000000432133675,"Name":"gameOver","PosX":0.0,"PosY":0.0,"Size":1.4479999542236328}}
