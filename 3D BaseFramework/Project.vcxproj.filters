@@ -283,6 +283,15 @@
     <Filter Include="Src\Application\GameObject\UI\Player\GameOver">
       <UniqueIdentifier>{52949f5a-c768-4fdb-ad67-a8892628cc71}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Crushing">
+      <UniqueIdentifier>{56e4794e-6286-499e-a198-23027480cb89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack1">
+      <UniqueIdentifier>{0bd3eeae-c856-43ff-bb86-5900afc2fc8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack2">
+      <UniqueIdentifier>{9bd4f18a-9bd1-4eab-961a-b02a0c94e0ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -591,9 +600,6 @@
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Stumble\Golem_Stumble.h">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Stumble</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Golem_Attack.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Attack</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\UI\Player\LockON\LockON.h">
       <Filter>Src\Application\GameObject\UI\Player\LockON</Filter>
     </ClInclude>
@@ -674,6 +680,15 @@
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\UI\Player\GameOver\GameOver.h">
       <Filter>Src\Application\GameObject\UI\Player\GameOver</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Crushing\Golem_Crushing.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Crushing</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack1\Golem_Attack1.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack1</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack2\Golem_Attack2.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack2</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -953,9 +968,6 @@
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Run\Golem_Run.cpp">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Run</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Golem_Attack.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Attack</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\GameObject\UI\Player\LockON\LockON.cpp">
       <Filter>Src\Application\GameObject\UI\Player\LockON</Filter>
     </ClCompile>
@@ -1027,6 +1039,15 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\UI\Player\GameOver\GameOver.cpp">
       <Filter>Src\Application\GameObject\UI\Player\GameOver</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Crushing\Golem_Crushing.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Crushing</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack1\Golem_Attack1.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack1</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack2\Golem_Attack2.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

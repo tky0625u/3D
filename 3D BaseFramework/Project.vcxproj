@@ -176,7 +176,9 @@
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Enemy_ActionState.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Enemy_ConText.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Appeal\Golem_Appeal.h" />
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Golem_Attack.h" />
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack1\Golem_Attack1.h" />
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack2\Golem_Attack2.h" />
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Crushing\Golem_Crushing.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Golem_ActionState.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Hit\Golem_Hit.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Idol\Golem_Idol.h" />
@@ -299,7 +301,9 @@
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble\Bone_Stumble.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Enemy_ActionState.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Appeal\Golem_Appeal.cpp" />
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Golem_Attack.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack1\Golem_Attack1.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack2\Golem_Attack2.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Crushing\Golem_Crushing.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Golem_ActionState.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Hit\Golem_Hit.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Idol\Golem_Idol.cpp" />

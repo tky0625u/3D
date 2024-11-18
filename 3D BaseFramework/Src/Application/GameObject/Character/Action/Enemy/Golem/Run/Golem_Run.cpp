@@ -61,13 +61,13 @@ void Golem_Run::End()
 
 void Golem_Run::Chace()
 {
-	//std::shared_ptr<Player> _player = m_target.lock()->GetTarget().lock();
-	//Math::Vector3 _playerPos = _player->GetPos();
-	//Math::Vector3 _pos = m_target.lock()->GetPos();
-	//Math::Vector3 _moveDir = _playerPos - _pos;
-	//float dist = _moveDir.Length();
-	//_moveDir.Normalize();
+	std::shared_ptr<Player> _player = m_target.lock()->GetTarget().lock();
+	Math::Vector3 _playerPos = _player->GetPos();
+	Math::Vector3 _pos = m_target.lock()->GetPos();
+	Math::Vector3 _moveDir = _playerPos - _pos;
+	float dist = _moveDir.Length();
+	_moveDir.Normalize();
 
-	//if (dist >= m_target.lock()->GetAtkRange())m_target.lock()->SetMove(_moveDir);
-	//if (!m_target.expired())m_target.lock()->GetConText()->GetState()->Rotate(_moveDir, m_target.lock());
+	if (dist >= m_target.lock()->GetAtkRange())m_target.lock()->SetMove(_moveDir);
+	if (!m_target.expired())m_target.lock()->GetConText()->GetState()->Rotate(_moveDir, m_target.lock());
 }

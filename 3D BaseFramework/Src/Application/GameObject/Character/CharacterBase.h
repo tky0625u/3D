@@ -46,6 +46,7 @@ public:
 		m_dir = dir;
 		m_MoveSpeed = _moveSpeed;
 	}
+	void SetJump(float _Jump) { m_JumpPow = _Jump; }
 	void SetSword(std::shared_ptr<Sword> _sword) { m_sword = _sword; }
 	void SetInviTime(int _inviTime) { m_inviTime = _inviTime; }
 	void SetCamera(std::shared_ptr<GameCamera> a_camera) { m_camera = a_camera; }
@@ -81,6 +82,7 @@ protected:
 	float                        m_gravity         = 0.0f;
 	float                        m_animeSpeed      = 1.0f;
 	float                        m_MoveSpeed       = 0.0f;
+	float                        m_JumpPow         = 0.0f;
 	float                        m_dissolve        = 0.0f;
 	float                        m_AtkRange = 0.0f; //攻撃範囲
 	const float                  m_SpeedCorrection = 0.2f;

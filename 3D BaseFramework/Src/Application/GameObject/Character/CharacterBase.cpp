@@ -10,8 +10,9 @@
 
 void CharacterBase::PreUpdate()
 {
-	m_dir = Math::Vector3::Zero;
-	m_MoveSpeed = 0.0f;
+	m_dir.x = 0.0f;
+	m_dir.z = 0.0f;
+//	m_MoveSpeed = 0.0f;
 }
 
 void CharacterBase::Update()
@@ -32,9 +33,9 @@ void CharacterBase::Update()
 
 
 		m_gravity += m_gravityPow * _slow;
-		m_pos.y -= m_gravity;
 		float Move = m_MoveSpeed * m_SpeedCorrection * _slow;
 		m_pos += Move * m_dir; //座標更新
+		m_pos.y += m_JumpPow - m_gravity;
 	}
 
 	//ワールド行列更新
@@ -57,8 +58,8 @@ void CharacterBase::PostUpdate()
 	rayInfo.m_type = KdCollider::TypeGround;
 
 	//デバッグ用
-	Math::Color color = { 1,1,1,1 };
-	m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
+	//Math::Color color = { 1,1,1,1 };
+	//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
 
 	std::list<KdCollider::CollisionResult> retRayList;
 	for (auto& ret : SceneManager::Instance().GetObjList())
@@ -83,13 +84,9 @@ void CharacterBase::PostUpdate()
 	if (_hitFlg)
 	{
 		m_pos = _hitPos;
+		m_dir.y = 0.0f;
 		m_gravity = 0.0f;
-	}
-	else
-	{
-		m_anime = "Fall";
-		m_animeFlg = true;
-		m_animeSpeed = 1.0f;
+		m_JumpPow = 0.0f;
 	}
 
 	KdCollider::SphereInfo sphereInfo;
@@ -99,7 +96,7 @@ void CharacterBase::PostUpdate()
 	sphereInfo.m_type = KdCollider::TypeBump;
 
 	//デバッグ用
-	m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
+	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
 
 	std::list<KdCollider::CollisionResult>retSphereList;
 	for (auto& ret : SceneManager::Instance().GetObjList())
