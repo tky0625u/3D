@@ -9,6 +9,7 @@ void Bullet::Update()
 	if (m_size < m_MaxSize)m_size += m_sizeChange;
 	else
 	{
+		m_size = m_MaxSize;
 		m_pos += m_speed * m_dir;
 	}
 
@@ -21,7 +22,7 @@ void Bullet::PostUpdate()
 {
 	KdCollider::SphereInfo sphereInfo;
 	sphereInfo.m_sphere.Center = m_pos;
-	sphereInfo.m_sphere.Radius = 2.0f * m_size;
+	sphereInfo.m_sphere.Radius = 1.0f * m_size;
 	sphereInfo.m_type = KdCollider::Type::TypeBump | KdCollider::Type::TypeGround | KdCollider::Type::TypeDamage;
 
 	Math::Color _color = { 1,0,0,1 };

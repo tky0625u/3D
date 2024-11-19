@@ -34,7 +34,7 @@ void Golem_Attack1::Center()
 			return;
 		}
 
-		if (!m_bullet.expired() && m_bullet.lock()->GetSize() <= m_bullet.lock()->GetMaxSize())
+		if (!m_bullet.expired() && m_bullet.lock()->GetSize() < m_bullet.lock()->GetMaxSize())
 		{
 			m_bullet.lock()->SetPos(m_target.lock()->GetBulletPoint().Translation());
 
@@ -43,9 +43,9 @@ void Golem_Attack1::Center()
 			_dir.Normalize();
 			Rotate(_dir, m_target.lock());
 		}
-		else if (m_bullet.lock()->GetSize() == m_bullet.lock()->GetMaxSize() && m_bullet.lock()->GetDir() == Math::Vector3::Zero)
+		else if (!m_bullet.expired() && m_bullet.lock()->GetSize() >= m_bullet.lock()->GetMaxSize() && m_bullet.lock()->GetDir() == Math::Vector3::Zero)
 		{
-			Math::Matrix RotY = Math::Matrix::CreateRotationY(m_target.lock()->GetAngle().y);
+			Math::Matrix RotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_target.lock()->GetAngle().y));
 			Math::Vector3 _dir = Math::Vector3::TransformNormal(m_target.lock()->GetForward(), RotY);
 			m_bullet.lock()->SetDir(_dir);
 		}
