@@ -155,12 +155,10 @@ void Player_Guard::Hit(int _damage, std::shared_ptr<BulletBase> _bullet)
 {
 	if (m_target.expired())return;
 
-	GuardRotate(_bullet->GetPos());
-
 	if (m_guardTime <= 30)
 	{
 		m_ObjectManager.lock()->SlowChange();
-		//m_target.lock()->GetConText()->Parry(_enemy);
+		m_target.lock()->GetConText()->Parry(_bullet);
 	}
 	else
 	{
@@ -175,6 +173,7 @@ void Player_Guard::Hit(int _damage, std::shared_ptr<BulletBase> _bullet)
 		else
 		{
 			m_target.lock()->GetConText()->GuardReaction();
+			_bullet->SetCrush(true);
 		}
 	}
 }

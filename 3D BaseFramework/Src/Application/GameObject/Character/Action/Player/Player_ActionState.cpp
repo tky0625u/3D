@@ -283,7 +283,11 @@ void Player_ActionState::Parry(std::shared_ptr<BulletBase> _bullet)
 	parry->SetTarget(m_target.lock());
 	parry->SetObjManager(m_target.lock()->GetObjectManager().lock());
 	m_target.lock()->SetNextState(parry, Player::Action::ParryType);
-	_bullet->SetDir(_bullet->GetDir() * -1);
+
+	Math::Matrix RotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_target.lock()->GetAngle().y));
+	Math::Vector3 _dir = Math::Vector3::TransformNormal(m_target.lock()->GetForward(), RotY);
+	_bullet->SetDir(_dir);
+	_bullet->SetOwner(m_target.lock()->GetObjType());
 }
 
 void Player_ActionState::Counter()
@@ -327,6 +331,7 @@ void Player_ActionState::Hit(int _damage, std::shared_ptr<BulletBase> _bullet)
 	std::shared_ptr<Player_Hit> hit = std::make_shared<Player_Hit>();
 	if (m_target.expired())return;
 	hit->SetTarget(m_target.lock());
+	_bullet->SetCrush(true);
 	m_target.lock()->Hit(_damage);
 	if (m_target.lock()->GetParam().Hp <= 0)
 	{

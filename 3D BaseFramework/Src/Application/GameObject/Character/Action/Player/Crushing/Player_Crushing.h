@@ -13,7 +13,8 @@ public:
 
 	void Run()override { return; }
 	void Attack()override { return; }
-	void Hit(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)override { return; }
+	void Hit(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override{ return; }
+	void Hit(int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override{ return; }
 
 private:
 

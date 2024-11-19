@@ -22,7 +22,7 @@ public:
 	{
 		oPlayer,
 		oEnemy,
-		oStage,
+		oObject,
 	};
 
 	KdGameObject() {}
@@ -106,7 +106,7 @@ protected:
 	UINT m_drawType = 0;
 
 	//オブジェクトタイプ
-	UINT m_ObjType = oStage;
+	UINT m_ObjType = oObject;
 
 	// カメラからの距離
 	float m_distSqrFromCamera = 0;

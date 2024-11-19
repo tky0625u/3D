@@ -1,6 +1,6 @@
 {
 	"asset":{
-		"generator":"Khronos glTF Blender I/O v4.1.62",
+		"generator":"Khronos glTF Blender I/O v4.1.63",
 		"version":"2.0"
 	},
 	"scene":0,
@@ -18,6 +18,21 @@
 			"name":"ICO\u7403"
 		}
 	],
+	"materials":[
+		{
+			"doubleSided":true,
+			"name":"\u30de\u30c6\u30ea\u30a2\u30eb",
+			"normalTexture":{
+				"index":0
+			},
+			"pbrMetallicRoughness":{
+				"baseColorTexture":{
+					"index":1
+				},
+				"metallicFactor":0
+			}
+		}
+	],
 	"meshes":[
 		{
 			"name":"ICO\u7403",
@@ -28,16 +43,39 @@
 						"NORMAL":1,
 						"TEXCOORD_0":2
 					},
-					"indices":3
+					"indices":3,
+					"material":0
 				}
 			]
+		}
+	],
+	"textures":[
+		{
+			"sampler":0,
+			"source":0
+		},
+		{
+			"sampler":0,
+			"source":1
+		}
+	],
+	"images":[
+		{
+			"mimeType":"image/png",
+			"name":"Rock_01_Low_Normal",
+			"uri":"Rock_01_Low_Normal.png"
+		},
+		{
+			"mimeType":"image/png",
+			"name":"Rock_01_Low_AlbedoTransparency",
+			"uri":"Rock_01_Low_AlbedoTransparency.png"
 		}
 	],
 	"accessors":[
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":240,
+			"count":71,
 			"max":[
 				0.9510578513145447,
 				1,
@@ -53,13 +91,13 @@
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":240,
+			"count":71,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":240,
+			"count":71,
 			"type":"VEC2"
 		},
 		{
@@ -72,32 +110,38 @@
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":2880,
+			"byteLength":852,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":2880,
-			"byteOffset":2880,
+			"byteLength":852,
+			"byteOffset":852,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1920,
-			"byteOffset":5760,
+			"byteLength":568,
+			"byteOffset":1704,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":480,
-			"byteOffset":7680,
+			"byteOffset":2272,
 			"target":34963
+		}
+	],
+	"samplers":[
+		{
+			"magFilter":9729,
+			"minFilter":9987
 		}
 	],
 	"buffers":[
 		{
-			"byteLength":8160,
+			"byteLength":2752,
 			"uri":"Bullet.bin"
 		}
 	]

@@ -40,7 +40,7 @@ public:
 	void Parry(std::shared_ptr<BulletBase> _bullet)                        { m_state->Parry(_bullet); }          // 遠距離攻撃のパリィ
 	void Counter()                                                         { m_state->Counter(); }            // 追撃
 	void Roll()                                                            { m_state->Roll(); }               // 回避
-	void Hit(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr) { m_state->Hit(_damage, _enemy); } // 直接攻撃による被弾
+	void Hit(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)   { m_state->Hit(_damage, _enemy); } // 直接攻撃による被弾
 	void Hit(int _damage = 0, std::shared_ptr<BulletBase> _bullet=nullptr) { m_state->Hit(_damage, _bullet); }   // 遠距離攻撃による被弾
 	void Crushing()                                                        { m_state->Crushing(); }           // 撃破
 	void Teleport()                                                        { m_state->Teleport(); }           // テレポート

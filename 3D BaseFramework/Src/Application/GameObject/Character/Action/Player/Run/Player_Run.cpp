@@ -96,6 +96,7 @@ void Player_Run::Run()
 	{
 		dir.x = 1.0f;
 	}
+	if (dir == Math::Vector3::Zero)return;
 	CameraTransform(dir);
 	if (m_target.expired() == false)Rotate(dir, m_target.lock());
 	_player->SetMove(dir);

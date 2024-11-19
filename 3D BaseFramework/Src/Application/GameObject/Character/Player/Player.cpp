@@ -15,6 +15,8 @@ void Player::Update()
 		if (GetAsyncKeyState('E') & 0x8000)m_ObjectManager.lock()->NextTeleport();
 	}
 	CharacterBase::Update();
+
+
 }
 
 void Player::Action()

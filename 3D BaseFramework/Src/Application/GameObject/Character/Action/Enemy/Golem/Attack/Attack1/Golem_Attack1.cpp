@@ -11,7 +11,7 @@ void Golem_Attack1::Start()
 	{
 		if (m_target.lock()->GetAnime() != "IdolToAttack1")
 		{
-			m_target.lock()->SetAnime("IdolToAttack1", false, 0.5f);
+			m_target.lock()->SetAnime("IdolToAttack1", false, 1.5f);
 			return;
 		}
 
@@ -64,7 +64,7 @@ void Golem_Attack1::End()
 	{
 		if (m_target.lock()->GetAnime() != "Attack1ToIdol")
 		{
-			m_target.lock()->SetAnime("Attack1ToIdol", false, 0.5f);
+			m_target.lock()->SetAnime("Attack1ToIdol", false, 1.5f);
 			return;
 		}
 

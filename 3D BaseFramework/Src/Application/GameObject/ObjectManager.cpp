@@ -2952,6 +2952,8 @@ std::shared_ptr<Bullet> ObjectManager::SetBulletParam(std::shared_ptr<Golem> _go
 	_bullet->SetPos(_golem->GetBulletPoint().Translation());
 	_bullet->SetGolem(_golem);
 	_bullet->SetID(m_id);
+	_bullet->SetOwner(_golem->GetObjType());
+	_bullet->SetObjManager(shared_from_this());
 	m_id++;
 	SceneManager::Instance().AddObject(_bullet);
 
@@ -3115,14 +3117,14 @@ void ObjectManager::AddGolem()
 	std::string _name = "Golem";
 	Math::Vector3 _pos = Math::Vector3::Zero;
 	Math::Vector3 _dir = Math::Vector3::Zero;
-	float _size = 1.5f;
+	float _size = 1.0f;
 	Math::Vector3 _angle = Math::Vector3::Zero;
 	_angle.y = 180.0f;
 	int _hp = 10;
 	int _atk = 2;
 	float _speed = 1.0f;
 	int _stamina = 50;
-	float _atkRange = 3.0f;
+	float _atkRange = 50.0f;
 	Math::Vector3 _forward = Math::Vector3::Zero;
 	_forward.z = -1.0f;
 	float _chaseRange = 1000.0f;
