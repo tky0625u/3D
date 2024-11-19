@@ -34,14 +34,14 @@ void Golem_ActionState::Attack()
 	Math::Vector3 _playerPos = m_target.lock()->GetTarget().lock()->GetPos();
 	float _dist = (_playerPos - _pos).Length();
 
-	if (_dist <= 50.0f)
-	{
-		std::shared_ptr<Golem_Attack1> attack1 = std::make_shared<Golem_Attack1>();
-		if (m_target.expired())return;
-		attack1->SetTarget(m_target.lock());
-		m_target.lock()->SetNextAction(attack1, EnemyBase::Action::AttackType);
-	}
-	else
+	//if (_dist <= 50.0f)
+	//{
+	//	std::shared_ptr<Golem_Attack1> attack1 = std::make_shared<Golem_Attack1>();
+	//	if (m_target.expired())return;
+	//	attack1->SetTarget(m_target.lock());
+	//	m_target.lock()->SetNextAction(attack1, EnemyBase::Action::AttackType);
+	//}
+	//else
 	{
 		std::shared_ptr<Golem_Attack2> attack2 = std::make_shared<Golem_Attack2>();
 		if (m_target.expired())return;

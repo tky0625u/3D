@@ -3,6 +3,12 @@
 #include"../../Action/Enemy/Enemy_ConText.h"
 #include"../../Action/Enemy/Golem/Appeal/Golem_Appeal.h"
 
+void Golem::DrawDebug()
+{
+	KdGameObject::DrawDebug();
+	m_state.lock()->DrawDebug();
+}
+
 void Golem::Init()
 {
 	EnemyBase::Init();

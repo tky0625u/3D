@@ -141,6 +141,11 @@ void EnemyManager::DrawSprite()
 	for (auto& enemy : m_EnemyList) enemy->DrawSprite();
 }
 
+void EnemyManager::DrawDebug()
+{
+	for (auto& enemy : m_EnemyList)enemy->DrawDebug();
+}
+
 void EnemyManager::Init()
 {
 	for (auto& enemy : m_EnemyList) enemy->Init();

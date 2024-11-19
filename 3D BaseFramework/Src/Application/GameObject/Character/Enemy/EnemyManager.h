@@ -27,6 +27,7 @@ public:
 	void DrawUnLit()				override;
 	void DrawBright()				override;
 	void DrawSprite()				override;
+	void DrawDebug()                override;
 
 	void Init()                     override;
 
