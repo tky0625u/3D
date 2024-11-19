@@ -1,6 +1,7 @@
 ﻿#include "Player_ActionState.h"
 #include"../../../../Scene/SceneManager.h"
 #include"../../Enemy/EnemyBase.h"
+#include"../../BulletBase/BulletBase.h"
 #include"../Enemy/Enemy_ConText.h"
 #include"../../Player/Player.h"
 #include"../../../Camera/GameCamera/GameCamera.h"
@@ -275,6 +276,16 @@ void Player_ActionState::Parry(std::shared_ptr<EnemyBase> _enemy)
 	_enemy->GetConText()->Stumble();
 }
 
+void Player_ActionState::Parry(std::shared_ptr<BulletBase> _bullet)
+{
+	std::shared_ptr<Player_Parry> parry = std::make_shared<Player_Parry>();
+	if (m_target.expired())return;
+	parry->SetTarget(m_target.lock());
+	parry->SetObjManager(m_target.lock()->GetObjectManager().lock());
+	m_target.lock()->SetNextState(parry, Player::Action::ParryType);
+	_bullet->SetDir(_bullet->GetDir() * -1);
+}
+
 void Player_ActionState::Counter()
 {
 	std::shared_ptr<Player_Counter> counter = std::make_shared<Player_Counter>();
@@ -298,6 +309,20 @@ void Player_ActionState::Roll()
 }
 
 void Player_ActionState::Hit(int _damage, std::shared_ptr<EnemyBase> _enemy)
+{
+	std::shared_ptr<Player_Hit> hit = std::make_shared<Player_Hit>();
+	if (m_target.expired())return;
+	hit->SetTarget(m_target.lock());
+	m_target.lock()->Hit(_damage);
+	if (m_target.lock()->GetParam().Hp <= 0)
+	{
+		Crushing();
+		return;
+	}
+	m_target.lock()->SetNextState(hit, Player::Action::HitType);
+}
+
+void Player_ActionState::Hit(int _damage, std::shared_ptr<BulletBase> _bullet)
 {
 	std::shared_ptr<Player_Hit> hit = std::make_shared<Player_Hit>();
 	if (m_target.expired())return;

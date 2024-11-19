@@ -51,7 +51,8 @@ void Player_Parry::ChangeAction()
 
 	if (m_KeyType & Player_ActionConText::KeyType::AttackKey && !(m_target.lock()->GetConText()->GetBeforeKeyType() & Player_ActionConText::KeyType::AttackKey))
 	{
-		m_target.lock()->GetConText()->Counter();
+		if (m_target.lock()->GetParryID() != -1)m_target.lock()->GetConText()->Counter();
+		else { m_target.lock()->GetConText()->Attack(); }
 		m_ObjectManager.lock()->SlowChange();
 		return;
 	}

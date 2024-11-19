@@ -6,7 +6,7 @@ class Enemy_ActionState;
 class Enemy_HP;
 class Player;
 
-class EnemyBase :public CharacterBase, public std::enable_shared_from_this<EnemyBase>
+class EnemyBase :public CharacterBase
 {
 public:
 	enum Action

@@ -196,9 +196,6 @@
     <Filter Include="Src\Application\GameObject\Character\Enemy\Golem">
       <UniqueIdentifier>{6180fbf8-467c-4202-83a6-29ab5659f332}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Enemy\Golem\Laser">
-      <UniqueIdentifier>{192ec523-1876-4ba0-8e0e-a7df860caed0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem">
       <UniqueIdentifier>{8f12c8d8-7b48-44a2-978f-496f0b10c41a}</UniqueIdentifier>
     </Filter>
@@ -291,6 +288,12 @@
     </Filter>
     <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack2">
       <UniqueIdentifier>{9bd4f18a-9bd1-4eab-961a-b02a0c94e0ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Enemy\Golem\Bullet">
+      <UniqueIdentifier>{79e66a0c-b4e7-4e25-a100-e5e3c192cae6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\BulletBase">
+      <UniqueIdentifier>{160f4817-0a24-401d-8858-6e0e9b2857ae}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -582,9 +585,6 @@
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\Golem\Golem.h">
       <Filter>Src\Application\GameObject\Character\Enemy\Golem</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Enemy\Golem\Laser\Laser.h">
-      <Filter>Src\Application\GameObject\Character\Enemy\Golem\Laser</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Golem_ActionState.h">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem</Filter>
     </ClInclude>
@@ -689,6 +689,12 @@
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack2\Golem_Attack2.h">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack2</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Enemy\Golem\Bullet\Bullet.h">
+      <Filter>Src\Application\GameObject\Character\Enemy\Golem\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\BulletBase\BulletBase.h">
+      <Filter>Src\Application\GameObject\Character\BulletBase</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -947,9 +953,6 @@
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\Golem\Golem.cpp">
       <Filter>Src\Application\GameObject\Character\Enemy\Golem</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Enemy\Golem\Laser\Laser.cpp">
-      <Filter>Src\Application\GameObject\Character\Enemy\Golem\Laser</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Golem_ActionState.cpp">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem</Filter>
     </ClCompile>
@@ -1048,6 +1051,12 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack2\Golem_Attack2.cpp">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack2</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Enemy\Golem\Bullet\Bullet.cpp">
+      <Filter>Src\Application\GameObject\Character\Enemy\Golem\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\BulletBase\BulletBase.cpp">
+      <Filter>Src\Application\GameObject\Character\BulletBase</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

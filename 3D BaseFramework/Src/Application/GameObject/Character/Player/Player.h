@@ -47,8 +47,8 @@ public:
 
 	void SetNextState(std::shared_ptr<Player_ActionState> _next,UINT _action) 
 	{
-		m_NextState = _next;
-		m_actionType = _action;
+		m_NextState  = _next;
+		m_NextActionType = _action;
 	}
 	void SetShield(std::shared_ptr<Shield> _shield) { m_shield = _shield; }
 	void SetStaminaRecoveryTime(int _time) { m_StaminaRecoveryTime = _time; }
@@ -78,4 +78,5 @@ private:
 	bool                                  m_TeleportFlg    = false;
 	UINT                                  m_ParryID = -1;
 	UINT                                  m_actionType = Action::IdolType;
+	UINT                                  m_NextActionType = m_actionType;
 };

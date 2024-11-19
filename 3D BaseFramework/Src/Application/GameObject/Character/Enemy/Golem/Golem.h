@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include"../EnemyBase.h"
 
-class Golem :public EnemyBase
+class Golem :public EnemyBase,public std::enable_shared_from_this<Golem>
 {
 public:
 	Golem() {};
@@ -10,7 +10,7 @@ public:
 	void DrawDebug()override;
 	void Init()     override;
 
-	const Math::Matrix GetLaserPoint()const { return m_model->FindWorkNode("LaserPoint")->m_worldTransform * m_mWorld; }
+	const Math::Matrix GetBulletPoint()const { return m_model->FindWorkNode("BulletPoint")->m_worldTransform * m_mWorld; }
 
 private:
 

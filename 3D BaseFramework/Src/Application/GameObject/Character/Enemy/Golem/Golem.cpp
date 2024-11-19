@@ -17,6 +17,7 @@ void Golem::Init()
 
 	std::shared_ptr<Golem_Appeal> appeal = std::make_shared<Golem_Appeal>();
 	appeal->SetTarget(shared_from_this());
+	appeal->SetObjManager(m_ObjectManager.lock());
 
 	m_conText = std::make_shared<Enemy_ConText>(appeal);
 	m_state = appeal;

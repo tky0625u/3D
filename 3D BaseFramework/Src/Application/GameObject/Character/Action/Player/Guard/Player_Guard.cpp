@@ -2,6 +2,7 @@
 #include"../../../../../Scene/SceneManager.h"
 #include"../../../../ObjectManager.h"
 #include"../../../Enemy/EnemyBase.h"
+#include"../../../BulletBase/BulletBase.h"
 #include"../../Enemy/Enemy_ConText.h"
 #include"../../../Player/Player.h"
 #include"../Player_ConText.h"
@@ -141,7 +142,35 @@ void Player_Guard::Hit(int _damage, std::shared_ptr<EnemyBase> _enemy)
 		{
 			stamina = 0;
 			m_target.lock()->SetStamina(stamina);
-			Player_ActionState::Hit();
+			Player_ActionState::Hit(_damage, _enemy);
+		}
+		else
+		{
+			m_target.lock()->GetConText()->GuardReaction();
+		}
+	}
+}
+
+void Player_Guard::Hit(int _damage, std::shared_ptr<BulletBase> _bullet)
+{
+	if (m_target.expired())return;
+
+	GuardRotate(_bullet->GetPos());
+
+	if (m_guardTime <= 30)
+	{
+		m_ObjectManager.lock()->SlowChange();
+		//m_target.lock()->GetConText()->Parry(_enemy);
+	}
+	else
+	{
+		int stamina = m_target.lock()->GetParam().Sm;
+		stamina -= _damage;
+		if (stamina < 0)
+		{
+			stamina = 0;
+			m_target.lock()->SetStamina(stamina);
+			Player_ActionState::Hit(_damage, _bullet);
 		}
 		else
 		{

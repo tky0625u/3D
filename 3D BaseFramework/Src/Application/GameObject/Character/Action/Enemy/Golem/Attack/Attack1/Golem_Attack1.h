@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include"../../Golem_ActionState.h"
 
+class Bullet;
+
 class Golem_Attack1 :public Golem_ActionState
 {
 public:
@@ -15,4 +17,5 @@ public:
 
 private:
 	bool m_atkFlg = false;
+	std::weak_ptr<Bullet> m_bullet;
 };

@@ -23,6 +23,7 @@ void Player::Action()
 	{
 		m_state = m_NextState;
 		m_context->SetState(m_NextState);
+		m_actionType = m_NextActionType;
 		m_NextState.reset();
 	}
 	if (!m_state.expired())m_state.lock()->Update();

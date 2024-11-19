@@ -59,6 +59,8 @@
 #include"UI/Enemy/HP/Enemy_HP.h"
 //ゲームオーバー
 #include"UI/Player/GameOver/GameOver.h"
+//弾
+#include"Character/Enemy/Golem/Bullet/Bullet.h"
 
 void ObjectManager::SceneCheck()
 {
@@ -2941,6 +2943,19 @@ void ObjectManager::SetEnemyHPParam(std::shared_ptr<EnemyBase> _enemy)
 	}
 
 	ifs.close();
+}
+
+std::shared_ptr<Bullet> ObjectManager::SetBulletParam(std::shared_ptr<Golem> _golem)
+{
+	std::shared_ptr<Bullet> _bullet = std::make_shared<Bullet>();
+	_bullet->Init();
+	_bullet->SetPos(_golem->GetBulletPoint().Translation());
+	_bullet->SetGolem(_golem);
+	_bullet->SetID(m_id);
+	m_id++;
+	SceneManager::Instance().AddObject(_bullet);
+
+	return _bullet;
 }
 
 const bool& ObjectManager::GetTeleportFlg()

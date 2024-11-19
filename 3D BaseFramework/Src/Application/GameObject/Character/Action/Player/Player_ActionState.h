@@ -3,6 +3,7 @@
 
 class Player;
 class EnemyBase;
+class BulletBase;
 
 class Player_ActionState:public ActionBase
 {
@@ -25,10 +26,12 @@ public:
 	virtual void Attack();                                                           // 攻撃
 	virtual void Guard();                                                            // ガード
 	virtual void GuardReaction();                                                    // ガード時の反応
-	virtual void Parry(std::shared_ptr<EnemyBase> _enemy);                           // パリィ
+	virtual void Parry(std::shared_ptr<EnemyBase> _enemy);                           // 直接攻撃のパリィ
+	virtual void Parry(std::shared_ptr<BulletBase> _bullet);                         // 遠距離攻撃のパリィ
 	virtual void Counter();                                                          // 追撃
 	virtual void Roll();                                                             // 回避
-	virtual void Hit(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr);  // 被弾
+	virtual void Hit(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr);  // 直接攻撃による被弾
+	virtual void Hit(int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr);// 遠距離攻撃による被弾
 	virtual void Crushing();                                                         // 撃破
 	virtual void Teleport();                                                         // テレポート
 

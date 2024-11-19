@@ -21,6 +21,8 @@ class Floor;
 class Teleport;
 class Enemy_HP;
 class GameOver;
+class Golem;
+class Bullet;
 
 #include"../tinygltf/json.hpp"
 class ObjectManager :public std::enable_shared_from_this<ObjectManager>
@@ -79,6 +81,7 @@ public:
 	void SetWeaponParam(std::string _filePath, std::string _weaponName);
 	void SetEnemyParam(std::string _filePath = "none", std::shared_ptr<StageManager> _stage = nullptr);
 	void SetEnemyHPParam(std::shared_ptr<EnemyBase> _enemy);
+	std::shared_ptr<Bullet> SetBulletParam(std::shared_ptr<Golem> _golem);
 
 	const bool& GetTeleportFlg();
 
