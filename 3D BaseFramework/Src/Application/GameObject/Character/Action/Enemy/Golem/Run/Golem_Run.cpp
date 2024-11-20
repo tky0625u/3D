@@ -69,5 +69,5 @@ void Golem_Run::Chace()
 	_moveDir.Normalize();
 
 	if (dist >= m_target.lock()->GetAtkRange())m_target.lock()->SetMove(_moveDir);
-	if (!m_target.expired())m_target.lock()->GetConText()->GetState()->Rotate(_moveDir, m_target.lock());
+	if (!m_target.expired())m_target.lock()->GetConText()->GetState()->Rotate(_moveDir, m_target.lock(),5.0f);
 }

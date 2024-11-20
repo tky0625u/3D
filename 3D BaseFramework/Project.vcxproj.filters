@@ -295,6 +295,9 @@
     <Filter Include="Src\Application\GameObject\Character\BulletBase">
       <UniqueIdentifier>{160f4817-0a24-401d-8858-6e0e9b2857ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack3">
+      <UniqueIdentifier>{273ca9f5-fa69-4854-92fc-92ce586ec85e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -696,6 +699,9 @@
     <ClInclude Include="Src\Application\GameObject\Character\BulletBase\BulletBase.h">
       <Filter>Src\Application\GameObject\Character\BulletBase</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack3\Golem_Attack3.h">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack3</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -1057,6 +1063,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\BulletBase\BulletBase.cpp">
       <Filter>Src\Application\GameObject\Character\BulletBase</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack3\Golem_Attack3.cpp">
+      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack3</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

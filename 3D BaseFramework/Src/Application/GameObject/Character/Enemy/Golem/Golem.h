@@ -11,6 +11,7 @@ public:
 	void Init()     override;
 
 	const Math::Matrix GetBulletPoint()const { return m_model->FindWorkNode("BulletPoint")->m_worldTransform * m_mWorld; }
+	const Math::Matrix GetQuakePoint() const { return m_model->FindWorkNode("QuakePoint")->m_worldTransform * m_mWorld; }
 
 private:
 

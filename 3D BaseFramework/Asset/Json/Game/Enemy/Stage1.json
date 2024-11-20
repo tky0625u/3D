@@ -1,26 +1,5 @@
 {
 	"1Wave": {
-		"Bone": {
-			"0Bone": {
-				"ATK": 2,
-				"ATKRange": 3.0,
-				"Angle": 162.53343200683594,
-				"DirX": 0.0,
-				"DirY": 0.0,
-				"DirZ": 0.0,
-				"ForwardX": 0.0,
-				"ForwardY": 0.0,
-				"ForwardZ": 1.0,
-				"HP": 40,
-				"Name": "Bone",
-				"PosX": 11.412182807922363,
-				"PosY": -1.1920928955078125e-07,
-				"PosZ": -28.897953033447266,
-				"Size": 1.5,
-				"Speed": 1.0,
-				"Stamina": 50
-			}
-		},
 		"Golem": {
 			"0Golem": {
 				"ATK": 2,
@@ -32,7 +11,7 @@
 				"ForwardX": 0.0,
 				"ForwardY": 0.0,
 				"ForwardZ": -1.0,
-				"HP": 40,
+				"HP": 1200,
 				"Name": "Golem",
 				"PosX": 0.0,
 				"PosY": -1.1920928955078125e-07,

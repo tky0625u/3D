@@ -41,7 +41,7 @@ void Golem_Attack1::Center()
 			Math::Vector3 _dir = m_target.lock()->GetTarget().lock()->GetPos() - m_target.lock()->GetPos();
 			_dir.y = 0.0f;
 			_dir.Normalize();
-			Rotate(_dir, m_target.lock());
+			Rotate(_dir, m_target.lock(),1.0f);
 		}
 		else if (!m_bullet.expired() && m_bullet.lock()->GetSize() >= m_bullet.lock()->GetMaxSize() && m_bullet.lock()->GetDir() == Math::Vector3::Zero)
 		{

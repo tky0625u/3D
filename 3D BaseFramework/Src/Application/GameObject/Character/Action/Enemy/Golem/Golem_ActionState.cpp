@@ -8,6 +8,7 @@
 #include"Run/Golem_Run.h"
 #include"Attack/Attack1/Golem_Attack1.h"
 #include"Attack/Attack2/Golem_Attack2.h"
+#include"Attack/Attack3/Golem_Attack3.h"
 #include"Hit/Golem_Hit.h"
 #include"Stumble/Golem_Stumble.h"
 #include"Crushing/Golem_Crushing.h"
@@ -36,22 +37,52 @@ void Golem_ActionState::Attack()
 	Math::Vector3 _playerPos = m_target.lock()->GetTarget().lock()->GetPos();
 	float _dist = (_playerPos - _pos).Length();
 
-	if (_dist <= 50.0f)
-	{
-		std::shared_ptr<Golem_Attack1> attack1 = std::make_shared<Golem_Attack1>();
-		if (m_target.expired())return;
-		attack1->SetTarget(m_target.lock());
-		attack1->SetObjManager(m_ObjectManager.lock());
-		m_target.lock()->SetNextAction(attack1, EnemyBase::Action::AttackType);
-	}
-	else
+	if (_dist > 50.0f)
 	{
 		std::shared_ptr<Golem_Attack2> attack2 = std::make_shared<Golem_Attack2>();
 		if (m_target.expired())return;
 		attack2->SetTarget(m_target.lock());
 		attack2->SetObjManager(m_ObjectManager.lock());
 		m_target.lock()->SetNextAction(attack2, EnemyBase::Action::AttackType);
+		return;
 	}
+
+	//今の方向
+	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_target.lock()->GetAngle().y));
+	Math::Vector3 nowVec = Math::Vector3::TransformNormal(m_target.lock()->GetForward(), nowRot);
+	nowVec.y = 0.0f;
+
+	//向きたい方向
+	Math::Vector3 toVec = m_target.lock()->GetTarget().lock()->GetPos() - m_target.lock()->GetPos();
+	toVec.y = 0.0f;
+	toVec.Normalize();
+
+	//内角 回転する角を求める
+	float d = nowVec.Dot(toVec);
+	d = std::clamp(d, -1.0f, 1.0f); //誤差修正
+
+	//回転角度を求める
+	float ang = DirectX::XMConvertToDegrees(acos(d));
+
+	if (fabs(ang) <= 50.0f)
+	{
+		std::shared_ptr<Golem_Attack1> attack1 = std::make_shared<Golem_Attack1>();
+		if (m_target.expired())return;
+		attack1->SetTarget(m_target.lock());
+		attack1->SetObjManager(m_ObjectManager.lock());
+		m_target.lock()->SetNextAction(attack1, EnemyBase::Action::AttackType);
+		return;
+	}
+	else
+	{
+		std::shared_ptr<Golem_Attack3> attack3 = std::make_shared<Golem_Attack3>();
+		if (m_target.expired())return;
+		attack3->SetTarget(m_target.lock());
+		attack3->SetObjManager(m_ObjectManager.lock());
+		m_target.lock()->SetNextAction(attack3, EnemyBase::Action::AttackType);
+		return;
+	}
+
 }
 
 void Golem_ActionState::Hit(int _damage)

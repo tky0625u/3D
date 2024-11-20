@@ -51,40 +51,77 @@ void EnemyManager::EnemyRun()
 		if (enemy->GetActionType() != EnemyBase::Action::RunType  &&
 			enemy->GetActionType() != EnemyBase::Action::IdolType)continue;
 
-		KdCollider::RayInfo rayInfo;
-		Math::Matrix nowRotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(enemy->GetAngle().y));
-		Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3{ enemy->GetForward().x,enemy->GetForward().y,enemy->GetForward().z }, nowRotY);
-		nowVec.Normalize();
-		rayInfo.m_pos = enemy->GetPos();
-		rayInfo.m_pos.y = (enemy->GetTarget().lock()->GetEnemyAttackPointMat().Translation().y);
-		rayInfo.m_dir = nowVec;
-		rayInfo.m_range = enemy->GetAtkRange();
-		rayInfo.m_type = KdCollider::Type::TypeBump;
-
-		std::list<KdCollider::CollisionResult> _List;
-		if (enemy->GetTarget().lock()->Intersects(rayInfo, &_List))
+		if (enemy->GetName() == "Bone")
 		{
-			enemy->GetConText()->Idol();
+			KdCollider::RayInfo rayInfo;
+			Math::Matrix nowRotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(enemy->GetAngle().y));
+			Math::Vector3 nowVec = Math::Vector3::TransformNormal(Math::Vector3{ enemy->GetForward().x,enemy->GetForward().y,enemy->GetForward().z }, nowRotY);
+			nowVec.Normalize();
+			rayInfo.m_pos = enemy->GetPos();
+			rayInfo.m_pos.y = (enemy->GetTarget().lock()->GetEnemyAttackPointMat().Translation().y);
+			rayInfo.m_dir = nowVec;
+			rayInfo.m_range = enemy->GetAtkRange();
+			rayInfo.m_type = KdCollider::Type::TypeBump;
 
-			bool atkFlg = false;
-			for (auto& atk : m_EnemyAttackList)
+			std::list<KdCollider::CollisionResult> _List;
+			if (enemy->GetTarget().lock()->Intersects(rayInfo, &_List))
 			{
-				if (atk.expired())continue;
-				if (atk.lock()->GetID() == enemy->GetID())
-				{
-					atkFlg = true;
-					break;
-				}
-			}
-			if (atkFlg)continue;
+				enemy->GetConText()->Idol();
 
-			m_EnemyAttackList.push_back(enemy);
-			
-			continue;
+				bool atkFlg = false;
+				for (auto& atk : m_EnemyAttackList)
+				{
+					if (atk.expired())continue;
+					if (atk.lock()->GetID() == enemy->GetID())
+					{
+						atkFlg = true;
+						break;
+					}
+				}
+				if (atkFlg)continue;
+
+				m_EnemyAttackList.push_back(enemy);
+
+				continue;
+			}
+			else if (enemy->GetActionType() != EnemyBase::Action::RunType)
+			{
+				enemy->GetConText()->Run();
+			}
 		}
-		else if(enemy->GetActionType() != EnemyBase::Action::RunType)
+		else if (enemy->GetName() == "Golem")
 		{
-			enemy->GetConText()->Run();
+			KdCollider::SphereInfo sphereInfo;
+			sphereInfo.m_sphere.Center = enemy->GetPos();
+			sphereInfo.m_sphere.Center.y = (enemy->GetTarget().lock()->GetEnemyAttackPointMat().Translation().y);
+			sphereInfo.m_sphere.Radius = enemy->GetAtkRange();
+			sphereInfo.m_type = KdCollider::Type::TypeBump;
+
+			std::list<KdCollider::CollisionResult> _List;
+			if (enemy->GetTarget().lock()->Intersects(sphereInfo, &_List))
+			{
+				enemy->GetConText()->Idol();
+
+				bool atkFlg = false;
+				for (auto& atk : m_EnemyAttackList)
+				{
+					if (atk.expired())continue;
+					if (atk.lock()->GetID() == enemy->GetID())
+					{
+						atkFlg = true;
+						break;
+					}
+				}
+				if (atkFlg)continue;
+
+				m_EnemyAttackList.push_back(enemy);
+
+				continue;
+			}
+			else if (enemy->GetActionType() != EnemyBase::Action::RunType)
+			{
+				enemy->GetConText()->Run();
+			}
 		}
 	}
 }

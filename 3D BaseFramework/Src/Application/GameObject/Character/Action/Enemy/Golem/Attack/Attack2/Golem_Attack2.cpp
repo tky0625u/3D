@@ -49,7 +49,7 @@ void Golem_Attack2::Center()
 		if (m_target.lock()->GetPos().y <= 0.0f)
 		{
 			AttackDamage();
-			KdEffekseerManager::GetInstance().Play("Enemy/Golem/smash.efkefc", m_target.lock()->GetPos(), Math::Vector3{50.0f,15.0f,50.0f}, 1.0f, false);
+			KdEffekseerManager::GetInstance().Play("Enemy/Golem/smash.efkefc", m_target.lock()->GetPos(), Math::Vector3{60.0f,15.0f,60.0f}, 1.0f, false);
 			m_flow = Flow::EndType;
 			return;
 		}
@@ -88,7 +88,7 @@ void Golem_Attack2::AttackDamage()
 {
 	KdCollider::SphereInfo sphereInfo;
 	sphereInfo.m_sphere.Center = m_target.lock()->GetPos();
-	sphereInfo.m_sphere.Radius = 50.0f;
+	sphereInfo.m_sphere.Radius = 60.0f;
 	sphereInfo.m_type = KdCollider::Type::TypeDamage;
 
 	//Math::Color _color = { 1,0,0,1 };
