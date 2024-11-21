@@ -2,7 +2,6 @@
 #include"../../../Enemy_ConText.h"
 #include"../../../../../Enemy/golem/Golem.h"
 #include"../../../../../Player/Player.h"
-#include"../../../../../Action/Player/Player_ConText.h"
 
 void Golem_Attack2::Start()
 {
@@ -97,7 +96,7 @@ void Golem_Attack2::AttackDamage()
 
 	if (m_target.lock()->GetTarget().lock()->Intersects(sphereInfo, nullptr))
 	{
-		m_target.lock()->GetTarget().lock()->GetConText()->Hit(5, m_target.lock());
+		m_target.lock()->GetTarget().lock()->Damage(5, m_target.lock());
 	}
 }
 

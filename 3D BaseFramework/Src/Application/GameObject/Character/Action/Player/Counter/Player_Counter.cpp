@@ -1,96 +1,96 @@
-﻿#include "Player_Counter.h"
-#include"../../../../../Scene/SceneManager.h"
-#include"../../../Player/Player.h"
-#include"../Player_ConText.h"
-#include"../Player_ActionState.h"
-#include"../../../../Weapon/Sword/Sword.h"
-#include"../../../../ObjectManager.h"
-#include"../../../Enemy/EnemyBase.h"
-#include"../../../Action/Enemy/Enemy_ConText.h"
-#include"../../../../Camera/GameCamera/GameCamera.h"
-
-void Player_Counter::Start()
-{
-	if (m_target.expired() == false)
-	{
-		if (m_target.lock()->GetAnime() != "ParryingToCounter")
-		{
-			m_target.lock()->SetAnime("ParryingToCounter", false, 1.5f);
-			return;
-		}
-
-		if (m_target.lock()->GetIsAnimator())
-		{
-			m_flow = Flow::CenterType;
-			if (m_target.lock()->GetSword().expired() == false)
-			{
-				m_target.lock()->GetSword().lock()->MakeTraject();
-			}
-			return;
-		}
-	}
-}
-
-void Player_Counter::Center()
-{
-	if (m_target.expired() == false)
-	{
-		if (m_target.lock()->GetAnime() != "Counter")
-		{
-			m_target.lock()->SetAnime("Counter", false, 1.5f);
-			return;
-		}
-
-		if (m_target.lock()->GetIsAnimator())
-		{
-			m_flow = Flow::EndType;
-			return;
-		}
-
-		if (m_target.lock()->GetSword().expired() == false)
-		{
-			m_target.lock()->GetSword().lock()->SetTrajectMat();
-		}
-		AttackDamage();
-	}
-}
-
-void Player_Counter::End()
-{
-	if (m_target.expired() == false)
-	{
-		if (m_target.lock()->GetAnime() != "CounterToIdol")
-		{
-			m_target.lock()->SetAnime("CounterToIdol", false, 1.5f);
-			return;
-		}
-
-		if (m_target.lock()->GetIsAnimator())
-		{
-			m_target.lock()->GetConText()->Idol();
-			return;
-		}
-	}
-}
-
-void Player_Counter::ChangeAction()
-{
-	if (m_flow != Flow::EndType)return;
-
-	if (m_KeyType & Player_ActionConText::KeyType::MoveKey)
-	{
-		m_target.lock()->GetConText()->Run();
-	}
-	else if (m_KeyType & Player_ActionConText::KeyType::AttackKey && !(m_target.lock()->GetConText()->GetBeforeKeyType() & Player_ActionConText::KeyType::AttackKey))
-	{
-		m_target.lock()->GetConText()->Attack();
-	}
-	else if (m_KeyType & Player_ActionConText::KeyType::GuardKey)
-	{
-		m_target.lock()->GetConText()->Guard();
-	}
-	else if (m_KeyType & Player_ActionConText::KeyType::RollKey && !(m_target.lock()->GetConText()->GetBeforeKeyType() & Player_ActionConText::KeyType::RollKey))
-	{
-		m_target.lock()->GetConText()->Roll();
-	}
-}
+﻿//#include "Player_Counter.h"
+//#include"../../../../../Scene/SceneManager.h"
+//#include"../../../Player/Player.h"
+//#include"../Player_ConText.h"
+//#include"../Player_ActionState.h"
+//#include"../../../../Weapon/Sword/Sword.h"
+//#include"../../../../ObjectManager.h"
+//#include"../../../Enemy/EnemyBase.h"
+//#include"../../../Action/Enemy/Enemy_ConText.h"
+//#include"../../../../Camera/GameCamera/GameCamera.h"
+//
+//void Player_Counter::Start()
+//{
+//	if (m_target.expired() == false)
+//	{
+//		if (m_target.lock()->GetAnime() != "ParryingToCounter")
+//		{
+//			m_target.lock()->SetAnime("ParryingToCounter", false, 1.5f);
+//			return;
+//		}
+//
+//		if (m_target.lock()->GetIsAnimator())
+//		{
+//			m_flow = Flow::CenterType;
+//			if (m_target.lock()->GetSword().expired() == false)
+//			{
+//				m_target.lock()->GetSword().lock()->MakeTraject();
+//			}
+//			return;
+//		}
+//	}
+//}
+//
+//void Player_Counter::Center()
+//{
+//	if (m_target.expired() == false)
+//	{
+//		if (m_target.lock()->GetAnime() != "Counter")
+//		{
+//			m_target.lock()->SetAnime("Counter", false, 1.5f);
+//			return;
+//		}
+//
+//		if (m_target.lock()->GetIsAnimator())
+//		{
+//			m_flow = Flow::EndType;
+//			return;
+//		}
+//
+//		if (m_target.lock()->GetSword().expired() == false)
+//		{
+//			m_target.lock()->GetSword().lock()->SetTrajectMat();
+//		}
+//		AttackDamage();
+//	}
+//}
+//
+//void Player_Counter::End()
+//{
+//	if (m_target.expired() == false)
+//	{
+//		if (m_target.lock()->GetAnime() != "CounterToIdol")
+//		{
+//			m_target.lock()->SetAnime("CounterToIdol", false, 1.5f);
+//			return;
+//		}
+//
+//		if (m_target.lock()->GetIsAnimator())
+//		{
+//			m_target.lock()->GetConText()->Idol();
+//			return;
+//		}
+//	}
+//}
+//
+//void Player_Counter::ChangeAction()
+//{
+//	if (m_flow != Flow::EndType)return;
+//
+//	if (m_KeyType & Player_ActionConText::KeyType::MoveKey)
+//	{
+//		m_target.lock()->GetConText()->Run();
+//	}
+//	else if (m_KeyType & Player_ActionConText::KeyType::AttackKey && !(m_target.lock()->GetConText()->GetBeforeKeyType() & Player_ActionConText::KeyType::AttackKey))
+//	{
+//		m_target.lock()->GetConText()->Attack();
+//	}
+//	else if (m_KeyType & Player_ActionConText::KeyType::GuardKey)
+//	{
+//		m_target.lock()->GetConText()->Guard();
+//	}
+//	else if (m_KeyType & Player_ActionConText::KeyType::RollKey && !(m_target.lock()->GetConText()->GetBeforeKeyType() & Player_ActionConText::KeyType::RollKey))
+//	{
+//		m_target.lock()->GetConText()->Roll();
+//	}
+//}

@@ -3,7 +3,6 @@
 #include"../../Enemy_ConText.h"
 #include"../../../../Enemy/Bone/Bone.h"
 #include"../../../../Player/Player.h"
-#include"../../../Player/Player_ConText.h"
 #include"../../../../../Weapon/Sword/Sword.h"
 
 void Bone_Attack::Start()
@@ -109,7 +108,7 @@ void Bone_Attack::HitCheck()
 			{
 				KdEffekseerManager::GetInstance().Play("Player/hit_effe.efkefc", ret.m_hitPos, 1.0f, 0.8f, false);
 			}
-			SceneManager::Instance().GetPlayer()->GetConText()->Hit(m_target.lock()->GetParam().Atk, m_target.lock());
+			SceneManager::Instance().GetPlayer()->Damage(m_target.lock()->GetParam().Atk, m_target.lock());
 		}
 	}
 }

@@ -3,19 +3,17 @@
 #include"../../../Character/Enemy/EnemyBase.h"
 #include"../../../Camera/GameCamera/GameCamera.h"
 #include"../../../ObjectManager.h"
-#include"../../../Character/Action/Player/Player_ConText.h"
-#include"../../../Character/Action/Player/Player_ActionState.h"
 
 void LockON::Update()
 {
-	if (!m_target.lock()->GetConText()->GetLockONFlg())
+	if (!m_target.lock()->GetLockONFlg())
 	{
 		m_alpha = 1.0f;
 		m_size = 5.0f;
 		return;
 	}
 
-	std::shared_ptr<EnemyBase> _targetEnemy = m_target.lock()->GetConText()->GetLockONTarget().lock();
+	std::shared_ptr<EnemyBase> _targetEnemy = m_target.lock()->GetLockONTarget().lock();
 	if (_targetEnemy->GetID() != m_beforeTargetID)
 	{
 		m_alpha = 1.0f;
@@ -50,7 +48,7 @@ void LockON::Update()
 
 void LockON::DrawSprite()
 {
-	if (!m_target.lock()->GetConText()->GetLockONFlg())return;
+	if (!m_target.lock()->GetLockONFlg())return;
 	KdShaderManager::Instance().m_spriteShader.DrawTex(m_pTex, (int)m_pos.x, (int)m_pos.y, (int)m_rect.width * m_size, (int)m_rect.height * m_size, &m_rect, &m_color, m_pivot);
 }
 

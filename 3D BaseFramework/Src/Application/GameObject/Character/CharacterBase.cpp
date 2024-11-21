@@ -235,6 +235,18 @@ void CharacterBase::Rotate(Math::Vector3 _moveDir, float _angChange)
 	}
 }
 
+void CharacterBase::CameraTransform(Math::Vector3& _dir)
+{
+	Math::Matrix cameraRotYMat = Math::Matrix::Identity;
+	if (m_camera.expired() == false)
+	{
+		cameraRotYMat = m_camera.lock()->GetRotationYMatrix();
+	}
+	_dir = _dir.TransformNormal(_dir, cameraRotYMat);
+
+	_dir.Normalize(); //正規化
+}
+
 void CharacterBase::SetParam(int _hp, int _atk, float _speed, int _stamina)
 {
 	m_param.Hp = _hp;

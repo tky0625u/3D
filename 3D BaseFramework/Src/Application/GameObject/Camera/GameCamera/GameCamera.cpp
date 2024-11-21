@@ -3,7 +3,6 @@
 #include"../../ObjectManager.h"
 #include"../../StageManager.h"
 #include"../../Character/Player/Player.h"
-#include"../../Character/Action/Player/Player_ConText.h"
 #include"../../Stage/MagicPolygon/MagicPolygon.h"
 #include"../../Character/Enemy/EnemyBase.h"
 
@@ -188,7 +187,7 @@ void GameCamera::PlayerCamera::Update(GameCamera* owner)
 		_targetMat = Math::Matrix::CreateTranslation(_spTarget->GetPos());
 	}
 
-	if (!_spTarget->GetConText()->GetLockONFlg())
+	if (!_spTarget->GetLockONFlg())
 	{
 		owner->UpdateRotateByMouse();
 	}
@@ -240,8 +239,6 @@ void GameCamera::PlayerCamera::Update(GameCamera* owner)
 	//}
 	if (m_shakeFlg)Shake(owner,_trans);
 	owner->m_mWorld = _trans * _rot * _targetMat;
-
-	if (owner->m_stageManager.lock()->GetnowWave() == owner->m_stageManager.lock()->GetMaxWave() && SceneManager::Instance().GetEnemyList().size() == 0)ChangeState(owner);
 }
 
 void GameCamera::PlayerCamera::Exit(GameCamera* owner)
@@ -250,26 +247,13 @@ void GameCamera::PlayerCamera::Exit(GameCamera* owner)
 
 void GameCamera::PlayerCamera::ChangeState(GameCamera* owner)
 {
-	if (owner->m_stageManager.lock()->GetnowStage() != owner->m_stageManager.lock()->GetMaxStage() && !owner->m_ObjectManager.lock()->GetTeleportFlg())
-	{
-		std::shared_ptr<FixedCamera> _fixed = std::make_shared<FixedCamera>();
-		owner->m_NextState = _fixed;
-		owner->m_flow = GameCamera::Flow::EnterType;
-		return;
-	}
-	else if (owner->m_stageManager.lock()->GetnowStage() == owner->m_stageManager.lock()->GetMaxStage())
-	{
-		std::shared_ptr<ClearCamera> _clear = std::make_shared<ClearCamera>();
-		owner->m_NextState = _clear;
-		owner->m_flow = GameCamera::Flow::EnterType;
-		return;
-	}
+
 }
 
 void GameCamera::PlayerCamera::LockON(GameCamera* owner)
 {
-	if (owner->m_wpTarget.lock()->GetConText()->GetLockONTarget().expired())return;
-	std::shared_ptr<EnemyBase> _target = owner->m_wpTarget.lock()->GetConText()->GetLockONTarget().lock();
+	if (owner->m_wpTarget.lock()->GetLockONTarget().expired())return;
+	std::shared_ptr<EnemyBase> _target = owner->m_wpTarget.lock()->GetLockONTarget().lock();
 
 	// マウスでカメラを回転させる処理
 	POINT _nowPos;

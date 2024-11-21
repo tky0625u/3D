@@ -24,7 +24,6 @@
 #include"Weapon/Shield/Shield.h"
 //プレイヤー
 #include"Character/Player/Player.h"
-#include"Character/Action/Player/Player_ConText.h"
 //ゲームカメラ
 #include"Camera/GameCamera/GameCamera.h"
 //骨
@@ -139,17 +138,19 @@ void ObjectManager::SlowChange()
 
 void ObjectManager::NextStageLiberation()
 {
-	m_player.lock()->GetConText()->Idol();
+	m_camera.lock()->FixedChange();
+	m_player.lock()->IdolChange();
 }
 
 void ObjectManager::GameClear()
 {
-	m_player.lock()->GetConText()->Idol();
+	m_camera.lock()->ClearChange();
+	m_player.lock()->IdolChange();
 }
 
 void ObjectManager::NextTeleport()
 {
-	m_player.lock()->GetConText()->Teleport();
+	m_player.lock()->TeleportChange();
 }
 
 void ObjectManager::CreateStage(std::shared_ptr<StageManager> _stage)
@@ -223,7 +224,6 @@ void ObjectManager::CreateStage(std::shared_ptr<StageManager> _stage)
 	std::string _filePath = ("Asset/Json/Game/Enemy/Stage") + (std::to_string(_stage->GetnowStage())) + (".json");
 	SetEnemyParam(_filePath, _stage);
 
-	m_player.lock()->GetConText()->GetState()->SetFlow(ActionBase::Flow::EndType);
 	m_player.lock()->SetPos(m_ground.lock()->GetPos());
 	m_player.lock()->SetTeleportFlg(false);
 }

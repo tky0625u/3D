@@ -1,23 +1,23 @@
-﻿#pragma once
-#include"../Player_ActionState.h"
-
-class EnemyBase;
-
-class Player_Roll :public Player_ActionState
-{
-public:
-	Player_Roll()            { Init(); }
-	~Player_Roll()  override {};
-
-	void Start()    override;
-	void End()      override;
-
-	void Init()     override;
-
-	void Roll();
-
-	void Hit(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override{ return; }
-	void Hit(int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override{ return; }
-
-private:
-};
+﻿//#pragma once
+//#include"../Player_ActionState.h"
+//
+//class EnemyBase;
+//
+//class Player_Roll :public Player_ActionState
+//{
+//public:
+//	Player_Roll()            { Init(); }
+//	~Player_Roll()  override {};
+//
+//	void Start()    override;
+//	void End()      override;
+//
+//	void Init()     override;
+//
+//	void Roll();
+//
+//	void Hit(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override{ return; }
+//	void Hit(int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override{ return; }
+//
+//private:
+//};

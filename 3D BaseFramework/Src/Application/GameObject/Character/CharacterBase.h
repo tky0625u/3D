@@ -37,6 +37,7 @@ public:
 
 	void Hit(int _damege);
 	void Rotate(Math::Vector3 _moveDir, float _angChange = 10.0f);
+	void CameraTransform(Math::Vector3& _dir);
 
 	void SetParam(int _hp, int _atk, float _speed, int _stamina);
 	void SetStamina(int _stamina) { m_param.Sm = _stamina; }
@@ -58,7 +59,6 @@ public:
 	void SetSword(std::shared_ptr<Sword> _sword) { m_sword = _sword; }
 	void SetInviTime(int _inviTime) { m_inviTime = _inviTime; }
 	void SetCamera(std::shared_ptr<GameCamera> a_camera) { m_camera = a_camera; }
-	void SetDissolve(float _dissolve) { m_dissolve = _dissolve; }
 
 	Param GetParam() { return m_param; }
 	bool GetIsAnimator() { return m_animator->IsAnimationEnd(); }

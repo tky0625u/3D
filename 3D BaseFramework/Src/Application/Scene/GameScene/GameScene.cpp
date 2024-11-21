@@ -210,12 +210,13 @@ void GameScene::GameOver::ChangeState(GameScene* owner)
 //=================================================================================================
 
 
+// Clear===========================================================================================
 void GameScene::Clear::Enter(GameScene* owner)
 {
+
 	owner->m_flow = GameScene::Flow::UpdateType;
 }
 
-// Clear===========================================================================================
 void GameScene::Clear::Update(GameScene* owner)
 {
 	if (SceneManager::Instance().GetBlackAlphaFlg())

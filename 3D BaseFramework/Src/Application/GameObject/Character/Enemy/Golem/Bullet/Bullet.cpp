@@ -3,7 +3,6 @@
 #include"../../../../ObjectManager.h"
 #include"../Golem.h"
 #include"../../../Player/Player.h"
-#include"../../../Action/Player/Player_ConText.h"
 #include"../../../Action/Enemy/Enemy_ConText.h"
 
 void Bullet::Update()
@@ -60,7 +59,7 @@ void Bullet::PostUpdate()
 	case KdGameObject::ObjType::oEnemy:
 		if (m_golem.lock()->GetTarget().lock()->Intersects(sphereInfo, nullptr))
 		{
-			m_golem.lock()->GetTarget().lock()->GetConText()->Hit(5, shared_from_this());
+			m_golem.lock()->GetTarget().lock()->Damage(5, shared_from_this());
 			if (m_crush)
 			{
 				KdEffekseerManager::GetInstance().Play("Enemy/Golem/Bullet/Bom.efkefc", m_pos, m_size * 0.5f, 1.0f, false);

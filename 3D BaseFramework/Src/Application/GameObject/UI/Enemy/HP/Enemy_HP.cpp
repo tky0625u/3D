@@ -2,7 +2,6 @@
 #include"../../../Camera/GameCamera/GameCamera.h"
 #include"../../../Character/Enemy/EnemyBase.h"
 #include"../../../Character/Player/Player.h"
-#include"../../../Character/Action/Player/Player_ConText.h"
 
 void Enemy_HP::Update()
 {
@@ -37,7 +36,7 @@ void Enemy_HP::Update()
 
 	if (_pos.z >= 0.0f)
 	{
-		if (!m_target.lock()->GetLockONFlg() && m_target.lock()->GetTarget().lock()->GetConText()->GetLockONFlg()) { m_alpha = 0.1f; }
+		if (!m_target.lock()->GetLockONFlg() && m_target.lock()->GetTarget().lock()->GetLockONFlg()) { m_alpha = 0.1f; }
 		else
 		{
 			m_alpha = 1.0f;
