@@ -39,8 +39,9 @@ void Bullet::PostUpdate()
 	sphereInfo.m_sphere.Radius = 1.0f * m_size;
 	sphereInfo.m_type = KdCollider::Type::TypeBump | KdCollider::Type::TypeGround | KdCollider::Type::TypeDamage;
 
-	Math::Color _color = { 1,0,0,1 };
-	m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, _color);
+	// デバッグ
+	//Math::Color _color = { 1,0,0,1 };
+	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, _color);
 
 	for (auto& ret : SceneManager::Instance().GetObjList())
 	{

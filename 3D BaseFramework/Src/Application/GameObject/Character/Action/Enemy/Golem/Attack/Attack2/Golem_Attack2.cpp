@@ -91,6 +91,7 @@ void Golem_Attack2::AttackDamage()
 	sphereInfo.m_sphere.Radius = 60.0f;
 	sphereInfo.m_type = KdCollider::Type::TypeDamage;
 
+	// デバッグ
 	//Math::Color _color = { 1,0,0,1 };
 	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, _color);
 

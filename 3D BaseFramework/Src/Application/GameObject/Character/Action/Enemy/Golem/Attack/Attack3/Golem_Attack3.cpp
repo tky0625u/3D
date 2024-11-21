@@ -72,8 +72,9 @@ void Golem_Attack3::AttackDamage()
 	sphereInfo.m_sphere.Radius = 60.0f;
 	sphereInfo.m_type = KdCollider::Type::TypeDamage;
 
-	Math::Color _color = { 1,0,0,1 };
-	m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, _color);
+	// デバッグ
+	//Math::Color _color = { 1,0,0,1 };
+	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, _color);
 
 	if (m_target.lock()->GetTarget().lock()->Intersects(sphereInfo, nullptr))
 	{
