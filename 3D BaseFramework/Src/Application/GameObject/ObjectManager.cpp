@@ -149,7 +149,6 @@ void ObjectManager::GameClear()
 
 void ObjectManager::NextTeleport()
 {
-	//m_magic.lock()->GetConText()->Teleport();
 	m_player.lock()->GetConText()->Teleport();
 }
 

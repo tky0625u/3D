@@ -7,6 +7,13 @@ class Sword;
 class CharacterBase :public KdGameObject
 {
 public:
+	enum Flow
+	{
+		EnterType,
+		UpdateType,
+		ExitType
+	};
+
 	 struct Param
 	{
 		 int   Hp  = 1; //体力
@@ -29,6 +36,7 @@ public:
 	virtual void CrushingAction(); //やられ演出
 
 	void Hit(int _damege);
+	void Rotate(Math::Vector3 _moveDir, float _angChange = 10.0f);
 
 	void SetParam(int _hp, int _atk, float _speed, int _stamina);
 	void SetStamina(int _stamina) { m_param.Sm = _stamina; }

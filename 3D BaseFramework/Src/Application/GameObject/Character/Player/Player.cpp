@@ -3,9 +3,6 @@
 #include"../../StageManager.h"
 #include"../../ObjectManager.h"
 #include"../../Camera/GameCamera/GameCamera.h"
-#include"../Action/Player/Idol/Player_Idol.h"
-#include"Application/main.h"
-#include"../Action/Player/Player_ConText.h"
 #include"../Enemy/EnemyBase.h"
 
 void Player::Update()
@@ -24,11 +21,21 @@ void Player::Action()
 	if (m_NextState != nullptr)
 	{
 		m_state = m_NextState;
-		m_context->SetState(m_NextState);
 		m_actionType = m_NextActionType;
 		m_NextState.reset();
 	}
-	if (!m_state.expired())m_state.lock()->Update();
+	switch (m_flow)
+	{
+	case Flow::EnterType:
+		m_state->Enter(this);
+		break;
+	case Flow::UpdateType:
+		m_state->Update(this);
+		break;
+	case Flow::ExitType:
+		m_state->Exit(this);
+		break;
+	}
 }
 
 void Player::PostUpdate()
@@ -51,11 +58,10 @@ void Player::Init()
 	m_model->SetModelData("Asset/Models/Character/Player/Player.gltf");
 	m_animator->SetAnimation(m_model->GetData()->GetAnimation(m_anime), m_animeFlg);
 
-	std::shared_ptr<Player_Idol> idol = std::make_shared<Player_Idol>();
-	idol->SetTarget(shared_from_this());
-
-	m_context = std::make_shared<Player_ActionConText>(idol);
-	m_state = m_context->GetState();
+	std::shared_ptr<Idol> idol = std::make_shared<Idol>();
+	m_state = idol;
+	m_actionType = Action::IdolType;
+	m_flow = CharacterBase::Flow::UpdateType;
 
 	m_pCollider = std::make_unique<KdCollider>();
 	m_pCollider->RegisterCollisionShape("Player", m_model, KdCollider::TypeBump | KdCollider::TypeDamage | KdCollider::TypeEvent);
@@ -70,6 +76,10 @@ void Player::CrushingAction()
 	{
 		m_dissolve = 1.0f;
 	}
+}
+
+void Player::LockONCheck()
+{
 }
 
 void Player::NextStageCheck()
@@ -103,3 +113,113 @@ void Player::NextStageCheck()
 
 	m_TeleportFlg = false;
 }
+
+void Player::KeyCheck()
+{
+	//移動
+	if (GetAsyncKeyState('W') & 0x8000 | GetAsyncKeyState('A') & 0x8000 | GetAsyncKeyState('S') & 0x8000 | GetAsyncKeyState('D') & 0x8000)
+	{
+		m_keyType |= Player::KeyType::MoveKey;
+	}
+	else if (m_keyType & Player::KeyType::MoveKey)
+	{
+		m_keyType ^= Player::KeyType::MoveKey;
+	}
+
+	//攻撃
+	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+	{
+		m_keyType |= Player::KeyType::AttackKey;
+	}
+	else if (m_keyType & Player::KeyType::AttackKey)
+	{
+		m_keyType ^= Player::KeyType::AttackKey;
+	}
+
+	//防御
+	if (GetAsyncKeyState(VK_RBUTTON) & 0x8000)
+	{
+		m_keyType |= Player::KeyType::GuardKey;
+	}
+	else if (m_keyType & Player::KeyType::GuardKey)
+	{
+		m_keyType ^= Player::KeyType::GuardKey;
+	}
+
+	//回避
+	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+	{
+		m_keyType |= Player::KeyType::RollKey;
+	}
+	else if (m_keyType & Player::KeyType::RollKey)
+	{
+		m_keyType ^= Player::KeyType::RollKey;
+	}
+
+	//ロックオン
+	if (GetAsyncKeyState(VK_LSHIFT) & 0x8000)
+	{
+		if (!(m_BeforeKeyType & Player::KeyType::LockONKey))LockON();
+		m_keyType |= Player::KeyType::LockONKey;
+	}
+	else if (m_keyType & Player::KeyType::LockONKey)
+	{
+		m_keyType ^= Player::KeyType::LockONKey;
+	}
+}
+
+// Idol============================================================================================
+void Player::Idol::Enter(Player* owner)
+{
+}
+
+void Player::Idol::Update(Player* owner)
+{
+	if (owner->m_anime != "Idol")
+	{
+		owner->SetAnime("Idol", true, 1.0f);
+	}
+
+	ChangeState(owner);
+}
+
+void Player::Idol::Exit(Player* owner)
+{
+}
+
+void Player::Idol::ChangeState(Player* owner)
+{
+	if (owner->m_keyType & Player::KeyType::MoveKey)
+	{
+		std::shared_ptr<Run> _run = std::make_shared<Run>();
+		owner->m_NextState = _run;
+		owner->m_NextActionType = Player::Action::RunType;
+		owner->m_flow = CharacterBase::Flow::EnterType;
+		return;
+	}
+	else if (owner->m_keyType & Player::KeyType::AttackKey && !(owner->m_BeforeKeyType & Player::KeyType::AttackKey))
+	{
+		std::shared_ptr<Attack> _attack = std::make_shared<Attack>();
+		owner->m_NextState = _attack;
+		owner->m_NextActionType = Player::Action::AttackType;
+		owner->m_flow = CharacterBase::Flow::EnterType;
+		return;
+	}
+	else if (owner->m_keyType & Player::KeyType::GuardKey)
+	{
+		std::shared_ptr<Guard> _guard = std::make_shared<Guard>();
+		owner->m_NextState = _guard;
+		owner->m_NextActionType = Player::Action::GuardType;
+		owner->m_flow = CharacterBase::Flow::EnterType;
+		return;
+	}
+	else if (owner->m_keyType & Player::KeyType::RollKey && !(owner->m_BeforeKeyType & Player::KeyType::RollKey))
+	{
+		std::shared_ptr<Roll> _roll = std::make_shared<Roll>();
+		owner->m_NextState = _roll;
+		owner->m_NextActionType = Player::Action::RollType;
+		owner->m_flow = CharacterBase::Flow::EnterType;
+		return;
+	}
+}
+//=================================================================================================

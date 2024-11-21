@@ -5,8 +5,6 @@
 #include"Player/Player.h"
 #include"Action/ActionBase.h"
 #include"../Camera/GameCamera/GameCamera.h"
-#include"../Camera/GameCamera/GameCamera_ConText.h"
-#include"../Camera/GameCamera/GameCamera_State.h"
 
 void CharacterBase::PreUpdate()
 {
@@ -187,6 +185,54 @@ void CharacterBase::Hit(int _damege)
 {
 	m_param.Hp -= _damege;
 	if (m_param.Hp <= 0)m_param.Hp = 0;
+}
+
+void CharacterBase::Rotate(Math::Vector3 _moveDir, float _angChange)
+{
+	//今の方向
+	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle.y));
+	Math::Vector3 nowVec = Math::Vector3::TransformNormal(m_forward, nowRot);
+
+	//向きたい方向
+	Math::Vector3 toVec = _moveDir;
+	toVec.Normalize();
+
+	//内角 回転する角を求める
+	float d = nowVec.Dot(toVec);
+	d = std::clamp(d, -1.0f, 1.0f); //誤差修正
+
+	//回転角度を求める
+	float ang = DirectX::XMConvertToDegrees(acos(d));
+
+	//角度変更
+	if (ang >= 0.1f)
+	{
+		if (ang > _angChange)
+		{
+			ang = _angChange; //変更角度
+		}
+
+		//外角　どっち回転かを求める
+		Math::Vector3 c = toVec.Cross(nowVec);
+		if (c.y >= 0)
+		{
+			//右回転
+			m_angle.y -= ang;
+			if (m_angle.y < 0.0f)
+			{
+				m_angle.y += 360.0f;
+			}
+		}
+		else
+		{
+			//左回転
+			m_angle.y += ang;
+			if (m_angle.y >= 360.0f)
+			{
+				m_angle.y -= 360.0f;
+			}
+		}
+	}
 }
 
 void CharacterBase::SetParam(int _hp, int _atk, float _speed, int _stamina)
