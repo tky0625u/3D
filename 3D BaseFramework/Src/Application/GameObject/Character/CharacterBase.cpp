@@ -17,7 +17,7 @@ void CharacterBase::PreUpdate()
 
 void CharacterBase::Update()
 {
-	if (m_camera.lock()->GetConText()->GetState()->GetShakeFlg())return;
+	if (m_camera.lock()->GetState()->GetShakeFlg())return;
 	// デバッグ
 	if (!SceneManager::Instance().m_stop)
 	{
@@ -47,7 +47,7 @@ void CharacterBase::Update()
 
 void CharacterBase::PostUpdate()
 {
-	if (m_camera.lock()->GetConText()->GetState()->GetShakeFlg())return;
+	if (m_camera.lock()->GetState()->GetShakeFlg())return;
 
 	KdCollider::RayInfo rayInfo;
 	rayInfo.m_pos = m_pos;
@@ -132,7 +132,7 @@ void CharacterBase::PostUpdate()
 		m_pos += maxOverLap * HitDir;
 	}
 
-	if (m_camera.lock()->GetConText()->GetState()->GetShakeFlg())return;
+	if (m_camera.lock()->GetState()->GetShakeFlg())return;
 
 	//アニメーションの更新
 	if (m_anime != m_beforeAnime)

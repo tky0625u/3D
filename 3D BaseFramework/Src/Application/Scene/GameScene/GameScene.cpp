@@ -66,7 +66,7 @@ void StageLoad()
 	_StageManager->SetObjectManager(_ObjManager);
 
 	_ObjManager->SceneCheck();
-	_ObjManager->SetGameCameraParam();
+	_ObjManager->SetGameCameraParam(_StageManager);
 	_ObjManager->SetObjectParam(_StageManager);
 	_ObjManager->SetPlayerParam(_StageManager);
 	_ObjManager->SetEnemyParam("Asset/Json/Game/Enemy/Stage1.json",_StageManager);
@@ -214,7 +214,6 @@ void GameScene::GameOver::ChangeState(GameScene* owner)
 
 void GameScene::Clear::Enter(GameScene* owner)
 {
-	owner->m_player->GetCamera().lock()->GetConText()->ClearCamera();
 	owner->m_flow = GameScene::Flow::UpdateType;
 }
 

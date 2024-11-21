@@ -72,7 +72,7 @@ void Player_ActionState::AttackDamage()
 	{
 		if (hitEnemy->GetParam().Hp > 0 && hitEnemy->GetActionType() != EnemyBase::Action::AppealType && hitEnemy->GetinviTime() == 0)
 		{
-			m_target.lock()->GetCamera().lock()->GetConText()->GetState()->SetShakeFlg(true);
+			m_target.lock()->GetCamera().lock()->GetState()->SetShakeFlg(true);
 			hitEnemy->Hit(m_target.lock()->GetParam().Atk);
 			hitEnemy->GetConText()->Hit(m_target.lock()->GetParam().Atk);
 			hitEnemy->SetInviTime(m_target.lock()->GetinviTime());

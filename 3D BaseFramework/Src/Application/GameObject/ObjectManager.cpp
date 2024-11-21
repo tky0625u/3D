@@ -143,13 +143,11 @@ void ObjectManager::NextStageLiberation()
 {
 	m_player.lock()->GetConText()->Idol();
 	m_magic.lock()->GetConText()->Next();
-	m_camera.lock()->GetConText()->FixedCamera();
 }
 
 void ObjectManager::GameClear()
 {
 	m_player.lock()->GetConText()->Idol();
-	m_camera.lock()->GetConText()->ClearCamera();
 }
 
 void ObjectManager::NextTeleport()
@@ -507,7 +505,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					if (ImGui::Button((const char*)u8"Player"))
 					{
 						_camera->SetCameraType(GameCamera::CameraType::PlayerType);
-						_camera->GetConText()->PlayerCamera();
+						_camera->PlayerChange();
 					}
 				}
 				if (_camera->GetCameraType() != GameCamera::CameraType::FixedType)
@@ -515,7 +513,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					if (ImGui::Button((const char*)u8"Fixed"))
 					{
 						_camera->SetCameraType(GameCamera::CameraType::FixedType);
-						_camera->GetConText()->FixedCamera();
+						_camera->FixedChange();
 					}
 				}
 				if (_camera->GetCameraType() != GameCamera::CameraType::ClearType)
@@ -523,7 +521,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					if (ImGui::Button((const char*)u8"Clear"))
 					{
 						_camera->SetCameraType(GameCamera::CameraType::ClearType);
-						_camera->GetConText()->ClearCamera();
+						_camera->ClearChange();
 					}
 				}
 
@@ -2208,7 +2206,7 @@ void ObjectManager::SetCursorParam()
 	ifs.close();
 }
 
-void ObjectManager::SetGameCameraParam()
+void ObjectManager::SetGameCameraParam(std::shared_ptr<StageManager> _stage)
 {
 	//jsonファイル
 	std::string fileName = "Asset/Json/Game/Camera/Camera.json";
@@ -2267,6 +2265,7 @@ void ObjectManager::SetGameCameraParam()
 		camera->SetViewAngList(_PlayerViewAngle, _FixedViewAngle, _ClearViewAngle);
 		camera->SetName(_name);
 		camera->SetObjManager(shared_from_this());
+		camera->SetStageManager(_stage);
 		camera->Init();
 		camera->SetID(m_id);
 		m_id++;

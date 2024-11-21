@@ -8,9 +8,6 @@
 #include"../Player_ActionState.h"
 #include"../../../../Weapon/Sword/Sword.h"
 #include"../../../../Camera/GameCamera/GameCamera.h"
-#include"../../../../Camera/GameCamera/GameCamera_ConText.h"
-#include"../../../../Camera/GameCamera/GameCamera_State.h"
-
 
 void Player_Attack::Start()
 {

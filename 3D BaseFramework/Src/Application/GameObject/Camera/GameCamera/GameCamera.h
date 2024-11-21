@@ -4,12 +4,20 @@
 class GameCamera_ConText;
 class GameCamera_State;
 class MagicPolygon;
+class StageManager;
 
 class GameCamera :public CameraBase,public std::enable_shared_from_this<GameCamera>
 {
 public:
 	GameCamera() {};
 	~GameCamera()override {};
+
+	enum Flow
+	{
+		EnterType,
+		UpdateType,
+		ExitType
+	};
 
 	enum CameraType
 	{
@@ -32,16 +40,14 @@ public:
 	void SetPosList(Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _clear);
 	void SetViewAngList(float _player, float _fixed, float _clear);
 	void SetFixedTarget(std::shared_ptr<MagicPolygon> _Obj) { m_FixedTarget = _Obj; }
-	void SetNextState(std::shared_ptr<GameCamera_State> _state) { m_NextState = _state; }
 	void SetCameraType(UINT _cameraType) { m_CameraType = _cameraType; }
+	void SetStageManager(std::shared_ptr<StageManager> _stageManager) { m_stageManager = _stageManager; }
 
 	const Math::Vector3 GetNowPos()   const { return m_PosList[m_CameraType]; }
 	const Math::Vector3 GetNowDegAng()const { return m_DegAngList[m_CameraType]; }
 	const float GetNowViewAng()const { return m_ViewAngList[m_CameraType]; }
 	const std::weak_ptr<Player> GetwpTarget()const { return m_wpTarget; }
 	const UINT GetCameraType()const { return m_CameraType; }
-	const std::shared_ptr<GameCamera_ConText> GetConText()const { return m_conText; }
-	const POINT GetFixMousePos()const { return m_FixMousePos; }
 	const std::shared_ptr<MagicPolygon> GetFixedTarget()const { return m_FixedTarget; }
 	const Math::Matrix GetRotationMatrix()const override
 	{
@@ -62,17 +68,118 @@ public:
 			DirectX::XMConvertToRadians(m_DegAngList[m_CameraType].y));
 	}
 
-private:
-	std::shared_ptr<GameCamera_ConText> m_conText   = nullptr;
-	std::weak_ptr<GameCamera_State>     m_state;
-	std::shared_ptr<GameCamera_State>   m_NextState = nullptr;
+	// デバッグ
+	void PlayerChange()
+	{
+		std::shared_ptr<PlayerCamera> _player = std::make_shared<PlayerCamera>();
+		m_NextState = _player;
+		m_flow = GameCamera::Flow::EnterType;
+		return;
+	}
+	void FixedChange()
+	{
+		std::shared_ptr<FixedCamera> _fixed = std::make_shared<FixedCamera>();
+		m_NextState = _fixed;
+		m_flow = GameCamera::Flow::EnterType;
+		return;
+	}
+	void ClearChange()
+	{
+		std::shared_ptr<ClearCamera> _clear = std::make_shared<ClearCamera>();
+		m_NextState = _clear;
+		m_flow = GameCamera::Flow::EnterType;
+		return;
+	}
 
-	UINT                           m_CameraType = CameraType::PlayerType;
+private:
 	std::vector<Math::Vector3>     m_PosList;
 	std::vector<Math::Vector3>     m_DegAngList;
 	std::vector<float>             m_ViewAngList;
 	std::shared_ptr<MagicPolygon>  m_FixedTarget;
+	std::weak_ptr<StageManager>    m_stageManager;
 
 	// デバッグ
 	bool showFlg = false;
+
+private:
+	class StateBase
+	{
+	public:
+		StateBase()          {};
+		virtual ~StateBase() {};
+
+		virtual void Enter (GameCamera* owner) {};
+		virtual void Update(GameCamera* owner) {};
+		virtual void Exit  (GameCamera* owner) {};
+
+		virtual void ChangeState(GameCamera* owner) = 0;
+
+		void SetShakeFlg(bool _shakeFlg) { m_shakeFlg = _shakeFlg; }
+
+		const float& GetShakeFlg()const  { return m_shakeFlg; }
+
+	protected:
+		float m_move      = 0.1f;
+		float m_shakeTime = 10.0f;
+		bool  m_shakeFlg  = false;
+	};
+
+	class PlayerCamera:public StateBase
+	{
+	public:
+		PlayerCamera()          {};
+		virtual ~PlayerCamera() {};
+
+		void Enter (GameCamera* owner)override;
+		void Update(GameCamera* owner)override;
+		void Exit  (GameCamera* owner)override;
+
+		void ChangeState(GameCamera* owner)override;
+
+		void LockON(GameCamera* owner);
+		void Shake (GameCamera* owner, Math::Matrix& _trans);
+
+	private:
+
+	};		  
+
+	class FixedCamera :public StateBase
+	{
+	public:
+		FixedCamera()          {};
+		virtual ~FixedCamera() {};
+
+		void Enter(GameCamera* owner)override;
+		void Update(GameCamera* owner)override;
+		void Exit(GameCamera* owner)override;
+
+		void ChangeState(GameCamera* owner)override;
+
+	private:
+
+	};
+
+	class ClearCamera :public StateBase
+	{
+	public:
+		ClearCamera()          {};
+		virtual ~ClearCamera() {};
+
+		void Enter(GameCamera* owner)override;
+		void Update(GameCamera* owner)override;
+		void Exit(GameCamera* owner)override;
+
+		void ChangeState(GameCamera* owner)override;
+
+	private:
+
+	};
+
+	std::shared_ptr<StateBase> m_state      = nullptr;
+	std::shared_ptr<StateBase> m_NextState  = nullptr;
+	UINT                       m_flow       = Flow::UpdateType;
+	UINT                       m_CameraType = CameraType::PlayerType;
+
+public:
+	const std::shared_ptr<StateBase>& GetState()const { return m_state; }
 };

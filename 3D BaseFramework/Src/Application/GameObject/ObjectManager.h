@@ -68,7 +68,7 @@ public:
 	void SetExitParam();
 	void SetTitleGuideParam();
 	void SetCursorParam();
-	void SetGameCameraParam();
+	void SetGameCameraParam(std::shared_ptr<StageManager> _stage);
 	void SetObjectParam(std::shared_ptr<StageManager> _stage = nullptr);
 	void SetPlayerParam(std::shared_ptr<StageManager> _stage);
 	void SetPlayerUI(std::shared_ptr<StageManager> _stage);

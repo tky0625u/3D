@@ -9,7 +9,7 @@
 
 void EnemyBase::PostUpdate()
 {
-	if (m_camera.lock()->GetConText()->GetState()->GetShakeFlg())return;
+	if (m_camera.lock()->GetState()->GetShakeFlg())return;
 
 	CharacterBase::PostUpdate();
 
