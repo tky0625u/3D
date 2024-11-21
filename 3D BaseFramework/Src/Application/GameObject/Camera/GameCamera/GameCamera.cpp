@@ -2,7 +2,6 @@
 #include"../../../Scene/SceneManager.h"
 #include"../../ObjectManager.h"
 #include"../../StageManager.h"
-#include"PlayerCamera/GameCamera_Player.h"
 #include"../../Character/Player/Player.h"
 #include"../../Character/Action/Player/Player_ConText.h"
 #include"../../Stage/MagicPolygon/MagicPolygon.h"

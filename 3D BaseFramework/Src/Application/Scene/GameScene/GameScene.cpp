@@ -11,7 +11,6 @@
 #include"../../GameObject/Character/Enemy/EnemyManager.h"
 #include"../../GameObject/Character/Player/Player.h"
 #include"../../GameObject/Camera/GameCamera/GameCamera.h"
-#include"../../GameObject/Camera/GameCamera/GameCamera_ConText.h"
 
 void GameScene::Event()
 {
@@ -33,7 +32,6 @@ void GameScene::Event()
 		m_state->Exit(this);
 		break;
 	}
-	m_state->Update(this);
 
 	KdShaderManager::Instance().WorkAmbientController().SetDirLight(Math::Vector3{ 0.5f,-1.0f,0.5f }, Math::Vector3{ 1.5f,1.5f,1.3f });
 }

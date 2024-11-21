@@ -4,7 +4,6 @@
 #include"Character/CharacterBase.h"
 #include"Character/Enemy/Bone/Bone.h"
 #include"Character/Action/Enemy/Enemy_ConText.h"
-#include"Camera/GameCamera/GameCamera_ConText.h"
 #include"StageManager.h"
 #include<fstream>
 #include<sstream>
@@ -15,7 +14,6 @@
 #include"Stage/Circle/Circle.h"
 //魔法陣
 #include"Stage/MagicPolygon/MagicPolygon.h"
-#include"Stage/MagicPolygon/MagicPolygon_ConText.h"
 //壁
 #include"Stage/Wall/Wall.h"
 //スカイボックス
@@ -142,7 +140,6 @@ void ObjectManager::SlowChange()
 void ObjectManager::NextStageLiberation()
 {
 	m_player.lock()->GetConText()->Idol();
-	m_magic.lock()->GetConText()->Next();
 }
 
 void ObjectManager::GameClear()
@@ -230,8 +227,6 @@ void ObjectManager::CreateStage(std::shared_ptr<StageManager> _stage)
 	m_player.lock()->GetConText()->GetState()->SetFlow(ActionBase::Flow::EndType);
 	m_player.lock()->SetPos(m_ground.lock()->GetPos());
 	m_player.lock()->SetTeleportFlg(false);
-
-	m_magic.lock()->GetConText()->Normal();
 }
 
 void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
@@ -2326,6 +2321,7 @@ void ObjectManager::SetObjectParam(std::shared_ptr<StageManager> _stage)
 			if (_name == "Magic")
 			{
 				magic = std::make_shared<MagicPolygon>();
+				magic->SetStageManager(_stage);
 				m_magic = magic;
 				if (m_camera.expired() == false)m_camera.lock()->SetFixedTarget(magic);
 				obj = magic;

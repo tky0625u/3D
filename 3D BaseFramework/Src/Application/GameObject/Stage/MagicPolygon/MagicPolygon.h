@@ -4,10 +4,18 @@ class Circle;
 class GameCamera;
 class MagicPolygon_ConText;
 class MagicPolygon_State;
+class StageManager;
 
 class MagicPolygon :public KdGameObject,public std::enable_shared_from_this<MagicPolygon>
 {
 public:
+	enum Flow
+	{
+		EnterType,
+		UpdateType,
+		ExitType
+	};
+
 	MagicPolygon() {};
 	~MagicPolygon()override {};
 
@@ -18,22 +26,68 @@ public:
 
 	void SetCircle(std::shared_ptr<Circle> _circle) { m_circle = _circle; }
 	void SetMatrix(Math::Matrix _mat) { m_mWorld = _mat; }
-	void SetNextState(std::shared_ptr<MagicPolygon_State> _nextState) { m_NextState = _nextState; }
 	void SetRBG(float _rgb) { m_rgb = _rgb; }
 	void SetTeleportFlg(bool _teleport) { m_TeleportFlg = _teleport; }
+	void SetStageManager(std::shared_ptr<StageManager> _stageManager) { m_stageManager = _stageManager; }
 
 	const float& GetRGB() const { return m_rgb; }
-	const std::shared_ptr<MagicPolygon_ConText>& GetConText()const { return m_conText; }
 	const bool& GetTeleport()const { return m_TeleportFlg; }
 
 private:
-	std::shared_ptr<MagicPolygon_ConText> m_conText   = nullptr;
-	std::weak_ptr<MagicPolygon_State>     m_state;
-	std::shared_ptr<MagicPolygon_State>   m_NextState = nullptr;
-
+	std::weak_ptr<StageManager>      m_stageManager;
 	std::weak_ptr<Circle>            m_circle;
 	std::shared_ptr<KdSquarePolygon> m_spPolygon = nullptr;
 	Math::Color                      m_color;
 	float                            m_rgb       = 0.0f;
 	bool                             m_TeleportFlg  = false;
+
+private:
+	class StateBase
+	{
+	public:
+		StateBase() {};
+		virtual ~StateBase() {};
+
+		virtual void Enter (MagicPolygon* owner) {};
+		virtual void Update(MagicPolygon* owner) {};
+		virtual void Exit  (MagicPolygon* owner) {};
+
+		virtual void ChangeState(MagicPolygon* owner) = 0;
+	};
+
+	class Normal :public StateBase
+	{
+	public:
+		Normal() {};
+		~Normal()override {};
+
+		void Enter (MagicPolygon* owner)override;
+		void Update(MagicPolygon* owner)override;
+		void Exit  (MagicPolygon* owner)override;
+
+		void ChangeState(MagicPolygon* owner)override;
+
+	private:
+
+	};
+
+	class Next :public StateBase
+	{
+	public:
+		Next() {};
+		~Next()override {};
+
+		void Enter (MagicPolygon* owner)override;
+		void Update(MagicPolygon* owner)override;
+		void Exit  (MagicPolygon* owner)override;
+
+		void ChangeState(MagicPolygon* owner)override;
+
+	private:
+		Effekseer::Handle m_handle = 0;
+	};
+
+	std::shared_ptr<StateBase>  m_state;
+	std::shared_ptr<StateBase>  m_NextState = nullptr;
+	UINT                        m_flow = Flow::UpdateType;
 };

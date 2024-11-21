@@ -208,11 +208,6 @@
     <ClInclude Include="Src\Application\GameObject\Stage\Circle\Circle.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Ground\Ground.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\MagicPolygon\MagicPolygon.h" />
-    <ClInclude Include="Src\Application\GameObject\Stage\MagicPolygon\MagicPolygon_ConText.h" />
-    <ClInclude Include="Src\Application\GameObject\Stage\MagicPolygon\MagicPolygon_State.h" />
-    <ClInclude Include="Src\Application\GameObject\Stage\MagicPolygon\Next\MagicPolygon_Next.h" />
-    <ClInclude Include="Src\Application\GameObject\Stage\MagicPolygon\Normal\MagicPolygon_Normal.h" />
-    <ClInclude Include="Src\Application\GameObject\Stage\MagicPolygon\Teleport\MagicPolygon_Teleport.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Wall\Wall.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Enemy\HP\Enemy_HP.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Player\Floor\Floor.h" />
@@ -330,10 +325,6 @@
     <ClCompile Include="Src\Application\GameObject\Stage\Circle\Circle.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Ground\Ground.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\MagicPolygon\MagicPolygon.cpp" />
-    <ClCompile Include="Src\Application\GameObject\Stage\MagicPolygon\MagicPolygon_State.cpp" />
-    <ClCompile Include="Src\Application\GameObject\Stage\MagicPolygon\Next\MagicPolygon_Next.cpp" />
-    <ClCompile Include="Src\Application\GameObject\Stage\MagicPolygon\Normal\MagicPolygon_Normal.cpp" />
-    <ClCompile Include="Src\Application\GameObject\Stage\MagicPolygon\Teleport\MagicPolygon_Teleport.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Wall\Wall.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Enemy\HP\Enemy_HP.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\Floor\Floor.cpp" />
