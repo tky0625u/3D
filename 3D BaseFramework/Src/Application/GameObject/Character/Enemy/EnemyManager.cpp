@@ -1,6 +1,5 @@
 ﻿#include "EnemyManager.h"
 #include"EnemyBase.h"
-#include"../Action/Enemy/Enemy_ConText.h"
 #include"../Player/Player.h"
 
 void EnemyManager::DeleteEnemyList()
@@ -34,7 +33,7 @@ void EnemyManager::EnemyAttack()
 		}
 	}
 
-	if (m_EnemyAttackList[0].expired() == false && m_EnemyAttackList[0].lock()->GetActionType() == EnemyBase::Action::IdolType)m_EnemyAttackList[0].lock()->GetConText()->Attack();
+	if (m_EnemyAttackList[0].expired() == false && m_EnemyAttackList[0].lock()->GetParam().Hp > 0 && m_EnemyAttackList[0].lock()->GetActionType() == EnemyBase::Action::IdolType)m_EnemyAttackList[0].lock()->AttackChange();
 
 	auto enemy = m_EnemyAttackList.begin();
 	while (enemy != m_EnemyAttackList.end())
@@ -48,8 +47,10 @@ void EnemyManager::EnemyRun()
 {
 	for (auto& enemy : m_EnemyList)
 	{
-		if (enemy->GetActionType() != EnemyBase::Action::RunType  &&
-			enemy->GetActionType() != EnemyBase::Action::IdolType)continue;
+		if (enemy->GetActionType() != EnemyBase::Action::RunType &&
+			enemy->GetActionType() != EnemyBase::Action::IdolType )continue;
+
+		if (enemy->GetParam().Hp <= 0)continue;
 
 		if (enemy->GetName() == "Bone")
 		{
@@ -66,7 +67,7 @@ void EnemyManager::EnemyRun()
 			std::list<KdCollider::CollisionResult> _List;
 			if (enemy->GetTarget().lock()->Intersects(rayInfo, &_List))
 			{
-				enemy->GetConText()->Idol();
+				enemy->IdolChange();
 
 				bool atkFlg = false;
 				for (auto& atk : m_EnemyAttackList)
@@ -86,7 +87,7 @@ void EnemyManager::EnemyRun()
 			}
 			else if (enemy->GetActionType() != EnemyBase::Action::RunType)
 			{
-				enemy->GetConText()->Run();
+				enemy->RunChange();
 			}
 		}
 		else if (enemy->GetName() == "Golem")
@@ -100,7 +101,7 @@ void EnemyManager::EnemyRun()
 			std::list<KdCollider::CollisionResult> _List;
 			if (enemy->GetTarget().lock()->Intersects(sphereInfo, &_List))
 			{
-				enemy->GetConText()->Idol();
+				enemy->IdolChange();
 
 				bool atkFlg = false;
 				for (auto& atk : m_EnemyAttackList)
@@ -120,7 +121,7 @@ void EnemyManager::EnemyRun()
 			}
 			else if (enemy->GetActionType() != EnemyBase::Action::RunType)
 			{
-				enemy->GetConText()->Run();
+				enemy->RunChange();
 			}
 		}
 	}

@@ -17,17 +17,6 @@ void EnemyBase::PostUpdate()
 	}
 }
 
-void EnemyBase::Action()
-{
-	if (m_NextState != nullptr)
-	{
-		m_state = m_NextState;
-		m_conText->SetState(m_NextState);
-		m_NextState.reset();
-	}
-	if (m_state.expired() == false)m_state.lock()->Update();
-}
-
 void EnemyBase::DrawOutLine()
 {
 	KdShaderManager::Instance().m_StandardShader.SetEnableOutLineDraw(m_LockONFlg);

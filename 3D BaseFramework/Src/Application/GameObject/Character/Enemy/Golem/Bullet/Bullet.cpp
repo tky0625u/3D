@@ -73,7 +73,7 @@ void Bullet::PostUpdate()
 		{
 			if (ret->Intersects(sphereInfo, nullptr))
 			{
-				ret->GetConText()->Hit(5);
+				ret->Damage(5);
 				KdEffekseerManager::GetInstance().Play("Enemy/Golem/Bullet/Bom.efkefc", m_pos, m_size * 0.5f, 1.0f, false);
 				Expired();
 			}

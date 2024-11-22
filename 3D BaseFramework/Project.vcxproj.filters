@@ -85,9 +85,6 @@
     <Filter Include="Src\Application\GameObject\SkyBox">
       <UniqueIdentifier>{9c58ef51-86d0-4bf5-9205-a04249ca4610}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action">
-      <UniqueIdentifier>{6096abf0-115f-4212-8c4f-c4211e4c8288}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Src\Application\GameObject\Stage">
       <UniqueIdentifier>{3239d098-54de-43c1-9f96-56c300b188c0}</UniqueIdentifier>
     </Filter>
@@ -96,9 +93,6 @@
     </Filter>
     <Filter Include="Src\Application\GameObject\Character\Enemy\Bone">
       <UniqueIdentifier>{866d8ab7-1703-4b74-b438-579645749bcb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy">
-      <UniqueIdentifier>{0bec7508-9c7b-4041-92fa-0c008727e956}</UniqueIdentifier>
     </Filter>
     <Filter Include="Src\Application\GameObject\Weapon">
       <UniqueIdentifier>{ef1aa68a-185c-4004-be5f-184c89f8530b}</UniqueIdentifier>
@@ -115,24 +109,6 @@
     <Filter Include="Src\Application\GameObject\Weapon\Shield">
       <UniqueIdentifier>{3aae3733-8ab8-4995-bfe1-c58e0e7eef89}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Bone">
-      <UniqueIdentifier>{d8f610a8-eb6e-4bde-b870-5150be66c92e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Attack">
-      <UniqueIdentifier>{63bfe2fe-306d-475a-b6cb-293509b1a824}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Idol">
-      <UniqueIdentifier>{91f97e2b-e61a-490d-997d-ee9a593983e6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Run">
-      <UniqueIdentifier>{a77dc544-b3f4-4a08-989c-d6cdfebec175}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Hit">
-      <UniqueIdentifier>{78be2900-b1ca-40d5-aca2-87507d39fde9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble">
-      <UniqueIdentifier>{a7b7cb83-188e-459a-a859-82a367eeae2f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Src\Application\GameObject\UI">
       <UniqueIdentifier>{fef6b53d-8960-497a-ad8d-b9810d35e485}</UniqueIdentifier>
     </Filter>
@@ -148,9 +124,6 @@
     <Filter Include="Src\Application\GameObject\UI\Player\Stamina">
       <UniqueIdentifier>{e31ca73f-9dfb-441d-8ba2-4c4d81cb70ff}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal">
-      <UniqueIdentifier>{a335f648-2bb7-4090-b39d-d6bacf9e2a72}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Src\Application\GameObject\UI\Enemy\HP">
       <UniqueIdentifier>{620356b5-12c6-443d-acc3-dfe6ba4f1402}</UniqueIdentifier>
     </Filter>
@@ -165,27 +138,6 @@
     </Filter>
     <Filter Include="Src\Application\GameObject\Character\Enemy\Golem">
       <UniqueIdentifier>{6180fbf8-467c-4202-83a6-29ab5659f332}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem">
-      <UniqueIdentifier>{8f12c8d8-7b48-44a2-978f-496f0b10c41a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Idol">
-      <UniqueIdentifier>{5f6d426c-b586-430a-ae4f-4927cbf34d9c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Appeal">
-      <UniqueIdentifier>{5579f4ac-2c2b-46c9-acab-eda1d6556a48}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack">
-      <UniqueIdentifier>{ef39f84f-f79f-4f76-a604-a175da9dc93d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Hit">
-      <UniqueIdentifier>{f023cc5d-bc3e-43de-9399-0ad26ffdc43a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Run">
-      <UniqueIdentifier>{196349be-abdb-4a74-b435-bb1e92939978}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Stumble">
-      <UniqueIdentifier>{91fb060a-bdba-4538-a5d7-ae18be927cef}</UniqueIdentifier>
     </Filter>
     <Filter Include="Src\Application\GameObject\UI\Player\LockON">
       <UniqueIdentifier>{04eb853b-cfff-4568-aa40-301bc7597af6}</UniqueIdentifier>
@@ -217,32 +169,17 @@
     <Filter Include="Src\Application\GameObject\Camera\GameCamera">
       <UniqueIdentifier>{a70532aa-9b5e-4308-8f79-0a6d219a0072}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Crushing">
-      <UniqueIdentifier>{5dd3f2ce-ca5a-4bd6-9f95-a909dddc4b74}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Src\Application\GameObject\UI\Player\Teleport">
       <UniqueIdentifier>{2c0df679-32d7-4eec-bd37-139c32a93e7a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Src\Application\GameObject\UI\Player\GameOver">
       <UniqueIdentifier>{52949f5a-c768-4fdb-ad67-a8892628cc71}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Crushing">
-      <UniqueIdentifier>{56e4794e-6286-499e-a198-23027480cb89}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack1">
-      <UniqueIdentifier>{0bd3eeae-c856-43ff-bb86-5900afc2fc8f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack2">
-      <UniqueIdentifier>{9bd4f18a-9bd1-4eab-961a-b02a0c94e0ca}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Src\Application\GameObject\Character\Enemy\Golem\Bullet">
       <UniqueIdentifier>{79e66a0c-b4e7-4e25-a100-e5e3c192cae6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Src\Application\GameObject\Character\BulletBase">
       <UniqueIdentifier>{160f4817-0a24-401d-8858-6e0e9b2857ae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack3">
-      <UniqueIdentifier>{273ca9f5-fa69-4854-92fc-92ce586ec85e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -423,20 +360,11 @@
     <ClInclude Include="Src\Application\GameObject\SkyBox\SkyBox.h">
       <Filter>Src\Application\GameObject\SkyBox</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\ActionBase.h">
-      <Filter>Src\Application\GameObject\Character\Action</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\ObjectManager.h">
       <Filter>Src\Application\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\Bone\Bone.h">
       <Filter>Src\Application\GameObject\Character\Enemy\Bone</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Enemy_ConText.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Enemy_ActionState.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Stage\Ground\Ground.h">
       <Filter>Src\Application\GameObject\Stage\Ground</Filter>
@@ -456,24 +384,6 @@
     <ClInclude Include="Src\Application\GameObject\Weapon\Shield\Shield.h">
       <Filter>Src\Application\GameObject\Weapon\Shield</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Bone_ActionState.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Idol\Bone_Idol.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Idol</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Run\Bone_Run.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Run</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Hit\Bone_Hit.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Hit</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Attack\Bone_Attack.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble\Bone_Stumble.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\UI\UIBase.h">
       <Filter>Src\Application\GameObject\UI</Filter>
     </ClInclude>
@@ -482,9 +392,6 @@
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\UI\Player\Stamina\Player_Stamina.h">
       <Filter>Src\Application\GameObject\UI\Player\Stamina</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal\Bone_Appeal.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\UI\Enemy\HP\Enemy_HP.h">
       <Filter>Src\Application\GameObject\UI\Enemy\HP</Filter>
@@ -500,21 +407,6 @@
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\Golem\Golem.h">
       <Filter>Src\Application\GameObject\Character\Enemy\Golem</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Golem_ActionState.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Idol\Golem_Idol.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Idol</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Appeal\Golem_Appeal.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Appeal</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Hit\Golem_Hit.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Hit</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Stumble\Golem_Stumble.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Stumble</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\UI\Player\LockON\LockON.h">
       <Filter>Src\Application\GameObject\UI\Player\LockON</Filter>
@@ -540,17 +432,11 @@
     <ClInclude Include="Src\Application\GameObject\UI\Title\Guide\Guide.h">
       <Filter>Src\Application\GameObject\UI\Title\Guide</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Run\Golem_Run.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Run</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Camera\GameCamera\GameCamera.h">
       <Filter>Src\Application\GameObject\Camera\GameCamera</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\EnemyManager.h">
       <Filter>Src\Application\GameObject\Character\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Crushing\Bone_Crushing.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Crushing</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\StageManager.h">
       <Filter>Src\Application\GameObject</Filter>
@@ -561,23 +447,11 @@
     <ClInclude Include="Src\Application\GameObject\UI\Player\GameOver\GameOver.h">
       <Filter>Src\Application\GameObject\UI\Player\GameOver</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Crushing\Golem_Crushing.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Crushing</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack1\Golem_Attack1.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack1</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack2\Golem_Attack2.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack2</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\Golem\Bullet\Bullet.h">
       <Filter>Src\Application\GameObject\Character\Enemy\Golem\Bullet</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Character\BulletBase\BulletBase.h">
       <Filter>Src\Application\GameObject\Character\BulletBase</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack3\Golem_Attack3.h">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack3</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -731,17 +605,11 @@
     <ClCompile Include="Src\Application\GameObject\SkyBox\SkyBox.cpp">
       <Filter>Src\Application\GameObject\SkyBox</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\ActionBase.cpp">
-      <Filter>Src\Application\GameObject\Character\Action</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\GameObject\ObjectManager.cpp">
       <Filter>Src\Application\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\Bone\Bone.cpp">
       <Filter>Src\Application\GameObject\Character\Enemy\Bone</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Enemy_ActionState.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Stage\Ground\Ground.cpp">
       <Filter>Src\Application\GameObject\Stage\Ground</Filter>
@@ -761,24 +629,6 @@
     <ClCompile Include="Src\Application\GameObject\Weapon\Shield\Shield.cpp">
       <Filter>Src\Application\GameObject\Weapon\Shield</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Bone_ActionState.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Idol\Bone_Idol.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Idol</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Run\Bone_Run.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Run</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Hit\Bone_Hit.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Hit</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Attack\Bone_Attack.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Attack</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble\Bone_Stumble.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Stumble</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\GameObject\UI\UIBase.cpp">
       <Filter>Src\Application\GameObject\UI</Filter>
     </ClCompile>
@@ -787,9 +637,6 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\UI\Player\Stamina\Player_Stamina.cpp">
       <Filter>Src\Application\GameObject\UI\Player\Stamina</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal\Bone_Appeal.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Appeal</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\UI\Enemy\HP\Enemy_HP.cpp">
       <Filter>Src\Application\GameObject\UI\Enemy\HP</Filter>
@@ -805,24 +652,6 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\Golem\Golem.cpp">
       <Filter>Src\Application\GameObject\Character\Enemy\Golem</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Golem_ActionState.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Idol\Golem_Idol.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Idol</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Appeal\Golem_Appeal.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Appeal</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Hit\Golem_Hit.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Hit</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Stumble\Golem_Stumble.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Stumble</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Run\Golem_Run.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Run</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\UI\Player\LockON\LockON.cpp">
       <Filter>Src\Application\GameObject\UI\Player\LockON</Filter>
@@ -854,9 +683,6 @@
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\EnemyManager.cpp">
       <Filter>Src\Application\GameObject\Character\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Crushing\Bone_Crushing.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Crushing</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\GameObject\StageManager.cpp">
       <Filter>Src\Application\GameObject</Filter>
     </ClCompile>
@@ -866,23 +692,11 @@
     <ClCompile Include="Src\Application\GameObject\UI\Player\GameOver\GameOver.cpp">
       <Filter>Src\Application\GameObject\UI\Player\GameOver</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Crushing\Golem_Crushing.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Crushing</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack1\Golem_Attack1.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack1</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack2\Golem_Attack2.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack2</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\Golem\Bullet\Bullet.cpp">
       <Filter>Src\Application\GameObject\Character\Enemy\Golem\Bullet</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\BulletBase\BulletBase.cpp">
       <Filter>Src\Application\GameObject\Character\BulletBase</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack3\Golem_Attack3.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Enemy\Golem\Attack\Attack3</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

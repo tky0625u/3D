@@ -181,12 +181,6 @@ void CharacterBase::CrushingAction()
 	if (m_dissolve < 1.0f)m_dissolve += 0.01f;
 }
 
-void CharacterBase::Hit(int _damege)
-{
-	m_param.Hp -= _damege;
-	if (m_param.Hp <= 0)m_param.Hp = 0;
-}
-
 void CharacterBase::Rotate(Math::Vector3 _moveDir, float _angChange)
 {
 	//今の方向

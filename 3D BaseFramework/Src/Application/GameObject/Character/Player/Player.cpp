@@ -301,7 +301,7 @@ void Player::StateBase::AttackHit(Player* owner)
 		if (hitEnemy->GetParam().Hp > 0 && hitEnemy->GetActionType() != EnemyBase::Action::AppealType && hitEnemy->GetinviTime() == 0)
 		{
 			owner->m_camera.lock()->GetState()->SetShakeFlg(true);
-			hitEnemy->GetConText()->Hit(owner->m_param.Atk);
+			hitEnemy->Damage(owner->m_param.Atk);
 			hitEnemy->SetInviTime(owner->m_inviTime);
 			KdEffekseerManager::GetInstance().Play("Enemy/hit_eff.efkefc", ret.m_hitPos, 1.0f, 0.8f, false);
 			KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/刀で斬る2.WAV", 0.05f, false);
@@ -1075,7 +1075,7 @@ void Player::Guard::Damage(Player* owner, int _damage, std::shared_ptr<EnemyBase
 		owner->m_flow = CharacterBase::Flow::UpdateType;
 
 		owner->m_ParryID = _enemy->GetID();
-		_enemy->GetConText()->Stumble();
+		_enemy->StumbleChange();
 	}
 	else
 	{
