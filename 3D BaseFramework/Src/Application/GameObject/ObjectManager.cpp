@@ -2804,11 +2804,12 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 	}
 
 	int _wave = 0;
-	int _nowWave = 0;
+	int _nowWave = 1;
 
 	for (auto& wave : m_EnemyJson)
 	{
-		if (_stage->GetnowWave() != 0 && _nowWave != _stage->GetnowWave())
+		_wave++;
+		if (_nowWave != _stage->GetnowWave())
 		{
 			_nowWave++;
 			continue;
@@ -2892,7 +2893,6 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 				}
 			}
 		}
-		_wave++;
 	}
 
 	if (_stage->GetMaxWave() == 0)_stage->SetMaxWave(_wave);

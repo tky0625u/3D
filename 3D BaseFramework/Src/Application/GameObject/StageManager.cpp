@@ -8,7 +8,7 @@ void StageManager::NextStage()
 	m_IsWaveMax = false;
 	m_nowStage++;
 	m_MaxWave = 0;
-	m_nowWave = 0;
+	m_nowWave = 1;
 	m_ObjectManager.lock()->CreateStage(shared_from_this());
 	SceneManager::Instance().BlackAlphaChange(0.01f, false);
 }

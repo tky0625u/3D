@@ -88,24 +88,6 @@
     <Filter Include="Src\Application\GameObject\Character\Action">
       <UniqueIdentifier>{6096abf0-115f-4212-8c4f-c4211e4c8288}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Player">
-      <UniqueIdentifier>{0eefed0f-1378-4ec4-ab8f-d5c80ba03aba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Player\Run">
-      <UniqueIdentifier>{4996e4fd-4d29-45b0-8d44-d3e75f5c7dc5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Player\Idol">
-      <UniqueIdentifier>{7b99e2b8-fc23-4c58-a358-e2ebde8a46f2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Player\Roll">
-      <UniqueIdentifier>{79b13ae2-a426-456a-ad4f-2b256ccab563}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Player\Guard">
-      <UniqueIdentifier>{517e2d4c-a245-49e9-b936-b8472c54874d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Player\Attack">
-      <UniqueIdentifier>{0252b22a-deb8-4c9c-9884-8a9df53a29aa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Src\Application\GameObject\Stage">
       <UniqueIdentifier>{3239d098-54de-43c1-9f96-56c300b188c0}</UniqueIdentifier>
     </Filter>
@@ -117,18 +99,6 @@
     </Filter>
     <Filter Include="Src\Application\GameObject\Character\Action\Enemy">
       <UniqueIdentifier>{0bec7508-9c7b-4041-92fa-0c008727e956}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Player\Hit">
-      <UniqueIdentifier>{27422866-6bd7-470e-884a-d1f82839bc63}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Player\GuardReaction">
-      <UniqueIdentifier>{fbf10cc2-5b18-4948-af22-d519c87bbf0f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Player\Parry">
-      <UniqueIdentifier>{2771c20a-b6b5-4470-976f-e87264548e49}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Player\Counter">
-      <UniqueIdentifier>{bbb0e903-43a8-483e-ab36-5f02c98d19f6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Src\Application\GameObject\Weapon">
       <UniqueIdentifier>{ef1aa68a-185c-4004-be5f-184c89f8530b}</UniqueIdentifier>
@@ -250,14 +220,8 @@
     <Filter Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Crushing">
       <UniqueIdentifier>{5dd3f2ce-ca5a-4bd6-9f95-a909dddc4b74}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Player\Crushing">
-      <UniqueIdentifier>{6e6b4405-85a2-45cd-8a54-7e4cb0747e5b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Src\Application\GameObject\UI\Player\Teleport">
       <UniqueIdentifier>{2c0df679-32d7-4eec-bd37-139c32a93e7a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\Character\Action\Player\Teleport">
-      <UniqueIdentifier>{ddbf7311-d7ba-4a3a-84ed-c9f32082310c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Src\Application\GameObject\UI\Player\GameOver">
       <UniqueIdentifier>{52949f5a-c768-4fdb-ad67-a8892628cc71}</UniqueIdentifier>
@@ -462,41 +426,8 @@
     <ClInclude Include="Src\Application\GameObject\Character\Action\ActionBase.h">
       <Filter>Src\Application\GameObject\Character\Action</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Run\Player_Run.h">
-      <Filter>Src\Application\GameObject\Character\Action\Player\Run</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Idol\Player_Idol.h">
-      <Filter>Src\Application\GameObject\Character\Action\Player\Idol</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Roll\Player_Roll.h">
-      <Filter>Src\Application\GameObject\Character\Action\Player\Roll</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Guard\Player_Guard.h">
-      <Filter>Src\Application\GameObject\Character\Action\Player\Guard</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Attack\Player_Attack.h">
-      <Filter>Src\Application\GameObject\Character\Action\Player\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Hit\Player_Hit.h">
-      <Filter>Src\Application\GameObject\Character\Action\Player\Hit</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\GuardReaction\Player_GuardReaction.h">
-      <Filter>Src\Application\GameObject\Character\Action\Player\GuardReaction</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Parry\Player_Parry.h">
-      <Filter>Src\Application\GameObject\Character\Action\Player\Parry</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Counter\Player_Counter.h">
-      <Filter>Src\Application\GameObject\Character\Action\Player\Counter</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\ObjectManager.h">
       <Filter>Src\Application\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Player_ActionState.h">
-      <Filter>Src\Application\GameObject\Character\Action\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Player_ConText.h">
-      <Filter>Src\Application\GameObject\Character\Action\Player</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\Bone\Bone.h">
       <Filter>Src\Application\GameObject\Character\Enemy\Bone</Filter>
@@ -621,17 +552,11 @@
     <ClInclude Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Crushing\Bone_Crushing.h">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Crushing</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Crushing\Player_Crushing.h">
-      <Filter>Src\Application\GameObject\Character\Action\Player\Crushing</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\StageManager.h">
       <Filter>Src\Application\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\UI\Player\Teleport\Teleport.h">
       <Filter>Src\Application\GameObject\UI\Player\Teleport</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\Character\Action\Player\Teleport\Player_Teleport.h">
-      <Filter>Src\Application\GameObject\Character\Action\Player\Teleport</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\UI\Player\GameOver\GameOver.h">
       <Filter>Src\Application\GameObject\UI\Player\GameOver</Filter>
@@ -809,33 +734,6 @@
     <ClCompile Include="Src\Application\GameObject\Character\Action\ActionBase.cpp">
       <Filter>Src\Application\GameObject\Character\Action</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Run\Player_Run.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Player\Run</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Idol\Player_Idol.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Player\Idol</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Roll\Player_Roll.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Player\Roll</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Guard\Player_Guard.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Player\Guard</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Attack\Player_Attack.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Player\Attack</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Hit\Player_Hit.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Player\Hit</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\GuardReaction\Player_GuardReaction.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Player\GuardReaction</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Parry\Player_Parry.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Player\Parry</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Counter\Player_Counter.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Player\Counter</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\GameObject\ObjectManager.cpp">
       <Filter>Src\Application\GameObject</Filter>
     </ClCompile>
@@ -853,9 +751,6 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\EnemyBase.cpp">
       <Filter>Src\Application\GameObject\Character\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Player_ActionState.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Player</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Weapon\WeaponBase.cpp">
       <Filter>Src\Application\GameObject\Weapon</Filter>
@@ -962,17 +857,11 @@
     <ClCompile Include="Src\Application\GameObject\Character\Action\Enemy\Bone\Crushing\Bone_Crushing.cpp">
       <Filter>Src\Application\GameObject\Character\Action\Enemy\Bone\Crushing</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Crushing\Player_Crushing.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Player\Crushing</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\GameObject\StageManager.cpp">
       <Filter>Src\Application\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\UI\Player\Teleport\Teleport.cpp">
       <Filter>Src\Application\GameObject\UI\Player\Teleport</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\Character\Action\Player\Teleport\Player_Teleport.cpp">
-      <Filter>Src\Application\GameObject\Character\Action\Player\Teleport</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\UI\Player\GameOver\GameOver.cpp">
       <Filter>Src\Application\GameObject\UI\Player\GameOver</Filter>

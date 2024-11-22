@@ -301,7 +301,6 @@ void Player::StateBase::AttackHit(Player* owner)
 		if (hitEnemy->GetParam().Hp > 0 && hitEnemy->GetActionType() != EnemyBase::Action::AppealType && hitEnemy->GetinviTime() == 0)
 		{
 			owner->m_camera.lock()->GetState()->SetShakeFlg(true);
-			hitEnemy->Hit(owner->m_param.Atk);
 			hitEnemy->GetConText()->Hit(owner->m_param.Atk);
 			hitEnemy->SetInviTime(owner->m_inviTime);
 			KdEffekseerManager::GetInstance().Play("Enemy/hit_eff.efkefc", ret.m_hitPos, 1.0f, 0.8f, false);
