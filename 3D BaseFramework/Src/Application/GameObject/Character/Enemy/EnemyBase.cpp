@@ -2,7 +2,6 @@
 #include"../../ObjectManager.h"
 #include"../../../Scene/SceneManager.h"
 #include"../Player/Player.h"
-#include"../Action/Enemy/Enemy_ConText.h"
 #include"../../Camera/GameCamera/GameCamera.h"
 
 void EnemyBase::PostUpdate()

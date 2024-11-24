@@ -3,7 +3,7 @@
 		"Bone": {
 			"1Bone": {
 				"ATK": 2,
-				"ATKRange": 3.0,
+				"ATKRange": 5.0,
 				"Angle": 278.4016418457031,
 				"DirX": -0.9895711541175842,
 				"DirY": -0.0036571116652339697,
@@ -22,7 +22,7 @@
 			},
 			"2Bone": {
 				"ATK": 2,
-				"ATKRange": 3.0,
+				"ATKRange": 5.0,
 				"Angle": 180.0,
 				"DirX": 0.0,
 				"DirY": 0.0,
@@ -45,7 +45,7 @@
 		"Bone": {
 			"0Bone": {
 				"ATK": 2,
-				"ATKRange": 3.0,
+				"ATKRange": 5.0,
 				"Angle": 125.73416900634766,
 				"DirX": 0.0,
 				"DirY": 0.0,

@@ -243,6 +243,7 @@ void Golem::Attack1::Update(Golem* owner)
 	}
 	else if (!m_bullet.expired() && m_bullet.lock()->GetSize() >= m_bullet.lock()->GetMaxSize() && m_bullet.lock()->GetDir() == Math::Vector3::Zero)
 	{
+		KdEffekseerManager::GetInstance().Play("Enemy/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 2.0f, 2.0f, false);
 		Math::Matrix RotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(owner->m_angle.y));
 		Math::Vector3 _dir = Math::Vector3::TransformNormal(owner->m_forward, RotY);
 		m_bullet.lock()->SetDir(_dir);
@@ -382,6 +383,7 @@ void Golem::Attack3::Enter(Golem* owner)
 
 	if (owner->GetIsAnimator())
 	{
+		KdEffekseerManager::GetInstance().Play("Enemy/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 2.0f, 2.0f, false);
 		owner->m_flow = owner->Flow::UpdateType;
 		return;
 	}

@@ -29,5 +29,5 @@ private:
 	Math::Rectangle            m_rect[Stamina::num];
 	int                        m_MaxStamina    = 0;
 	int                        m_beforeStamina = 0;
-	long                       m_MaxWidth      = 0.0l;
+	float                      m_MaxWidth      = 0.0f;
 };

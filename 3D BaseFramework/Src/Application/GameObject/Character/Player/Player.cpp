@@ -8,7 +8,6 @@
 #include"../../Weapon/Sword/Sword.h"
 #include"../../Weapon/Shield/Shield.h"
 
-#include"../Action/Enemy/Enemy_ConText.h"
 
 void Player::Update()
 {
@@ -42,6 +41,7 @@ void Player::PostUpdate()
 	CharacterBase::PostUpdate();
 
 	if (m_StaminaRecoveryTime > 0)m_StaminaRecoveryTime--;
+	else if (m_param.Sm < m_MaxStamina) { StaminaRecovery(); }
 }
 
 void Player::Init()
@@ -226,7 +226,7 @@ void Player::StateBase::Damage(Player* owner, int _damage, std::shared_ptr<Enemy
 	std::shared_ptr<Hit> _hit = std::make_shared<Hit>();
 	owner->m_NextState = _hit;
 	owner->m_NextActionType = Player::Action::HitType;
-	owner->m_flow = CharacterBase::Flow::EnterType;
+	owner->m_flow = CharacterBase::Flow::UpdateType;
 	return;
 }
 
@@ -248,7 +248,7 @@ void Player::StateBase::Damage(Player* owner, int _damage, std::shared_ptr<Bulle
 	std::shared_ptr<Hit> _hit = std::make_shared<Hit>();
 	owner->m_NextState = _hit;
 	owner->m_NextActionType = Player::Action::HitType;
-	owner->m_flow = CharacterBase::Flow::EnterType;
+	owner->m_flow = CharacterBase::Flow::UpdateType;
 	return;
 }
 
@@ -307,8 +307,6 @@ void Player::StateBase::AttackHit(Player* owner)
 			KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/刀で斬る2.WAV", 0.05f, false);
 		}
 	}
-
-	if (owner->m_ParryID != -1)owner->m_ParryID = -1;
 }
 
 void Player::KeyCheck()
@@ -410,10 +408,12 @@ void Player::Idol::ChangeState(Player* owner)
 	}
 	else if (owner->m_keyType & Player::KeyType::RollKey && !(owner->m_BeforeKeyType & Player::KeyType::RollKey))
 	{
+		if (owner->m_param.Sm <= 0)return;
+
 		std::shared_ptr<Roll> _roll = std::make_shared<Roll>();
 		owner->m_NextState = _roll;
 		owner->m_NextActionType = Player::Action::RollType;
-		owner->m_flow = CharacterBase::Flow::UpdateType;
+		owner->m_flow = CharacterBase::Flow::EnterType;
 		return;
 	}
 }
@@ -532,10 +532,12 @@ void Player::Run::ChangeState(Player* owner)
 	}
 	else if (owner->m_keyType & Player::KeyType::RollKey && !(owner->m_BeforeKeyType & Player::KeyType::RollKey))
 	{
+		if (owner->m_param.Sm <= 0)return;
+
 		std::shared_ptr<Roll> _roll = std::make_shared<Roll>();
 		owner->m_NextState = _roll;
 		owner->m_NextActionType = Player::Action::RollType;
-		owner->m_flow = CharacterBase::Flow::UpdateType;
+		owner->m_flow = CharacterBase::Flow::EnterType;
 		return;
 	}
 }
@@ -780,10 +782,12 @@ void Player::Attack::ChangeState(Player* owner)
 	}
 	else if (owner->m_keyType & Player::KeyType::RollKey && !(owner->m_BeforeKeyType & Player::KeyType::RollKey))
 	{
+		if (owner->m_param.Sm <= 0)return;
+
 		std::shared_ptr<Roll> _roll = std::make_shared<Roll>();
 		owner->m_NextState = _roll;
 		owner->m_NextActionType = Player::Action::RollType;
-		owner->m_flow = CharacterBase::Flow::UpdateType;
+		owner->m_flow = CharacterBase::Flow::EnterType;
 		return;
 	}
 }
@@ -841,6 +845,8 @@ void Player::Counter::Exit(Player* owner)
 
 	if (owner->GetIsAnimator())
 	{
+		owner->m_ParryID = -1;
+
 		// Idol
 		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
 		owner->m_NextState = _idol;
@@ -854,6 +860,8 @@ void Player::Counter::ChangeState(Player* owner)
 {
 	if (owner->m_keyType & Player::KeyType::MoveKey)
 	{
+		owner->m_ParryID = -1;
+
 		std::shared_ptr<Run> _run = std::make_shared<Run>();
 		owner->m_NextState = _run;
 		owner->m_NextActionType = Player::Action::RunType;
@@ -862,6 +870,8 @@ void Player::Counter::ChangeState(Player* owner)
 	}
 	else if (owner->m_keyType & Player::KeyType::AttackKey && !(owner->m_BeforeKeyType & Player::KeyType::AttackKey))
 	{
+		owner->m_ParryID = -1;
+
 		std::shared_ptr<Attack> _attack = std::make_shared<Attack>();
 		owner->m_NextState = _attack;
 		owner->m_NextActionType = Player::Action::AttackType;
@@ -870,6 +880,8 @@ void Player::Counter::ChangeState(Player* owner)
 	}
 	else if (owner->m_keyType & Player::KeyType::GuardKey)
 	{
+		owner->m_ParryID = -1;
+
 		std::shared_ptr<Guard> _guard = std::make_shared<Guard>();
 		owner->m_NextState = _guard;
 		owner->m_NextActionType = Player::Action::GuardType;
@@ -878,10 +890,13 @@ void Player::Counter::ChangeState(Player* owner)
 	}
 	else if (owner->m_keyType & Player::KeyType::RollKey && !(owner->m_BeforeKeyType & Player::KeyType::RollKey))
 	{
+		if (owner->m_param.Sm <= 0)return;
+		owner->m_ParryID = -1;
+
 		std::shared_ptr<Roll> _roll = std::make_shared<Roll>();
 		owner->m_NextState = _roll;
 		owner->m_NextActionType = Player::Action::RollType;
-		owner->m_flow = CharacterBase::Flow::UpdateType;
+		owner->m_flow = CharacterBase::Flow::EnterType;
 		return;
 	}
 }
@@ -891,6 +906,10 @@ void Player::Counter::ChangeState(Player* owner)
 // Roll============================================================================================
 void Player::Roll::Enter(Player* owner)
 {
+	owner->m_param.Sm -= 5;
+	owner->m_StaminaRecoveryTime = 60 * 3;
+	if (owner->m_param.Sm <= 0)owner->m_param.Sm = 0;
+	owner->m_flow = Player::Flow::UpdateType;
 }
 
 void Player::Roll::Update(Player* owner)
@@ -1022,18 +1041,14 @@ void Player::Guard::ChangeState(Player* owner)
 {
 }
 
-void Player::Guard::GuardRotate(Player* owner, Math::Vector3 _pos)
+void Player::Guard::GuardRotate(Player* owner, Math::Vector3 _dir)
 {
 	//今の方向
 	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(owner->m_angle.y));
 	Math::Vector3 nowVec = Math::Vector3::TransformNormal(owner->m_forward, nowRot);
 
-	//向きたい方向
-	Math::Vector3 toVec = _pos - owner->m_pos;
-	toVec.Normalize();
-
 	//内角 回転する角を求める
-	float d = nowVec.Dot(toVec);
+	float d = nowVec.Dot(_dir);
 	d = std::clamp(d, -1.0f, 1.0f); //誤差修正
 
 	//回転角度を求める
@@ -1041,7 +1056,7 @@ void Player::Guard::GuardRotate(Player* owner, Math::Vector3 _pos)
 
 	//角度変更
 	//外角　どっち回転かを求める
-	Math::Vector3 c = toVec.Cross(nowVec);
+	Math::Vector3 c = _dir.Cross(nowVec);
 	if (c.y >= 0)
 	{
 		//右回転
@@ -1063,9 +1078,12 @@ void Player::Guard::GuardRotate(Player* owner, Math::Vector3 _pos)
 }
 void Player::Guard::Damage(Player* owner, int _damage, std::shared_ptr<EnemyBase> _enemy)
 {
-	GuardRotate(owner, _enemy->GetPos());
+	Math::Vector3 toVec = _enemy->GetPos() - owner->m_pos;
+	toVec.y = 0.0f;
+	toVec.Normalize();
+	GuardRotate(owner, toVec);
 
-	if (m_guardTime <= 30)
+	if (m_guardTime <= 10)
 	{
 		owner->m_ObjectManager.lock()->SlowChange();
 		// Parry
@@ -1080,6 +1098,7 @@ void Player::Guard::Damage(Player* owner, int _damage, std::shared_ptr<EnemyBase
 	else
 	{
 		owner->m_param.Sm -= _damage;
+		owner->m_StaminaRecoveryTime = 60 * 3;
 		if (owner->m_param.Sm < 0)
 		{
 			owner->m_param.Sm = 0;
@@ -1098,7 +1117,7 @@ void Player::Guard::Damage(Player* owner, int _damage, std::shared_ptr<EnemyBase
 
 void Player::Guard::Damage(Player* owner, int _damage, std::shared_ptr<BulletBase> _bullet)
 {
-	if (m_guardTime <= 30)
+	if (m_guardTime <= 10)
 	{
 		owner->m_ObjectManager.lock()->SlowChange();
 		// Parry
@@ -1114,7 +1133,13 @@ void Player::Guard::Damage(Player* owner, int _damage, std::shared_ptr<BulletBas
 	}
 	else
 	{
+		Math::Vector3 _bulletDir = _bullet->GetDir();
+		_bulletDir.y = 0.0f;
+		_bulletDir *= -1.0f;
+		_bulletDir.Normalize();
+		GuardRotate(owner, _bulletDir);
 		owner->m_param.Sm -= _damage;
+		owner->m_StaminaRecoveryTime = 60 * 3;
 		if (owner->m_param.Sm < 0)
 		{
 			owner->m_param.Sm = 0;
@@ -1257,10 +1282,12 @@ void Player::Parry::ChangeState(Player* owner)
 	}
 	else if (owner->m_keyType & Player::KeyType::RollKey && !(owner->m_BeforeKeyType & Player::KeyType::RollKey))
 	{
+		if (owner->m_param.Sm <= 0)return;
+
 		std::shared_ptr<Roll> _roll = std::make_shared<Roll>();
 		owner->m_NextState = _roll;
 		owner->m_NextActionType = Player::Action::RollType;
-		owner->m_flow = CharacterBase::Flow::UpdateType;
+		owner->m_flow = CharacterBase::Flow::EnterType;
 		owner->m_ObjectManager.lock()->SlowChange();
 		return;
 	}

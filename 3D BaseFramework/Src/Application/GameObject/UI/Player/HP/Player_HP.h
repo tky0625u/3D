@@ -30,6 +30,6 @@ private:
 	Math::Rectangle            m_rect[HP::num];
 	int                        m_MaxHP = 0;
 	int                        m_beforeHP = 0;
-	long                       m_MaxWidth = 0.0l;
+	float                      m_MaxWidth = 0.0f;
 	int                        m_DownTime = 0;
 };

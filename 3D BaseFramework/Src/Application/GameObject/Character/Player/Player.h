@@ -53,7 +53,6 @@ public:
 	void Damage(int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr) { m_state->Damage(this, _damage, _bullet); } // 遠距離攻撃による被弾
 
 	void SetShield(std::shared_ptr<Shield> _shield) { m_shield = _shield; }
-	void SetStaminaRecoveryTime(int _time) { m_StaminaRecoveryTime = _time; }
 	void SetParryID(UINT _id) { m_ParryID = _id; }
 	void SetStageManager(std::shared_ptr<StageManager> _stage) { m_StageManager = _stage; }
 	void SetTeleportFlg(bool _teleport) { m_TeleportFlg = _teleport; }
@@ -64,6 +63,7 @@ public:
 	const int GetStaminaRecoveryTime()const { return m_StaminaRecoveryTime; }
 	const UINT GetParryID()const { return m_ParryID; }
 	const Math::Matrix& GetEnemyAttackPointMat() const { return (m_model->FindWorkNode("EnemyAttackPoint")->m_worldTransform) * m_mWorld; }
+	const Math::Matrix& GetCameraPointMat()const { return (m_model->FindWorkNode("CameraPoint")->m_worldTransform) * m_mWorld; }
 	const UINT& GetActionType()const { return m_actionType; }
 	const std::weak_ptr<ObjectManager>& GetObjectManager()const { return m_ObjectManager; }
 	const bool& GetLockONFlg()const { return m_LockONFlg; }
@@ -210,7 +210,7 @@ private:
 		void Event (Player* owner)override;
 		void ChangeState(Player* owner)override;
 
-		void GuardRotate(Player* owner, Math::Vector3 _pos);
+		void GuardRotate(Player* owner, Math::Vector3 _dir);
 		void Damage(Player* owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override; // 直接攻撃による被弾
 		void Damage(Player* owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override; // 遠距離攻撃による被弾
 

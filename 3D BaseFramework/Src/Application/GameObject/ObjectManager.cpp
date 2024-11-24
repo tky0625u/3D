@@ -3,7 +3,6 @@
 #include"../tinygltf/json.hpp"
 #include"Character/CharacterBase.h"
 #include"Character/Enemy/Bone/Bone.h"
-#include"Character/Action/Enemy/Enemy_ConText.h"
 #include"StageManager.h"
 #include<fstream>
 #include<sstream>
@@ -737,7 +736,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 							// 大きさ
 							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _hp->GetSize());
 							float _HPSize = _hp->GetSize();
-							ImGui::SliderFloat("Size", &_HPSize, 1, 100);
+							ImGui::SliderFloat("Size", &_HPSize, 0.01f, 1.0f);
 
 							_hp->SetPos(_HPPos);
 							_hp->SetSize(_HPSize);
@@ -766,7 +765,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 							// 大きさ
 							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _stamina->GetSize());
 							float _StaminaSize = _stamina->GetSize();
-							ImGui::SliderFloat("Size", &_StaminaSize, 1, 100);
+							ImGui::SliderFloat("Size", &_StaminaSize, 0.01f, 1.0f);
 
 							_stamina->SetPos(_StaminaPos);
 							_stamina->SetSize(_StaminaSize);

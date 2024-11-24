@@ -113,6 +113,47 @@ void GameCamera::PostUpdate()
 		}
 	}
 
+	KdCollider::RayInfo rayInfo;
+	rayInfo.m_pos = m_mWorld.Translation();
+	Math::Vector3 _dir = m_wpTarget.lock()->GetCameraPointMat().Translation() - m_mWorld.Translation();
+	_dir.Normalize();
+	rayInfo.m_dir = _dir;
+	rayInfo.m_range = (m_wpTarget.lock()->GetCameraPointMat().Translation() - m_mWorld.Translation()).Length();
+	rayInfo.m_type = KdCollider::TypeBump;
+
+	//デバッグ用
+	Math::Color color = { 1,1,1,1 };
+	m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
+
+	std::list<KdCollider::CollisionResult> retRayList;
+	for (auto& ret : SceneManager::Instance().GetObjList())
+	{
+		ret->Intersects(rayInfo, &retRayList);
+	}
+
+	float _maxOverLap = -0.1f;
+	Math::Vector3 _hitPos = Math::Vector3::Zero;
+	bool _hitFlg = false;
+
+	for (auto& ray : retRayList)
+	{
+		if (_maxOverLap < ray.m_overlapDistance || _maxOverLap < 0.0f)
+		{
+			_maxOverLap = ray.m_overlapDistance;
+			_hitPos = ray.m_hitPos;
+			_hitFlg = true;
+		}
+	}
+
+	if (_hitFlg)
+	{
+		Math::Vector3 _distPos = m_wpTarget.lock()->GetCameraPointMat().Translation() - _hitPos;
+		_hitPos += (_distPos / 100.0f) * 4.0f;
+		Math::Matrix _trans;
+		_trans = Math::Matrix::CreateTranslation(_hitPos);
+		m_mWorld = GetRotationMatrix() * _trans;
+	}
+
 	m_spCamera->SetFocus(8, 5, m_FocusBackRange);
 
 	m_spCamera->SetCameraMatrix(m_mWorld);
@@ -127,7 +168,7 @@ void GameCamera::Init()
 	std::shared_ptr<PlayerCamera> _player = std::make_shared<PlayerCamera>();
 	m_state = _player;
 
-	//m_pDebugWire = std::make_unique<KdDebugWireFrame>();
+	m_pDebugWire = std::make_unique<KdDebugWireFrame>();
 
 }
 
@@ -198,45 +239,7 @@ void GameCamera::PlayerCamera::Update(GameCamera* owner)
 
 	Math::Matrix _rot   = owner->GetRotationMatrix();
 	Math::Matrix _trans = Math::Matrix::CreateTranslation(owner->GetNowPos());
-	//Math::Matrix _mat = m_mLocalPos * m_mRotation * _targetMat;
-
-	//KdCollider::RayInfo rayInfo;
-	//rayInfo.m_pos = _mat.Translation();
-	//Math::Vector3 _dir = m_target.lock()->GetwpTarget().lock()->GetPos() - _mat.Translation();
-	//_dir.Normalize();
-	//rayInfo.m_dir = _dir;
-	//rayInfo.m_range = (m_target.lock()->GetwpTarget().lock()->GetPos()-_mat.Translation()).Length();
-	//rayInfo.m_type = KdCollider::TypeBump;
-
-	////デバッグ用
-	//Math::Color color = { 1,1,1,1 };
-	////m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
-
-	//std::list<KdCollider::CollisionResult> retRayList;
-	//for (auto& ret : SceneManager::Instance().GetObjList())
-	//{
-	//	ret->Intersects(rayInfo, &retRayList);
-	//}
-
-	//float _maxOverLap = -0.1f;
-	//Math::Vector3 _hitPos = Math::Vector3::Zero;
-	//bool _hitFlg = false;
-
-	//for (auto& ray : retRayList)
-	//{
-	//	if (_maxOverLap > ray.m_overlapDistance || _maxOverLap < 0.0f)
-	//	{
-	//		_maxOverLap = ray.m_overlapDistance;
-	//		_hitPos = ray.m_hitPos;
-	//		_hitFlg = true;
-	//	}
-	//}
-
-	//if (_hitFlg)
-	//{
-	//	Math::Vector3 _playerDist = _hitPos - _spTarget->GetPos();
-	//	m_mLocalPos = Math::Matrix::CreateTranslation(_playerDist);
-	//}
+	
 	if (m_shakeFlg)Shake(owner,_trans);
 	owner->m_mWorld = _trans * _rot * _targetMat;
 }
