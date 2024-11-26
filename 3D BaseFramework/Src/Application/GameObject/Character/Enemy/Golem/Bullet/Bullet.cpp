@@ -6,6 +6,19 @@
 
 void Bullet::Update()
 {
+	if (m_golem.expired())
+	{
+		Expired();
+		return;
+	}
+
+	if (m_golem.lock()->GetParam().Hp <= 0)
+	{
+		KdEffekseerManager::GetInstance().Play("Enemy/Golem/Bullet/Bom.efkefc", m_pos, m_size * 0.5f, 1.0f, false);
+		Expired();
+		return;
+	}
+
 	if (m_size < m_MaxSize)m_size += m_sizeChange * m_ObjectManager.lock()->GetSlow();
 	else
 	{
@@ -30,6 +43,7 @@ void Bullet::Update()
 
 void Bullet::PostUpdate()
 {
+	if (m_golem.expired() || m_golem.lock()->GetParam().Hp <= 0)return;
 	if (m_size < m_MaxSize)return;
 
 	KdCollider::SphereInfo sphereInfo;
@@ -72,7 +86,7 @@ void Bullet::PostUpdate()
 		{
 			if (ret->Intersects(sphereInfo, nullptr))
 			{
-				ret->Damage(5);
+				ret->Damage(20);
 				KdEffekseerManager::GetInstance().Play("Enemy/Golem/Bullet/Bom.efkefc", m_pos, m_size * 0.5f, 1.0f, false);
 				Expired();
 			}

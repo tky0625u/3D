@@ -49,8 +49,8 @@ public:
 
 	void IdolChange();
 	void TeleportChange();
-	void Damage(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr) { m_state->Damage(this, _damage, _enemy); }  // 直接攻撃による被弾
-	void Damage(int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr) { m_state->Damage(this, _damage, _bullet); } // 遠距離攻撃による被弾
+	void Damage(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr) { m_state->Damage(shared_from_this(), _damage, _enemy); }  // 直接攻撃による被弾
+	void Damage(int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr) { m_state->Damage(shared_from_this(), _damage, _bullet); } // 遠距離攻撃による被弾
 
 	void SetShield(std::shared_ptr<Shield> _shield) { m_shield = _shield; }
 	void SetParryID(UINT _id) { m_ParryID = _id; }
@@ -87,19 +87,22 @@ private:
 		StateBase() {};
 		virtual ~StateBase() {};
 
-		void StateUpdate(Player* owner);
+		void StateUpdate(std::shared_ptr<Player> owner);
 
-		virtual void Enter (Player* owner) {};
-		virtual void Update(Player* owner) {};
-		virtual void Exit  (Player* owner) {};
+		virtual void Enter (std::shared_ptr<Player> owner) {};
+		virtual void Update(std::shared_ptr<Player> owner) {};
+		virtual void Exit  (std::shared_ptr<Player> owner) {};
 
-		virtual void Event(Player* owner)  {};
-		virtual void ChangeState(Player* owner) = 0;
+		virtual void Event(std::shared_ptr<Player> owner)  {};
+		virtual void ChangeState(std::shared_ptr<Player> owner) = 0;
 
-		virtual void Damage(Player* owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr);   // 直接攻撃による被弾
-		virtual void Damage(Player* owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr); // 遠距離攻撃による被弾
+		virtual void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr);   // 直接攻撃による被弾
+		virtual void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr); // 遠距離攻撃による被弾
 
-		void AttackHit(Player* owner);
+		void AttackHit(std::shared_ptr<Player> owner);
+
+	protected:
+		float m_ActionFPS = 0.0f;
 	};
 
 	class Idol :public StateBase
@@ -108,11 +111,11 @@ private:
 		Idol() {};
 		~Idol()override {};
 
-		void Enter (Player* owner)override;
-		void Update(Player* owner)override;
-		void Exit  (Player* owner)override;
+		void Enter (std::shared_ptr<Player> owner)override;
+		void Update(std::shared_ptr<Player> owner)override;
+		void Exit  (std::shared_ptr<Player> owner)override;
 
-		void ChangeState(Player* owner)override;
+		void ChangeState(std::shared_ptr<Player> owner)override;
 
 	private:
 
@@ -124,12 +127,12 @@ private:
 		Run() {};
 		~Run()override {};
 
-		void Enter (Player* owner)override;
-		void Update(Player* owner)override;
-		void Exit  (Player* owner)override;
+		void Enter (std::shared_ptr<Player> owner)override;
+		void Update(std::shared_ptr<Player> owner)override;
+		void Exit  (std::shared_ptr<Player> owner)override;
 
-		void Event (Player* owner)override;
-		void ChangeState(Player* owner)override;
+		void Event (std::shared_ptr<Player> owner)override;
+		void ChangeState(std::shared_ptr<Player> owner)override;
 
 	private:
 
@@ -141,16 +144,16 @@ private:
 		Attack() {};
 		~Attack()override {};
 
-		void Enter (Player* owner)override;
-		void Update(Player* owner)override;
-		void Exit  (Player* owner)override;
+		void Enter (std::shared_ptr<Player> owner)override;
+		void Update(std::shared_ptr<Player> owner)override;
+		void Exit  (std::shared_ptr<Player> owner)override;
 
-		void Event (Player* owner)override;
-		void Attack1(Player* owner);
-		void Attack2(Player* owner);
-		void Attack3(Player* owner);
-		void AttackDirCheck(Player* owner);
-		void ChangeState(Player* owner)override;
+		void Event (std::shared_ptr<Player> owner)override;
+		void Attack1(std::shared_ptr<Player> owner);
+		void Attack2(std::shared_ptr<Player> owner);
+		void Attack3(std::shared_ptr<Player> owner);
+		void AttackDirCheck(std::shared_ptr<Player> owner);
+		void ChangeState(std::shared_ptr<Player> owner)override;
 
 	private:
 		Math::Vector3    m_AttackDir = Math::Vector3::Zero;
@@ -164,14 +167,14 @@ private:
 		Counter() {};
 		~Counter()override {};
 
-		void Enter (Player* owner)override;
-		void Update(Player* owner)override;
-		void Exit  (Player* owner)override;
+		void Enter (std::shared_ptr<Player> owner)override;
+		void Update(std::shared_ptr<Player> owner)override;
+		void Exit  (std::shared_ptr<Player> owner)override;
 
-		void ChangeState(Player* owner)override;
+		void ChangeState(std::shared_ptr<Player> owner)override;
 
-		void Damage(Player* owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override { return; } // 直接攻撃による被弾
-		void Damage(Player* owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override { return; } // 遠距離攻撃による被弾
+		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override { return; } // 直接攻撃による被弾
+		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override { return; } // 遠距離攻撃による被弾
 
 	private:
 
@@ -183,15 +186,15 @@ private:
 		Roll() {};
 		~Roll()override {};
 
-		void Enter (Player* owner)override;
-		void Update(Player* owner)override;
-		void Exit  (Player* owner)override;
+		void Enter (std::shared_ptr<Player> owner)override;
+		void Update(std::shared_ptr<Player> owner)override;
+		void Exit  (std::shared_ptr<Player> owner)override;
 
-		void Event (Player* owner)override;
-		void ChangeState(Player* owner)override;
+		void Event (std::shared_ptr<Player> owner)override;
+		void ChangeState(std::shared_ptr<Player> owner)override;
 
-		void Damage(Player* owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override { return; } // 直接攻撃による被弾
-		void Damage(Player* owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override { return; } // 遠距離攻撃による被弾
+		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override { return; } // 直接攻撃による被弾
+		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override { return; } // 遠距離攻撃による被弾
 
 	private:
 
@@ -203,16 +206,16 @@ private:
 		Guard() {};
 		~Guard()override {};
 
-		void Enter (Player* owner)override;
-		void Update(Player* owner)override;
-		void Exit  (Player* owner)override;
+		void Enter (std::shared_ptr<Player> owner)override;
+		void Update(std::shared_ptr<Player> owner)override;
+		void Exit  (std::shared_ptr<Player> owner)override;
 
-		void Event (Player* owner)override;
-		void ChangeState(Player* owner)override;
+		void Event (std::shared_ptr<Player> owner)override;
+		void ChangeState(std::shared_ptr<Player> owner)override;
 
-		void GuardRotate(Player* owner, Math::Vector3 _dir);
-		void Damage(Player* owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override; // 直接攻撃による被弾
-		void Damage(Player* owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override; // 遠距離攻撃による被弾
+		void GuardRotate(std::shared_ptr<Player> owner, Math::Vector3 _dir);
+		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override; // 直接攻撃による被弾
+		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override; // 遠距離攻撃による被弾
 
 	private:
 		int m_guardTime = 0;
@@ -224,14 +227,14 @@ private:
 		GuardReaction() {};
 		~GuardReaction()override {};
 
-		void Enter (Player* owner)override;
-		void Update(Player* owner)override;
-		void Exit  (Player* owner)override;
+		void Enter (std::shared_ptr<Player> owner)override;
+		void Update(std::shared_ptr<Player> owner)override;
+		void Exit  (std::shared_ptr<Player> owner)override;
 
-		void ChangeState(Player* owner)override;
+		void ChangeState(std::shared_ptr<Player> owner)override;
 
-		void Damage(Player* owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override { return; } // 直接攻撃による被弾
-		void Damage(Player* owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override { return; } // 遠距離攻撃による被弾
+		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override { return; } // 直接攻撃による被弾
+		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override { return; } // 遠距離攻撃による被弾
 
 	private:
 
@@ -243,14 +246,14 @@ private:
 		Parry() {};
 		~Parry()override {};
 
-		void Enter (Player* owner)override;
-		void Update(Player* owner)override;
-		void Exit  (Player* owner)override;
+		void Enter (std::shared_ptr<Player> owner)override;
+		void Update(std::shared_ptr<Player> owner)override;
+		void Exit  (std::shared_ptr<Player> owner)override;
 
-		void ChangeState(Player* owner)override;
+		void ChangeState(std::shared_ptr<Player> owner)override;
 
-		void Damage(Player* owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override { return; } // 直接攻撃による被弾
-		void Damage(Player* owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override { return; } // 遠距離攻撃による被弾
+		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override { return; } // 直接攻撃による被弾
+		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override { return; } // 遠距離攻撃による被弾
 
 	private:
 
@@ -262,14 +265,14 @@ private:
 		Hit() {};
 		~Hit()override {};
 
-		void Enter (Player* owner)override;
-		void Update(Player* owner)override;
-		void Exit  (Player* owner)override;
+		void Enter (std::shared_ptr<Player> owner)override;
+		void Update(std::shared_ptr<Player> owner)override;
+		void Exit  (std::shared_ptr<Player> owner)override;
 
-		void ChangeState(Player* owner)override;
+		void ChangeState(std::shared_ptr<Player> owner)override;
 
-		void Damage(Player* owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override { return; } // 直接攻撃による被弾
-		void Damage(Player* owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override { return; } // 遠距離攻撃による被弾
+		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override { return; } // 直接攻撃による被弾
+		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override { return; } // 遠距離攻撃による被弾
 
 	private:
 
@@ -281,14 +284,14 @@ private:
 		Crushing() {};
 		~Crushing()override {};
 
-		void Enter (Player* owner)override;
-		void Update(Player* owner)override;
-		void Exit  (Player* owner)override;
+		void Enter (std::shared_ptr<Player> owner)override;
+		void Update(std::shared_ptr<Player> owner)override;
+		void Exit  (std::shared_ptr<Player> owner)override;
 
-		void ChangeState(Player* owner)override;
+		void ChangeState(std::shared_ptr<Player> owner)override;
 
-		void Damage(Player* owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override { return; } // 直接攻撃による被弾
-		void Damage(Player* owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override { return; } // 遠距離攻撃による被弾
+		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override { return; } // 直接攻撃による被弾
+		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override { return; } // 遠距離攻撃による被弾
 
 	private:
 
@@ -300,14 +303,14 @@ private:
 		Teleport() {};
 		~Teleport()override {};
 
-		void Enter (Player* owner)override;
-		void Update(Player* owner)override;
-		void Exit  (Player* owner)override;
+		void Enter (std::shared_ptr<Player> owner)override;
+		void Update(std::shared_ptr<Player> owner)override;
+		void Exit  (std::shared_ptr<Player> owner)override;
 
-		void ChangeState(Player* owner)override;
+		void ChangeState(std::shared_ptr<Player> owner)override;
 
-		void Damage(Player* owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override { return; } // 直接攻撃による被弾
-		void Damage(Player* owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override { return; } // 遠距離攻撃による被弾
+		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override { return; } // 直接攻撃による被弾
+		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override { return; } // 遠距離攻撃による被弾
 
 	private:
 		Effekseer::Handle m_handle = 0;

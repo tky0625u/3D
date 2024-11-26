@@ -3,6 +3,7 @@
 class GameCamera;
 class ActionBase;
 class Sword;
+class ObjectManager;
 
 class CharacterBase :public KdGameObject
 {
@@ -14,12 +15,33 @@ public:
 		ExitType
 	};
 
+	enum Action
+	{
+		AppealType,
+		StumbleType,
+		IdolType,
+		AttackType,
+		RunType,
+		RollType,
+		GuardType,
+		GuardReactionType,
+		ParryType,
+		CounterType,
+		HitType,
+		CrushingType,
+		TeleportType
+	};
+
 	 struct Param
 	{
+		 // ステータス画面に表示させるパラメータ群
 		 int   Hp  = 1; //体力
 		 int   Atk = 1; //攻撃力
 		 float Sp  = 1; //素早さ
 		 int   Sm  = 1; //スタミナ
+
+		 // ステータス画面に表示させない内部パラメータ群
+
 	};
 
 	CharacterBase()                                   { Init(); }
@@ -54,6 +76,7 @@ public:
 		m_dir = dir;
 		m_MoveSpeed = _moveSpeed;
 	}
+	void SetJumpPow(float _jumpPow) { m_JumpPow = _jumpPow; }
 	void SetSword(std::shared_ptr<Sword> _sword) { m_sword = _sword; }
 	void SetInviTime(int _inviTime) { m_inviTime = _inviTime; }
 	void SetCamera(std::shared_ptr<GameCamera> a_camera) { m_camera = a_camera; }
@@ -71,6 +94,10 @@ public:
 	const Math::Matrix& GetHitModelMat()const { return m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(m_mWorld.Translation()));}
 	const std::weak_ptr<GameCamera>& GetCamera()const { return m_camera; }
 	const float& GetDissolve()const { return m_dissolve; }
+	const std::weak_ptr<ObjectManager>& GetObjManager()const { return m_ObjectManager; }
+	const std::unique_ptr<KdDebugWireFrame>& GetDebugWire()const { return m_pDebugWire; }
+
+	bool IsAnimCheck(const std::string animName) { return m_anime._Equal(animName); }
 
 protected:
 	Param                        m_param;
@@ -90,7 +117,7 @@ protected:
 	float                        m_MoveSpeed       = 0.0f;
 	float                        m_JumpPow         = 0.0f;
 	float                        m_dissolve        = 0.0f;
-	float                        m_AtkRange = 0.0f; //攻撃範囲
+	float                        m_AtkRange        = 0.0f; //攻撃範囲
 	const float                  m_SpeedCorrection = 0.2f;
 	const float                  m_gravityPow      = 0.1f;
 	bool                         m_atkFlg          = false;

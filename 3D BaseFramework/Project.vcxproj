@@ -161,6 +161,7 @@
     <ClInclude Include="Src\Application\GameObject\Camera\TitleCamera\TitleCamera.h" />
     <ClInclude Include="Src\Application\GameObject\Character\BulletBase\BulletBase.h" />
     <ClInclude Include="Src\Application\GameObject\Character\CharacterBase.h" />
+    <ClInclude Include="Src\Application\GameObject\Character\Enemy\BoneAlpha\BoneAlpha.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\Bone\Bone.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\EnemyBase.h" />
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\EnemyManager.h" />
@@ -246,6 +247,7 @@
     <ClCompile Include="Src\Application\GameObject\Camera\TitleCamera\TitleCamera.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\BulletBase\BulletBase.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\CharacterBase.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Character\Enemy\BoneAlpha\BoneAlpha.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\Bone\Bone.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\EnemyBase.cpp" />
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\EnemyManager.cpp" />

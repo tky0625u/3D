@@ -27,6 +27,8 @@
 #include"Camera/GameCamera/GameCamera.h"
 //骨
 #include"Character/Enemy/Bone/Bone.h"
+//骨教科個体
+#include"Character/Enemy/BoneAlpha/BoneAlpha.h"
 //ゴーレム
 #include"Character/Enemy/Golem/Golem.h"
 //タイトル
@@ -131,7 +133,7 @@ void ObjectManager::SlowChange()
 	else
 	{
 		m_slowFlg = true;
-		m_slow = 0.5f;
+		m_slow = 0.25f;
 	}
 }
 
@@ -925,6 +927,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 		if (ImGui::TreeNode("Enemy"))
 		{
 			std::vector<std::weak_ptr<EnemyBase>> _boneList;
+			std::vector<std::weak_ptr<EnemyBase>> _alphaList;
 			std::vector<std::weak_ptr<EnemyBase>> _golemList;
 			for (auto& enemy : m_EnemyList)
 			{
@@ -1051,6 +1054,89 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 						if (ImGui::Button((const char*)u8"消滅"))
 						{
 							_boneList[operation].lock()->Expired();
+							operation = -1;
+						}
+
+						ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+					}
+					ImGui::TreePop();
+				}
+
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNode("BoneAlpha"))
+			{
+				if (ImGui::Button((const char*)u8"BoneAlpha追加"))
+				{
+					AddBoneAlpha();
+				}
+
+				static int operation = -1;
+				if (!SceneManager::Instance().m_stop)operation = -1;
+
+				if (ImGui::TreeNode("BoneAlpha"))
+				{
+					ImGui::Text((const char*)u8"ボーンアルファ:%d体", _alphaList.size());
+					for (int alpha = 0; alpha < _alphaList.size(); ++alpha)
+					{
+						if (ImGui::Button(std::to_string(alpha + 1).c_str()))
+						{
+							operation = alpha;
+						}
+					}
+
+					if (operation != -1)
+					{
+						ImGui::Text((const char*)u8"%d体目", operation + 1);
+						// 体力
+						ImGui::Text((const char*)u8"　体力 　　HP=%d", _alphaList[operation].lock()->GetParam().Hp);
+						int hp = _alphaList[operation].lock()->GetParam().Hp;
+						ImGui::SliderInt("HP", &hp, 1, 100);
+						// 攻撃力
+						ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _alphaList[operation].lock()->GetParam().Atk);
+						int atk = _alphaList[operation].lock()->GetParam().Atk;
+						ImGui::SliderInt("ATK", &atk, 1, 100);
+						// 素早さ
+						ImGui::Text((const char*)u8"　素早さ 　SP=%.2f", _alphaList[operation].lock()->GetParam().Sp);
+						float speed = _alphaList[operation].lock()->GetParam().Sp;
+						ImGui::SliderFloat("Speed", &speed, 1, 100);
+						// スタミナ
+						ImGui::Text((const char*)u8"　スタミナ SM=%d", _alphaList[operation].lock()->GetParam().Sm);
+						int stamina = _alphaList[operation].lock()->GetParam().Sm;
+						ImGui::SliderInt("Stamina", &stamina, 1, 100);
+						// 位置
+						ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _alphaList[operation].lock()->GetPos().x, _alphaList[operation].lock()->GetPos().y, _alphaList[operation].lock()->GetPos().z);
+						Math::Vector3 pos = _alphaList[operation].lock()->GetPos();
+						ImGui::SliderFloat("PosX", &pos.x, -100, 100);
+						ImGui::SliderFloat("PosY", &pos.y, 0, 400);
+						ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
+						// 方向
+						ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _alphaList[operation].lock()->GetDir().x, _alphaList[operation].lock()->GetDir().y, _alphaList[operation].lock()->GetDir().z);
+						// 角度
+						ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _alphaList[operation].lock()->GetAngle());
+						Math::Vector3 angle = _alphaList[operation].lock()->GetAngle();
+						ImGui::SliderFloat("Angle", &angle.y, 0, 360);
+						// 大きさ
+						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _alphaList[operation].lock()->GetSize());
+						float size = _alphaList[operation].lock()->GetSize();
+						ImGui::SliderFloat("Size", &size, 1, 100);
+						// 攻撃範囲
+						ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _alphaList[operation].lock()->GetAtkRange());
+						float range = _alphaList[operation].lock()->GetAtkRange();
+						ImGui::SliderFloat("ATKRange", &range, 1, 100);
+						// 前方方向
+						ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _alphaList[operation].lock()->GetForward().x, _alphaList[operation].lock()->GetForward().y, _alphaList[operation].lock()->GetForward().z);
+
+						_alphaList[operation].lock()->SetParam(hp, atk, speed, stamina);
+						_alphaList[operation].lock()->SetPos(pos);
+						_alphaList[operation].lock()->SetAngle(angle);
+						_alphaList[operation].lock()->SetSize(size);
+						_alphaList[operation].lock()->SetAtkRange(range);
+
+						if (ImGui::Button((const char*)u8"消滅"))
+						{
+							_alphaList[operation].lock()->Expired();
 							operation = -1;
 						}
 
@@ -2865,9 +2951,15 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 						std::shared_ptr<Bone> bone = std::make_shared<Bone>();
 						enemy = bone;
 					}
+					else if (stage["Name"] == "BoneAlpha")
+					{
+						std::shared_ptr<BoneAlpha> alpha = std::make_shared<BoneAlpha>();
+						enemy = alpha;
+					}
 					else if (stage["Name"] == "Golem")
 					{
 						std::shared_ptr<Golem> golem = std::make_shared<Golem>();
+						m_golem = golem;
 						enemy = golem;
 					}
 					enemy->SetCamera(m_camera.lock());
@@ -2938,14 +3030,14 @@ void ObjectManager::SetEnemyHPParam(std::shared_ptr<EnemyBase> _enemy)
 	ifs.close();
 }
 
-std::shared_ptr<Bullet> ObjectManager::SetBulletParam(std::shared_ptr<Golem> _golem)
+std::shared_ptr<Bullet> ObjectManager::SetBulletParam()
 {
 	std::shared_ptr<Bullet> _bullet = std::make_shared<Bullet>();
 	_bullet->Init();
-	_bullet->SetPos(_golem->GetBulletPoint().Translation());
-	_bullet->SetGolem(_golem);
+	_bullet->SetPos(m_golem.lock()->GetBulletPoint().Translation());
+	_bullet->SetGolem(m_golem.lock());
 	_bullet->SetID(m_id);
-	_bullet->SetOwner(_golem->GetObjType());
+	_bullet->SetOwner(m_golem.lock()->GetObjType());
 	_bullet->SetObjManager(shared_from_this());
 	m_id++;
 	SceneManager::Instance().AddObject(_bullet);
@@ -3105,8 +3197,49 @@ void ObjectManager::AddBone()
 	SetEnemyHPParam(enemy);
 }
 
+void ObjectManager::AddBoneAlpha()
+{
+	std::string _name = "BoneAlpha";
+	Math::Vector3 _pos = Math::Vector3::Zero;
+	Math::Vector3 _dir = Math::Vector3::Zero;
+	float _size = 1.5f;
+	Math::Vector3 _angle = Math::Vector3::Zero;
+	int _hp = 10;
+	int _atk = 2;
+	float _speed = 1.0f;
+	int _stamina = 50;
+	float _atkRange = 50.0f;
+	Math::Vector3 _forward = Math::Vector3::Zero;
+	_forward.z = 1.0f;
+	float _chaseRange = 1000.0f;
+
+	std::shared_ptr<BoneAlpha> enemy = nullptr;
+	enemy = std::make_shared<BoneAlpha>();
+	enemy->SetParam(_hp, _atk, _speed, _stamina);
+	enemy->SetPos(_pos);
+	enemy->SetSize(_size);
+	enemy->SetDir(_dir);
+	enemy->SetAngle(_angle);
+	enemy->SetAtkRange(_atkRange);
+	enemy->SetForward(_forward);
+	enemy->SetName(_name);
+	enemy->SetCamera(m_camera.lock());
+	enemy->SetTarget(m_player.lock());
+	enemy->SetID(m_id);
+	enemy->SetObjManager(shared_from_this());
+	enemy->Init();
+	m_id++;
+
+	SceneManager::Instance().AddEnemy(enemy);
+	m_EnemyList.push_back(enemy);
+
+	SetEnemyHPParam(enemy);
+}
+
 void ObjectManager::AddGolem()
 {
+	if (!m_golem.expired())return;
+
 	std::string _name = "Golem";
 	Math::Vector3 _pos = Math::Vector3::Zero;
 	Math::Vector3 _dir = Math::Vector3::Zero;
@@ -3143,6 +3276,8 @@ void ObjectManager::AddGolem()
 	m_EnemyList.push_back(enemy);
 
 	SetEnemyHPParam(enemy);
+
+	m_golem = enemy;
 }
 
 void ObjectManager::AddWeapon(std::string _filePath, std::string _weaponName)

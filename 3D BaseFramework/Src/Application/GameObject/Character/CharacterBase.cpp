@@ -89,7 +89,7 @@ void CharacterBase::PostUpdate()
 	KdCollider::SphereInfo sphereInfo;
 	Math::Matrix _mat = m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(m_mWorld.Translation()));
 	sphereInfo.m_sphere.Center = _mat.Translation();
-	sphereInfo.m_sphere.Radius = 1.0f;
+	sphereInfo.m_sphere.Radius = 2.0f;
 	sphereInfo.m_type = KdCollider::TypeBump;
 
 	//デバッグ用

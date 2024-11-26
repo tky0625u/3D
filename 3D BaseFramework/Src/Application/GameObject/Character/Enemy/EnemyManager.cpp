@@ -90,16 +90,69 @@ void EnemyManager::EnemyRun()
 				enemy->RunChange();
 			}
 		}
+		else if (enemy->GetName() == "BoneAlpha")
+		{
+			Math::Vector3 _playerPos = enemy->GetTarget().lock()->GetPos();
+			_playerPos.y = 0.0f;
+			Math::Vector3 _enemyPos = enemy->GetPos();
+			_enemyPos.y = 0.0f;
+			float _dist = (_playerPos - _enemyPos).Length();
+			if (_dist > enemy->GetAtkRange())
+			{
+				if (enemy->GetActionType() != EnemyBase::Action::RunType)enemy->RunChange();
+				continue;
+			}
+
+			//今の方向
+			Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(enemy->GetAngle().y));
+			Math::Vector3 nowVec = Math::Vector3::TransformNormal(enemy->GetForward(), nowRot);
+			nowVec.y = 0.0f;
+
+			//向きたい方向
+			Math::Vector3 toVec = enemy->GetTarget().lock()->GetPos() - enemy->GetPos();
+			toVec.y = 0.0f;
+			toVec.Normalize();
+
+			//内角 回転する角を求める
+			float d = nowVec.Dot(toVec);
+			d = std::clamp(d, -1.0f, 1.0f); //誤差修正
+
+			//回転角度を求める
+			float ang = DirectX::XMConvertToDegrees(acos(d));
+
+			if (fabs(ang) <= 50.0f)
+			{
+				enemy->IdolChange();
+
+				bool atkFlg = false;
+				for (auto& atk : m_EnemyAttackList)
+				{
+					if (atk.expired())continue;
+					if (atk.lock()->GetID() == enemy->GetID())
+					{
+						atkFlg = true;
+						break;
+					}
+				}
+				if (atkFlg)continue;
+
+				m_EnemyAttackList.push_back(enemy);
+
+				continue;
+			}
+			else if(enemy->GetActionType() != EnemyBase::Action::RunType)
+			{
+				enemy->RunChange();
+			}
+		}
 		else if (enemy->GetName() == "Golem")
 		{
-			KdCollider::SphereInfo sphereInfo;
-			sphereInfo.m_sphere.Center = enemy->GetPos();
-			sphereInfo.m_sphere.Center.y = (enemy->GetTarget().lock()->GetEnemyAttackPointMat().Translation().y);
-			sphereInfo.m_sphere.Radius = enemy->GetAtkRange();
-			sphereInfo.m_type = KdCollider::Type::TypeBump;
-
-			std::list<KdCollider::CollisionResult> _List;
-			if (enemy->GetTarget().lock()->Intersects(sphereInfo, &_List))
+			Math::Vector3 _playerPos = enemy->GetTarget().lock()->GetPos();
+			_playerPos.y = 0.0f;
+			Math::Vector3 _enemyPos = enemy->GetPos();
+			_enemyPos.y = 0.0f;
+			float _dist = (_playerPos - _enemyPos).Length();
+			if (_dist <= enemy->GetAtkRange())
 			{
 				enemy->IdolChange();
 

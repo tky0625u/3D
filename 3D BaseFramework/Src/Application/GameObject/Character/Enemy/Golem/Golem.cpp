@@ -12,7 +12,7 @@ void Golem::Action()
 		m_actionType = m_NextActionType;
 		m_NextState.reset();
 	}
-	m_state->StateUpdate(this);
+	m_state->StateUpdate(shared_from_this());
 }
 
 void Golem::Init()
@@ -23,7 +23,10 @@ void Golem::Init()
 
 	std::shared_ptr<Appeal> appeal = std::make_shared<Appeal>();
 	m_state = appeal;
+	m_actionType = EnemyBase::Action::AppealType;
 	m_flow = EnemyBase::Flow::UpdateType;
+
+	m_AppealEffectSize = 5.0f;
 
 	m_animator->SetAnimation(m_model->GetData()->GetAnimation(m_anime), m_animeFlg);
 
@@ -82,135 +85,10 @@ void Golem::AttackChange()
 
 }
 
-void Golem::StateBase::Damage(Golem* owner, int _damage)
-{
-	owner->m_param.Hp -= _damage;
-	if (owner->m_param.Hp <= 0)
-	{
-		owner->m_param.Hp = 0;
-
-		// Crushing
-		std::shared_ptr<Crushing> _crush = std::make_shared<Crushing>();
-		owner->m_NextState = _crush;
-		owner->m_NextActionType = EnemyBase::Action::CrushingType;
-		owner->m_flow = EnemyBase::Flow::UpdateType;
-	}
-}
-
-
-// Appeal==========================================================================================
-void Golem::Appeal::Enter(Golem* owner)
-{
-}
-
-void Golem::Appeal::Update(Golem* owner)
-{
-	if (owner->m_anime != "Appeal")
-	{
-		owner->SetAnime("Appeal", false, 1.0f);
-		m_handle = KdEffekseerManager::GetInstance().Play("Enemy/MagicDrak.efkefc", owner->m_pos, 5.0f, 1.0f, false).lock()->GetHandle();
-		return;
-	}
-
-	if (owner->GetIsAnimator() && !KdEffekseerManager::GetInstance().IsPlaying(m_handle))
-	{
-		// Idol
-		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
-		owner->m_NextState = _idol;
-		owner->m_NextActionType = EnemyBase::Action::IdolType;
-		owner->m_flow=EnemyBase::Flow::UpdateType;
-		return;
-	}
-}
-
-void Golem::Appeal::Exit(Golem* owner)
-{
-}
-//=================================================================================================
-
-
-// Idol============================================================================================
-void Golem::Idol::Enter(Golem* owner)
-{
-}
-
-void Golem::Idol::Update(Golem* owner)
-{
-	if (owner->m_anime != "Idol")
-	{
-		owner->SetAnime("Idol", true, 1.0f);
-		return;
-	}
-}
-
-void Golem::Idol::Exit(Golem* owner)
-{
-}
-//=================================================================================================
-
-
-// Run=============================================================================================
-void Golem::Run::Enter(Golem* owner)
-{
-	if (owner->m_anime != "IdolToRun")
-	{
-		owner->SetAnime("IdolToRun", false, 1.5f);
-		return;
-	}
-
-	if (owner->GetIsAnimator())
-	{
-		owner->m_flow = EnemyBase::Flow::UpdateType;
-		return;
-	}
-
-	Move(owner);
-}
-
-void Golem::Run::Update(Golem* owner)
-{
-	if (owner->m_anime != "Run")
-	{
-		owner->SetAnime("Run", true, 0.7f);
-		return;
-	}
-
-	Move(owner);
-}
-
-void Golem::Run::Exit(Golem* owner)
-{
-	if (owner->m_anime != "RunToIdol")
-	{
-		owner->SetAnime("RunToIdol", false, 1.5f);
-		return;
-	}
-
-	if (owner->GetIsAnimator())
-	{
-		owner->AttackChange();
-		return;
-	}
-}
-void Golem::Run::Move(Golem* owner)
-{
-	std::shared_ptr<Player> _player = owner->m_Target.lock();
-	Math::Vector3 _playerPos = _player->GetPos();
-	Math::Vector3 _pos = owner->m_pos;
-	Math::Vector3 _moveDir = _playerPos - _pos;
-	float dist = _moveDir.Length();
-	_moveDir.Normalize();
-
-	if (dist >= owner->m_AtkRange)owner->SetMove(_moveDir);
-	owner->Rotate(_moveDir, 5.0f);
-}
-//=================================================================================================
-
-
 // Attack1=========================================================================================
-void Golem::Attack1::Enter(Golem* owner)
+void Golem::Attack1::Enter(std::shared_ptr<EnemyBase> owner)
 {
-	if (owner->m_anime != "IdolToAttack1")
+	if (!owner->IsAnimCheck("IdolToAttack1"))
 	{
 		owner->SetAnime("IdolToAttack1", false, 1.5f);
 		return;
@@ -218,25 +96,25 @@ void Golem::Attack1::Enter(Golem* owner)
 
 	if (owner->GetIsAnimator())
 	{
-		owner->m_flow = EnemyBase::Flow::UpdateType;
+		owner->SetFlow(EnemyBase::Flow::UpdateType);
 		return;
 	}
 }
 
-void Golem::Attack1::Update(Golem* owner)
+void Golem::Attack1::Update(std::shared_ptr<EnemyBase> owner)
 {
-	if (owner->m_anime != "Attack1")
+	if (!owner->IsAnimCheck("Attack1"))
 	{
 		owner->SetAnime("Attack1", false, 1.5f);
-		m_bullet = owner->m_ObjectManager.lock()->SetBulletParam(owner->shared_from_this());
+		m_bullet = owner->GetObjManager().lock()->SetBulletParam();
 		return;
 	}
 
 	if (!m_bullet.expired() && m_bullet.lock()->GetSize() < m_bullet.lock()->GetMaxSize())
 	{
-		m_bullet.lock()->SetPos(owner->GetBulletPoint().Translation());
+		m_bullet.lock()->SetPos(owner->GetObjManager().lock()->GetGolem().lock()->GetBulletPoint().Translation());
 
-		Math::Vector3 _dir = owner->m_Target.lock()->GetPos() - owner->m_pos;
+		Math::Vector3 _dir = owner->GetTarget().lock()->GetPos() - owner->GetPos();
 		_dir.y = 0.0f;
 		_dir.Normalize();
 		owner->Rotate(_dir, 1.0f);
@@ -244,21 +122,21 @@ void Golem::Attack1::Update(Golem* owner)
 	else if (!m_bullet.expired() && m_bullet.lock()->GetSize() >= m_bullet.lock()->GetMaxSize() && m_bullet.lock()->GetDir() == Math::Vector3::Zero)
 	{
 		KdEffekseerManager::GetInstance().Play("Enemy/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 2.0f, 2.0f, false);
-		Math::Matrix RotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(owner->m_angle.y));
-		Math::Vector3 _dir = Math::Vector3::TransformNormal(owner->m_forward, RotY);
+		Math::Matrix RotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(owner->GetAngle().y));
+		Math::Vector3 _dir = Math::Vector3::TransformNormal(owner->GetForward(), RotY);
 		m_bullet.lock()->SetDir(_dir);
 	}
 
 	if (m_bullet.expired())
 	{
-		owner->m_flow = EnemyBase::Flow::ExitType;
+		owner->SetFlow(EnemyBase::Flow::ExitType);
 		return;
 	}
 }
 
-void Golem::Attack1::Exit(Golem* owner)
+void Golem::Attack1::Exit(std::shared_ptr<EnemyBase> owner)
 {
-	if (owner->m_anime != "Attack1ToIdol")
+	if (!owner->IsAnimCheck("Attack1ToIdol"))
 	{
 		owner->SetAnime("Attack1ToIdol", false, 1.5f);
 		return;
@@ -268,9 +146,8 @@ void Golem::Attack1::Exit(Golem* owner)
 	{
 		// Idol
 		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
-		owner->m_NextState = _idol;
-		owner->m_NextActionType = EnemyBase::Action::IdolType;
-		owner->m_flow = EnemyBase::Flow::UpdateType;
+		owner->SetNextAction(_idol, EnemyBase::Action::IdolType);
+		owner->SetFlow(EnemyBase::Flow::UpdateType);
 		return;
 	}
 }
@@ -278,9 +155,9 @@ void Golem::Attack1::Exit(Golem* owner)
 
 
 // Attack2=========================================================================================
-void Golem::Attack2::Enter(Golem* owner)
+void Golem::Attack2::Enter(std::shared_ptr<EnemyBase> owner)
 {
-	if (owner->m_anime != "IdolToAttack2")
+	if (!owner->IsAnimCheck("IdolToAttack2"))
 	{
 		owner->SetAnime("IdolToAttack2", false, 1.5f);
 		return;
@@ -288,24 +165,24 @@ void Golem::Attack2::Enter(Golem* owner)
 
 	if (owner->GetIsAnimator())
 	{
-		owner->m_flow = EnemyBase::Flow::UpdateType;
+		owner->SetFlow(EnemyBase::Flow::UpdateType);
 		return;
 	}
 }
 
-void Golem::Attack2::Update(Golem* owner)
+void Golem::Attack2::Update(std::shared_ptr<EnemyBase> owner)
 {
 	static Math::Vector3 _dir = Math::Vector3::Zero;
-	if (owner->m_anime != "Attack2")
+	if (!owner->IsAnimCheck("Attack2"))
 	{
 		owner->SetAnime("Attack2", false, 1.5f);
-		owner->m_JumpPow = 5.0f;
+		owner->SetJumpPow(5.0f);
 
-		std::shared_ptr<Player> _player = owner->m_Target.lock();
+		std::shared_ptr<Player> _player = owner->GetTarget().lock();
 		Math::Vector3 _playerPos = _player->GetPos();
 		_playerPos.y = 0.0f;
 		m_playerPos = _playerPos;
-		Math::Vector3 _pos = owner->m_pos;
+		Math::Vector3 _pos = owner->GetPos();
 		_pos.y = 0.0f;
 		Math::Vector3 _moveDir = _playerPos - _pos;
 		float dist = _moveDir.Length();
@@ -315,16 +192,16 @@ void Golem::Attack2::Update(Golem* owner)
 		return;
 	}
 
-	if (owner->m_pos.y <= 0.0f)
+	if (owner->GetPos().y <= 0.0f)
 	{
 		AttackHit(owner);
-		KdEffekseerManager::GetInstance().Play("Enemy/Golem/smash.efkefc", owner->m_pos, Math::Vector3{ 60.0f,15.0f,60.0f }, 1.0f, false);
-		owner->m_flow = EnemyBase::Flow::ExitType;
+		KdEffekseerManager::GetInstance().Play("Enemy/Golem/smash.efkefc", owner->GetPos(), Math::Vector3{60.0f,15.0f,60.0f}, 1.0f, false);
+		owner->SetFlow(EnemyBase::Flow::ExitType);
 		return;
 	}
 
 
-	Math::Vector3 _pos = owner->m_pos;
+	Math::Vector3 _pos = owner->GetPos();
 	Math::Vector3 _moveDir = m_playerPos - _pos;
 	float dist = _moveDir.Length();
 	_moveDir.Normalize();
@@ -334,9 +211,9 @@ void Golem::Attack2::Update(Golem* owner)
 	if (_pos != m_playerPos)owner->SetMove(_dir, 10.0f);
 }
 
-void Golem::Attack2::Exit(Golem* owner)
+void Golem::Attack2::Exit(std::shared_ptr<EnemyBase> owner)
 {
-	if (owner->m_anime != "Attack2ToIdol")
+	if (!owner->IsAnimCheck("Attack2ToIdol"))
 	{
 		owner->SetAnime("Attack2ToIdol", false, 1.5f);
 		return;
@@ -346,17 +223,16 @@ void Golem::Attack2::Exit(Golem* owner)
 	{
 		// Idol
 		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
-		owner->m_NextState = _idol;
-		owner->m_NextActionType = EnemyBase::Action::IdolType;
-		owner->m_flow = EnemyBase::Flow::UpdateType;
+		owner->SetNextAction(_idol, EnemyBase::Action::IdolType);
+		owner->SetFlow(EnemyBase::Flow::UpdateType);
 		return;
 	}
 }
 
-void Golem::Attack2::AttackHit(Golem* owner)
+void Golem::Attack2::AttackHit(std::shared_ptr<EnemyBase> owner)
 {
 	KdCollider::SphereInfo sphereInfo;
-	sphereInfo.m_sphere.Center = owner->m_pos;
+	sphereInfo.m_sphere.Center = owner->GetPos();
 	sphereInfo.m_sphere.Radius = 60.0f;
 	sphereInfo.m_type = KdCollider::Type::TypeDamage;
 
@@ -364,18 +240,18 @@ void Golem::Attack2::AttackHit(Golem* owner)
 	//Math::Color _color = { 1,0,0,1 };
 	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, _color);
 
-	if (owner->m_Target.lock()->Intersects(sphereInfo, nullptr))
+	if (owner->GetTarget().lock()->Intersects(sphereInfo, nullptr))
 	{
-		owner->m_Target.lock()->Damage(5, owner->shared_from_this());
+		owner->GetTarget().lock()->Damage(5, owner->shared_from_this());
 	}
 }
 //=================================================================================================
 
 
 // Attack3=========================================================================================
-void Golem::Attack3::Enter(Golem* owner)
+void Golem::Attack3::Enter(std::shared_ptr<EnemyBase> owner)
 {
-	if (owner->m_anime != "IdolToAttack3")
+	if (!owner->IsAnimCheck("IdolToAttack3"))
 	{
 		owner->SetAnime("IdolToAttack3", false, 1.0f);
 		return;
@@ -384,14 +260,14 @@ void Golem::Attack3::Enter(Golem* owner)
 	if (owner->GetIsAnimator())
 	{
 		KdEffekseerManager::GetInstance().Play("Enemy/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 2.0f, 2.0f, false);
-		owner->m_flow = owner->Flow::UpdateType;
+		owner->SetFlow(owner->Flow::UpdateType);
 		return;
 	}
 }
 
-void Golem::Attack3::Update(Golem* owner)
+void Golem::Attack3::Update(std::shared_ptr<EnemyBase> owner)
 {
-	if (owner->m_anime != "Attack3")
+	if (!owner->IsAnimCheck("Attack3"))
 	{
 		owner->SetAnime("Attack3", false, 1.5f);
 		return;
@@ -400,15 +276,15 @@ void Golem::Attack3::Update(Golem* owner)
 	if (owner->GetIsAnimator())
 	{
 		AttackHit(owner);
-		KdEffekseerManager::GetInstance().Play("Enemy/Golem/smash.efkefc", owner->m_pos, Math::Vector3{ 50.0f,15.0f,50.0f }, 1.0f, false);
-		owner->m_flow = EnemyBase::Flow::ExitType;
+		KdEffekseerManager::GetInstance().Play("Enemy/Golem/smash.efkefc", owner->GetPos(), Math::Vector3{50.0f,15.0f,50.0f}, 1.0f, false);
+		owner->SetFlow(EnemyBase::Flow::ExitType);
 		return;
 	}
 }
 
-void Golem::Attack3::Exit(Golem* owner)
+void Golem::Attack3::Exit(std::shared_ptr<EnemyBase> owner)
 {
-	if (owner->m_anime != "Attack3ToIdol")
+	if (!owner->IsAnimCheck("Attack3ToIdol"))
 	{
 		owner->SetAnime("Attack3ToIdol", false, 1.5f);
 		return;
@@ -418,22 +294,21 @@ void Golem::Attack3::Exit(Golem* owner)
 	{
 		// Idol
 		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
-		owner->m_NextState = _idol;
-		owner->m_NextActionType = EnemyBase::Action::IdolType;
-		owner->m_flow = EnemyBase::Flow::UpdateType;
+		owner->SetNextAction(_idol, EnemyBase::Action::IdolType);
+		owner->SetFlow(EnemyBase::Flow::UpdateType);
 		return;
 	}
 
-	Math::Vector3 dir = owner->m_Target.lock()->GetPos() - owner->m_pos;
+	Math::Vector3 dir = owner->GetTarget().lock()->GetPos() - owner->GetPos();
 	dir.y = 0.0f;
 	dir.Normalize();
 	owner->Rotate(dir, 2.5f);
 }
 
-void Golem::Attack3::AttackHit(Golem* owner)
+void Golem::Attack3::AttackHit(std::shared_ptr<EnemyBase> owner)
 {
 	KdCollider::SphereInfo sphereInfo;
-	sphereInfo.m_sphere.Center = owner->GetQuakePoint().Translation();
+	sphereInfo.m_sphere.Center = owner->GetObjManager().lock()->GetGolem().lock()->GetQuakePoint().Translation();
 	sphereInfo.m_sphere.Radius = 60.0f;
 	sphereInfo.m_type = KdCollider::Type::TypeDamage;
 
@@ -441,34 +316,9 @@ void Golem::Attack3::AttackHit(Golem* owner)
 	//Math::Color _color = { 1,0,0,1 };
 	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, _color);
 
-	if (owner->m_Target.lock()->Intersects(sphereInfo, nullptr))
+	if (owner->GetTarget().lock()->Intersects(sphereInfo, nullptr))
 	{
-		owner->m_Target.lock()->Damage(5, owner->shared_from_this());
+		owner->GetTarget().lock()->Damage(5, owner->shared_from_this());
 	}
 }
 //=================================================================================================
-
-void Golem::Crushing::Enter(Golem* owner)
-{
-}
-
-void Golem::Crushing::Update(Golem* owner)
-{
-	if (owner->m_anime != "Death")
-	{
-		owner->SetAnime("Death", false, 1.0f);
-		return;
-	}
-
-	if (owner->GetIsAnimator())
-	{
-		owner->Expired();
-		return;
-	}
-
-	owner->CrushingAction();
-}
-
-void Golem::Crushing::Exit(Golem* owner)
-{
-}

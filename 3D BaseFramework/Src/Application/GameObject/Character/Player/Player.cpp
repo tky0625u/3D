@@ -28,7 +28,7 @@ void Player::Action()
 		m_actionType = m_NextActionType;
 		m_NextState.reset();
 	}
-	m_state->StateUpdate(this);
+	m_state->StateUpdate(shared_from_this());
 }
 
 void Player::PostUpdate()
@@ -176,7 +176,7 @@ void Player::TeleportChange()
 	m_flow = CharacterBase::Flow::EnterType;
 }
 
-void Player::StateBase::StateUpdate(Player* owner)
+void Player::StateBase::StateUpdate(std::shared_ptr<Player> owner)
 {
 	switch (owner->m_flow)
 	{
@@ -209,7 +209,7 @@ void Player::StateBase::StateUpdate(Player* owner)
 	owner->m_BeforeKeyType = owner->m_keyType;
 }
 
-void Player::StateBase::Damage(Player* owner, int _damage, std::shared_ptr<EnemyBase> _enemy)
+void Player::StateBase::Damage(std::shared_ptr<Player> owner, int _damage, std::shared_ptr<EnemyBase> _enemy)
 {
 	owner->m_param.Hp -= _damage;
 	if (owner->m_param.Hp <= 0)
@@ -230,7 +230,7 @@ void Player::StateBase::Damage(Player* owner, int _damage, std::shared_ptr<Enemy
 	return;
 }
 
-void Player::StateBase::Damage(Player* owner, int _damage, std::shared_ptr<BulletBase> _bullet)
+void Player::StateBase::Damage(std::shared_ptr<Player> owner, int _damage, std::shared_ptr<BulletBase> _bullet)
 {
 	_bullet->SetCrush(true);
 	owner->m_param.Hp -= _damage;
@@ -252,7 +252,7 @@ void Player::StateBase::Damage(Player* owner, int _damage, std::shared_ptr<Bulle
 	return;
 }
 
-void Player::StateBase::AttackHit(Player* owner)
+void Player::StateBase::AttackHit(std::shared_ptr<Player> owner)
 {
 	std::vector<KdCollider::SphereInfo> sphereInfoList;
 	KdCollider::SphereInfo sphereInfo;
@@ -364,23 +364,23 @@ void Player::KeyCheck()
 }
 
 // Idol============================================================================================
-void Player::Idol::Enter(Player* owner)
+void Player::Idol::Enter(std::shared_ptr<Player> owner)
 {
 }
 
-void Player::Idol::Update(Player* owner)
+void Player::Idol::Update(std::shared_ptr<Player> owner)
 {
-	if (owner->m_anime != "Idol")
+	if (!owner->IsAnimCheck("Idol"))
 	{
 		owner->SetAnime("Idol", true, 1.0f);
 	}
 }
 
-void Player::Idol::Exit(Player* owner)
+void Player::Idol::Exit(std::shared_ptr<Player> owner)
 {
 }
 
-void Player::Idol::ChangeState(Player* owner)
+void Player::Idol::ChangeState(std::shared_ptr<Player> owner)
 {
 	if (owner->m_keyType & Player::KeyType::MoveKey)
 	{
@@ -421,9 +421,9 @@ void Player::Idol::ChangeState(Player* owner)
 
 
 // Run=============================================================================================
-void Player::Run::Enter(Player* owner)
+void Player::Run::Enter(std::shared_ptr<Player> owner)
 {
-	if (owner->m_anime != "IdolToRun")
+	if (!owner->IsAnimCheck("IdolToRun"))
 	{
 		owner->SetAnime("IdolToRun", false, 3.0f);
 		return;
@@ -444,9 +444,9 @@ void Player::Run::Enter(Player* owner)
 	Event(owner);
 }
 
-void Player::Run::Update(Player* owner)
+void Player::Run::Update(std::shared_ptr<Player> owner)
 {
-	if (owner->m_anime != "Run")
+	if (!owner->IsAnimCheck("Run"))
 	{
 		owner->SetAnime("Run", true, 1.0f);
 		return;
@@ -461,9 +461,9 @@ void Player::Run::Update(Player* owner)
 	Event(owner);
 }
 
-void Player::Run::Exit(Player* owner)
+void Player::Run::Exit(std::shared_ptr<Player> owner)
 {
-	if (owner->m_anime != "RunToIdol")
+	if (!owner->IsAnimCheck("RunToIdol"))
 	{
 		owner->SetAnime("RunToIdol", false, 3.0f);
 		return;
@@ -486,7 +486,7 @@ void Player::Run::Exit(Player* owner)
 	}
 }
 
-void Player::Run::Event(Player* owner)
+void Player::Run::Event(std::shared_ptr<Player> owner)
 {
 	Math::Vector3 dir = Math::Vector3::Zero;
 	if (GetAsyncKeyState('W') & 0x8000)
@@ -512,7 +512,7 @@ void Player::Run::Event(Player* owner)
 	if (owner->m_flow == Player::Flow::ExitType)owner->m_flow = Player::Flow::UpdateType;
 }
 
-void Player::Run::ChangeState(Player* owner)
+void Player::Run::ChangeState(std::shared_ptr<Player> owner)
 {
 	if (owner->m_keyType & Player::KeyType::AttackKey && !(owner->m_BeforeKeyType & Player::KeyType::AttackKey))
 	{
@@ -545,7 +545,7 @@ void Player::Run::ChangeState(Player* owner)
 
 
 // Attack==========================================================================================
-void Player::Attack::Enter(Player* owner)
+void Player::Attack::Enter(std::shared_ptr<Player> owner)
 {
 	AttackDirCheck(owner);
 	if (owner->GetSword().expired())return;
@@ -559,26 +559,26 @@ void Player::Attack::Enter(Player* owner)
 	owner->m_flow = Player::Flow::UpdateType;
 }
 
-void Player::Attack::Update(Player* owner)
+void Player::Attack::Update(std::shared_ptr<Player> owner)
 {
 	switch (m_atkNum)
 	{
 	case 1:
-		if (owner->m_anime != "Attack1")
+		if (!owner->IsAnimCheck("Attack1"))
 		{
 			owner->SetAnime("Attack1", false, 1.5f);
 			return;
 		}
 		break;
 	case 2:
-		if (owner->m_anime != "Attack2")
+		if (!owner->IsAnimCheck("Attack2"))
 		{
 			owner->SetAnime("Attack2", false, 2.5f);
 			return;
 		}
 		break;
 	case 3:
-		if (owner->m_anime != "Attack3")
+		if (!owner->IsAnimCheck("Attack3"))
 		{
 			owner->SetAnime("Attack3", false, 1.5f);
 			return;
@@ -600,28 +600,30 @@ void Player::Attack::Update(Player* owner)
 		owner->m_flow = Player::Flow::ExitType;
 		return;
 	}
+
+	m_ActionFPS++;
 }
 
-void Player::Attack::Exit(Player* owner)
+void Player::Attack::Exit(std::shared_ptr<Player> owner)
 {
 	switch (m_atkNum)
 	{
 	case 1:
-		if (owner->m_anime != "Attack1ToIdol")
+		if (!owner->IsAnimCheck("Attack1ToIdol"))
 		{
 			owner->SetAnime("Attack1ToIdol", false, 1.0f);
 			return;
 		}
 		break;
 	case 2:
-		if (owner->m_anime != "Attack2ToIdol")
+		if (!owner->IsAnimCheck("Attack2ToIdol"))
 		{
 			owner->SetAnime("Attack2ToIdol", false, 1.0f);
 			return;
 		}
 		break;
 	case 3:
-		if (owner->m_anime != "Attack3ToIdol")
+		if (!owner->IsAnimCheck("Attack3ToIdol"))
 		{
 			owner->SetAnime("Attack3ToIdol", false, 1.0f);
 			return;
@@ -642,7 +644,7 @@ void Player::Attack::Exit(Player* owner)
 	}
 }
 
-void Player::Attack::Event(Player* owner)
+void Player::Attack::Event(std::shared_ptr<Player> owner)
 {
 	switch (m_atkNum)
 	{
@@ -658,27 +660,31 @@ void Player::Attack::Event(Player* owner)
 	default:
 		break;
 	}
-
-	AttackHit(owner);
 }
 
-void Player::Attack::Attack1(Player* owner)
+void Player::Attack::Attack1(std::shared_ptr<Player> owner)
 {
 	owner->SetMove(m_AttackDir, 0.5f);
+
+	if (m_ActionFPS >= 15)AttackHit(owner);
 }
 
-void Player::Attack::Attack2(Player* owner)
+void Player::Attack::Attack2(std::shared_ptr<Player> owner)
 {
 	owner->SetMove(m_AttackDir, 1.0f);
+
+	if (m_ActionFPS >= 12)AttackHit(owner);
 }
 
-void Player::Attack::Attack3(Player* owner)
+void Player::Attack::Attack3(std::shared_ptr<Player> owner)
 {
 	owner->Rotate(m_AttackDir);
 	owner->SetMove(m_AttackDir, 1.2f);
+
+	if (m_ActionFPS >= 16)AttackHit(owner);
 }
 
-void Player::Attack::AttackDirCheck(Player* owner)
+void Player::Attack::AttackDirCheck(std::shared_ptr<Player> owner)
 {
 	m_AttackDir = Math::Vector3::Zero;
 
@@ -762,7 +768,7 @@ void Player::Attack::AttackDirCheck(Player* owner)
 	m_AttackDir.Normalize(); //正規化
 }
 
-void Player::Attack::ChangeState(Player* owner)
+void Player::Attack::ChangeState(std::shared_ptr<Player> owner)
 {
 	if (owner->m_flow != Player::Flow::ExitType)return;
 
@@ -771,6 +777,7 @@ void Player::Attack::ChangeState(Player* owner)
 		m_atkNum++;
 		owner->m_flow = Player::Flow::EnterType;
 		if (m_atkNum > AttackNUM)m_atkNum = 1;
+		m_ActionFPS = 0;
 	}
 	else if (owner->m_keyType & Player::KeyType::GuardKey)
 	{
@@ -795,9 +802,9 @@ void Player::Attack::ChangeState(Player* owner)
 
 
 // Counter==========================================================================================
-void Player::Counter::Enter(Player* owner)
+void Player::Counter::Enter(std::shared_ptr<Player> owner)
 {
-	if (owner->m_anime != "ParryingToCounter")
+	if (!owner->IsAnimCheck("ParryingToCounter"))
 	{
 		owner->SetAnime("ParryingToCounter", false, 1.5f);
 		return;
@@ -814,9 +821,9 @@ void Player::Counter::Enter(Player* owner)
 	}
 }
 
-void Player::Counter::Update(Player* owner)
+void Player::Counter::Update(std::shared_ptr<Player> owner)
 {
-	if (owner->m_anime != "Counter")
+	if (!owner->IsAnimCheck("Counter"))
 	{
 		owner->SetAnime("Counter", false, 1.5f);
 		return;
@@ -835,9 +842,9 @@ void Player::Counter::Update(Player* owner)
 	AttackHit(owner);
 }
 
-void Player::Counter::Exit(Player* owner)
+void Player::Counter::Exit(std::shared_ptr<Player> owner)
 {
-	if (owner->m_anime != "CounterToIdol")
+	if (!owner->IsAnimCheck("CounterToIdol"))
 	{
 		owner->SetAnime("CounterToIdol", false, 1.5f);
 		return;
@@ -856,7 +863,7 @@ void Player::Counter::Exit(Player* owner)
 	}
 }
 
-void Player::Counter::ChangeState(Player* owner)
+void Player::Counter::ChangeState(std::shared_ptr<Player> owner)
 {
 	if (owner->m_keyType & Player::KeyType::MoveKey)
 	{
@@ -904,7 +911,7 @@ void Player::Counter::ChangeState(Player* owner)
 
 
 // Roll============================================================================================
-void Player::Roll::Enter(Player* owner)
+void Player::Roll::Enter(std::shared_ptr<Player> owner)
 {
 	owner->m_param.Sm -= 5;
 	owner->m_StaminaRecoveryTime = 60 * 3;
@@ -912,10 +919,10 @@ void Player::Roll::Enter(Player* owner)
 	owner->m_flow = Player::Flow::UpdateType;
 }
 
-void Player::Roll::Update(Player* owner)
+void Player::Roll::Update(std::shared_ptr<Player> owner)
 {
 	Event(owner);
-	if (owner->m_anime != "Roll")
+	if (!owner->IsAnimCheck("Roll"))
 	{
 		owner->SetAnime("Roll", false, 1.2f);
 		KdEffekseerManager::GetInstance().Play("Player/Smoke.efkefc", owner->m_pos, 0.5f, 1.0f, false);
@@ -929,9 +936,9 @@ void Player::Roll::Update(Player* owner)
 	}
 }
 
-void Player::Roll::Exit(Player* owner)
+void Player::Roll::Exit(std::shared_ptr<Player> owner)
 {
-	if (owner->m_anime != "RollToIdol")
+	if (!owner->IsAnimCheck("RollToIdol"))
 	{
 		owner->SetAnime("RollToIdol", false, 1.0f);
 		return;
@@ -948,7 +955,7 @@ void Player::Roll::Exit(Player* owner)
 	}
 }
 
-void Player::Roll::Event(Player* owner)
+void Player::Roll::Event(std::shared_ptr<Player> owner)
 {
 	Math::Vector3 dir = Math::Vector3::Zero;
 
@@ -961,16 +968,16 @@ void Player::Roll::Event(Player* owner)
 	owner->SetMove(dir, 2.5f);
 }
 
-void Player::Roll::ChangeState(Player* owner)
+void Player::Roll::ChangeState(std::shared_ptr<Player> owner)
 {
 }
 //=================================================================================================
 
 
 // Guard===========================================================================================
-void Player::Guard::Enter(Player* owner)
+void Player::Guard::Enter(std::shared_ptr<Player> owner)
 {
-	if (owner->m_anime != "IdolToGuard")
+	if (!owner->IsAnimCheck("IdolToGuard"))
 	{
 		owner->SetAnime("IdolToGuard", false, 1.0f);
 		return;
@@ -991,9 +998,9 @@ void Player::Guard::Enter(Player* owner)
 	m_guardTime++;
 }
 
-void Player::Guard::Update(Player* owner)
+void Player::Guard::Update(std::shared_ptr<Player> owner)
 {
-	if (owner->m_anime != "Guard")
+	if (!owner->IsAnimCheck("Guard"))
 	{
 		owner->SetAnime("Guard", true, 1.0f);
 		return;
@@ -1008,9 +1015,9 @@ void Player::Guard::Update(Player* owner)
 	m_guardTime++;
 }
 
-void Player::Guard::Exit(Player* owner)
+void Player::Guard::Exit(std::shared_ptr<Player> owner)
 {
-	if (owner->m_anime != "GuardToIdol")
+	if (!owner->IsAnimCheck("GuardToIdol"))
 	{
 		owner->SetAnime("GuardToIdol", false, 1.0f);
 		return;
@@ -1033,15 +1040,15 @@ void Player::Guard::Exit(Player* owner)
 	}
 }
 
-void Player::Guard::Event(Player* owner)
+void Player::Guard::Event(std::shared_ptr<Player> owner)
 {
 }
 
-void Player::Guard::ChangeState(Player* owner)
+void Player::Guard::ChangeState(std::shared_ptr<Player> owner)
 {
 }
 
-void Player::Guard::GuardRotate(Player* owner, Math::Vector3 _dir)
+void Player::Guard::GuardRotate(std::shared_ptr<Player> owner, Math::Vector3 _dir)
 {
 	//今の方向
 	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(owner->m_angle.y));
@@ -1076,7 +1083,7 @@ void Player::Guard::GuardRotate(Player* owner, Math::Vector3 _dir)
 		}
 	}
 }
-void Player::Guard::Damage(Player* owner, int _damage, std::shared_ptr<EnemyBase> _enemy)
+void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shared_ptr<EnemyBase> _enemy)
 {
 	Math::Vector3 toVec = _enemy->GetPos() - owner->m_pos;
 	toVec.y = 0.0f;
@@ -1115,7 +1122,7 @@ void Player::Guard::Damage(Player* owner, int _damage, std::shared_ptr<EnemyBase
 	}
 }
 
-void Player::Guard::Damage(Player* owner, int _damage, std::shared_ptr<BulletBase> _bullet)
+void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shared_ptr<BulletBase> _bullet)
 {
 	if (m_guardTime <= 10)
 	{
@@ -1161,13 +1168,13 @@ void Player::Guard::Damage(Player* owner, int _damage, std::shared_ptr<BulletBas
 
 
 // GuardReaction===================================================================================
-void Player::GuardReaction::Enter(Player* owner)
+void Player::GuardReaction::Enter(std::shared_ptr<Player> owner)
 {
 }
 
-void Player::GuardReaction::Update(Player* owner)
+void Player::GuardReaction::Update(std::shared_ptr<Player> owner)
 {
-	if (owner->m_anime != "GuardReaction")
+	if (!owner->IsAnimCheck("GuardReaction"))
 	{
 		owner->SetAnime("GuardReaction", false, 1.0f);
 		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/ロボットを殴る1.WAV", 0.05f, false);
@@ -1185,24 +1192,24 @@ void Player::GuardReaction::Update(Player* owner)
 	}
 }
 
-void Player::GuardReaction::Exit(Player* owner)
+void Player::GuardReaction::Exit(std::shared_ptr<Player> owner)
 {
 }
 
-void Player::GuardReaction::ChangeState(Player* owner)
+void Player::GuardReaction::ChangeState(std::shared_ptr<Player> owner)
 {
 }
 //=================================================================================================
 
 
 // Parry===========================================================================================
-void Player::Parry::Enter(Player* owner)
+void Player::Parry::Enter(std::shared_ptr<Player> owner)
 {
 }
 
-void Player::Parry::Update(Player* owner)
+void Player::Parry::Update(std::shared_ptr<Player> owner)
 {
-	if (owner->m_anime != "Parrying")
+	if (!owner->IsAnimCheck("Parrying"))
 	{
 		owner->SetAnime("Parrying", false, 1.0f);
 		KdEffekseerManager::GetInstance().Play("Player/hit_hanmado_0409.efkefc", owner->GetShield().lock()->GetParryPoint().Translation(), 1.0f, 0.5f, false);
@@ -1217,9 +1224,9 @@ void Player::Parry::Update(Player* owner)
 	}
 }
 
-void Player::Parry::Exit(Player* owner)
+void Player::Parry::Exit(std::shared_ptr<Player> owner)
 {
-	if (owner->m_anime != "ParryingToIdol")
+	if (!owner->IsAnimCheck("ParryingToIdol"))
 	{
 		owner->SetAnime("ParryingToIdol", false, 1.5f);
 		return;
@@ -1227,6 +1234,8 @@ void Player::Parry::Exit(Player* owner)
 
 	if (owner->GetIsAnimator())
 	{
+		owner->m_ParryID = -1;
+
 		// Idol
 		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
 		owner->m_NextState = _idol;
@@ -1238,7 +1247,7 @@ void Player::Parry::Exit(Player* owner)
 	}
 }
 
-void Player::Parry::ChangeState(Player* owner)
+void Player::Parry::ChangeState(std::shared_ptr<Player> owner)
 {
 	if (owner->m_keyType & Player::KeyType::AttackKey && !(owner->m_BeforeKeyType & Player::KeyType::AttackKey))
 	{
@@ -1264,6 +1273,8 @@ void Player::Parry::ChangeState(Player* owner)
 
 	if (owner->m_keyType & Player::KeyType::MoveKey)
 	{
+		owner->m_ParryID = -1;
+
 		std::shared_ptr<Run> _run = std::make_shared<Run>();
 		owner->m_NextState = _run;
 		owner->m_NextActionType = Player::Action::RunType;
@@ -1273,6 +1284,8 @@ void Player::Parry::ChangeState(Player* owner)
 	}
 	else if (owner->m_keyType & Player::KeyType::GuardKey)
 	{
+		owner->m_ParryID = -1;
+
 		std::shared_ptr<Guard> _guard = std::make_shared<Guard>();
 		owner->m_NextState = _guard;
 		owner->m_NextActionType = Player::Action::GuardType;
@@ -1283,6 +1296,7 @@ void Player::Parry::ChangeState(Player* owner)
 	else if (owner->m_keyType & Player::KeyType::RollKey && !(owner->m_BeforeKeyType & Player::KeyType::RollKey))
 	{
 		if (owner->m_param.Sm <= 0)return;
+		owner->m_ParryID = -1;
 
 		std::shared_ptr<Roll> _roll = std::make_shared<Roll>();
 		owner->m_NextState = _roll;
@@ -1296,13 +1310,13 @@ void Player::Parry::ChangeState(Player* owner)
 
 
 // Hit=============================================================================================
-void Player::Hit::Enter(Player* owner)
+void Player::Hit::Enter(std::shared_ptr<Player> owner)
 {
 }
 
-void Player::Hit::Update(Player* owner)
+void Player::Hit::Update(std::shared_ptr<Player> owner)
 {
-	if (owner->m_anime != "Hit")
+	if (!owner->IsAnimCheck("Hit"))
 	{
 		owner->SetAnime("Hit", false, 1.5f);
 		return;
@@ -1319,24 +1333,24 @@ void Player::Hit::Update(Player* owner)
 	}
 }
 
-void Player::Hit::Exit(Player* owner)
+void Player::Hit::Exit(std::shared_ptr<Player> owner)
 {
 }
 
-void Player::Hit::ChangeState(Player* owner)
+void Player::Hit::ChangeState(std::shared_ptr<Player> owner)
 {
 }
 //=================================================================================================
 
 
 // Crushing========================================================================================
-void Player::Crushing::Enter(Player* owner)
+void Player::Crushing::Enter(std::shared_ptr<Player> owner)
 {
 }
 
-void Player::Crushing::Update(Player* owner)
+void Player::Crushing::Update(std::shared_ptr<Player> owner)
 {
-	if (owner->m_anime != "Death")
+	if (!owner->IsAnimCheck("Death"))
 	{
 		owner->SetAnime("Death", false, 1.0f);
 		return;
@@ -1352,20 +1366,20 @@ void Player::Crushing::Update(Player* owner)
 	owner->CrushingAction();
 }
 
-void Player::Crushing::Exit(Player* owner)
+void Player::Crushing::Exit(std::shared_ptr<Player> owner)
 {
 }
 
-void Player::Crushing::ChangeState(Player* owner)
+void Player::Crushing::ChangeState(std::shared_ptr<Player> owner)
 {
 }
 //=================================================================================================
 
 
 // Teleport========================================================================================
-void Player::Teleport::Enter(Player* owner)
+void Player::Teleport::Enter(std::shared_ptr<Player> owner)
 {
-	if (owner->m_anime != "IdolToTeleport")
+	if (!owner->IsAnimCheck("IdolToTeleport"))
 	{
 		owner->SetAnime("IdolToTeleport", false, 1.0f);
 		return;
@@ -1378,9 +1392,9 @@ void Player::Teleport::Enter(Player* owner)
 	}
 }
 
-void Player::Teleport::Update(Player* owner)
+void Player::Teleport::Update(std::shared_ptr<Player> owner)
 {
-	if (owner->m_anime != "Teleport")
+	if (!owner->IsAnimCheck("Teleport"))
 	{
 		owner->SetAnime("Teleport", true, 1.0f);
 		owner->m_dissolve = 1.0f;
@@ -1398,9 +1412,9 @@ void Player::Teleport::Update(Player* owner)
 	if (!KdEffekseerManager::GetInstance().IsPlaying(m_handle))SceneManager::Instance().BlackAlphaChange(0.01f, true);
 }
 
-void Player::Teleport::Exit(Player* owner)
+void Player::Teleport::Exit(std::shared_ptr<Player> owner)
 {
-	if (owner->m_anime != "TeleportToIdol")
+	if (!owner->IsAnimCheck("TeleportToIdol"))
 	{
 		owner->SetAnime("TeleportToIdol", false, 1.0f);
 		owner->m_dissolve = 0.0f;
@@ -1419,7 +1433,7 @@ void Player::Teleport::Exit(Player* owner)
 	}
 }
 
-void Player::Teleport::ChangeState(Player* owner)
+void Player::Teleport::ChangeState(std::shared_ptr<Player> owner)
 {
 }
 //=================================================================================================

@@ -81,9 +81,10 @@ public:
 	void SetWeaponParam(std::string _filePath, std::string _weaponName);
 	void SetEnemyParam(std::string _filePath = "none", std::shared_ptr<StageManager> _stage = nullptr);
 	void SetEnemyHPParam(std::shared_ptr<EnemyBase> _enemy);
-	std::shared_ptr<Bullet> SetBulletParam(std::shared_ptr<Golem> _golem);
+	std::shared_ptr<Bullet> SetBulletParam();
 
 	const bool& GetTeleportFlg();
+	const std::weak_ptr<Golem>& GetGolem()const { return m_golem; }
 
 	// デバッグ
 	void AddTitleCamera();
@@ -93,6 +94,7 @@ public:
 	void AddTitleGuide();
 	void AddCursor();
 	void AddBone();
+	void AddBoneAlpha();
 	void AddGolem();
 	void AddWeapon(std::string _filePath, std::string _weaponName);
 	void AddGround();
@@ -122,6 +124,7 @@ private:
 	std::weak_ptr<Floor>                     m_floor;
 	std::weak_ptr<Teleport>                  m_teleport;
 	std::weak_ptr<GameOver>                  m_gameOver;
+	std::weak_ptr<Golem>                     m_golem;
 	std::vector<std::weak_ptr<Enemy_HP>>     m_EnemyHPList;
 	UINT                                     m_id = 0;
 	float                                    m_slow = 1.0f;

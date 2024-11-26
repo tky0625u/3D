@@ -9,7 +9,7 @@
 		"ForwardX": 0.0,
 		"ForwardY": 0.0,
 		"ForwardZ": 1.0,
-		"HP": 100,
+		"HP": 50,
 		"InviTime": 20,
 		"Name": "Player",
 		"PosX": 1.0,
