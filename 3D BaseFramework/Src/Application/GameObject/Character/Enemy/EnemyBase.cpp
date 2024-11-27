@@ -70,6 +70,9 @@ Math::Matrix EnemyBase::GettoTargetRotateYMatrix(std::weak_ptr<Player> _target)
 
 	float _ang = DirectX::XMConvertToDegrees(acos(d));
 
+	Math::Vector3 c = _dir.Cross(_nowVec);
+	if (c.y > 0)_ang = 360.0f - _ang;
+
 	float _playerToAng = m_angle.y + _ang;
 	if (_playerToAng >= 360.0f)_playerToAng -= 360.0f;
 	else if (_playerToAng < 0.0f)_playerToAng += 360.0f;
