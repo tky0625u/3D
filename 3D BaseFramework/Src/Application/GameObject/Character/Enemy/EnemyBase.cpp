@@ -41,6 +41,8 @@ void EnemyBase::Init()
 	m_mWorld = Trans;
 
 	m_ObjType = ObjType::oEnemy;
+
+	srand(timeGetTime());
 }
 
 void EnemyBase::CrushingAction()
@@ -51,6 +53,28 @@ void EnemyBase::CrushingAction()
 	{
 		m_isExpired = true;
 	}
+}
+
+Math::Matrix EnemyBase::GettoTargetRotateYMatrix(std::weak_ptr<Player> _target)
+{
+	Math::Matrix _nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle.y));
+	Math::Vector3 _nowVec = Math::Vector3::TransformNormal(m_forward, _nowRot);
+	_nowVec.Normalize();
+
+	Math::Vector3 _dir = _target.lock()->GetPos() - m_pos;
+	_dir.y = 0.0f;
+	_dir.Normalize();
+
+	float d = _nowVec.Dot(_dir);
+	d = std::clamp(d, -1.0f, 1.0f);
+
+	float _ang = DirectX::XMConvertToDegrees(acos(d));
+
+	float _playerToAng = m_angle.y + _ang;
+	if (_playerToAng >= 360.0f)_playerToAng -= 360.0f;
+	else if (_playerToAng < 0.0f)_playerToAng += 360.0f;
+
+	return Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(_playerToAng));
 }
 
 void EnemyBase::StateBase::Damage(std::shared_ptr<EnemyBase> owner, int _damage)
@@ -174,44 +198,108 @@ void EnemyBase::Run::Move(std::shared_ptr<EnemyBase> owner)
 	Math::Vector3 _moveDir = _playerPos - _pos;
 	float dist = _moveDir.Length();
 	_moveDir.Normalize();
+	m_moveDir = _moveDir;
 
+	if (dist > owner->m_AtkRange)
+	{
+		if (owner->m_leaveEnemy.expired())EnemyCheck(owner);
+		if (!owner->m_leaveEnemy.expired())Leave(owner);
+
+		owner->SetMove(m_moveDir);
+	}
+	owner->Rotate(m_moveDir);
+}
+
+bool EnemyBase::Run::PlayerDistCheck(std::shared_ptr<EnemyBase> owner, std::weak_ptr<EnemyBase> leave)
+{
+	std::shared_ptr<Player> _player = owner->GetTarget().lock();
+	Math::Vector3 _playerPos = _player->GetPos();
+	Math::Vector3 _pos = owner->GetPos();
+	float _dist = (_playerPos - _pos).Length();
+
+	Math::Vector3 _leavePos = leave.lock()->GetPos();
+	float _leavedist = (_playerPos - _leavePos).Length();
+
+	if (_dist <= _leavedist)return false;
+
+	return true;
+}
+
+void EnemyBase::Run::EnemyCheck(std::shared_ptr<EnemyBase> owner)
+{
 	KdCollider::SphereInfo sphereInfo;
 	Math::Matrix _mat = owner->m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(owner->m_mWorld.Translation()));
 	sphereInfo.m_sphere.Center = _mat.Translation();
-	sphereInfo.m_sphere.Radius = owner->m_AtkRange;
+	sphereInfo.m_sphere.Radius = 3.0f;
 	sphereInfo.m_type = KdCollider::TypeBump;
 
 	std::list<KdCollider::CollisionResult> _retSphereList;
+	std::vector<std::weak_ptr<EnemyBase>>  _HitEnemyList;
 	for (auto& enemy : SceneManager::Instance().GetEnemyList())
 	{
 		if (enemy->GetID() == owner->m_id)continue;
-		enemy->Intersects(sphereInfo, &_retSphereList);
+		if (enemy->Intersects(sphereInfo, &_retSphereList))_HitEnemyList.push_back(enemy);
 	}
 
 	bool _IsHit = false;
-	Math::Vector3 _HitDir = Math::Vector3::Zero;
 	float _maxOverLap = 0.0f;
+	std::weak_ptr<EnemyBase> _HitEnemy;
+	int   _listNum = 0;
 
 	for (auto& enemy : _retSphereList)
 	{
-		if (_maxOverLap < enemy.m_overlapDistance)
+		if (_maxOverLap < enemy.m_overlapDistance &&
+			PlayerDistCheck(owner, _HitEnemyList[_listNum]))
 		{
 			_maxOverLap = enemy.m_overlapDistance;
-			_HitDir = enemy.m_hitDir;
+			_HitEnemy = _HitEnemyList[_listNum];
 			_IsHit = true;
 		}
+		_listNum++;
 	}
 
 	if (_IsHit)
 	{
-		_HitDir.y = 0.0f;
-		_HitDir.Normalize();
-		_moveDir = (_moveDir + _HitDir) / 2.0f;
-		_moveDir.Normalize();
+		owner->m_leaveEnemy = _HitEnemy;
+	}
+}
+
+void EnemyBase::Run::Leave(std::shared_ptr<EnemyBase> owner)
+{
+	if (owner->m_leaveEnemy.expired())return;
+	if (owner->m_leaveEnemy.lock()->GetParam().Hp <= 0)return;
+
+	Math::Vector3 _pos = owner->m_pos;
+	_pos.y = 0.0f;
+	Math::Vector3 _leavePos = owner->m_leaveEnemy.lock()->GetPos();
+	_leavePos.y = 0.0f;
+	float         _dist = (_leavePos - _pos).Length();
+
+	if (_dist > 6.0f)
+	{
+		owner->m_leaveEnemy.reset();
+		m_leaveDir = Math::Vector3::Zero;
+		return;
 	}
 
-	if (dist >= owner->m_AtkRange)owner->SetMove(_moveDir);
-	owner->Rotate(_moveDir);
+	Math::Vector3 _dir = Math::Vector3::Zero;
+	if (m_leaveDir == Math::Vector3::Zero)
+	{
+		int r = rand() % 2;
+		if (r == 0)
+		{
+			m_leaveDir = { 1.0f,0.0f,0.0f };
+		}
+		else
+		{
+			m_leaveDir = { -1.0f,0.0f,0.0f };
+		}
+	}
+
+		_dir = m_leaveDir.TransformNormal(m_leaveDir, owner->GettoTargetRotateYMatrix(owner->GetTarget()));
+		_dir.Normalize();
+		m_moveDir = _dir;
+		m_moveDir.Normalize();
 }
 
 

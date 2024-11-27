@@ -64,6 +64,7 @@ public:
 	void SetFlow(UINT _flow) { m_flow = _flow; }
 
 	const std::weak_ptr<Player>& GetTarget()const { return m_Target; }
+	Math::Matrix GettoTargetRotateYMatrix(std::weak_ptr<Player> _target);
 	Math::Matrix GetHPMat()const { return m_model->FindWorkNode("HP")->m_worldTransform * m_mWorld; }
 	Math::Matrix GetAttackStartPointMat()const { return m_model->FindWorkNode("AttackStartPoint")->m_worldTransform * m_mWorld; }
 	Math::Matrix GetLockPointMat()const { return m_model->FindWorkNode("LockONPoint")->m_worldTransform * m_mWorld; }
@@ -74,6 +75,7 @@ public:
 protected:
 	std::weak_ptr<Player>              m_Target;
 	std::weak_ptr<KdEffekseerObject>   m_Effect;
+	std::weak_ptr<EnemyBase>           m_leaveEnemy;
 	bool                               m_LockONFlg = false;
 
 protected:
@@ -150,9 +152,13 @@ protected:
 		void Exit  (std::shared_ptr<EnemyBase> owner)override;
 
 		void Move(std::shared_ptr<EnemyBase> owner);
+		bool PlayerDistCheck(std::shared_ptr<EnemyBase> owner, std::weak_ptr<EnemyBase> leave);
+		void EnemyCheck(std::shared_ptr<EnemyBase> owner);
+		void Leave(std::shared_ptr<EnemyBase> owner);
 
 	protected:
-
+		Math::Vector3 m_moveDir  = Math::Vector3::Zero;
+		Math::Vector3 m_leaveDir = Math::Vector3::Zero;
 	};
 
 	class Hit :public StateBase

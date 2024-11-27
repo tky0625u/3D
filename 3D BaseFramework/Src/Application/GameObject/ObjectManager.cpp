@@ -2980,7 +2980,7 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 					SceneManager::Instance().AddEnemy(enemy);
 					m_EnemyList.push_back(enemy);
 
-					SetEnemyHPParam(enemy);
+					//SetEnemyHPParam(enemy);
 				}
 			}
 		}
