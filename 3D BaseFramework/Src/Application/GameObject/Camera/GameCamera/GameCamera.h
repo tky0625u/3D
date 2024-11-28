@@ -108,11 +108,11 @@ private:
 		StateBase()          {};
 		virtual ~StateBase() {};
 
-		virtual void Enter (GameCamera* owner) {};
-		virtual void Update(GameCamera* owner) {};
-		virtual void Exit  (GameCamera* owner) {};
+		virtual void Enter (std::shared_ptr<GameCamera> owner) {};
+		virtual void Update(std::shared_ptr<GameCamera> owner) {};
+		virtual void Exit  (std::shared_ptr<GameCamera> owner) {};
 
-		virtual void ChangeState(GameCamera* owner) = 0;
+		virtual void ChangeState(std::shared_ptr<GameCamera> owner) = 0;
 
 		void SetShakeFlg(bool _shakeFlg) { m_shakeFlg = _shakeFlg; }
 
@@ -130,14 +130,14 @@ private:
 		PlayerCamera()          {};
 		virtual ~PlayerCamera() {};
 
-		void Enter (GameCamera* owner)override;
-		void Update(GameCamera* owner)override;
-		void Exit  (GameCamera* owner)override;
+		void Enter (std::shared_ptr<GameCamera> owner)override;
+		void Update(std::shared_ptr<GameCamera> owner)override;
+		void Exit  (std::shared_ptr<GameCamera> owner)override;
 
-		void ChangeState(GameCamera* owner)override;
+		void ChangeState(std::shared_ptr<GameCamera> owner)override;
 
-		void LockON(GameCamera* owner);
-		void Shake (GameCamera* owner, Math::Matrix& _trans);
+		void LockON(std::shared_ptr<GameCamera> owner);
+		void Shake (std::shared_ptr<GameCamera> owner, Math::Matrix& _trans);
 
 	private:
 
@@ -149,11 +149,11 @@ private:
 		FixedCamera()          {};
 		virtual ~FixedCamera() {};
 
-		void Enter(GameCamera* owner)override;
-		void Update(GameCamera* owner)override;
-		void Exit(GameCamera* owner)override;
+		void Enter(std::shared_ptr<GameCamera> owner)override;
+		void Update(std::shared_ptr<GameCamera> owner)override;
+		void Exit(std::shared_ptr<GameCamera> owner)override;
 
-		void ChangeState(GameCamera* owner)override;
+		void ChangeState(std::shared_ptr<GameCamera> owner)override;
 
 	private:
 
@@ -165,11 +165,11 @@ private:
 		ClearCamera()          {};
 		virtual ~ClearCamera() {};
 
-		void Enter(GameCamera* owner)override;
-		void Update(GameCamera* owner)override;
-		void Exit(GameCamera* owner)override;
+		void Enter(std::shared_ptr<GameCamera> owner)override;
+		void Update(std::shared_ptr<GameCamera> owner)override;
+		void Exit(std::shared_ptr<GameCamera> owner)override;
 
-		void ChangeState(GameCamera* owner)override;
+		void ChangeState(std::shared_ptr<GameCamera> owner)override;
 
 	private:
 

@@ -16,13 +16,13 @@ void MagicPolygon::Update()
 		switch (m_flow)
 		{
 		case Flow::EnterType:
-			m_state->Enter(this);
+			m_state->Enter(shared_from_this());
 			break;
 		case Flow::UpdateType:
-			m_state->Update(this);
+			m_state->Update(shared_from_this());
 			break;
 		case Flow::ExitType:
-			m_state->Exit(this);
+			m_state->Exit(shared_from_this());
 			break;
 		}
 
@@ -63,13 +63,13 @@ void MagicPolygon::Init()
 }
 
 // Normal==========================================================================================
-void MagicPolygon::Normal::Enter(MagicPolygon* owner)
+void MagicPolygon::Normal::Enter(std::shared_ptr<MagicPolygon> owner)
 {
 	if (owner->m_TeleportFlg)owner->m_TeleportFlg = false;
 	owner->m_flow = MagicPolygon::Flow::UpdateType;
 }
 
-void MagicPolygon::Normal::Update(MagicPolygon* owner)
+void MagicPolygon::Normal::Update(std::shared_ptr<MagicPolygon> owner)
 {
 	if (owner->m_rgb != 0.0f)
 	{
@@ -81,11 +81,11 @@ void MagicPolygon::Normal::Update(MagicPolygon* owner)
 		SceneManager::Instance().GetEnemyList().size() == 0)ChangeState(owner);
 }
 
-void MagicPolygon::Normal::Exit(MagicPolygon* owner)
+void MagicPolygon::Normal::Exit(std::shared_ptr<MagicPolygon> owner)
 {
 }
 
-void MagicPolygon::Normal::ChangeState(MagicPolygon* owner)
+void MagicPolygon::Normal::ChangeState(std::shared_ptr<MagicPolygon> owner)
 {
 	std::shared_ptr<Next> _next = std::make_shared<Next>();
 	owner->m_NextState = _next;
@@ -96,13 +96,13 @@ void MagicPolygon::Normal::ChangeState(MagicPolygon* owner)
 
 
 // Next============================================================================================
-void MagicPolygon::Next::Enter(MagicPolygon* owner)
+void MagicPolygon::Next::Enter(std::shared_ptr<MagicPolygon> owner)
 {
 	m_handle = KdEffekseerManager::GetInstance().Play("Circle/Circle.efkefc", owner->m_mWorld.Translation(), owner->m_size, 1.0f, false).lock()->GetHandle();
 	owner->m_flow = MagicPolygon::Flow::UpdateType;
 }
 
-void MagicPolygon::Next::Update(MagicPolygon* owner)
+void MagicPolygon::Next::Update(std::shared_ptr<MagicPolygon> owner)
 {
 	owner->m_angle.y += 0.01f;
 	if (owner->m_angle.y > 360.0f)owner->m_angle.y -= 360.0f;
@@ -112,11 +112,11 @@ void MagicPolygon::Next::Update(MagicPolygon* owner)
 	if (SceneManager::Instance().GetEnemyList().size() != 0 && owner->m_TeleportFlg)ChangeState(owner);
 }
 
-void MagicPolygon::Next::Exit(MagicPolygon* owner)
+void MagicPolygon::Next::Exit(std::shared_ptr<MagicPolygon> owner)
 {
 }
 
-void MagicPolygon::Next::ChangeState(MagicPolygon* owner)
+void MagicPolygon::Next::ChangeState(std::shared_ptr<MagicPolygon> owner)
 {
 	std::shared_ptr<Normal> _normal = std::make_shared<Normal>();
 	owner->m_NextState = _normal;

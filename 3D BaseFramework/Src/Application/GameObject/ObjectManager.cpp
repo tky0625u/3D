@@ -59,6 +59,8 @@
 #include"UI/Player/GameOver/GameOver.h"
 //弾
 #include"Character/Enemy/Golem/Bullet/Bullet.h"
+//骨色違い弾
+#include"Character/Enemy/BoneAlpha/Bullet/BoneAlpha_Bullet.h"
 
 void ObjectManager::SceneCheck()
 {
@@ -2954,6 +2956,7 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 					else if (stage["Name"] == "BoneAlpha")
 					{
 						std::shared_ptr<BoneAlpha> alpha = std::make_shared<BoneAlpha>();
+						m_BoneAlphaList.push_back(alpha);
 						enemy = alpha;
 					}
 					else if (stage["Name"] == "Golem")
@@ -3043,6 +3046,28 @@ std::shared_ptr<Bullet> ObjectManager::SetBulletParam()
 	SceneManager::Instance().AddObject(_bullet);
 
 	return _bullet;
+}
+
+void ObjectManager::SetBoneAlphaBulletParam(int id)
+{
+	std::shared_ptr<BoneAlpha> _alpha;
+	for (auto& alpha : m_BoneAlphaList)
+	{
+		if (alpha.lock()->GetID() == id)
+		{
+			_alpha = alpha.lock();
+			break;
+		}
+	}
+
+	std::shared_ptr<BoneAlpha_Bullet> _bullet = std::make_shared<BoneAlpha_Bullet>();
+	_bullet->Init();
+	_bullet->SetPos(_alpha->GetBulletPoint().Translation());
+	_bullet->SetDir(_alpha->GetFrontDir());
+	_bullet->SetOwner(_alpha->GetObjType());
+	_bullet->SetID(m_id);
+	m_id++;
+	SceneManager::Instance().AddObject(_bullet);
 }
 
 const bool& ObjectManager::GetTeleportFlg()

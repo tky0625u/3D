@@ -48,11 +48,11 @@ private:
 		StateBase() {};
 		virtual ~StateBase() {};
 
-		virtual void Enter (MagicPolygon* owner) {};
-		virtual void Update(MagicPolygon* owner) {};
-		virtual void Exit  (MagicPolygon* owner) {};
+		virtual void Enter (std::shared_ptr<MagicPolygon> owner) {};
+		virtual void Update(std::shared_ptr<MagicPolygon> owner) {};
+		virtual void Exit  (std::shared_ptr<MagicPolygon> owner) {};
 
-		virtual void ChangeState(MagicPolygon* owner) = 0;
+		virtual void ChangeState(std::shared_ptr<MagicPolygon> owner) = 0;
 	};
 
 	class Normal :public StateBase
@@ -61,11 +61,11 @@ private:
 		Normal() {};
 		~Normal()override {};
 
-		void Enter (MagicPolygon* owner)override;
-		void Update(MagicPolygon* owner)override;
-		void Exit  (MagicPolygon* owner)override;
+		void Enter (std::shared_ptr<MagicPolygon> owner)override;
+		void Update(std::shared_ptr<MagicPolygon> owner)override;
+		void Exit  (std::shared_ptr<MagicPolygon> owner)override;
 
-		void ChangeState(MagicPolygon* owner)override;
+		void ChangeState(std::shared_ptr<MagicPolygon> owner)override;
 
 	private:
 
@@ -77,11 +77,11 @@ private:
 		Next() {};
 		~Next()override {};
 
-		void Enter (MagicPolygon* owner)override;
-		void Update(MagicPolygon* owner)override;
-		void Exit  (MagicPolygon* owner)override;
+		void Enter (std::shared_ptr<MagicPolygon> owner)override;
+		void Update(std::shared_ptr<MagicPolygon> owner)override;
+		void Exit  (std::shared_ptr<MagicPolygon> owner)override;
 
-		void ChangeState(MagicPolygon* owner)override;
+		void ChangeState(std::shared_ptr<MagicPolygon> owner)override;
 
 	private:
 		Effekseer::Handle m_handle = 0;

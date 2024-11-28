@@ -2,9 +2,9 @@
 
 #include"../BaseScene/BaseScene.h"
 
-class GameScene : public BaseScene
+class GameScene : public BaseScene,public std::enable_shared_from_this<GameScene>
 {
-public :
+public:
 
 	enum Flow
 	{
@@ -33,11 +33,11 @@ private:
 		StateBase()  {};
 		virtual ~StateBase() {};
 
-		virtual void Enter (GameScene* owner) {};
-		virtual void Update(GameScene* owner) {};
-		virtual void Exit  (GameScene* owner) {};
+		virtual void Enter (std::shared_ptr<GameScene> owner) {};
+		virtual void Update(std::shared_ptr<GameScene> owner) {};
+		virtual void Exit  (std::shared_ptr<GameScene> owner) {};
 
-		virtual void ChangeState(GameScene* owner) = 0;
+		virtual void ChangeState(std::shared_ptr<GameScene> owner) = 0;
 	};
 
 	class Normal :public StateBase
@@ -46,11 +46,11 @@ private:
 		Normal ()         {};
 		~Normal()override {};
 
-		void Enter (GameScene* owner)override;
-		void Update(GameScene* owner)override;
-		void Exit  (GameScene* owner)override;
+		void Enter (std::shared_ptr<GameScene> owner)override;
+		void Update(std::shared_ptr<GameScene> owner)override;
+		void Exit  (std::shared_ptr<GameScene> owner)override;
 
-		void ChangeState(GameScene* owner)override;
+		void ChangeState(std::shared_ptr<GameScene> owner)override;
 
 	private:
 
@@ -62,11 +62,11 @@ private:
 		GameOver() {};
 		~GameOver()override {};
 
-		void Enter (GameScene* owner)override;
-		void Update(GameScene* owner)override;
-		void Exit  (GameScene* owner)override;
+		void Enter (std::shared_ptr<GameScene> owner)override;
+		void Update(std::shared_ptr<GameScene> owner)override;
+		void Exit  (std::shared_ptr<GameScene> owner)override;
 
-		void ChangeState(GameScene* owner)override;
+		void ChangeState(std::shared_ptr<GameScene> owner)override;
 
 	private:
 
@@ -78,11 +78,11 @@ private:
 		Clear() {};
 		~Clear()override {};
 
-		void Enter (GameScene* owner)override;
-		void Update(GameScene* owner)override;
-		void Exit  (GameScene* owner)override;
+		void Enter (std::shared_ptr<GameScene> owner)override;
+		void Update(std::shared_ptr<GameScene> owner)override;
+		void Exit  (std::shared_ptr<GameScene> owner)override;
 
-		void ChangeState(GameScene* owner)override;
+		void ChangeState(std::shared_ptr<GameScene> owner)override;
 
 	private:
 

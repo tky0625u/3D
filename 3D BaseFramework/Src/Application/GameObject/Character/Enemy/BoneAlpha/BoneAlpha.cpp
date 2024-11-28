@@ -1,5 +1,6 @@
 ﻿#include "BoneAlpha.h"
 #include"../../../../Scene/SceneManager.h"
+#include"../../../ObjectManager.h"
 #include"../../Player/Player.h"
 #include"../../../Weapon/Sword/Sword.h"
 
@@ -22,6 +23,15 @@ void BoneAlpha::Init()
 	m_pCollider->RegisterCollisionShape("Enemy", m_model, KdCollider::TypeDamage | KdCollider::TypeBump | KdCollider::TypeSight);
 }
 
+const Math::Vector3& BoneAlpha::GetFrontDir() const
+{
+	Math::Matrix _nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle.y));
+	Math::Vector3 _nowVec = Math::Vector3::TransformNormal(m_forward, _nowRot);
+	_nowVec.y = 0.0f;
+	_nowVec.Normalize();
+	return _nowVec;
+}
+
 void BoneAlpha::Attack::Enter(std::shared_ptr<EnemyBase> owner)
 {
 	if (!owner->IsAnimCheck("IdolTOAttack"))
@@ -32,7 +42,6 @@ void BoneAlpha::Attack::Enter(std::shared_ptr<EnemyBase> owner)
 
 	if (owner->GetIsAnimator())
 	{
-		KdEffekseerManager::GetInstance().Play("Enemy/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 0.3f, 2.0f, false);
 		owner->SetFlow(EnemyBase::Flow::UpdateType);
 		return;
 	}
@@ -52,6 +61,12 @@ void BoneAlpha::Attack::Update(std::shared_ptr<EnemyBase> owner)
 		return;
 	}
 
+	if (m_ActionFPS == 11)
+	{
+		owner->GetObjManager().lock()->SetBoneAlphaBulletParam(owner->GetID());
+		KdEffekseerManager::GetInstance().Play("Enemy/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 0.3f, 2.0f, false);
+	}
+
 	if (owner->GetIsAnimator())
 	{
 		owner->SetFlow(EnemyBase::Flow::ExitType);
@@ -60,6 +75,8 @@ void BoneAlpha::Attack::Update(std::shared_ptr<EnemyBase> owner)
 
 	HitCheck(owner);
 	MoveForward(owner);
+
+	m_ActionFPS++;
 }
 
 void BoneAlpha::Attack::Exit(std::shared_ptr<EnemyBase> owner)

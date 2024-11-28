@@ -1,0 +1,16 @@
+﻿#pragma once
+#include"../../../BulletBase/BulletBase.h"
+
+class BoneAlpha_Bullet :public BulletBase
+{
+public:
+	BoneAlpha_Bullet() {};
+	~BoneAlpha_Bullet()override {};
+
+	void Update()    override;
+	void PostUpdate()override;
+	void Init()      override;
+
+private:
+
+};

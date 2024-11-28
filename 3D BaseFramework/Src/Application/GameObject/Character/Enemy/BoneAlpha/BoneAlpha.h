@@ -17,8 +17,10 @@ public:
 		m_flow = EnemyBase::Flow::EnterType;
 	}
 
-private:
+	const Math::Matrix& GetBulletPoint()const { return m_model->FindWorkNode("BulletPoint")->m_worldTransform * m_mWorld; }
+	const Math::Vector3& GetFrontDir()const;
 
+private:
 	class Attack :public Bone::Attack
 	{
 	public:

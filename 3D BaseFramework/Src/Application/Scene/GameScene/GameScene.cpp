@@ -23,13 +23,13 @@ void GameScene::Event()
 	switch (m_flow)
 	{
 	case Flow::EnterType:
-		m_state->Enter(this);
+		m_state->Enter(shared_from_this());
 		break;
 	case Flow::UpdateType:
-		m_state->Update(this);
+		m_state->Update(shared_from_this());
 		break;
 	case Flow::ExitType:
-		m_state->Exit(this);
+		m_state->Exit(shared_from_this());
 		break;
 	}
 
@@ -119,12 +119,12 @@ void GameScene::DebugObject()
 	m_ObjManager->DebugObject(m_StageManager);
 }
 
-void GameScene::Normal::Enter(GameScene* owner)
+void GameScene::Normal::Enter(std::shared_ptr<GameScene> owner)
 {
 }
 
 // Normal==========================================================================================
-void GameScene::Normal::Update(GameScene* owner)
+void GameScene::Normal::Update(std::shared_ptr<GameScene> owner)
 {
 	if (SceneManager::Instance().GetBlackAlphaFlg())
 	{
@@ -150,11 +150,11 @@ void GameScene::Normal::Update(GameScene* owner)
 	ChangeState(owner);
 }
 
-void GameScene::Normal::Exit(GameScene* owner)
+void GameScene::Normal::Exit(std::shared_ptr<GameScene> owner)
 {
 }
 
-void GameScene::Normal::ChangeState(GameScene* owner)
+void GameScene::Normal::ChangeState(std::shared_ptr<GameScene> owner)
 {
 	if (owner->m_player->GetParam().Hp <= 0)
 	{
@@ -174,12 +174,12 @@ void GameScene::Normal::ChangeState(GameScene* owner)
 //=================================================================================================
 
 
-void GameScene::GameOver::Enter(GameScene* owner)
+void GameScene::GameOver::Enter(std::shared_ptr<GameScene> owner)
 {
 }
 
 // GameOver========================================================================================
-void GameScene::GameOver::Update(GameScene* owner)
+void GameScene::GameOver::Update(std::shared_ptr<GameScene> owner)
 {
 	if (SceneManager::Instance().GetBlackAlphaFlg())
 	{
@@ -200,24 +200,24 @@ void GameScene::GameOver::Update(GameScene* owner)
 	ChangeState(owner);
 }
 
-void GameScene::GameOver::Exit(GameScene* owner)
+void GameScene::GameOver::Exit(std::shared_ptr<GameScene> owner)
 {
 }
 
-void GameScene::GameOver::ChangeState(GameScene* owner)
+void GameScene::GameOver::ChangeState(std::shared_ptr<GameScene> owner)
 {
 }
 //=================================================================================================
 
 
 // Clear===========================================================================================
-void GameScene::Clear::Enter(GameScene* owner)
+void GameScene::Clear::Enter(std::shared_ptr<GameScene> owner)
 {
 
 	owner->m_flow = GameScene::Flow::UpdateType;
 }
 
-void GameScene::Clear::Update(GameScene* owner)
+void GameScene::Clear::Update(std::shared_ptr<GameScene> owner)
 {
 	if (SceneManager::Instance().GetBlackAlphaFlg())
 	{
@@ -238,11 +238,11 @@ void GameScene::Clear::Update(GameScene* owner)
 	ChangeState(owner);
 }
 
-void GameScene::Clear::Exit(GameScene* owner)
+void GameScene::Clear::Exit(std::shared_ptr<GameScene> owner)
 {
 }
 
-void GameScene::Clear::ChangeState(GameScene* owner)
+void GameScene::Clear::ChangeState(std::shared_ptr<GameScene> owner)
 {
 }
 //=================================================================================================

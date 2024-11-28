@@ -74,13 +74,13 @@ void GameCamera::PostUpdate()
 	switch (m_flow)
 	{
 	case Flow::EnterType:
-		m_state->Enter(this);
+		m_state->Enter(shared_from_this());
 		break;
 	case Flow::UpdateType:
-		m_state->Update(this);
+		m_state->Update(shared_from_this());
 		break;
 	case Flow::ExitType:
-		m_state->Exit(this);
+		m_state->Exit(shared_from_this());
 		break;
 	default:
 		break;
@@ -137,7 +137,7 @@ void GameCamera::PostUpdate()
 
 	for (auto& ray : retRayList)
 	{
-		if (_maxOverLap < ray.m_overlapDistance || _maxOverLap < 0.0f)
+		if (_maxOverLap < ray.m_overlapDistance)
 		{
 			_maxOverLap = ray.m_overlapDistance;
 			_hitPos = ray.m_hitPos;
@@ -147,10 +147,10 @@ void GameCamera::PostUpdate()
 
 	if (_hitFlg)
 	{
-		Math::Vector3 _distPos = m_wpTarget.lock()->GetCameraPointMat().Translation() - _hitPos;
-		_hitPos += (_distPos / 100.0f) * 4.0f;
+		Math::Vector3 _distPos = _hitPos;
+		_distPos += rayInfo.m_dir * 0.4f;
 		Math::Matrix _trans;
-		_trans = Math::Matrix::CreateTranslation(_hitPos);
+		_trans = Math::Matrix::CreateTranslation(_distPos);
 		m_mWorld = GetRotationMatrix() * _trans;
 	}
 
@@ -212,13 +212,13 @@ void GameCamera::SetViewAngList(float _player, float _fixed, float _clear)
 }
 
 // Player==========================================================================================
-void GameCamera::PlayerCamera::Enter(GameCamera* owner)
+void GameCamera::PlayerCamera::Enter(std::shared_ptr<GameCamera> owner)
 {
 	owner->m_CameraType = GameCamera::CameraType::PlayerType;
 	owner->m_flow       = GameCamera::Flow::UpdateType;
 }
 
-void GameCamera::PlayerCamera::Update(GameCamera* owner)
+void GameCamera::PlayerCamera::Update(std::shared_ptr<GameCamera> owner)
 {
 	// ターゲットの行列(有効な場合利用する)
 	Math::Matrix								_targetMat = Math::Matrix::Identity;
@@ -237,6 +237,8 @@ void GameCamera::PlayerCamera::Update(GameCamera* owner)
 		LockON(owner);
 	}
 
+
+
 	Math::Matrix _rot   = owner->GetRotationMatrix();
 	Math::Matrix _trans = Math::Matrix::CreateTranslation(owner->GetNowPos());
 	
@@ -244,16 +246,16 @@ void GameCamera::PlayerCamera::Update(GameCamera* owner)
 	owner->m_mWorld = _trans * _rot * _targetMat;
 }
 
-void GameCamera::PlayerCamera::Exit(GameCamera* owner)
+void GameCamera::PlayerCamera::Exit(std::shared_ptr<GameCamera> owner)
 {
 }
 
-void GameCamera::PlayerCamera::ChangeState(GameCamera* owner)
+void GameCamera::PlayerCamera::ChangeState(std::shared_ptr<GameCamera> owner)
 {
 
 }
 
-void GameCamera::PlayerCamera::LockON(GameCamera* owner)
+void GameCamera::PlayerCamera::LockON(std::shared_ptr<GameCamera> owner)
 {
 	if (owner->m_wpTarget.lock()->GetLockONTarget().expired())return;
 	std::shared_ptr<EnemyBase> _target = owner->m_wpTarget.lock()->GetLockONTarget().lock();
@@ -321,7 +323,7 @@ void GameCamera::PlayerCamera::LockON(GameCamera* owner)
 
 	owner->SetDegAng(_DegAng);
 }
-void GameCamera::PlayerCamera::Shake(GameCamera* owner,Math::Matrix& _trans)
+void GameCamera::PlayerCamera::Shake(std::shared_ptr<GameCamera> owner,Math::Matrix& _trans)
 {
 	Math::Vector3 _pos   = owner->GetNowPos();
 	static float  _angle = 0.0f;
@@ -341,13 +343,13 @@ void GameCamera::PlayerCamera::Shake(GameCamera* owner,Math::Matrix& _trans)
 
 
 // Fixed===========================================================================================
-void GameCamera::FixedCamera::Enter(GameCamera* owner)
+void GameCamera::FixedCamera::Enter(std::shared_ptr<GameCamera> owner)
 {
 	owner->m_CameraType = GameCamera::CameraType::FixedType;
 	owner->m_flow = GameCamera::Flow::UpdateType;
 }
 
-void GameCamera::FixedCamera::Update(GameCamera* owner)
+void GameCamera::FixedCamera::Update(std::shared_ptr<GameCamera> owner)
 {
 	Math::Matrix								_targetMat = Math::Matrix::Identity;
 	const std::shared_ptr<MagicPolygon>	_spTarget = owner->GetFixedTarget();
@@ -364,11 +366,11 @@ void GameCamera::FixedCamera::Update(GameCamera* owner)
 	ChangeState(owner);
 }
 
-void GameCamera::FixedCamera::Exit(GameCamera* owner)
+void GameCamera::FixedCamera::Exit(std::shared_ptr<GameCamera> owner)
 {
 }
 
-void GameCamera::FixedCamera::ChangeState(GameCamera* owner)
+void GameCamera::FixedCamera::ChangeState(std::shared_ptr<GameCamera> owner)
 {
 	if (owner->m_ObjectManager.lock()->GetTeleportFlg())
 	{
@@ -382,13 +384,13 @@ void GameCamera::FixedCamera::ChangeState(GameCamera* owner)
 
 
 // Clear===========================================================================================
-void GameCamera::ClearCamera::Enter(GameCamera* owner)
+void GameCamera::ClearCamera::Enter(std::shared_ptr<GameCamera> owner)
 {
 	owner->m_CameraType = GameCamera::CameraType::ClearType;
 	owner->m_flow = GameCamera::Flow::UpdateType;
 }
 
-void GameCamera::ClearCamera::Update(GameCamera* owner)
+void GameCamera::ClearCamera::Update(std::shared_ptr<GameCamera> owner)
 {
 	Math::Vector3 _angle = owner->GetNowDegAng();
 	_angle.y += 0.05f;
@@ -411,11 +413,11 @@ void GameCamera::ClearCamera::Update(GameCamera* owner)
 	owner->m_mWorld = _trans * _rot * _targetMat;
 }
 
-void GameCamera::ClearCamera::Exit(GameCamera* owner)
+void GameCamera::ClearCamera::Exit(std::shared_ptr<GameCamera> owner)
 {
 }
 
-void GameCamera::ClearCamera::ChangeState(GameCamera* owner)
+void GameCamera::ClearCamera::ChangeState(std::shared_ptr<GameCamera> owner)
 {
 }
 //=================================================================================================

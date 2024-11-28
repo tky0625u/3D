@@ -58,6 +58,27 @@
 				"Speed": 1.0,
 				"Stamina": 50
 			}
+		},
+		"BoneAlpha": {
+			"0BoneAlpha": {
+				"ATK": 2,
+				"ATKRange": 50.0,
+				"Angle": 0.0,
+				"DirX": 0.5735865831375122,
+				"DirY": -0.0021118733566254377,
+				"DirZ": -0.8191422820091248,
+				"ForwardX": 0.0,
+				"ForwardY": 0.0,
+				"ForwardZ": 1.0,
+				"HP": 50,
+				"Name": "BoneAlpha",
+				"PosX": 0.0,
+				"PosY": 5.960464477539063e-08,
+				"PosZ": 0.0,
+				"Size": 1.5,
+				"Speed": 1.0,
+				"Stamina": 50
+			}
 		}
 	},
 	"2Wave": {

@@ -184,6 +184,9 @@
     <Filter Include="Src\Application\GameObject\Character\Enemy\BoneAlpha">
       <UniqueIdentifier>{476429e8-4c2c-4024-b4c2-abb7dc1688ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Enemy\BoneAlpha\Bullet">
+      <UniqueIdentifier>{0d44f41f-fe0f-4d90-b5ec-ec2576993c4e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -459,6 +462,9 @@
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\BoneAlpha\BoneAlpha.h">
       <Filter>Src\Application\GameObject\Character\Enemy\BoneAlpha</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Character\Enemy\BoneAlpha\Bullet\BoneAlpha_Bullet.h">
+      <Filter>Src\Application\GameObject\Character\Enemy\BoneAlpha\Bullet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -706,6 +712,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\BoneAlpha\BoneAlpha.cpp">
       <Filter>Src\Application\GameObject\Character\Enemy\BoneAlpha</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Character\Enemy\BoneAlpha\Bullet\BoneAlpha_Bullet.cpp">
+      <Filter>Src\Application\GameObject\Character\Enemy\BoneAlpha\Bullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

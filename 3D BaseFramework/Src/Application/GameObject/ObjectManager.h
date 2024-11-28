@@ -23,6 +23,7 @@ class Enemy_HP;
 class GameOver;
 class Golem;
 class Bullet;
+class BoneAlpha;
 
 #include"../tinygltf/json.hpp"
 class ObjectManager :public std::enable_shared_from_this<ObjectManager>
@@ -82,6 +83,7 @@ public:
 	void SetEnemyParam(std::string _filePath = "none", std::shared_ptr<StageManager> _stage = nullptr);
 	void SetEnemyHPParam(std::shared_ptr<EnemyBase> _enemy);
 	std::shared_ptr<Bullet> SetBulletParam();
+	void SetBoneAlphaBulletParam(int id);
 
 	const bool& GetTeleportFlg();
 	const std::weak_ptr<Golem>& GetGolem()const { return m_golem; }
@@ -125,6 +127,7 @@ private:
 	std::weak_ptr<Teleport>                  m_teleport;
 	std::weak_ptr<GameOver>                  m_gameOver;
 	std::weak_ptr<Golem>                     m_golem;
+	std::vector<std::weak_ptr<BoneAlpha>>    m_BoneAlphaList;
 	std::vector<std::weak_ptr<Enemy_HP>>     m_EnemyHPList;
 	UINT                                     m_id = 0;
 	float                                    m_slow = 1.0f;

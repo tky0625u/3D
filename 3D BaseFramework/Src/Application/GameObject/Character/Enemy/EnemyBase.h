@@ -109,6 +109,9 @@ protected:
 
 		virtual void Damage(std::shared_ptr<EnemyBase> owner, int _damage);
 
+	protected:
+		float m_ActionFPS = 0.0f;
+
 	};
 
 	class Appeal :public StateBase

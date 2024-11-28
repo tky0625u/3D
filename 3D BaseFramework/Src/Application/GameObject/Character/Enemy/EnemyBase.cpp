@@ -151,6 +151,17 @@ void EnemyBase::Run::Enter(std::shared_ptr<EnemyBase> owner)
 	if (!owner->IsAnimCheck("IdolToRun"))
 	{
 		owner->SetAnime("IdolToRun", false, 1.5f);
+
+		int r = rand() % 2;
+		if (r == 0)
+		{
+			m_leaveDir = { 1.0f,0.0f,0.0f };
+		}
+		else
+		{
+			m_leaveDir = { -1.0f,0.0f,0.0f };
+		}
+
 		return;
 	}
 
@@ -281,28 +292,14 @@ void EnemyBase::Run::Leave(std::shared_ptr<EnemyBase> owner)
 	if (_dist > 6.0f)
 	{
 		owner->m_leaveEnemy.reset();
-		m_leaveDir = Math::Vector3::Zero;
 		return;
 	}
 
 	Math::Vector3 _dir = Math::Vector3::Zero;
-	if (m_leaveDir == Math::Vector3::Zero)
-	{
-		int r = rand() % 2;
-		if (r == 0)
-		{
-			m_leaveDir = { 1.0f,0.0f,0.0f };
-		}
-		else
-		{
-			m_leaveDir = { -1.0f,0.0f,0.0f };
-		}
-	}
-
-		_dir = m_leaveDir.TransformNormal(m_leaveDir, owner->GettoTargetRotateYMatrix(owner->GetTarget()));
-		_dir.Normalize();
-		m_moveDir = _dir;
-		m_moveDir.Normalize();
+	_dir = m_leaveDir.TransformNormal(m_leaveDir, owner->GettoTargetRotateYMatrix(owner->GetTarget()));
+	_dir.Normalize();
+	m_moveDir = _dir;
+	m_moveDir.Normalize();
 }
 
 
