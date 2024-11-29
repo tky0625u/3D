@@ -18,7 +18,7 @@ public:
 	}
 
 	const Math::Matrix& GetBulletPoint()const { return m_model->FindWorkNode("BulletPoint")->m_worldTransform * m_mWorld; }
-	const Math::Vector3& GetFrontDir()const;
+	const Math::Vector3& GetFrontDir();
 
 private:
 	class Attack :public Bone::Attack

@@ -38,6 +38,10 @@ void KdShaderManager::Init()
 	KdDirect3D::Instance().WorkDevContext()->VSSetConstantBuffers(9, 1, m_cb9_Light.GetAddress());
 	KdDirect3D::Instance().WorkDevContext()->PSSetConstantBuffers(9, 1, m_cb9_Light.GetAddress());
 
+	m_cb10_Effect.Create();
+	KdDirect3D::Instance().WorkDevContext()->VSSetConstantBuffers(10, 1, m_cb10_Effect.GetAddress());
+	KdDirect3D::Instance().WorkDevContext()->PSSetConstantBuffers(10, 1, m_cb10_Effect.GetAddress());
+
 	//============================================
 	// パイプラインステート関係
 	//============================================
@@ -488,6 +492,19 @@ void KdShaderManager::WriteCBPointLight(const std::list<PointLight>& pointLights
 	m_cb9_Light.Write();
 }
 
+void KdShaderManager::WriteCBColorEnable(bool _enable)
+{
+	m_cb10_Effect.Work().ColorEnable = _enable;
+	m_cb10_Effect.Write();
+}
+
+void KdShaderManager::WriteCBColor(const Math::Vector3 _pos, float _radius)
+{
+	m_cb10_Effect.Work().ColorPos    = _pos;
+	m_cb10_Effect.Work().ColorRadius = _radius;
+	m_cb10_Effect.Write();
+}
+
 // ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
 // パラメータの解放：シェーダー本体・共通の定数バッファ・各パイプラインステート
 // ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
@@ -501,6 +518,7 @@ void KdShaderManager::Release()
 	m_cb7_Camera.Release();
 	m_cb8_Fog.Release();
 	m_cb9_Light.Release();
+	m_cb10_Effect.Release();
 
 	//深度ステンシルステート開放
 	for (auto& state : m_depthStencilStates)

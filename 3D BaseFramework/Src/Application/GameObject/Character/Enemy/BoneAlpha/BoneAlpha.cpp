@@ -4,6 +4,8 @@
 #include"../../Player/Player.h"
 #include"../../../Weapon/Sword/Sword.h"
 
+#include"../../../../main.h"
+
 void BoneAlpha::Init()
 {
 	EnemyBase::Init();
@@ -23,12 +25,11 @@ void BoneAlpha::Init()
 	m_pCollider->RegisterCollisionShape("Enemy", m_model, KdCollider::TypeDamage | KdCollider::TypeBump | KdCollider::TypeSight);
 }
 
-const Math::Vector3& BoneAlpha::GetFrontDir() const
+const Math::Vector3& BoneAlpha::GetFrontDir()
 {
 	Math::Matrix _nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle.y));
 	Math::Vector3 _nowVec = Math::Vector3::TransformNormal(m_forward, _nowRot);
-	_nowVec.y = 0.0f;
-	_nowVec.Normalize();
+	Application::Instance().m_log.AddLog("_nowVec:x=%.2f,y=%.2f,z=%.2f\n", _nowVec.x, _nowVec.y, _nowVec.z);
 	return _nowVec;
 }
 

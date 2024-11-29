@@ -3074,12 +3074,15 @@ void ObjectManager::SetBoneAlphaBulletParam(int id)
 			_alpha = alpha.lock();
 			break;
 		}
+		return;
 	}
 
 	std::shared_ptr<BoneAlpha_Bullet> _bullet = std::make_shared<BoneAlpha_Bullet>();
 	_bullet->Init();
 	_bullet->SetPos(_alpha->GetBulletPoint().Translation());
-	_bullet->SetDir(_alpha->GetFrontDir());
+	Math::Matrix _nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(_alpha->GetAngle().y));
+	Math::Vector3 _nowVec = Math::Vector3::TransformNormal(_alpha->GetForward(), _nowRot);
+	_bullet->SetDir(_nowVec);
 	_bullet->SetOwner(_alpha->GetObjType());
 	_bullet->SetID(m_id);
 	m_id++;

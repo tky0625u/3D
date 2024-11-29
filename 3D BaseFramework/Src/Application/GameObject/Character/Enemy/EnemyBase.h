@@ -62,6 +62,7 @@ public:
 	void SetTarget(std::shared_ptr<Player> _target) { m_Target = _target; }
 	void SetLockONFlg(bool _LockONFlg) { m_LockONFlg = _LockONFlg; }
 	void SetFlow(UINT _flow) { m_flow = _flow; }
+	void SetColorLightFlg(bool _flg) { m_ColorLightFlg = _flg; }
 
 	const std::weak_ptr<Player>& GetTarget()const { return m_Target; }
 	Math::Matrix GettoTargetRotateYMatrix(std::weak_ptr<Player> _target);
@@ -77,6 +78,7 @@ protected:
 	std::weak_ptr<KdEffekseerObject>   m_Effect;
 	std::weak_ptr<EnemyBase>           m_leaveEnemy;
 	bool                               m_LockONFlg = false;
+	bool                               m_ColorLightFlg = false;
 
 protected:
 	class StateBase

@@ -25,6 +25,7 @@ void EnemyBase::PostUpdate()
 		m_flow = Flow::UpdateType;
 		return;
 	}
+	KdShaderManager::Instance().WriteCBColorEnable(m_ColorLightFlg);
 }
 
 void EnemyBase::DrawOutLine()

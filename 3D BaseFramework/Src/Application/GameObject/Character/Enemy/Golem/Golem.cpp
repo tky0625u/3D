@@ -188,13 +188,14 @@ void Golem::Attack2::Update(std::shared_ptr<EnemyBase> owner)
 		float dist = _moveDir.Length();
 		_moveDir.Normalize();
 		_dir = _moveDir;
-
+		owner->SetColorLightFlg(true);
 		return;
 	}
 
 	if (owner->GetPos().y <= 0.0f)
 	{
 		AttackHit(owner);
+		owner->SetColorLightFlg(false);
 		KdEffekseerManager::GetInstance().Play("Enemy/Golem/smash.efkefc", owner->GetPos(), Math::Vector3{60.0f,15.0f,60.0f}, 1.0f, false);
 		owner->SetFlow(EnemyBase::Flow::ExitType);
 		return;
@@ -209,6 +210,8 @@ void Golem::Attack2::Update(std::shared_ptr<EnemyBase> owner)
 	_pos.y = 0.0f;
 
 	if (_pos != m_playerPos)owner->SetMove(_dir, 10.0f);
+
+	KdShaderManager::Instance().WriteCBColor(m_playerPos, 60.0f);
 }
 
 void Golem::Attack2::Exit(std::shared_ptr<EnemyBase> owner)
@@ -254,6 +257,7 @@ void Golem::Attack3::Enter(std::shared_ptr<EnemyBase> owner)
 	if (!owner->IsAnimCheck("IdolToAttack3"))
 	{
 		owner->SetAnime("IdolToAttack3", false, 1.0f);
+		owner->SetColorLightFlg(true);
 		return;
 	}
 
@@ -263,6 +267,8 @@ void Golem::Attack3::Enter(std::shared_ptr<EnemyBase> owner)
 		owner->SetFlow(owner->Flow::UpdateType);
 		return;
 	}
+
+	KdShaderManager::Instance().WriteCBColor(owner->GetPos(), 50.0f);
 }
 
 void Golem::Attack3::Update(std::shared_ptr<EnemyBase> owner)
@@ -276,10 +282,13 @@ void Golem::Attack3::Update(std::shared_ptr<EnemyBase> owner)
 	if (owner->GetIsAnimator())
 	{
 		AttackHit(owner);
+		owner->SetColorLightFlg(false);
 		KdEffekseerManager::GetInstance().Play("Enemy/Golem/smash.efkefc", owner->GetPos(), Math::Vector3{50.0f,15.0f,50.0f}, 1.0f, false);
 		owner->SetFlow(EnemyBase::Flow::ExitType);
 		return;
 	}
+
+	KdShaderManager::Instance().WriteCBColor(owner->GetPos(), 50.0f);
 }
 
 void Golem::Attack3::Exit(std::shared_ptr<EnemyBase> owner)
@@ -309,7 +318,7 @@ void Golem::Attack3::AttackHit(std::shared_ptr<EnemyBase> owner)
 {
 	KdCollider::SphereInfo sphereInfo;
 	sphereInfo.m_sphere.Center = owner->GetObjManager().lock()->GetGolem().lock()->GetQuakePoint().Translation();
-	sphereInfo.m_sphere.Radius = 60.0f;
+	sphereInfo.m_sphere.Radius = 50.0f;
 	sphereInfo.m_type = KdCollider::Type::TypeDamage;
 
 	// デバッグ

@@ -11,6 +11,8 @@ void BoneAlpha_Bullet::Update()
 		return;
 	}
 
+	m_dir.y = 0.0f;
+	m_dir.Normalize();
 	m_pos += m_dir * m_speed;
 
 	Math::Matrix _scale = Math::Matrix::CreateScale(m_size);
@@ -74,6 +76,7 @@ void BoneAlpha_Bullet::Init()
 	m_model->SetModelData("Asset/Models/Character/Enemy/BoneAlpha/Bullet/Bullet.gltf");
 	m_size = 0.5f;
 	m_speed = 1.5f;
+	m_dir = Math::Vector3::Zero;
 
 	m_pCollider = std::make_unique<KdCollider>();
 	m_pCollider->RegisterCollisionShape("Bullet", m_model, KdCollider::Type::TypeDamage);

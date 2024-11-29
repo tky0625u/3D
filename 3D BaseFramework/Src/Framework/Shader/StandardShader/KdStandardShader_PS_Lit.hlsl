@@ -90,6 +90,29 @@ float4 main(VSOutput In) : SV_Target0
 	// ラフネスを逆転させ「滑らか」さにする
 	float smoothness = 1.0 - roughness; 
 	float specPower = pow(2, 11 * smoothness); // 1～2048
+
+	// カラースフィア
+	if (g_ColorEnable)
+	{
+		// In:ピクセルの情報　wPos:ワールド座標
+		float3 v = g_ColorPos - In.wPos;
+		float d = length(v); // 長さを求める　length()
+
+		if (d < g_ColorRadius)
+		{
+			// エリア内確定
+
+			// モノクロ化
+			float3 col = (baseColor.r + baseColor.g + baseColor.b) / 3;
+
+			// セピア色
+			col.r *= 1;
+			col.g *= 0.7;
+			col.b *= 0.4;
+			
+			baseColor.rgb = col;
+		}
+	}
 	
 	//------------------------------------------
 	// ライティング
