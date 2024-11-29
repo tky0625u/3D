@@ -2039,6 +2039,22 @@ void ObjectManager::ObjectWrite(std::string _fileName)
 	}
 }
 
+void ObjectManager::ModelLoad()
+{
+	std::shared_ptr<KdModelWork>_boneModel = std::make_shared<KdModelWork>();
+	_boneModel->SetModelData("Asset/Models/Character/Enemy/Bone/Bone.gltf");
+
+	std::shared_ptr<KdModelWork>_boneAlphaModel = std::make_shared<KdModelWork>();
+	_boneAlphaModel->SetModelData("Asset/Models/Character/Enemy/BoneAlpha/BoneAlpha.gltf");
+	std::shared_ptr<KdModelWork>_boneAlphaBulletModel = std::make_shared<KdModelWork>();
+	_boneAlphaBulletModel->SetEnable("Asset/Models/Character/Enemy/BoneAlpha/Bullet/Bullet.gltf");
+	
+	std::shared_ptr<KdModelWork>_golemModel = std::make_shared<KdModelWork>();
+	_golemModel->SetEnable("Asset/Models/Character/Enemy/Golem/golem.gltf");
+	std::shared_ptr<KdModelWork>_golemBulletModel = std::make_shared<KdModelWork>();
+	_golemBulletModel->SetModelData("Asset/Models/Character/Enemy/Golem/Bullet/Bullet.gltf");
+}
+
 void ObjectManager::SetTitleCamera()
 {
 	//jsonファイル

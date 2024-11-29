@@ -15,6 +15,7 @@ public:
 	void SetOwner(UINT _owner)         { m_owner = _owner; }
 	void SetDir(Math::Vector3 _dir)    { m_dir = _dir; }
 	void SetCrush(bool _crush)         { m_crush = _crush; }
+	void SetModel(std::shared_ptr<KdModelWork> _model) { m_model = _model; }
 
 	const Math::Vector3& GetDir()const { return m_dir; }
 

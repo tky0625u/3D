@@ -80,6 +80,7 @@ public:
 	void SetSword(std::shared_ptr<Sword> _sword) { m_sword = _sword; }
 	void SetInviTime(int _inviTime) { m_inviTime = _inviTime; }
 	void SetCamera(std::shared_ptr<GameCamera> a_camera) { m_camera = a_camera; }
+	void SetModel(std::shared_ptr<KdModelWork> _model) { m_model = _model; }
 
 	Param GetParam() { return m_param; }
 	bool GetIsAnimator() { return m_animator->IsAnimationEnd(); }

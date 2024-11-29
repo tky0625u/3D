@@ -63,6 +63,7 @@ public:
 	void ShieldWrite(std::string _shieldName, std::string _fileName);
 	void ObjectWrite(std::string _fileName);
 
+	void ModelLoad();
 	void SetTitleCamera();
 	void SetTitleParam();
 	void SetGameParam();

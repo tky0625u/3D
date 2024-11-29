@@ -64,6 +64,7 @@ void StageLoad()
 	_StageManager->SetObjectManager(_ObjManager);
 
 	_ObjManager->SceneCheck();
+	_ObjManager->ModelLoad();
 	_ObjManager->SetGameCameraParam(_StageManager);
 	_ObjManager->SetObjectParam(_StageManager);
 	_ObjManager->SetPlayerParam(_StageManager);
