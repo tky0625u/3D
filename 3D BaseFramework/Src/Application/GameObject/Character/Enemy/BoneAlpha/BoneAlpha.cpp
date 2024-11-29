@@ -35,56 +35,14 @@ const Math::Vector3& BoneAlpha::GetFrontDir()
 
 void BoneAlpha::Attack::Enter(std::shared_ptr<EnemyBase> owner)
 {
-	if (!owner->IsAnimCheck("IdolTOAttack"))
-	{
-		owner->SetAnime("IdolTOAttack", false, 0.5f);
-		return;
-	}
-
-	if (owner->GetIsAnimator())
-	{
-		owner->SetFlow(EnemyBase::Flow::UpdateType);
-		return;
-	}
-
-	Math::Vector3 _playerPos = owner->GetTarget().lock()->GetPos();
-	Math::Vector3 _dir = _playerPos - owner->GetPos();
-	_dir.y = 0.0f;
-	_dir.Normalize();
-	owner->Rotate(_dir);
+	owner->SetFlow(EnemyBase::Flow::UpdateType);
 }
 
 void BoneAlpha::Attack::Update(std::shared_ptr<EnemyBase> owner)
 {
 	if (!owner->IsAnimCheck("Attack"))
 	{
-		owner->SetAnime("Attack", false, 1.5f);
-		return;
-	}
-
-	if (m_ActionFPS == 11)
-	{
-		owner->GetObjManager().lock()->SetBoneAlphaBulletParam(owner->GetID());
-		KdEffekseerManager::GetInstance().Play("Enemy/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 0.3f, 2.0f, false);
-	}
-
-	if (owner->GetIsAnimator())
-	{
-		owner->SetFlow(EnemyBase::Flow::ExitType);
-		return;
-	}
-
-	HitCheck(owner);
-	MoveForward(owner);
-
-	m_ActionFPS++;
-}
-
-void BoneAlpha::Attack::Exit(std::shared_ptr<EnemyBase> owner)
-{
-	if (!owner->IsAnimCheck("AttackToIdol"))
-	{
-		owner->SetAnime("AttackToIdol", false, 0.5f);
+		owner->SetAnime("Attack", false, 1.0f);
 		return;
 	}
 
@@ -93,4 +51,33 @@ void BoneAlpha::Attack::Exit(std::shared_ptr<EnemyBase> owner)
 		owner->IdolChange();
 		return;
 	}
+
+	if (m_ActionFPS == 35)
+	{
+		KdEffekseerManager::GetInstance().Play("Enemy/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 0.3f, 2.0f, false);
+	}
+	else 
+	{
+		Math::Vector3 _playerPos = owner->GetTarget().lock()->GetPos();
+		Math::Vector3 _dir = _playerPos - owner->GetPos();
+		_dir.y = 0.0f;
+		_dir.Normalize();
+		owner->Rotate(_dir);
+	}
+	if (50 <= m_ActionFPS && 67 >= m_ActionFPS)
+	{
+		HitCheck(owner);
+		MoveForward(owner);
+	}
+	if (58 == m_ActionFPS)
+	{
+		owner->GetObjManager().lock()->SetBoneAlphaBulletParam(owner->GetID());
+	}
+
+	m_ActionFPS++;
+}
+
+void BoneAlpha::Attack::Exit(std::shared_ptr<EnemyBase> owner)
+{
+
 }

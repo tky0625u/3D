@@ -27,43 +27,14 @@ void Bone::Init()
 // Attack==========================================================================================
 void Bone::Attack::Enter(std::shared_ptr<EnemyBase> owner)
 {
-	if (!owner->IsAnimCheck("IdolTOAttack"))
-	{
-		owner->SetAnime("IdolTOAttack", false, 0.5f);
-		return;
-	}
-
-	if (owner->GetIsAnimator())
-	{
-		KdEffekseerManager::GetInstance().Play("Enemy/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 0.3f, 2.0f, false);
-		owner->SetFlow(EnemyBase::Flow::UpdateType);
-		return;
-	}
+	owner->SetFlow(EnemyBase::Flow::UpdateType);
 }
 
 void Bone::Attack::Update(std::shared_ptr<EnemyBase> owner)
 {
 	if (!owner->IsAnimCheck("Attack"))
 	{
-		owner->SetAnime("Attack", false, 1.5f);
-		return;
-	}
-
-	if (owner->GetIsAnimator())
-	{
-		owner->SetFlow(EnemyBase::Flow::ExitType);
-		return;
-	}
-
-	HitCheck(owner);
-	MoveForward(owner);
-}
-
-void Bone::Attack::Exit(std::shared_ptr<EnemyBase> owner)
-{
-	if (!owner->IsAnimCheck("AttackToIdol"))
-	{
-		owner->SetAnime("AttackToIdol", false, 0.5f);
+		owner->SetAnime("Attack", false, 1.0f);
 		return;
 	}
 
@@ -75,6 +46,22 @@ void Bone::Attack::Exit(std::shared_ptr<EnemyBase> owner)
 		owner->SetFlow(EnemyBase::Flow::UpdateType);
 		return;
 	}
+
+	if (m_ActionFPS == 35)
+	{
+		KdEffekseerManager::GetInstance().Play("Enemy/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 0.3f, 2.0f, false);
+	}
+	if (50 <= m_ActionFPS && 67 >= m_ActionFPS)
+	{
+		HitCheck(owner);
+		MoveForward(owner);
+	}
+	m_ActionFPS++;
+}
+
+void Bone::Attack::Exit(std::shared_ptr<EnemyBase> owner)
+{
+
 }
 
 void Bone::Attack::HitCheck(std::shared_ptr<EnemyBase> owner)
@@ -154,7 +141,10 @@ void Bone::Stumble::Update(std::shared_ptr<EnemyBase> owner)
 
 	if (owner->GetIsAnimator())
 	{
-		owner->SetFlow(EnemyBase::Flow::ExitType);
+		// Idol
+		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
+		owner->SetNextAction(_idol, EnemyBase::Action::IdolType);
+		owner->SetFlow(EnemyBase::Flow::UpdateType);
 		return;
 	}
 
@@ -163,20 +153,7 @@ void Bone::Stumble::Update(std::shared_ptr<EnemyBase> owner)
 
 void Bone::Stumble::Exit(std::shared_ptr<EnemyBase> owner)
 {
-	if (!owner->IsAnimCheck("StumbleToIdol"))
-	{
-		owner->SetAnime("StumbleToIdol", false, 1.5f);
-		return;
-	}
 
-	if (owner->GetIsAnimator())
-	{
-		// Idol
-		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
-		owner->SetNextAction(_idol, EnemyBase::Action::IdolType);
-		owner->SetFlow(EnemyBase::Flow::UpdateType);
-		return;
-	}
 }
 
 void Bone::Stumble::StumbleAction(std::shared_ptr<EnemyBase> owner)

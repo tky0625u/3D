@@ -90,7 +90,7 @@ void Golem::Attack1::Enter(std::shared_ptr<EnemyBase> owner)
 {
 	if (!owner->IsAnimCheck("IdolToAttack1"))
 	{
-		owner->SetAnime("IdolToAttack1", false, 1.5f);
+		owner->SetAnime("IdolToAttack1", false, 1.0f);
 		return;
 	}
 
@@ -105,9 +105,23 @@ void Golem::Attack1::Update(std::shared_ptr<EnemyBase> owner)
 {
 	if (!owner->IsAnimCheck("Attack1"))
 	{
-		owner->SetAnime("Attack1", false, 1.5f);
+		owner->SetAnime("Attack1", false, 1.0f);
 		m_bullet = owner->GetObjManager().lock()->SetBulletParam();
 		return;
+	}
+
+	if (m_bullet.expired())
+	{
+		owner->SetFlow(EnemyBase::Flow::ExitType);
+		return;
+	}
+
+	if (m_ActionFPS == 10)
+	{
+		KdEffekseerManager::GetInstance().Play("Enemy/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 2.0f, 2.0f, false);
+		Math::Matrix RotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(owner->GetAngle().y));
+		Math::Vector3 _dir = Math::Vector3::TransformNormal(owner->GetForward(), RotY);
+		m_bullet.lock()->SetDir(_dir);
 	}
 
 	if (!m_bullet.expired() && m_bullet.lock()->GetSize() < m_bullet.lock()->GetMaxSize())
@@ -119,18 +133,9 @@ void Golem::Attack1::Update(std::shared_ptr<EnemyBase> owner)
 		_dir.Normalize();
 		owner->Rotate(_dir, 1.0f);
 	}
-	else if (!m_bullet.expired() && m_bullet.lock()->GetSize() >= m_bullet.lock()->GetMaxSize() && m_bullet.lock()->GetDir() == Math::Vector3::Zero)
+	else if (!m_bullet.expired() && m_bullet.lock()->GetSize() >= m_bullet.lock()->GetMaxSize())
 	{
-		KdEffekseerManager::GetInstance().Play("Enemy/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 2.0f, 2.0f, false);
-		Math::Matrix RotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(owner->GetAngle().y));
-		Math::Vector3 _dir = Math::Vector3::TransformNormal(owner->GetForward(), RotY);
-		m_bullet.lock()->SetDir(_dir);
-	}
-
-	if (m_bullet.expired())
-	{
-		owner->SetFlow(EnemyBase::Flow::ExitType);
-		return;
+		m_ActionFPS++;
 	}
 }
 
@@ -138,7 +143,7 @@ void Golem::Attack1::Exit(std::shared_ptr<EnemyBase> owner)
 {
 	if (!owner->IsAnimCheck("Attack1ToIdol"))
 	{
-		owner->SetAnime("Attack1ToIdol", false, 1.5f);
+		owner->SetAnime("Attack1ToIdol", false, 1.0f);
 		return;
 	}
 
@@ -159,7 +164,7 @@ void Golem::Attack2::Enter(std::shared_ptr<EnemyBase> owner)
 {
 	if (!owner->IsAnimCheck("IdolToAttack2"))
 	{
-		owner->SetAnime("IdolToAttack2", false, 1.5f);
+		owner->SetAnime("IdolToAttack2", false, 1.0f);
 		return;
 	}
 
@@ -175,7 +180,7 @@ void Golem::Attack2::Update(std::shared_ptr<EnemyBase> owner)
 	static Math::Vector3 _dir = Math::Vector3::Zero;
 	if (!owner->IsAnimCheck("Attack2"))
 	{
-		owner->SetAnime("Attack2", false, 1.5f);
+		owner->SetAnime("Attack2", false, 1.0f);
 		owner->SetJumpPow(5.0f);
 
 		std::shared_ptr<Player> _player = owner->GetTarget().lock();
@@ -218,7 +223,7 @@ void Golem::Attack2::Exit(std::shared_ptr<EnemyBase> owner)
 {
 	if (!owner->IsAnimCheck("Attack2ToIdol"))
 	{
-		owner->SetAnime("Attack2ToIdol", false, 1.5f);
+		owner->SetAnime("Attack2ToIdol", false, 1.0f);
 		return;
 	}
 
@@ -257,45 +262,25 @@ void Golem::Attack3::Enter(std::shared_ptr<EnemyBase> owner)
 	if (!owner->IsAnimCheck("IdolToAttack3"))
 	{
 		owner->SetAnime("IdolToAttack3", false, 1.0f);
-		owner->SetColorLightFlg(true);
+		
 		return;
 	}
 
 	if (owner->GetIsAnimator())
 	{
-		KdEffekseerManager::GetInstance().Play("Enemy/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 2.0f, 2.0f, false);
+
 		owner->SetFlow(owner->Flow::UpdateType);
 		return;
 	}
 
-	KdShaderManager::Instance().WriteCBColor(owner->GetPos(), 50.0f);
+	
 }
 
 void Golem::Attack3::Update(std::shared_ptr<EnemyBase> owner)
 {
 	if (!owner->IsAnimCheck("Attack3"))
 	{
-		owner->SetAnime("Attack3", false, 1.5f);
-		return;
-	}
-
-	if (owner->GetIsAnimator())
-	{
-		AttackHit(owner);
-		owner->SetColorLightFlg(false);
-		KdEffekseerManager::GetInstance().Play("Enemy/Golem/smash.efkefc", owner->GetPos(), Math::Vector3{50.0f,15.0f,50.0f}, 1.0f, false);
-		owner->SetFlow(EnemyBase::Flow::ExitType);
-		return;
-	}
-
-	KdShaderManager::Instance().WriteCBColor(owner->GetPos(), 50.0f);
-}
-
-void Golem::Attack3::Exit(std::shared_ptr<EnemyBase> owner)
-{
-	if (!owner->IsAnimCheck("Attack3ToIdol"))
-	{
-		owner->SetAnime("Attack3ToIdol", false, 1.5f);
+		owner->SetAnime("Attack3", false, 1.0f);
 		return;
 	}
 
@@ -308,10 +293,36 @@ void Golem::Attack3::Exit(std::shared_ptr<EnemyBase> owner)
 		return;
 	}
 
-	Math::Vector3 dir = owner->GetTarget().lock()->GetPos() - owner->GetPos();
-	dir.y = 0.0f;
-	dir.Normalize();
-	owner->Rotate(dir, 2.5f);
+	if (161 >= m_ActionFPS)
+	{
+		owner->SetColorLightFlg(true);
+	}
+	else if (162 == m_ActionFPS)
+	{
+		KdEffekseerManager::GetInstance().Play("Enemy/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 2.0f, 2.0f, false);
+	}
+	else if (180 == m_ActionFPS)
+	{
+		AttackHit(owner);
+		owner->SetColorLightFlg(false);
+		KdEffekseerManager::GetInstance().Play("Enemy/Golem/smash.efkefc", owner->GetPos(), Math::Vector3{ 57.0f,15.0f,57.0f }, 1.0f, false);
+	}
+	else
+	{
+		Math::Vector3 dir = owner->GetTarget().lock()->GetPos() - owner->GetPos();
+		dir.y = 0.0f;
+		dir.Normalize();
+		owner->Rotate(dir, 2.5f);
+	}
+
+
+	m_ActionFPS++;
+	KdShaderManager::Instance().WriteCBColor(owner->GetPos(), 50.0f);
+}
+
+void Golem::Attack3::Exit(std::shared_ptr<EnemyBase> owner)
+{
+
 }
 
 void Golem::Attack3::AttackHit(std::shared_ptr<EnemyBase> owner)

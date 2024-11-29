@@ -156,9 +156,10 @@ private:
 		void ChangeState(std::shared_ptr<Player> owner)override;
 
 	private:
-		Math::Vector3    m_AttackDir = Math::Vector3::Zero;
-		static const int AttackNUM   = 3;
-		int              m_atkNum    = 1;
+		Math::Vector3    m_AttackDir  = Math::Vector3::Zero;
+		static const int AttackNUM    = 3;
+		int              m_atkNum     = 1;
+		int              m_ChangeTime = 0;
 	};
 
 	class Counter :public StateBase
@@ -216,6 +217,8 @@ private:
 		void GuardRotate(std::shared_ptr<Player> owner, Math::Vector3 _dir);
 		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override; // 直接攻撃による被弾
 		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override; // 遠距離攻撃による被弾
+
+		void SetGuardTime(int _time) { m_guardTime = _time; }
 
 	private:
 		int m_guardTime = 0;

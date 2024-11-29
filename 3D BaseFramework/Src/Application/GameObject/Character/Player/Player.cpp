@@ -173,7 +173,7 @@ void Player::TeleportChange()
 	std::shared_ptr<Teleport> _teleport = std::make_shared<Teleport>();
 	m_NextState = _teleport;
 	m_NextActionType = Action::TeleportType;
-	m_flow = CharacterBase::Flow::EnterType;
+	m_flow = CharacterBase::Flow::UpdateType;
 }
 
 void Player::StateBase::StateUpdate(std::shared_ptr<Player> owner)
@@ -382,7 +382,17 @@ void Player::Idol::Exit(std::shared_ptr<Player> owner)
 
 void Player::Idol::ChangeState(std::shared_ptr<Player> owner)
 {
-	if (owner->m_keyType & Player::KeyType::MoveKey)
+	if (owner->m_keyType & Player::KeyType::RollKey && !(owner->m_BeforeKeyType & Player::KeyType::RollKey))
+	{
+		if (owner->m_param.Sm <= 0)return;
+
+		std::shared_ptr<Roll> _roll = std::make_shared<Roll>();
+		owner->m_NextState = _roll;
+		owner->m_NextActionType = Player::Action::RollType;
+		owner->m_flow = CharacterBase::Flow::EnterType;
+		return;
+	}
+	else if (owner->m_keyType & Player::KeyType::MoveKey)
 	{
 		std::shared_ptr<Run> _run = std::make_shared<Run>();
 		owner->m_NextState = _run;
@@ -406,16 +416,7 @@ void Player::Idol::ChangeState(std::shared_ptr<Player> owner)
 		owner->m_flow = CharacterBase::Flow::EnterType;
 		return;
 	}
-	else if (owner->m_keyType & Player::KeyType::RollKey && !(owner->m_BeforeKeyType & Player::KeyType::RollKey))
-	{
-		if (owner->m_param.Sm <= 0)return;
 
-		std::shared_ptr<Roll> _roll = std::make_shared<Roll>();
-		owner->m_NextState = _roll;
-		owner->m_NextActionType = Player::Action::RollType;
-		owner->m_flow = CharacterBase::Flow::EnterType;
-		return;
-	}
 }
 //=================================================================================================
 
@@ -555,6 +556,22 @@ void Player::Attack::Enter(std::shared_ptr<Player> owner)
 		owner->Rotate(m_AttackDir, 360.0f);
 	}
 
+	switch (m_atkNum)
+	{
+	case 1:
+		m_ChangeTime = 30;
+		break;
+
+	case 2:
+		m_ChangeTime = 20;
+		break;
+	case 3:
+		m_ChangeTime = 23;
+		break;
+	default:
+		break;
+	}
+
 	owner->GetSword().lock()->MakeTraject();
 	owner->m_flow = Player::Flow::UpdateType;
 }
@@ -597,7 +614,11 @@ void Player::Attack::Update(std::shared_ptr<Player> owner)
 
 	if (owner->GetIsAnimator())
 	{
-		owner->m_flow = Player::Flow::ExitType;
+		// Idol
+		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
+		owner->m_NextState = _idol;
+		owner->m_NextActionType = Player::Action::IdolType;
+		owner->m_flow = CharacterBase::Flow::UpdateType;
 		return;
 	}
 
@@ -606,42 +627,7 @@ void Player::Attack::Update(std::shared_ptr<Player> owner)
 
 void Player::Attack::Exit(std::shared_ptr<Player> owner)
 {
-	switch (m_atkNum)
-	{
-	case 1:
-		if (!owner->IsAnimCheck("Attack1ToIdol"))
-		{
-			owner->SetAnime("Attack1ToIdol", false, 1.0f);
-			return;
-		}
-		break;
-	case 2:
-		if (!owner->IsAnimCheck("Attack2ToIdol"))
-		{
-			owner->SetAnime("Attack2ToIdol", false, 1.0f);
-			return;
-		}
-		break;
-	case 3:
-		if (!owner->IsAnimCheck("Attack3ToIdol"))
-		{
-			owner->SetAnime("Attack3ToIdol", false, 1.0f);
-			return;
-		}
-		break;
-	default:
-		break;
-	}
 
-	if (owner->GetIsAnimator())
-	{
-		// Idol
-		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
-		owner->m_NextState = _idol;
-		owner->m_NextActionType = Player::Action::IdolType;
-		owner->m_flow = CharacterBase::Flow::UpdateType;
-		return;
-	}
 }
 
 void Player::Attack::Event(std::shared_ptr<Player> owner)
@@ -666,14 +652,14 @@ void Player::Attack::Attack1(std::shared_ptr<Player> owner)
 {
 	owner->SetMove(m_AttackDir, 0.5f);
 
-	if (m_ActionFPS >= 15)AttackHit(owner);
+	if (m_ActionFPS >= 20 && m_ActionFPS <= 30)AttackHit(owner);
 }
 
 void Player::Attack::Attack2(std::shared_ptr<Player> owner)
 {
 	owner->SetMove(m_AttackDir, 1.0f);
 
-	if (m_ActionFPS >= 12)AttackHit(owner);
+	if (m_ActionFPS >= 10 && m_ActionFPS <= 20)AttackHit(owner);
 }
 
 void Player::Attack::Attack3(std::shared_ptr<Player> owner)
@@ -681,7 +667,7 @@ void Player::Attack::Attack3(std::shared_ptr<Player> owner)
 	owner->Rotate(m_AttackDir);
 	owner->SetMove(m_AttackDir, 1.2f);
 
-	if (m_ActionFPS >= 16)AttackHit(owner);
+	if (m_ActionFPS >= 12 && m_ActionFPS <= 36)AttackHit(owner);
 }
 
 void Player::Attack::AttackDirCheck(std::shared_ptr<Player> owner)
@@ -770,7 +756,7 @@ void Player::Attack::AttackDirCheck(std::shared_ptr<Player> owner)
 
 void Player::Attack::ChangeState(std::shared_ptr<Player> owner)
 {
-	if (owner->m_flow != Player::Flow::ExitType)return;
+	if (m_ActionFPS < m_ChangeTime)return;
 
 	if (owner->m_keyType & Player::KeyType::AttackKey && !(owner->m_BeforeKeyType & Player::KeyType::AttackKey))
 	{
@@ -831,27 +817,6 @@ void Player::Counter::Update(std::shared_ptr<Player> owner)
 
 	if (owner->GetIsAnimator())
 	{
-		owner->m_flow = Player::Flow::ExitType;
-		return;
-	}
-
-	if (owner->GetSword().expired() == false)
-	{
-		owner->GetSword().lock()->SetTrajectMat();
-	}
-	AttackHit(owner);
-}
-
-void Player::Counter::Exit(std::shared_ptr<Player> owner)
-{
-	if (!owner->IsAnimCheck("CounterToIdol"))
-	{
-		owner->SetAnime("CounterToIdol", false, 1.5f);
-		return;
-	}
-
-	if (owner->GetIsAnimator())
-	{
 		owner->m_ParryID = -1;
 
 		// Idol
@@ -861,6 +826,20 @@ void Player::Counter::Exit(std::shared_ptr<Player> owner)
 		owner->m_flow = CharacterBase::Flow::UpdateType;
 		return;
 	}
+
+	if (owner->GetSword().expired() == false)
+	{
+		owner->GetSword().lock()->SetTrajectMat();
+	}
+	
+	if (m_ActionFPS <= 14)AttackHit(owner);
+
+	m_ActionFPS++;
+}
+
+void Player::Counter::Exit(std::shared_ptr<Player> owner)
+{
+
 }
 
 void Player::Counter::ChangeState(std::shared_ptr<Player> owner)
@@ -913,6 +892,29 @@ void Player::Counter::ChangeState(std::shared_ptr<Player> owner)
 // Roll============================================================================================
 void Player::Roll::Enter(std::shared_ptr<Player> owner)
 {
+	Math::Vector3 dir = Math::Vector3::Zero;
+	if (GetAsyncKeyState('W') & 0x8000)
+	{
+		dir.z = 1.0f;
+	}
+	if (GetAsyncKeyState('S') & 0x8000)
+	{
+		dir.z = -1.0f;
+	}
+	if (GetAsyncKeyState('A') & 0x8000)
+	{
+		dir.x = -1.0f;
+	}
+	if (GetAsyncKeyState('D') & 0x8000)
+	{
+		dir.x = 1.0f;
+	}
+	if (dir != Math::Vector3::Zero)
+	{
+		owner->CameraTransform(dir);
+		owner->Rotate(dir, 360.0f);
+	}
+
 	owner->m_param.Sm -= 5;
 	owner->m_StaminaRecoveryTime = 60 * 3;
 	if (owner->m_param.Sm <= 0)owner->m_param.Sm = 0;
@@ -921,26 +923,10 @@ void Player::Roll::Enter(std::shared_ptr<Player> owner)
 
 void Player::Roll::Update(std::shared_ptr<Player> owner)
 {
-	Event(owner);
 	if (!owner->IsAnimCheck("Roll"))
 	{
-		owner->SetAnime("Roll", false, 1.2f);
+		owner->SetAnime("Roll", false, 1.5f);
 		KdEffekseerManager::GetInstance().Play("Player/Smoke.efkefc", owner->m_pos, 0.5f, 1.0f, false);
-		return;
-	}
-
-	if (owner->GetIsAnimator())
-	{
-		owner->m_flow = Player::Flow::ExitType;
-		return;
-	}
-}
-
-void Player::Roll::Exit(std::shared_ptr<Player> owner)
-{
-	if (!owner->IsAnimCheck("RollToIdol"))
-	{
-		owner->SetAnime("RollToIdol", false, 1.0f);
 		return;
 	}
 
@@ -953,6 +939,15 @@ void Player::Roll::Exit(std::shared_ptr<Player> owner)
 		owner->m_flow = CharacterBase::Flow::UpdateType;
 		return;
 	}
+
+	if (m_ActionFPS < 32)Event(owner);
+
+	m_ActionFPS++;
+}
+
+void Player::Roll::Exit(std::shared_ptr<Player> owner)
+{
+
 }
 
 void Player::Roll::Event(std::shared_ptr<Player> owner)
@@ -965,7 +960,7 @@ void Player::Roll::Event(std::shared_ptr<Player> owner)
 	dir = nowVec;
 	dir.Normalize();
 
-	owner->SetMove(dir, 2.5f);
+	owner->SetMove(dir, 2.0f);
 }
 
 void Player::Roll::ChangeState(std::shared_ptr<Player> owner)
@@ -1185,6 +1180,7 @@ void Player::GuardReaction::Update(std::shared_ptr<Player> owner)
 	if (owner->GetIsAnimator())
 	{
 		std::shared_ptr<Guard> _guard = std::make_shared<Guard>();
+		_guard->SetGuardTime(11);
 		owner->m_NextState = _guard;
 		owner->m_NextActionType = Player::Action::GuardType;
 		owner->m_flow = CharacterBase::Flow::UpdateType;
@@ -1219,21 +1215,6 @@ void Player::Parry::Update(std::shared_ptr<Player> owner)
 
 	if (owner->GetIsAnimator())
 	{
-		owner->m_flow = Player::Flow::ExitType;
-		return;
-	}
-}
-
-void Player::Parry::Exit(std::shared_ptr<Player> owner)
-{
-	if (!owner->IsAnimCheck("ParryingToIdol"))
-	{
-		owner->SetAnime("ParryingToIdol", false, 1.5f);
-		return;
-	}
-
-	if (owner->GetIsAnimator())
-	{
 		owner->m_ParryID = -1;
 
 		// Idol
@@ -1245,10 +1226,19 @@ void Player::Parry::Exit(std::shared_ptr<Player> owner)
 		owner->m_ObjectManager.lock()->SlowChange();
 		return;
 	}
+
+	m_ActionFPS++;
+}
+
+void Player::Parry::Exit(std::shared_ptr<Player> owner)
+{
+
 }
 
 void Player::Parry::ChangeState(std::shared_ptr<Player> owner)
 {
+	if (m_ActionFPS < 30)return;
+
 	if (owner->m_keyType & Player::KeyType::AttackKey && !(owner->m_BeforeKeyType & Player::KeyType::AttackKey))
 	{
 		if (owner->m_ParryID != -1)
@@ -1268,8 +1258,6 @@ void Player::Parry::ChangeState(std::shared_ptr<Player> owner)
 		owner->m_ObjectManager.lock()->SlowChange();
 		return;
 	}
-
-	if (owner->m_flow != Player::Flow::ExitType)return;
 
 	if (owner->m_keyType & Player::KeyType::MoveKey)
 	{
@@ -1378,17 +1366,7 @@ void Player::Crushing::ChangeState(std::shared_ptr<Player> owner)
 // Teleport========================================================================================
 void Player::Teleport::Enter(std::shared_ptr<Player> owner)
 {
-	if (!owner->IsAnimCheck("IdolToTeleport"))
-	{
-		owner->SetAnime("IdolToTeleport", false, 1.0f);
-		return;
-	}
 
-	if (owner->GetIsAnimator())
-	{
-		owner->m_flow = Player::Flow::UpdateType;
-		return;
-	}
 }
 
 void Player::Teleport::Update(std::shared_ptr<Player> owner)
@@ -1396,8 +1374,6 @@ void Player::Teleport::Update(std::shared_ptr<Player> owner)
 	if (!owner->IsAnimCheck("Teleport"))
 	{
 		owner->SetAnime("Teleport", true, 1.0f);
-		owner->m_dissolve = 1.0f;
-		m_handle = KdEffekseerManager::GetInstance().Play("Player/LightEnd.efkefc", owner->m_pos, owner->m_size, 1.0f, false).lock()->GetHandle();
 		return;
 	}
 
@@ -1408,7 +1384,15 @@ void Player::Teleport::Update(std::shared_ptr<Player> owner)
 		return;
 	}
 
+	if (m_ActionFPS == 38)
+	{
+		owner->m_dissolve = 1.0f;
+		m_handle = KdEffekseerManager::GetInstance().Play("Player/LightEnd.efkefc", owner->m_pos, owner->m_size, 1.0f, false).lock()->GetHandle();
+	}
+
 	if (!KdEffekseerManager::GetInstance().IsPlaying(m_handle))SceneManager::Instance().BlackAlphaChange(0.01f, true);
+
+	m_ActionFPS++;
 }
 
 void Player::Teleport::Exit(std::shared_ptr<Player> owner)

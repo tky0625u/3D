@@ -70,6 +70,11 @@ void BoneAlpha_Bullet::PostUpdate()
 	}
 }
 
+void BoneAlpha_Bullet::DrawBright()
+{
+	KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
+}
+
 void BoneAlpha_Bullet::Init()
 {
 	m_model = std::make_shared<KdModelWork>();

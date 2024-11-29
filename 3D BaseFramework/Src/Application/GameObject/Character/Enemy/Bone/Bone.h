@@ -14,7 +14,7 @@ public:
 		std::shared_ptr<Attack> _attack = std::make_shared<Attack>();
 		m_NextState = _attack;
 		m_NextActionType = Action::AttackType;
-		m_flow = EnemyBase::Flow::EnterType;
+		m_flow = EnemyBase::Flow::UpdateType;
 	}
 	void StumbleChange()override
 	{
