@@ -1359,7 +1359,6 @@ void Player::Crushing::Update(std::shared_ptr<Player> owner)
 	if (owner->GetIsAnimator())
 	{
 		owner->Expired();
-		owner->m_ObjectManager.lock()->SetGameOverParam();
 		return;
 	}
 

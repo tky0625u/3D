@@ -20,7 +20,7 @@ class LockON;
 class Floor;
 class Teleport;
 class Enemy_HP;
-class GameOver;
+class GameStateUI;
 class Golem;
 class Bullet;
 class BoneAlpha;
@@ -56,7 +56,7 @@ public:
 	void LockONWrite();
 	void FloorWrite();
 	void TeleportWrite();
-	void GameOverWrite();
+	void GameStateWrite();
 	void EnemyWrite(int _stage, int _wave, std::string _fileName);
 	void EnemyHPWrite();
 	void SwordWrite(std::string _swordName, std::string _fileName);
@@ -78,7 +78,7 @@ public:
 	void SetLockONParam();
 	void SetFloorParam(std::shared_ptr<StageManager> _stage);
 	void SetTeleportParam();
-	void SetGameOverParam();
+	void SetGameStateParam(bool _IsClear);
 	void SetWeaponParam(std::string _filePath, std::string _weaponName);
 	void SetEnemyParam(std::string _filePath = "none", std::shared_ptr<StageManager> _stage = nullptr);
 	void SetEnemyHPParam(std::shared_ptr<EnemyBase> _enemy);
@@ -125,7 +125,7 @@ private:
 	std::weak_ptr<LockON>                    m_lockON;
 	std::weak_ptr<Floor>                     m_floor;
 	std::weak_ptr<Teleport>                  m_teleport;
-	std::weak_ptr<GameOver>                  m_gameOver;
+	std::weak_ptr<GameStateUI>               m_gameStateUI;
 	std::weak_ptr<Golem>                     m_golem;
 	std::vector<std::weak_ptr<BoneAlpha>>    m_BoneAlphaList;
 	std::vector<std::weak_ptr<Enemy_HP>>     m_EnemyHPList;

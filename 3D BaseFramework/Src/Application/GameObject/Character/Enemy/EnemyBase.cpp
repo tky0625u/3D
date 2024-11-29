@@ -14,6 +14,17 @@ void EnemyBase::PostUpdate()
 	{
 		m_inviTime--;
 	}
+
+	// デバッグ
+	if (GetAsyncKeyState('P') & 0x8000)
+	{
+		m_param.Hp = 0;
+		std::shared_ptr<Crushing> _crush = std::make_shared<Crushing>();
+		m_NextState = _crush;
+		m_NextActionType = CharacterBase::Action::CrushingType;
+		m_flow = Flow::UpdateType;
+		return;
+	}
 }
 
 void EnemyBase::DrawOutLine()

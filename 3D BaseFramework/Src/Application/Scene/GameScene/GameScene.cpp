@@ -160,7 +160,7 @@ void GameScene::Normal::ChangeState(std::shared_ptr<GameScene> owner)
 	{
 		std::shared_ptr<GameOver> _over = std::make_shared<GameOver>();
 		owner->m_NextState = _over;
-		owner->m_flow = GameScene::Flow::UpdateType;
+		owner->m_flow = GameScene::Flow::EnterType;
 		return;
 	}
 	else if (owner->m_StageManager->GetnowStage() == owner->m_StageManager->GetMaxStage() && SceneManager::Instance().GetEnemyList().size() == 0)
@@ -176,6 +176,9 @@ void GameScene::Normal::ChangeState(std::shared_ptr<GameScene> owner)
 
 void GameScene::GameOver::Enter(std::shared_ptr<GameScene> owner)
 {
+	owner->m_ObjManager->SetGameStateParam(false);
+	owner->m_flow = GameScene::Flow::UpdateType;
+	return;
 }
 
 // GameOver========================================================================================
@@ -213,7 +216,7 @@ void GameScene::GameOver::ChangeState(std::shared_ptr<GameScene> owner)
 // Clear===========================================================================================
 void GameScene::Clear::Enter(std::shared_ptr<GameScene> owner)
 {
-
+	owner->m_ObjManager->SetGameStateParam(true);
 	owner->m_flow = GameScene::Flow::UpdateType;
 }
 

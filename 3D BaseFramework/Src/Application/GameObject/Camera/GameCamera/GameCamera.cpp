@@ -119,11 +119,11 @@ void GameCamera::PostUpdate()
 	_dir.Normalize();
 	rayInfo.m_dir = _dir;
 	rayInfo.m_range = (m_wpTarget.lock()->GetCameraPointMat().Translation() - m_mWorld.Translation()).Length();
-	rayInfo.m_type = KdCollider::TypeBump;
+	rayInfo.m_type = KdCollider::TypeBump | KdCollider::TypeGround;
 
 	//デバッグ用
-	Math::Color color = { 1,1,1,1 };
-	m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
+	//Math::Color color = { 1,1,1,1 };
+	//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
 
 	std::list<KdCollider::CollisionResult> retRayList;
 	for (auto& ret : SceneManager::Instance().GetObjList())
@@ -148,10 +148,8 @@ void GameCamera::PostUpdate()
 	if (_hitFlg)
 	{
 		Math::Vector3 _distPos = _hitPos;
-		_distPos += rayInfo.m_dir * 0.4f;
-		Math::Matrix _trans;
-		_trans = Math::Matrix::CreateTranslation(_distPos);
-		m_mWorld = GetRotationMatrix() * _trans;
+		_distPos += _dir * 0.4f;
+		m_mWorld.Translation(_distPos);
 	}
 
 	m_spCamera->SetFocus(8, 5, m_FocusBackRange);
@@ -187,7 +185,7 @@ void GameCamera::UpdateRotateByMouse()
 	m_DegAngList[m_CameraType].y += _mouseMove.x * 0.15f;
 
 	// 回転制御
-	m_DegAngList[m_CameraType].x = std::clamp(m_DegAngList[m_CameraType].x, -20.f, 45.f);
+	m_DegAngList[m_CameraType].x = std::clamp(m_DegAngList[m_CameraType].x, -40.f, 45.f);
 }
 
 void GameCamera::SetDegAngList(Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _clear)
