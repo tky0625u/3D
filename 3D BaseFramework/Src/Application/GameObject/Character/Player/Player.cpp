@@ -695,10 +695,45 @@ void Player::Attack::AttackDirCheck(std::shared_ptr<Player> owner)
 
 		if (m_AttackDir == Math::Vector3::Zero)
 		{
-			//今の方向
-			Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(owner->m_angle.y));
-			Math::Vector3 nowVec = Math::Vector3::TransformNormal(owner->m_forward, nowRot);
-			m_AttackDir = nowVec;
+			KdCollider::SphereInfo sphereInfo;
+			sphereInfo.m_sphere.Center = owner->m_pos;
+			sphereInfo.m_sphere.Radius = 5.0f;
+			sphereInfo.m_type = KdCollider::Type::TypeBump;
+
+			std::list<KdCollider::CollisionResult> retSphereList;
+			for (auto& ret : SceneManager::Instance().GetEnemyList())
+			{
+				ret->Intersects(sphereInfo, &retSphereList);
+			}
+
+			float _maxOverLap     = 0.0f;
+			Math::Vector3 _hitDir = Math::Vector3::Zero;
+			bool _hitFlg          = false;
+
+			for (auto& sphere : retSphereList)
+			{
+				if (_maxOverLap < sphere.m_overlapDistance)
+				{
+					_maxOverLap = sphere.m_overlapDistance;
+					_hitDir     = sphere.m_hitDir;
+					_hitFlg     = true;
+				}
+			}
+
+			if (_hitFlg)
+			{
+				_hitDir.y = 0.0f;
+				_hitDir *= -1.0f;
+				_hitDir.Normalize();
+				m_AttackDir = _hitDir;
+			}
+			else
+			{
+				//今の方向
+				Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(owner->m_angle.y));
+				Math::Vector3 nowVec = Math::Vector3::TransformNormal(owner->m_forward, nowRot);
+				m_AttackDir = nowVec;
+			}
 		}
 		else
 		{
@@ -1082,15 +1117,16 @@ void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shar
 	}
 	else
 	{
-		owner->m_param.Sm -= _damage * 10;
-		owner->m_StaminaRecoveryTime = 60 * 3;
-		if (owner->m_param.Sm < 0)
+		if (owner->m_param.Sm <= 0)
 		{
-			owner->m_param.Sm = 0;
 			StateBase::Damage(owner, _damage, _enemy);
 		}
 		else
 		{
+			owner->m_param.Sm -= _damage * 10;
+			if (owner->m_param.Sm < 0)owner->m_param.Sm = 0;
+			owner->m_StaminaRecoveryTime = 60 * 3;
+
 			// GuardReaction
 			std::shared_ptr<GuardReaction> _reaction = std::make_shared<GuardReaction>();
 			owner->m_NextState = _reaction;
@@ -1130,15 +1166,17 @@ void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shar
 		_bulletDir *= -1.0f;
 		_bulletDir.Normalize();
 		GuardRotate(owner, _bulletDir);
-		owner->m_param.Sm -= _damage * 10;
-		owner->m_StaminaRecoveryTime = 60 * 3;
-		if (owner->m_param.Sm < 0)
+
+		if (owner->m_param.Sm <= 0)
 		{
-			owner->m_param.Sm = 0;
 			StateBase::Damage(owner, _damage, _bullet);
 		}
 		else
 		{
+			owner->m_param.Sm -= _damage * 10;
+			if (owner->m_param.Sm < 0)owner->m_param.Sm = 0;
+			owner->m_StaminaRecoveryTime = 60 * 3;
+
 			// GuardReaction
 			std::shared_ptr<GuardReaction> _reaction = std::make_shared<GuardReaction>();
 			owner->m_NextState = _reaction;
