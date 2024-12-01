@@ -1,6 +1,7 @@
 ﻿#include "Bullet.h"
 #include"../../../../../Scene/SceneManager.h"
 #include"../../../../ObjectManager.h"
+#include"../../../CharacterBase.h"
 #include"../Golem.h"
 #include"../../../Player/Player.h"
 
@@ -67,12 +68,12 @@ void Bullet::PostUpdate()
 		}
 	}
 
-	switch (m_owner)
+	switch (m_owner.lock()->GetObjType())
 	{
 	case KdGameObject::ObjType::oEnemy:
 		if (m_golem.lock()->GetTarget().lock()->Intersects(sphereInfo, nullptr))
 		{
-			m_golem.lock()->GetTarget().lock()->Damage(5, shared_from_this());
+			m_golem.lock()->GetTarget().lock()->Damage(10, shared_from_this());
 			if (m_crush)
 			{
 				KdEffekseerManager::GetInstance().Play("Enemy/Golem/Bullet/Bom.efkefc", m_pos, m_size * 0.5f, 1.0f, false);

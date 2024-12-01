@@ -8,7 +8,103 @@ void EnemyBase::PostUpdate()
 {
 	if (m_camera.lock()->GetState()->GetShakeFlg())return;
 
-	CharacterBase::PostUpdate();
+	KdCollider::RayInfo rayInfo;
+	rayInfo.m_pos = m_pos;
+	float LitleUP = 1.0f;
+	rayInfo.m_pos.y += LitleUP;
+	rayInfo.m_dir = Math::Vector3::Down;
+	rayInfo.m_range = m_gravity + LitleUP;
+	rayInfo.m_type = KdCollider::TypeGround;
+
+	//デバッグ用
+	//Math::Color color = { 1,1,1,1 };
+	//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
+
+	std::list<KdCollider::CollisionResult> retRayList;
+	for (auto& ret : SceneManager::Instance().GetObjList())
+	{
+		ret->Intersects(rayInfo, &retRayList);
+	}
+
+	float _maxOverLap = 0.0f;
+	Math::Vector3 _hitPos = Math::Vector3::Zero;
+	bool _hitFlg = false;
+
+	for (auto& ray : retRayList)
+	{
+		if (_maxOverLap < ray.m_overlapDistance)
+		{
+			_maxOverLap = ray.m_overlapDistance;
+			_hitPos = ray.m_hitPos;
+			_hitFlg = true;
+		}
+	}
+
+	m_groundFlg = false;
+	if (_hitFlg)
+	{
+		m_pos = _hitPos;
+		m_dir.y = 0.0f;
+		m_gravity = 0.0f;
+		m_param.JumpPow = 0.0f;
+		m_groundFlg = true;
+	}
+
+	KdCollider::SphereInfo sphereInfo;
+	Math::Matrix _mat = m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(m_mWorld.Translation()));
+	sphereInfo.m_sphere.Center = _mat.Translation();
+	sphereInfo.m_sphere.Radius = m_HitSphereSize;
+	sphereInfo.m_type = KdCollider::TypeBump;
+
+	//デバッグ用
+	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
+
+	std::list<KdCollider::CollisionResult>retSphereList;
+	for (auto& ret : SceneManager::Instance().GetObjList())
+	{
+		ret->Intersects(sphereInfo, &retSphereList);
+	}
+	for (auto& ret : SceneManager::Instance().GetEnemyList())
+	{
+		if (ret->IsExpired())return;
+		if (m_id == ret->GetID())continue;
+		ret->Intersects(sphereInfo, &retSphereList);
+	}
+	if (m_id != SceneManager::Instance().GetPlayer()->GetID())SceneManager::Instance().GetPlayer()->Intersects(sphereInfo, &retSphereList);
+
+	Math::Vector3 HitDir = Math::Vector3::Zero;
+	float maxOverLap = 0.0f;
+	bool HitFlg = false;
+
+	for (auto& sphere : retSphereList)
+	{
+		if (maxOverLap < sphere.m_overlapDistance)
+		{
+			maxOverLap = sphere.m_overlapDistance;
+			HitDir = sphere.m_hitDir;
+			HitFlg = true;
+		}
+	}
+
+	if (HitFlg == true)
+	{
+		HitDir.y = 0.0f;
+		HitDir.Normalize();
+		m_pos += maxOverLap * HitDir;
+	}
+
+	if (m_camera.lock()->GetState()->GetShakeFlg())return;
+
+	//アニメーションの更新
+	if (m_anime != m_beforeAnime)
+	{
+		m_animator->SetAnimation(m_model->GetData()->GetAnimation(m_anime), m_animeFlg);
+		m_beforeAnime = m_anime;
+	}
+	float _slow = 1.0f;
+	_slow = m_ObjectManager.lock()->GetSlow();
+	m_animator->AdvanceTime(m_model->WorkNodes(), m_animeSpeed * _slow);
+	m_model->CalcNodeMatrices();
 
 	if (m_inviTime > 0)
 	{
@@ -98,7 +194,7 @@ void EnemyBase::StateBase::Damage(std::shared_ptr<EnemyBase> owner, int _damage)
 	if (owner->m_param.Hp <= 0)
 	{
 		owner->m_param.Hp = 0;
-
+		owner->m_ColorLightFlg = false;
 		// Crushing
 		std::shared_ptr<Crushing> _crush = std::make_shared<Crushing>();
 		owner->m_NextState = _crush;
@@ -226,7 +322,7 @@ void EnemyBase::Run::Move(std::shared_ptr<EnemyBase> owner)
 	_moveDir.Normalize();
 	m_moveDir = _moveDir;
 
-	if (dist > owner->m_AtkRange)
+	if (dist > owner->m_param.AtkRange)
 	{
 		if (owner->m_leaveEnemy.expired())EnemyCheck(owner);
 		if (!owner->m_leaveEnemy.expired())Leave(owner);

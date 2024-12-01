@@ -9,8 +9,9 @@ public:
 	Golem() {};
 	~Golem()override {};
 
-	void Action() override;
-	void Init()   override;
+	void Action()    override;
+	void PostUpdate()override;
+	void Init()      override;
 
 	void AttackChange()override;
 	void HitChange()override { return; }

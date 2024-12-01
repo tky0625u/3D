@@ -106,6 +106,20 @@ void ObjectManager::DeleteEnemyList()
 			++enemy;
 		}
 	}
+
+	auto alpha = m_BoneAlphaList.begin();
+
+	while (alpha != m_BoneAlphaList.end())
+	{
+		if (alpha->expired())
+		{
+			alpha = m_BoneAlphaList.erase(alpha);
+		}
+		else
+		{
+			++alpha;
+		}
+	}
 }
 
 void ObjectManager::DeleteObjectList()
@@ -229,6 +243,8 @@ void ObjectManager::CreateStage(std::shared_ptr<StageManager> _stage)
 
 	m_player.lock()->SetPos(m_ground.lock()->GetPos());
 	m_player.lock()->SetTeleportFlg(false);
+
+	m_camera.lock()->SetDegAng(Math::Vector3::Zero);
 }
 
 void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
@@ -598,8 +614,8 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				float size = _player->GetSize();
 				ImGui::SliderFloat("Size", &size, 1, 100);
 				// 攻撃範囲
-				ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _player->GetAtkRange());
-				float range = _player->GetAtkRange();
+				ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _player->GetParam().AtkRange);
+				float range = _player->GetParam().AtkRange;
 				ImGui::SliderFloat("ATKRange", &range, 1, 100);
 				// 前方方向
 				ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _player->GetForward().x, _player->GetForward().y, _player->GetForward().z);
@@ -939,6 +955,10 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					{
 						_boneList.push_back(enemy);
 					}
+					if (enemy.lock()->GetName() == "BoneAlpha")
+					{
+						_alphaList.push_back(enemy);
+					}
 					if (enemy.lock()->GetName() == "Golem")
 					{
 						_golemList.push_back(enemy);
@@ -1041,8 +1061,8 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 						float size = _boneList[operation].lock()->GetSize();
 						ImGui::SliderFloat("Size", &size, 1, 100);
 						// 攻撃範囲
-						ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _boneList[operation].lock()->GetAtkRange());
-						float range = _boneList[operation].lock()->GetAtkRange();
+						ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _boneList[operation].lock()->GetParam().AtkRange);
+						float range = _boneList[operation].lock()->GetParam().AtkRange;
 						ImGui::SliderFloat("ATKRange", &range, 1, 100);
 						// 前方方向
 						ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetForward().x, _boneList[operation].lock()->GetForward().y, _boneList[operation].lock()->GetForward().z);
@@ -1124,8 +1144,8 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 						float size = _alphaList[operation].lock()->GetSize();
 						ImGui::SliderFloat("Size", &size, 1, 100);
 						// 攻撃範囲
-						ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _alphaList[operation].lock()->GetAtkRange());
-						float range = _alphaList[operation].lock()->GetAtkRange();
+						ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _alphaList[operation].lock()->GetParam().AtkRange);
+						float range = _alphaList[operation].lock()->GetParam().AtkRange;
 						ImGui::SliderFloat("ATKRange", &range, 1, 100);
 						// 前方方向
 						ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _alphaList[operation].lock()->GetForward().x, _alphaList[operation].lock()->GetForward().y, _alphaList[operation].lock()->GetForward().z);
@@ -1207,8 +1227,8 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 						float size = _golemList[operation].lock()->GetSize();
 						ImGui::SliderFloat("Size", &size, 0.01, 1.5);
 						// 攻撃範囲
-						ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _golemList[operation].lock()->GetAtkRange());
-						float range = _golemList[operation].lock()->GetAtkRange();
+						ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _golemList[operation].lock()->GetParam().AtkRange);
+						float range = _golemList[operation].lock()->GetParam().AtkRange;
 						ImGui::SliderFloat("ATKRange", &range, 1, 100);
 						// 前方方向
 						ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _golemList[operation].lock()->GetForward().x, _golemList[operation].lock()->GetForward().y, _golemList[operation].lock()->GetForward().z);
@@ -1707,7 +1727,7 @@ void ObjectManager::PlayerWrite(std::string _fileName)
 	_json["Player"]["ATK"] = m_player.lock()->GetParam().Atk;
 	_json["Player"]["Speed"] = m_player.lock()->GetParam().Sp;
 	_json["Player"]["Stamina"] = m_player.lock()->GetParam().Sm;
-	_json["Player"]["ATKRange"] = m_player.lock()->GetAtkRange();
+	_json["Player"]["ATKRange"] = m_player.lock()->GetParam().AtkRange;
 	_json["Player"]["ForwardX"] = m_player.lock()->GetForward().x;
 	_json["Player"]["ForwardY"] = m_player.lock()->GetForward().y;
 	_json["Player"]["ForwardZ"] = m_player.lock()->GetForward().z;
@@ -1867,6 +1887,13 @@ void ObjectManager::EnemyWrite(int _stage, int _wave, std::string _fileName)
 			_name = (std::to_string(b).c_str()) + ((std::string)"Bone");
 			b++;
 		}
+		if (enemy.lock()->GetName() == "BoneAlpha")
+		{
+			static int b = 0;
+			_category = "BoneAlpha";
+			_name = (std::to_string(b).c_str()) + ((std::string)"BoneAlpha");
+			b++;
+		}
 		else if (enemy.lock()->GetName() == "Golem")
 		{
 			static int g = 0;
@@ -1888,7 +1915,7 @@ void ObjectManager::EnemyWrite(int _stage, int _wave, std::string _fileName)
 		_json[wave][_category][_name]["ATK"] = enemy.lock()->GetParam().Atk;
 		_json[wave][_category][_name]["Speed"] = enemy.lock()->GetParam().Sp;
 		_json[wave][_category][_name]["Stamina"] = enemy.lock()->GetParam().Sm;
-		_json[wave][_category][_name]["ATKRange"] = enemy.lock()->GetAtkRange();
+		_json[wave][_category][_name]["ATKRange"] = enemy.lock()->GetParam().AtkRange;
 		_json[wave][_category][_name]["ForwardX"] = enemy.lock()->GetForward().x;
 		_json[wave][_category][_name]["ForwardY"] = enemy.lock()->GetForward().y;
 		_json[wave][_category][_name]["ForwardZ"] = enemy.lock()->GetForward().z;
@@ -3055,9 +3082,10 @@ std::shared_ptr<Bullet> ObjectManager::SetBulletParam()
 	_bullet->Init();
 	_bullet->SetPos(m_golem.lock()->GetBulletPoint().Translation());
 	_bullet->SetGolem(m_golem.lock());
-	_bullet->SetID(m_id);
-	_bullet->SetOwner(m_golem.lock()->GetObjType());
+	_bullet->SetOwner(m_golem.lock());
 	_bullet->SetObjManager(shared_from_this());
+	_bullet->SetName("Bullet");
+	_bullet->SetID(m_id);
 	m_id++;
 	SceneManager::Instance().AddObject(_bullet);
 
@@ -3074,8 +3102,9 @@ void ObjectManager::SetBoneAlphaBulletParam(int id)
 			_alpha = alpha.lock();
 			break;
 		}
-		return;
 	}
+
+	if (!_alpha)return;
 
 	std::shared_ptr<BoneAlpha_Bullet> _bullet = std::make_shared<BoneAlpha_Bullet>();
 	_bullet->Init();
@@ -3083,7 +3112,8 @@ void ObjectManager::SetBoneAlphaBulletParam(int id)
 	Math::Matrix _nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(_alpha->GetAngle().y));
 	Math::Vector3 _nowVec = Math::Vector3::TransformNormal(_alpha->GetForward(), _nowRot);
 	_bullet->SetDir(_nowVec);
-	_bullet->SetOwner(_alpha->GetObjType());
+	_bullet->SetOwner(_alpha);
+	_bullet->SetName("AlphaBullet");
 	_bullet->SetID(m_id);
 	m_id++;
 	SceneManager::Instance().AddObject(_bullet);
@@ -3206,6 +3236,7 @@ void ObjectManager::AddBone()
 {
 	std::string _name = "Bone";
 	Math::Vector3 _pos = Math::Vector3::Zero;
+	_pos.y += m_ground.lock()->GetPos().y;
 	Math::Vector3 _dir = Math::Vector3::Zero;
 	float _size = 1.5f;
 	Math::Vector3 _angle = Math::Vector3::Zero;
@@ -3245,6 +3276,7 @@ void ObjectManager::AddBoneAlpha()
 {
 	std::string _name = "BoneAlpha";
 	Math::Vector3 _pos = Math::Vector3::Zero;
+	_pos.y += m_ground.lock()->GetPos().y;
 	Math::Vector3 _dir = Math::Vector3::Zero;
 	float _size = 1.5f;
 	Math::Vector3 _angle = Math::Vector3::Zero;
@@ -3286,6 +3318,7 @@ void ObjectManager::AddGolem()
 
 	std::string _name = "Golem";
 	Math::Vector3 _pos = Math::Vector3::Zero;
+	_pos.y += m_ground.lock()->GetPos().y;
 	Math::Vector3 _dir = Math::Vector3::Zero;
 	float _size = 1.0f;
 	Math::Vector3 _angle = Math::Vector3::Zero;

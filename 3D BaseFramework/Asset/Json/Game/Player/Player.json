@@ -9,7 +9,7 @@
 		"ForwardX": 0.0,
 		"ForwardY": 0.0,
 		"ForwardZ": 1.0,
-		"HP": 1,
+		"HP": 100,
 		"InviTime": 20,
 		"Name": "Player",
 		"PosX": 1.0,
@@ -18,7 +18,7 @@
 		"ShieldName": "Shield",
 		"Size": 1.0,
 		"Speed": 1.5,
-		"Stamina": 100,
+		"Stamina": 250,
 		"SwordName": "Sword"
 	}
 }

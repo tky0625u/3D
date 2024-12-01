@@ -65,27 +65,17 @@ void GameCamera::PostUpdate()
 	if (showFlg)return;
 	if (!m_spCamera) { return; }
 
+	// ステート切替
 	if (m_NextState)
 	{
 		m_state = m_NextState;
 		m_NextState.reset();
 	}
 
-	switch (m_flow)
-	{
-	case Flow::EnterType:
-		m_state->Enter(shared_from_this());
-		break;
-	case Flow::UpdateType:
-		m_state->Update(shared_from_this());
-		break;
-	case Flow::ExitType:
-		m_state->Exit(shared_from_this());
-		break;
-	default:
-		break;
-	}
+	m_state->StateUpdate(shared_from_this()); // ステート更新
 
+	// パリィ時
+	// 視野角の拡縮
 	if (m_ObjectManager.lock()->GetSlowFlg())
 	{
 		if (m_FocusBackRange != 10.0f)m_FocusBackRange = 10.0f;
@@ -113,44 +103,7 @@ void GameCamera::PostUpdate()
 		}
 	}
 
-	KdCollider::RayInfo rayInfo;
-	rayInfo.m_pos = m_mWorld.Translation();
-	Math::Vector3 _dir = m_wpTarget.lock()->GetCameraPointMat().Translation() - m_mWorld.Translation();
-	_dir.Normalize();
-	rayInfo.m_dir = _dir;
-	rayInfo.m_range = (m_wpTarget.lock()->GetCameraPointMat().Translation() - m_mWorld.Translation()).Length();
-	rayInfo.m_type = KdCollider::TypeBump | KdCollider::TypeGround;
-
-	//デバッグ用
-	//Math::Color color = { 1,1,1,1 };
-	//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
-
-	std::list<KdCollider::CollisionResult> retRayList;
-	for (auto& ret : SceneManager::Instance().GetObjList())
-	{
-		ret->Intersects(rayInfo, &retRayList);
-	}
-
-	float _maxOverLap = -0.1f;
-	Math::Vector3 _hitPos = Math::Vector3::Zero;
-	bool _hitFlg = false;
-
-	for (auto& ray : retRayList)
-	{
-		if (_maxOverLap < ray.m_overlapDistance)
-		{
-			_maxOverLap = ray.m_overlapDistance;
-			_hitPos = ray.m_hitPos;
-			_hitFlg = true;
-		}
-	}
-
-	if (_hitFlg)
-	{
-		Math::Vector3 _distPos = _hitPos;
-		_distPos += _dir * 0.4f;
-		m_mWorld.Translation(_distPos);
-	}
+	HitCheck(); //当たり判定
 
 	m_spCamera->SetFocus(8, 5, m_FocusBackRange);
 
@@ -163,6 +116,7 @@ void GameCamera::Init()
 {
 	CameraBase::Init();
 
+	// ステート設定
 	std::shared_ptr<PlayerCamera> _player = std::make_shared<PlayerCamera>();
 	m_state = _player;
 
@@ -186,6 +140,49 @@ void GameCamera::UpdateRotateByMouse()
 
 	// 回転制御
 	m_DegAngList[m_CameraType].x = std::clamp(m_DegAngList[m_CameraType].x, -40.f, 45.f);
+}
+
+void GameCamera::HitCheck()
+{
+	KdCollider::RayInfo rayInfo;
+	rayInfo.m_pos = m_mWorld.Translation();
+	Math::Vector3 _dir = m_wpTarget.lock()->GetCameraPointMat().Translation() - m_mWorld.Translation();
+	_dir.Normalize();
+	rayInfo.m_dir = _dir;
+	rayInfo.m_range = (m_wpTarget.lock()->GetCameraPointMat().Translation() - m_mWorld.Translation()).Length();
+	rayInfo.m_type = KdCollider::TypeBump | KdCollider::TypeGround;
+
+	//デバッグ用
+	//Math::Color color = { 1,1,1,1 };
+	//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
+
+	// 当たり判定
+	std::list<KdCollider::CollisionResult> retRayList;
+	for (auto& ret : SceneManager::Instance().GetObjList())
+	{
+		ret->Intersects(rayInfo, &retRayList);
+	}
+
+	float _maxOverLap = -0.1f;
+	Math::Vector3 _hitPos = Math::Vector3::Zero;
+	bool _hitFlg = false;
+
+	for (auto& ray : retRayList)
+	{
+		if (_maxOverLap < ray.m_overlapDistance)
+		{
+			_maxOverLap = ray.m_overlapDistance;
+			_hitPos = ray.m_hitPos;
+			_hitFlg = true;
+		}
+	}
+
+	if (_hitFlg)
+	{
+		Math::Vector3 _distPos = _hitPos;
+		_distPos += _dir * 0.4f; //当たった位置より少し前に設定　※カメラを埋まらなくするため
+		m_mWorld.Translation(_distPos);
+	}
 }
 
 void GameCamera::SetDegAngList(Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _clear)

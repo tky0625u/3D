@@ -18,6 +18,8 @@ void BoneAlpha_Bullet::Update()
 	Math::Matrix _scale = Math::Matrix::CreateScale(m_size);
 	Math::Matrix _trans = Math::Matrix::CreateTranslation(m_pos);
 	m_mWorld = _scale * _trans;
+
+	KdShaderManager::Instance().WorkAmbientController().AddPointLight(Math::Vector3{ 5.0f,5.0f,5.0f }, 5.0f * m_size, m_pos, true);
 }
 
 void BoneAlpha_Bullet::PostUpdate()
@@ -37,12 +39,13 @@ void BoneAlpha_Bullet::PostUpdate()
 
 		if (ret->Intersects(sphereInfo, nullptr))
 		{
+			KdEffekseerManager::GetInstance().Play("Enemy/BoneAlpha/Bullet/BulletCrush.efkefc", m_pos, m_size * 0.5f, 1.0f, false);
 			Expired();
 			return;
 		}
 	}
 
-	switch (m_owner)
+	switch (m_owner.lock()->GetObjType())
 	{
 	case KdGameObject::ObjType::oEnemy:
 		if (SceneManager::Instance().GetPlayer()->Intersects(sphereInfo, nullptr))
@@ -50,6 +53,7 @@ void BoneAlpha_Bullet::PostUpdate()
 			SceneManager::Instance().GetPlayer()->Damage(5, shared_from_this());
 			if (m_crush)
 			{
+				KdEffekseerManager::GetInstance().Play("Enemy/BoneAlpha/Bullet/BulletCrush.efkefc", m_pos, m_size * 0.5f, 1.0f, false);
 				Expired();
 			}
 			return;
@@ -60,6 +64,7 @@ void BoneAlpha_Bullet::PostUpdate()
 		{
 			if (ret->Intersects(sphereInfo, nullptr))
 			{
+				KdEffekseerManager::GetInstance().Play("Enemy/BoneAlpha/Bullet/BulletCrush.efkefc", m_pos, m_size * 0.5f, 1.0f, false);
 				ret->Damage(5);
 				Expired();
 			}

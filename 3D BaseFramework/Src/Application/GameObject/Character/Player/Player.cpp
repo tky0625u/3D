@@ -11,7 +11,7 @@
 
 void Player::Update()
 {
-	if (m_TeleportFlg)
+	if (m_TeleportFlg && m_actionType != Action::TeleportType)
 	{
 		if (GetAsyncKeyState('E') & 0x8000)m_ObjectManager.lock()->NextTeleport();
 	}
@@ -449,7 +449,7 @@ void Player::Run::Update(std::shared_ptr<Player> owner)
 {
 	if (!owner->IsAnimCheck("Run"))
 	{
-		owner->SetAnime("Run", true, 1.0f);
+		owner->SetAnime("Run", true, 1.5f);
 		return;
 	}
 
@@ -590,7 +590,7 @@ void Player::Attack::Update(std::shared_ptr<Player> owner)
 	case 2:
 		if (!owner->IsAnimCheck("Attack2"))
 		{
-			owner->SetAnime("Attack2", false, 2.5f);
+			owner->SetAnime("Attack2", false, 1.5f);
 			return;
 		}
 		break;
@@ -652,7 +652,7 @@ void Player::Attack::Attack1(std::shared_ptr<Player> owner)
 {
 	owner->SetMove(m_AttackDir, 0.5f);
 
-	if (m_ActionFPS >= 20 && m_ActionFPS <= 30)AttackHit(owner);
+	if (m_ActionFPS >= 15 && m_ActionFPS <= 30)AttackHit(owner);
 }
 
 void Player::Attack::Attack2(std::shared_ptr<Player> owner)
@@ -676,73 +676,38 @@ void Player::Attack::AttackDirCheck(std::shared_ptr<Player> owner)
 
 	if (!owner->m_LockONFlg)
 	{
-		float Dist = 0.0f;
-		bool HitFlg = false;
-		int listNum = 0;
-
-		for (int e = 0; e < SceneManager::Instance().GetEnemyList().size(); ++e)
+		if (GetAsyncKeyState('W') & 0x8000)
 		{
-			if (SceneManager::Instance().GetEnemyList()[e]->GetParam().Hp > 0)
-			{
-				if (!HitFlg)
-				{
-					float d = (SceneManager::Instance().GetEnemyList()[e]->GetPos() - owner->m_pos).Length();
-					Dist = d;
-					HitFlg = true;
-					listNum = e;
-				}
-				else
-				{
-					float d = (SceneManager::Instance().GetEnemyList()[e]->GetPos() - owner->m_pos).Length();
-					if (d < Dist)
-					{
-						Dist = d;
-						listNum = e;
-					}
-				}
-			}
+			m_AttackDir.z = 1.0f;
+		}
+		if (GetAsyncKeyState('S') & 0x8000)
+		{
+			m_AttackDir.z = -1.0f;
+		}
+		if (GetAsyncKeyState('A') & 0x8000)
+		{
+			m_AttackDir.x = -1.0f;
+		}
+		if (GetAsyncKeyState('D') & 0x8000)
+		{
+			m_AttackDir.x = 1.0f;
 		}
 
-		if (HitFlg)
+		if (m_AttackDir == Math::Vector3::Zero)
 		{
-			m_AttackDir = SceneManager::Instance().GetEnemyList()[listNum]->GetPos() - owner->m_pos;
-			m_AttackDir.y = 0.0f;
+			//今の方向
+			Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(owner->m_angle.y));
+			Math::Vector3 nowVec = Math::Vector3::TransformNormal(owner->m_forward, nowRot);
+			m_AttackDir = nowVec;
 		}
 		else
 		{
-			if (GetAsyncKeyState('W') & 0x8000)
+			Math::Matrix cameraRotYMat = Math::Matrix::Identity;
+			if (owner->m_camera.expired() == false)
 			{
-				m_AttackDir.z = 1.0f;
+				cameraRotYMat = owner->m_camera.lock()->GetRotationYMatrix();
 			}
-			if (GetAsyncKeyState('S') & 0x8000)
-			{
-				m_AttackDir.z = -1.0f;
-			}
-			if (GetAsyncKeyState('A') & 0x8000)
-			{
-				m_AttackDir.x = -1.0f;
-			}
-			if (GetAsyncKeyState('D') & 0x8000)
-			{
-				m_AttackDir.x = 1.0f;
-			}
-
-			if (m_AttackDir == Math::Vector3::Zero)
-			{
-				//今の方向
-				Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(owner->m_angle.y));
-				Math::Vector3 nowVec = Math::Vector3::TransformNormal(owner->m_forward, nowRot);
-				m_AttackDir = nowVec;
-			}
-			else
-			{
-				Math::Matrix cameraRotYMat = Math::Matrix::Identity;
-				if (owner->m_camera.expired() == false)
-				{
-					cameraRotYMat = owner->m_camera.lock()->GetRotationYMatrix();
-				}
-				m_AttackDir = m_AttackDir.TransformNormal(m_AttackDir, cameraRotYMat);
-			}
+			m_AttackDir = m_AttackDir.TransformNormal(m_AttackDir, cameraRotYMat);
 		}
 	}
 	else
@@ -832,7 +797,7 @@ void Player::Counter::Update(std::shared_ptr<Player> owner)
 		owner->GetSword().lock()->SetTrajectMat();
 	}
 	
-	if (m_ActionFPS <= 14)AttackHit(owner);
+	if (40 <= m_ActionFPS && m_ActionFPS <= 66)AttackHit(owner);
 
 	m_ActionFPS++;
 }
@@ -844,46 +809,62 @@ void Player::Counter::Exit(std::shared_ptr<Player> owner)
 
 void Player::Counter::ChangeState(std::shared_ptr<Player> owner)
 {
-	if (owner->m_keyType & Player::KeyType::MoveKey)
-	{
-		owner->m_ParryID = -1;
 
-		std::shared_ptr<Run> _run = std::make_shared<Run>();
-		owner->m_NextState = _run;
-		owner->m_NextActionType = Player::Action::RunType;
-		owner->m_flow = CharacterBase::Flow::EnterType;
-		return;
+}
+void Player::Counter::AttackHit(std::shared_ptr<Player> owner)
+{
+	std::vector<KdCollider::SphereInfo> sphereInfoList;
+	KdCollider::SphereInfo sphereInfo;
+
+	if (owner->GetSword().expired() == false)
+	{
+		sphereInfo.m_sphere.Center = owner->GetSword().lock()->GetModelTop().Translation();
+		sphereInfoList.push_back(sphereInfo);
+
+		sphereInfo.m_sphere.Center = owner->GetSword().lock()->GetModelCenter().Translation();
+		sphereInfoList.push_back(sphereInfo);
+
+		sphereInfo.m_sphere.Center = owner->GetSword().lock()->GetModelBottom().Translation();
+		sphereInfoList.push_back(sphereInfo);
 	}
-	else if (owner->m_keyType & Player::KeyType::AttackKey && !(owner->m_BeforeKeyType & Player::KeyType::AttackKey))
+	else
 	{
-		owner->m_ParryID = -1;
-
-		std::shared_ptr<Attack> _attack = std::make_shared<Attack>();
-		owner->m_NextState = _attack;
-		owner->m_NextActionType = Player::Action::AttackType;
-		owner->m_flow = CharacterBase::Flow::EnterType;
-		return;
+		sphereInfo.m_sphere.Center = owner->GetSwordMat().Translation();
+		sphereInfoList.push_back(sphereInfo);
 	}
-	else if (owner->m_keyType & Player::KeyType::GuardKey)
-	{
-		owner->m_ParryID = -1;
 
-		std::shared_ptr<Guard> _guard = std::make_shared<Guard>();
-		owner->m_NextState = _guard;
-		owner->m_NextActionType = Player::Action::GuardType;
-		owner->m_flow = CharacterBase::Flow::EnterType;
-		return;
+	for (int i = 0; i < sphereInfoList.size(); ++i)
+	{
+		sphereInfoList[i].m_sphere.Radius = 0.8f;
+		sphereInfoList[i].m_type = KdCollider::TypeDamage;
 	}
-	else if (owner->m_keyType & Player::KeyType::RollKey && !(owner->m_BeforeKeyType & Player::KeyType::RollKey))
-	{
-		if (owner->m_param.Sm <= 0)return;
-		owner->m_ParryID = -1;
 
-		std::shared_ptr<Roll> _roll = std::make_shared<Roll>();
-		owner->m_NextState = _roll;
-		owner->m_NextActionType = Player::Action::RollType;
-		owner->m_flow = CharacterBase::Flow::EnterType;
-		return;
+	std::list<KdCollider::CollisionResult> retSphereList;
+	std::shared_ptr<EnemyBase> hitEnemy;
+
+	for (auto& sphere : SceneManager::Instance().GetEnemyList())
+	{
+		if (owner->m_ParryID != -1 && sphere->GetID() != owner->m_ParryID)continue;
+
+		for (int i = 0; i < sphereInfoList.size(); ++i)
+		{
+			if (sphere->Intersects(sphereInfoList[i], &retSphereList))
+			{
+				hitEnemy = sphere;
+			}
+		}
+	}
+
+	for (auto& ret : retSphereList)
+	{
+		if (hitEnemy->GetParam().Hp > 0 && hitEnemy->GetActionType() != EnemyBase::Action::AppealType && hitEnemy->GetinviTime() == 0)
+		{
+			owner->m_camera.lock()->GetState()->SetShakeFlg(true);
+			hitEnemy->Damage(owner->m_param.Atk * 5);
+			hitEnemy->SetInviTime(owner->m_inviTime);
+			m_handle = KdEffekseerManager::GetInstance().Play("Player/CounterHit.efkefc", ret.m_hitPos, 1.0f, 0.8f, false).lock()->GetHandle();
+			KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/刀で斬る2.WAV", 0.05f, false);
+		}
 	}
 }
 //=================================================================================================
@@ -915,7 +896,7 @@ void Player::Roll::Enter(std::shared_ptr<Player> owner)
 		owner->Rotate(dir, 360.0f);
 	}
 
-	owner->m_param.Sm -= 5;
+	owner->m_param.Sm -= 5 * 10;
 	owner->m_StaminaRecoveryTime = 60 * 3;
 	if (owner->m_param.Sm <= 0)owner->m_param.Sm = 0;
 	owner->m_flow = Player::Flow::UpdateType;
@@ -1087,6 +1068,8 @@ void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shar
 
 	if (m_guardTime <= 10)
 	{
+		if (owner->m_ObjectManager.lock()->GetSlowFlg())return;
+
 		owner->m_ObjectManager.lock()->SlowChange();
 		// Parry
 		std::shared_ptr<Parry> _parry = std::make_shared<Parry>();
@@ -1099,7 +1082,7 @@ void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shar
 	}
 	else
 	{
-		owner->m_param.Sm -= _damage;
+		owner->m_param.Sm -= _damage * 10;
 		owner->m_StaminaRecoveryTime = 60 * 3;
 		if (owner->m_param.Sm < 0)
 		{
@@ -1121,6 +1104,13 @@ void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shar
 {
 	if (m_guardTime <= 10)
 	{
+		if (owner->m_ObjectManager.lock()->GetSlowFlg())return;
+
+		Math::Vector3 toVec = _bullet->GetOwner().lock()->GetPos() - owner->m_pos;
+		toVec.y = 0.0f;
+		toVec.Normalize();
+		GuardRotate(owner, toVec);
+
 		owner->m_ObjectManager.lock()->SlowChange();
 		// Parry
 		std::shared_ptr<Parry> _parry = std::make_shared<Parry>();
@@ -1131,7 +1121,7 @@ void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shar
 		Math::Matrix RotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(owner->m_angle.y));
 		Math::Vector3 _dir = Math::Vector3::TransformNormal(owner->m_forward, RotY);
 		_bullet->SetDir(_dir);
-		_bullet->SetOwner(owner->m_ObjType);
+		_bullet->SetOwner(owner);
 	}
 	else
 	{
@@ -1140,7 +1130,7 @@ void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shar
 		_bulletDir *= -1.0f;
 		_bulletDir.Normalize();
 		GuardRotate(owner, _bulletDir);
-		owner->m_param.Sm -= _damage;
+		owner->m_param.Sm -= _damage * 10;
 		owner->m_StaminaRecoveryTime = 60 * 3;
 		if (owner->m_param.Sm < 0)
 		{
@@ -1344,7 +1334,7 @@ void Player::Crushing::Update(std::shared_ptr<Player> owner)
 		return;
 	}
 
-	if (owner->GetIsAnimator())
+	if (owner->GetDissolve() == 1.0f)
 	{
 		owner->Expired();
 		return;
@@ -1390,7 +1380,7 @@ void Player::Teleport::Update(std::shared_ptr<Player> owner)
 		m_handle = KdEffekseerManager::GetInstance().Play("Player/LightEnd.efkefc", owner->m_pos, owner->m_size, 1.0f, false).lock()->GetHandle();
 	}
 
-	if (!KdEffekseerManager::GetInstance().IsPlaying(m_handle))SceneManager::Instance().BlackAlphaChange(0.01f, true);
+	if (m_ActionFPS >= 38 && !KdEffekseerManager::GetInstance().IsPlaying(m_handle))SceneManager::Instance().BlackAlphaChange(0.01f, true);
 
 	m_ActionFPS++;
 }

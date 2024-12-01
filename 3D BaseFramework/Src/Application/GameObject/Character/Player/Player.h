@@ -99,7 +99,7 @@ private:
 		virtual void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr);   // 直接攻撃による被弾
 		virtual void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr); // 遠距離攻撃による被弾
 
-		void AttackHit(std::shared_ptr<Player> owner);
+		virtual void AttackHit(std::shared_ptr<Player> owner);
 
 	protected:
 		float m_ActionFPS = 0.0f;
@@ -177,8 +177,10 @@ private:
 		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override { return; } // 直接攻撃による被弾
 		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override { return; } // 遠距離攻撃による被弾
 
-	private:
+		void AttackHit(std::shared_ptr<Player> owner);
 
+	private:
+		Effekseer::Handle m_handle;
 	};
 
 	class Roll :public StateBase

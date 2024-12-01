@@ -32,7 +32,7 @@ void CharacterBase::Update()
 		m_gravity += m_gravityPow * _slow;
 		float Move = m_MoveSpeed * m_SpeedCorrection * _slow;
 		m_pos += Move * m_dir; //座標更新
-		m_pos.y += m_JumpPow - m_gravity;
+		m_pos.y += m_param.JumpPow - m_gravity;
 	}
 
 	//ワールド行列更新
@@ -83,13 +83,13 @@ void CharacterBase::PostUpdate()
 		m_pos = _hitPos;
 		m_dir.y = 0.0f;
 		m_gravity = 0.0f;
-		m_JumpPow = 0.0f;
+		m_param.JumpPow = 0.0f;
 	}
 
 	KdCollider::SphereInfo sphereInfo;
 	Math::Matrix _mat = m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(m_mWorld.Translation()));
 	sphereInfo.m_sphere.Center = _mat.Translation();
-	sphereInfo.m_sphere.Radius = 2.0f;
+	sphereInfo.m_sphere.Radius = m_HitSphereSize;
 	sphereInfo.m_type = KdCollider::TypeBump;
 
 	//デバッグ用

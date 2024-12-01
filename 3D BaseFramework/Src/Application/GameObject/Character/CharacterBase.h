@@ -34,14 +34,13 @@ public:
 
 	 struct Param
 	{
-		 // ステータス画面に表示させるパラメータ群
 		 int   Hp  = 1; //体力
 		 int   Atk = 1; //攻撃力
 		 float Sp  = 1; //素早さ
 		 int   Sm  = 1; //スタミナ
 
-		 // ステータス画面に表示させない内部パラメータ群
-
+		 float JumpPow = 0.0f;
+		 float AtkRange = 0.0f; //攻撃範囲
 	};
 
 	CharacterBase()                                   { Init(); }
@@ -63,7 +62,7 @@ public:
 	void SetParam(int _hp, int _atk, float _speed, int _stamina);
 	void SetStamina(int _stamina) { m_param.Sm = _stamina; }
 	void SetATK(int _atk) { m_param.Atk = _atk; }
-	void SetAtkRange(float _atkRange) { m_AtkRange = _atkRange; }
+	void SetAtkRange(float _atkRange) { m_param.AtkRange = _atkRange; }
 	void SetForward(Math::Vector3 _forward) { m_forward = _forward; }
 	void SetDir(Math::Vector3 _dir) { m_dir = _dir; }
 	void SetAnime(std::string animeName, bool animeFlg, float animeSpeed) {
@@ -76,11 +75,12 @@ public:
 		m_dir = dir;
 		m_MoveSpeed = _moveSpeed;
 	}
-	void SetJumpPow(float _jumpPow) { m_JumpPow = _jumpPow; }
+	void SetJumpPow(float _jumpPow) { m_param.JumpPow = _jumpPow; }
 	void SetSword(std::shared_ptr<Sword> _sword) { m_sword = _sword; }
 	void SetInviTime(int _inviTime) { m_inviTime = _inviTime; }
 	void SetCamera(std::shared_ptr<GameCamera> a_camera) { m_camera = a_camera; }
 	void SetModel(std::shared_ptr<KdModelWork> _model) { m_model = _model; }
+	void SetHitSphereSize(float _size) { m_HitSphereSize = _size; }
 
 	Param GetParam() { return m_param; }
 	bool GetIsAnimator() { return m_animator->IsAnimationEnd(); }
@@ -91,7 +91,6 @@ public:
 	int GetinviTime()const { return m_inviTime; }
 	const Math::Vector3 GetDir() const { return m_dir; }
 	const Math::Vector3 GetForward() const { return m_forward; }
-	const float GetAtkRange() const { return m_AtkRange; }
 	const Math::Matrix& GetHitModelMat()const { return m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(m_mWorld.Translation()));}
 	const std::weak_ptr<GameCamera>& GetCamera()const { return m_camera; }
 	const float& GetDissolve()const { return m_dissolve; }
@@ -114,13 +113,12 @@ protected:
 	std::unordered_map<std::string, std::shared_ptr<ActionBase>> m_actionList;
 	int                          m_inviTime        = 0;
 	float                        m_gravity         = 0.0f;
-	float                        m_animeSpeed      = 1.0f;
-	float                        m_MoveSpeed       = 0.0f;
-	float                        m_JumpPow         = 0.0f;
-	float                        m_dissolve        = 0.0f;
-	float                        m_AtkRange        = 0.0f; //攻撃範囲
-	const float                  m_SpeedCorrection = 0.2f;
 	const float                  m_gravityPow      = 0.1f;
+	float                        m_animeSpeed      = 1.0f;
+	float                        m_dissolve        = 0.0f;
+	const float                  m_SpeedCorrection = 0.2f;
+	float                        m_MoveSpeed       = 0.0f;
+	float                        m_HitSphereSize   = 2.0f;
 	bool                         m_atkFlg          = false;
 	bool                         m_animeFlg        = true;
 };

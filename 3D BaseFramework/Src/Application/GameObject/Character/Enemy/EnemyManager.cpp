@@ -61,7 +61,7 @@ void EnemyManager::EnemyRun()
 			rayInfo.m_pos = enemy->GetPos();
 			rayInfo.m_pos.y = (enemy->GetTarget().lock()->GetEnemyAttackPointMat().Translation().y);
 			rayInfo.m_dir = nowVec;
-			rayInfo.m_range = enemy->GetAtkRange();
+			rayInfo.m_range = enemy->GetParam().AtkRange;
 			rayInfo.m_type = KdCollider::Type::TypeBump;
 
 			std::list<KdCollider::CollisionResult> _List;
@@ -97,7 +97,7 @@ void EnemyManager::EnemyRun()
 			Math::Vector3 _enemyPos = enemy->GetPos();
 			_enemyPos.y = 0.0f;
 			float _dist = (_playerPos - _enemyPos).Length();
-			if (_dist > enemy->GetAtkRange())
+			if (_dist > enemy->GetParam().AtkRange)
 			{
 				if (enemy->GetActionType() != EnemyBase::Action::RunType)enemy->RunChange();
 				continue;
@@ -152,7 +152,7 @@ void EnemyManager::EnemyRun()
 			Math::Vector3 _enemyPos = enemy->GetPos();
 			_enemyPos.y = 0.0f;
 			float _dist = (_playerPos - _enemyPos).Length();
-			if (_dist <= enemy->GetAtkRange())
+			if (_dist <= enemy->GetParam().AtkRange)
 			{
 				enemy->IdolChange();
 

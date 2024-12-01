@@ -33,7 +33,7 @@ void GameScene::Event()
 		break;
 	}
 
-	KdShaderManager::Instance().WorkAmbientController().SetDirLight(Math::Vector3{ 0.5f,-1.0f,0.5f }, Math::Vector3{ 1.5f,1.5f,1.3f });
+	KdShaderManager::Instance().WorkAmbientController().SetDirLight(Math::Vector3{ 0.5f,-1.0f,0.5f }, Math::Vector3{ 1.0f,1.0,0.8f });
 }
 
 void GameScene::Update()

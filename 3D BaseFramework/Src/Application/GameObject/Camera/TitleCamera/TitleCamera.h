@@ -11,7 +11,7 @@ public:
 	void Init()      override;
 
 	void SetDegAng(Math::Vector3 _deg) { m_DegAng = _deg; }
-	void SetPos(Math::Vector3 _pos) { m_pos = _pos; }
+	void SetPos(Math::Vector3 _pos)    { m_pos = _pos; }
 
 	const Math::Vector3 GetDegAng()const { return m_DegAng; }
 

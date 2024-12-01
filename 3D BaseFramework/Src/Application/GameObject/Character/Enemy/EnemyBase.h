@@ -70,15 +70,16 @@ public:
 	Math::Matrix GetAttackStartPointMat()const { return m_model->FindWorkNode("AttackStartPoint")->m_worldTransform * m_mWorld; }
 	Math::Matrix GetLockPointMat()const { return m_model->FindWorkNode("LockONPoint")->m_worldTransform * m_mWorld; }
 	UINT GetActionType()const { return m_actionType; }
-	const bool& GetLockONFlg()const { return m_LockONFlg; }
+	const bool GetLockONFlg()const { return m_LockONFlg; }
 	const float& GetAppealEffectSize()const { return m_AppealEffectSize; }
-
+	const bool GetGroundFlg()const { return m_groundFlg; }
 protected:
 	std::weak_ptr<Player>              m_Target;
 	std::weak_ptr<KdEffekseerObject>   m_Effect;
 	std::weak_ptr<EnemyBase>           m_leaveEnemy;
-	bool                               m_LockONFlg = false;
+	bool                               m_LockONFlg     = false;
 	bool                               m_ColorLightFlg = false;
+	bool                               m_groundFlg     = true;
 
 protected:
 	class StateBase

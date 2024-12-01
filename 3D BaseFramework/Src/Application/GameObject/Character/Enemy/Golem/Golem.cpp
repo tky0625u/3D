@@ -1,6 +1,8 @@
 ﻿#include "Golem.h"
+#include"../../../../Scene/SceneManager.h"
 #include"../EnemyBase.h"
 #include"../../Player/Player.h"
+#include"../../../Camera/GameCamera/GameCamera.h"
 #include"../../../ObjectManager.h"
 #include"Bullet/Bullet.h"
 
@@ -13,6 +15,148 @@ void Golem::Action()
 		m_NextState.reset();
 	}
 	m_state->StateUpdate(shared_from_this());
+}
+
+void Golem::PostUpdate()
+{
+	if (m_camera.lock()->GetState()->GetShakeFlg())return;
+
+	KdCollider::RayInfo rayInfo;
+	rayInfo.m_pos = m_pos;
+	float LitleUP = 1.0f;
+	rayInfo.m_pos.y += LitleUP;
+	rayInfo.m_dir = Math::Vector3::Down;
+	rayInfo.m_range = m_gravity + LitleUP;
+	rayInfo.m_type = KdCollider::TypeGround;
+
+	//デバッグ用
+	//Math::Color color = { 1,1,1,1 };
+	//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
+
+	std::list<KdCollider::CollisionResult> retRayList;
+	for (auto& ret : SceneManager::Instance().GetObjList())
+	{
+		ret->Intersects(rayInfo, &retRayList);
+	}
+
+	float _maxOverLap = 0.0f;
+	Math::Vector3 _hitPos = Math::Vector3::Zero;
+	bool _hitFlg = false;
+
+	for (auto& ray : retRayList)
+	{
+		if (_maxOverLap < ray.m_overlapDistance)
+		{
+			_maxOverLap = ray.m_overlapDistance;
+			_hitPos = ray.m_hitPos;
+			_hitFlg = true;
+		}
+	}
+
+	m_groundFlg = false;
+	if (_hitFlg)
+	{
+		m_pos = _hitPos;
+		m_dir.y = 0.0f;
+		m_gravity = 0.0f;
+		m_param.JumpPow = 0.0f;
+		m_groundFlg = true;
+	}
+
+	KdCollider::SphereInfo sphereInfo;
+	Math::Matrix _mat = m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(m_mWorld.Translation()));
+	sphereInfo.m_sphere.Center = _mat.Translation();
+	sphereInfo.m_sphere.Radius = m_HitSphereSize;
+	sphereInfo.m_type = KdCollider::TypeBump;
+
+	//デバッグ用
+	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
+
+	std::list<KdCollider::CollisionResult>retSphereList;
+	std::vector<std::shared_ptr<KdGameObject>>SphereList;
+	for (auto& ret : SceneManager::Instance().GetObjList())
+	{
+		if (ret->GetName() == "Bullet")continue;
+
+		if (ret->Intersects(sphereInfo, &retSphereList))SphereList.push_back(ret);
+	}
+	for (auto& ret : SceneManager::Instance().GetEnemyList())
+	{
+		if (ret->IsExpired())return;
+		if (m_id == ret->GetID())continue;
+		if (ret->Intersects(sphereInfo, &retSphereList))SphereList.push_back(ret);
+	}
+	if (m_id != SceneManager::Instance().GetPlayer()->GetID())
+	{
+		if (SceneManager::Instance().GetPlayer()->Intersects(sphereInfo, &retSphereList))
+		{
+			SphereList.push_back(SceneManager::Instance().GetPlayer());
+		}
+	}
+
+	Math::Vector3 HitDir = Math::Vector3::Zero;
+	float maxOverLap = 0.0f;
+	bool HitFlg = false;
+	std::shared_ptr<KdGameObject> HitObj = nullptr;
+	int listNum = 0;
+	for (auto& sphere : retSphereList)
+	{
+		if (maxOverLap < sphere.m_overlapDistance)
+		{
+			maxOverLap = sphere.m_overlapDistance;
+			HitDir = sphere.m_hitDir;
+			HitObj = SphereList[listNum];
+			HitFlg = true;
+		}
+		listNum++;
+	}
+
+	if (HitFlg == true)
+	{
+		HitDir.y = 0.0f;
+		HitDir.Normalize();
+		if (HitObj->GetObjType() == KdGameObject::ObjType::oObject)
+		{
+			m_pos += maxOverLap * HitDir;
+		}
+		else
+		{
+			Math::Vector3 _pos = HitObj->GetPos();
+			HitDir *= -1.0f;
+			_pos += maxOverLap * HitDir;
+			HitObj->SetPos(_pos);
+		}
+	}
+
+	if (m_camera.lock()->GetState()->GetShakeFlg())return;
+
+	//アニメーションの更新
+	if (m_anime != m_beforeAnime)
+	{
+		m_animator->SetAnimation(m_model->GetData()->GetAnimation(m_anime), m_animeFlg);
+		m_beforeAnime = m_anime;
+	}
+	float _slow = 1.0f;
+	_slow = m_ObjectManager.lock()->GetSlow();
+	m_animator->AdvanceTime(m_model->WorkNodes(), m_animeSpeed * _slow);
+	m_model->CalcNodeMatrices();
+
+	if (m_inviTime > 0)
+	{
+		m_inviTime--;
+	}
+
+	// デバッグ
+	if (GetAsyncKeyState('P') & 0x8000)
+	{
+		m_param.Hp = 0;
+		std::shared_ptr<Crushing> _crush = std::make_shared<Crushing>();
+		m_NextState = _crush;
+		m_NextActionType = CharacterBase::Action::CrushingType;
+		m_flow = Flow::UpdateType;
+		return;
+	}
+	KdShaderManager::Instance().WriteCBColorEnable(m_ColorLightFlg);
 }
 
 void Golem::Init()
@@ -185,19 +329,18 @@ void Golem::Attack2::Update(std::shared_ptr<EnemyBase> owner)
 
 		std::shared_ptr<Player> _player = owner->GetTarget().lock();
 		Math::Vector3 _playerPos = _player->GetPos();
-		_playerPos.y = 0.0f;
 		m_playerPos = _playerPos;
 		Math::Vector3 _pos = owner->GetPos();
-		_pos.y = 0.0f;
 		Math::Vector3 _moveDir = _playerPos - _pos;
 		float dist = _moveDir.Length();
 		_moveDir.Normalize();
 		_dir = _moveDir;
 		owner->SetColorLightFlg(true);
+		owner->SetHitSphereSize(10.0f);
 		return;
 	}
 
-	if (owner->GetPos().y <= 0.0f)
+	if (owner->GetGroundFlg())
 	{
 		AttackHit(owner);
 		owner->SetColorLightFlg(false);
@@ -212,7 +355,6 @@ void Golem::Attack2::Update(std::shared_ptr<EnemyBase> owner)
 	float dist = _moveDir.Length();
 	_moveDir.Normalize();
 	_dir = _moveDir;
-	_pos.y = 0.0f;
 
 	if (_pos != m_playerPos)owner->SetMove(_dir, 10.0f);
 
@@ -229,6 +371,8 @@ void Golem::Attack2::Exit(std::shared_ptr<EnemyBase> owner)
 
 	if (owner->GetIsAnimator())
 	{
+		owner->SetHitSphereSize(2.0f);
+
 		// Idol
 		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
 		owner->SetNextAction(_idol, EnemyBase::Action::IdolType);
@@ -250,7 +394,7 @@ void Golem::Attack2::AttackHit(std::shared_ptr<EnemyBase> owner)
 
 	if (owner->GetTarget().lock()->Intersects(sphereInfo, nullptr))
 	{
-		owner->GetTarget().lock()->Damage(5, owner->shared_from_this());
+		owner->GetTarget().lock()->Damage(owner->GetParam().Atk, owner->shared_from_this());
 	}
 }
 //=================================================================================================
@@ -338,7 +482,7 @@ void Golem::Attack3::AttackHit(std::shared_ptr<EnemyBase> owner)
 
 	if (owner->GetTarget().lock()->Intersects(sphereInfo, nullptr))
 	{
-		owner->GetTarget().lock()->Damage(5, owner->shared_from_this());
+		owner->GetTarget().lock()->Damage(owner->GetParam().Atk, owner->shared_from_this());
 	}
 }
 //=================================================================================================
