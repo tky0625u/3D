@@ -155,6 +155,9 @@ private:
 		void AttackDirCheck(std::shared_ptr<Player> owner);
 		void ChangeState(std::shared_ptr<Player> owner)override;
 
+		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override; // 直接攻撃による被弾
+		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override; // 遠距離攻撃による被弾
+
 	private:
 		Math::Vector3    m_AttackDir  = Math::Vector3::Zero;
 		static const int AttackNUM    = 3;
@@ -178,9 +181,11 @@ private:
 		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override { return; } // 遠距離攻撃による被弾
 
 		void AttackHit(std::shared_ptr<Player> owner);
+		void CounterMove(std::shared_ptr<Player> owner);
 
 	private:
 		Effekseer::Handle m_handle;
+		std::weak_ptr<EnemyBase> m_CounterEnemy;
 	};
 
 	class Roll :public StateBase

@@ -24,7 +24,7 @@ void Floor::Init()
 	m_FloorPivot = { 0.5f,0.5f };
 	m_FloorColor = { 1,1,1,1 };
 	m_FloorRect = { 0,long(141.6f * (m_StageManager.lock()->GetnowStage() - 1)),long(95.0f),long(141.6f)};
-	m_FloorPos = { (m_pos.x - ((m_FloorRect.width * m_FloorPivot.x * m_size) + (m_rect.width * m_pivot.x * m_size))),m_pos.y };
+	m_FloorPos = { m_pos.x,(m_pos.y - ((m_FloorRect.height * m_FloorPivot.y * m_size) + (m_rect.height * m_pivot.y * m_size))) };
 	m_FloorPTex = std::make_shared<KdTexture>();
 	m_FloorPTex->Load("Asset/Textures/UI/Player/Floor/Cool Text - 1234567890 468658586495746.png");
 }
@@ -32,5 +32,5 @@ void Floor::Init()
 void Floor::SetPos(Math::Vector2 _pos)
 {
 	m_pos = _pos;
-	m_FloorPos = { (m_pos.x - ((m_FloorRect.width * m_FloorPivot.x * m_size) + (m_rect.width * m_pivot.x * m_size))),m_pos.y };
+	m_FloorPos = { m_pos.x,(m_pos.y - ((m_FloorRect.height * m_FloorPivot.y * m_size) + (m_rect.height * m_pivot.y * m_size))) };
 }

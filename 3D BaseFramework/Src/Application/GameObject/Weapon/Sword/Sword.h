@@ -13,6 +13,7 @@ public:
 	void Init()      override;
 
 	void MakeTraject();
+	void ClearTraject();
 	void SetTrajectMat();
 	void SetTrajectPointNUM(int _pointNUM) { m_trajePointNUM = _pointNUM; }
 	void SetATK(int _atk) { m_atk = _atk; }
@@ -28,10 +29,11 @@ private:
 	struct Traject
 	{
 		std::shared_ptr<KdTrailPolygon> m_trajectPolyGon = nullptr;
-		Math::Matrix                    m_trajectMat;
+		Math::Matrix                    m_trajectMatList[2];
 	};
 
-	std::vector<std::vector<Traject>> m_trajectList;
+	Math::Vector3                     m_beforeModelTopPos = Math::Vector3::Zero;
+	Traject                           m_traject;
 	std::shared_ptr<KdTexture>		  m_trajeTex      = nullptr;
 	int								  m_trajePointNUM = 0;
 	int								  m_atk           = 0;

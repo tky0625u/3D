@@ -82,7 +82,7 @@ void GameCamera::PostUpdate()
 
 		if (m_ViewAngList[m_CameraType] > 45)
 		{
-			m_ViewAngList[m_CameraType] -= 2;
+			m_ViewAngList[m_CameraType] -= 1.5f;
 		}
 		else
 		{
@@ -95,7 +95,7 @@ void GameCamera::PostUpdate()
 
 		if (m_ViewAngList[m_CameraType] < 60)
 		{
-			m_ViewAngList[m_CameraType] += 2;
+			m_ViewAngList[m_CameraType] += 1.5f;
 		}
 		else
 		{

@@ -73,6 +73,7 @@ public:
 	const bool GetLockONFlg()const { return m_LockONFlg; }
 	const float& GetAppealEffectSize()const { return m_AppealEffectSize; }
 	const bool GetGroundFlg()const { return m_groundFlg; }
+	const bool GetLeave()const { return m_leaveEnemy.expired(); }
 protected:
 	std::weak_ptr<Player>              m_Target;
 	std::weak_ptr<KdEffekseerObject>   m_Effect;

@@ -3,11 +3,13 @@
 
 void Sword::Update()
 {	
-	for (int t1 = 0; t1 < m_trajectList.size(); ++t1)
+	if (m_traject.m_trajectPolyGon != nullptr)
 	{
-		for (int t2 = 0; t2 < m_trajectList[t1].size(); ++t2)
+		for (auto& _mat : m_traject.m_trajectMatList)
 		{
-			m_trajectList[t1][t2].m_trajectPolyGon->AddPoint(m_trajectList[t1][t2].m_trajectMat);
+			if (_mat == Math::Matrix::Identity)break;
+
+			m_traject.m_trajectPolyGon->AddPoint(_mat);
 		}
 	}
 
@@ -23,44 +25,13 @@ void Sword::Update()
 
 void Sword::PostUpdate()
 {
-	auto traje1 = m_trajectList.begin();
 
-	while (traje1 != m_trajectList.end())
-	{
-		auto traje2 = traje1->begin();
-		while (traje2 != traje1->end())
-		{
-			if (traje2->m_trajectPolyGon->GetNumPoints() == m_trajePointNUM && traje2->m_trajectPolyGon->GetTopPoint()->Translation() == traje2->m_trajectPolyGon->GetPointsList()[traje2->m_trajectPolyGon->GetNumPoints() - 1].Translation())
-			{
-				traje2 = traje1->erase(traje2);
-			}
-			else
-			{
-				traje2++;
-			}
-		}
-
-		if (traje1->size() == 0)
-		{
-			traje1 = m_trajectList.erase(traje1);
-		}
-		else
-		{
-			traje1++;
-		}
-	}
 }
 
 void Sword::DrawUnLit()
 {
 	KdShaderManager::Instance().ChangeBlendState(KdBlendState::Add);
-	for (int t1 = 0; t1 < m_trajectList.size(); ++t1)
-	{
-		for (int t2 = 0; t2 < m_trajectList[t1].size(); ++t2)
-		{
-			if (m_trajectList[t1][t2].m_trajectPolyGon != nullptr)KdShaderManager::Instance().m_StandardShader.DrawPolygon(*m_trajectList[t1][t2].m_trajectPolyGon);
-		}
-	}
+	if (m_traject.m_trajectPolyGon != nullptr)KdShaderManager::Instance().m_StandardShader.DrawPolygon(*m_traject.m_trajectPolyGon);
 	KdShaderManager::Instance().ChangeBlendState(KdBlendState::Alpha);
 }
 
@@ -70,23 +41,50 @@ void Sword::Init()
 
 	m_trajeTex = std::make_shared<KdTexture>();
 	m_trajeTex->Load("Asset/Textures/Weapon/Trajectory/SwordLine01.png");
+
+	for (auto& _mat : m_traject.m_trajectMatList)_mat = Math::Matrix::Identity;
 }
 
 void Sword::MakeTraject()
 {
-	Traject _traject;
+	//Traject _traject;
 
-	std::shared_ptr<KdTrailPolygon> _trajePoly = std::make_shared<KdTrailPolygon>();
-	std::vector<Traject> _trajectList;
-	_trajePoly->SetMaterial(m_trajeTex);
-	_trajePoly->SetLength(m_trajePointNUM);
-	_traject.m_trajectPolyGon = _trajePoly;
-	_traject.m_trajectMat     = GetModelTop();
-	_trajectList.push_back(_traject);
-	m_trajectList.push_back(_trajectList);
+	//std::shared_ptr<KdTrailPolygon> _trajePoly = std::make_shared<KdTrailPolygon>();
+	//_trajePoly->SetMaterial(m_trajeTex);
+	//_trajePoly->SetLength(m_trajePointNUM);
+	//_traject.m_trajectPolyGon = _trajePoly;
+	//m_traject = _traject;
+	//m_beforeModelTopPos = GetModelTop().Translation();
+}
+
+void Sword::ClearTraject()
+{
+	m_traject.m_trajectPolyGon = nullptr;
+	for (auto& _mat : m_traject.m_trajectMatList)_mat = Math::Matrix::Identity;
 }
 
 void Sword::SetTrajectMat()
 {
-	if (m_trajectList.size() != 0 && m_trajectList[m_trajectList.size() - 1].size() != 0)m_trajectList[m_trajectList.size() - 1][m_trajectList[m_trajectList.size() - 1].size() - 1].m_trajectMat = GetModelTop();
+	//if (m_beforeModelTopPos == GetModelTop().Translation())return;
+	//
+	//Math::Vector3 _ModelTopPos = GetModelTop().Translation();
+	//Math::Vector3 _BM = (1.0f - 0.5f) * m_beforeModelTopPos + 0.5f * _ModelTopPos;
+	//Math::Vector3 _targetDir = m_target.lock()->GetPos() - _BM;
+	//_targetDir *= -1.0f;
+	//_targetDir.Normalize();
+	//Math::Vector3 _CenterPos = _BM + (0.5f * _targetDir);
+	//Math::Vector3 _BC = (1.0f - 0.5f) * m_beforeModelTopPos + 0.5f * _CenterPos;
+	//Math::Vector3 _CM = (1.0f - 0.5f) * _CenterPos + 0.5f * _ModelTopPos;
+	//Math::Vector3 _pos = (1.0f - 0.5f) * _BC + 0.5f * _CM;
+
+	//for (int i=0;i<2;++i)
+	//{
+	//	Math::Matrix _trans;
+	//	if (i == 0)_trans = Math::Matrix::CreateTranslation(_pos);
+	//	else { _trans = Math::Matrix::CreateTranslation(_ModelTopPos); }
+
+	//	m_traject.m_trajectMatList[i] = _trans;
+	//}
+
+	//m_beforeModelTopPos = _ModelTopPos;
 }

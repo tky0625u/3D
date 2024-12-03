@@ -360,6 +360,7 @@ void EnemyBase::Run::EnemyCheck(std::shared_ptr<EnemyBase> owner)
 	for (auto& enemy : SceneManager::Instance().GetEnemyList())
 	{
 		if (enemy->GetID() == owner->m_id)continue;
+		if (!enemy->GetLeave())continue;
 		if (enemy->Intersects(sphereInfo, &_retSphereList))_HitEnemyList.push_back(enemy);
 	}
 

@@ -162,6 +162,8 @@ void Player::NextStageCheck()
 
 void Player::IdolChange()
 {
+	m_sword.lock()->ClearTraject();
+
 	std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
 	m_NextState = _idol;
 	m_NextActionType = Action::IdolType;
@@ -170,6 +172,8 @@ void Player::IdolChange()
 
 void Player::TeleportChange()
 {
+	m_sword.lock()->ClearTraject();
+
 	std::shared_ptr<Teleport> _teleport = std::make_shared<Teleport>();
 	m_NextState = _teleport;
 	m_NextActionType = Action::TeleportType;
@@ -614,6 +618,8 @@ void Player::Attack::Update(std::shared_ptr<Player> owner)
 
 	if (owner->GetIsAnimator())
 	{
+		owner->GetSword().lock()->ClearTraject();
+
 		// Idol
 		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
 		owner->m_NextState = _idol;
@@ -760,6 +766,8 @@ void Player::Attack::ChangeState(std::shared_ptr<Player> owner)
 
 	if (owner->m_keyType & Player::KeyType::AttackKey && !(owner->m_BeforeKeyType & Player::KeyType::AttackKey))
 	{
+		owner->GetSword().lock()->ClearTraject();
+
 		m_atkNum++;
 		owner->m_flow = Player::Flow::EnterType;
 		if (m_atkNum > AttackNUM)m_atkNum = 1;
@@ -767,6 +775,8 @@ void Player::Attack::ChangeState(std::shared_ptr<Player> owner)
 	}
 	else if (owner->m_keyType & Player::KeyType::GuardKey)
 	{
+		owner->GetSword().lock()->ClearTraject();
+
 		std::shared_ptr<Guard> _guard = std::make_shared<Guard>();
 		owner->m_NextState = _guard;
 		owner->m_NextActionType = Player::Action::GuardType;
@@ -776,6 +786,7 @@ void Player::Attack::ChangeState(std::shared_ptr<Player> owner)
 	else if (owner->m_keyType & Player::KeyType::RollKey && !(owner->m_BeforeKeyType & Player::KeyType::RollKey))
 	{
 		if (owner->m_param.Sm <= 0)return;
+		owner->GetSword().lock()->ClearTraject();
 
 		std::shared_ptr<Roll> _roll = std::make_shared<Roll>();
 		owner->m_NextState = _roll;
@@ -783,6 +794,18 @@ void Player::Attack::ChangeState(std::shared_ptr<Player> owner)
 		owner->m_flow = CharacterBase::Flow::EnterType;
 		return;
 	}
+}
+
+void Player::Attack::Damage(std::shared_ptr<Player> owner, int _damage, std::shared_ptr<EnemyBase> _enemy)
+{
+	owner->GetSword().lock()->ClearTraject();
+	StateBase::Damage(owner, _damage, _enemy);
+}
+
+void Player::Attack::Damage(std::shared_ptr<Player> owner, int _damage, std::shared_ptr<BulletBase> _bullet)
+{
+	owner->GetSword().lock()->ClearTraject();
+	StateBase::Damage(owner, _damage, _bullet);
 }
 //=================================================================================================
 
@@ -798,6 +821,13 @@ void Player::Counter::Enter(std::shared_ptr<Player> owner)
 
 	if (owner->GetIsAnimator())
 	{
+
+		for (auto& enemy : SceneManager::Instance().GetEnemyList())
+		{
+			if (enemy->GetID() != owner->m_ParryID)continue;
+			m_CounterEnemy = enemy;
+		}
+
 		owner->m_flow = Player::Flow::UpdateType;
 		if (owner->GetSword().expired() == false)
 		{
@@ -818,6 +848,7 @@ void Player::Counter::Update(std::shared_ptr<Player> owner)
 	if (owner->GetIsAnimator())
 	{
 		owner->m_ParryID = -1;
+		owner->GetSword().lock()->ClearTraject();
 
 		// Idol
 		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
@@ -834,6 +865,8 @@ void Player::Counter::Update(std::shared_ptr<Player> owner)
 	
 	if (40 <= m_ActionFPS && m_ActionFPS <= 66)AttackHit(owner);
 
+	CounterMove(owner);
+
 	m_ActionFPS++;
 }
 
@@ -848,6 +881,8 @@ void Player::Counter::ChangeState(std::shared_ptr<Player> owner)
 }
 void Player::Counter::AttackHit(std::shared_ptr<Player> owner)
 {
+	if (m_CounterEnemy.lock()->GetParam().Hp <= 0 || m_CounterEnemy.lock()->GetinviTime() > 0)return;
+
 	std::vector<KdCollider::SphereInfo> sphereInfoList;
 	KdCollider::SphereInfo sphereInfo;
 
@@ -870,37 +905,42 @@ void Player::Counter::AttackHit(std::shared_ptr<Player> owner)
 
 	for (int i = 0; i < sphereInfoList.size(); ++i)
 	{
-		sphereInfoList[i].m_sphere.Radius = 0.8f;
+		sphereInfoList[i].m_sphere.Radius = 1.0f;
 		sphereInfoList[i].m_type = KdCollider::TypeDamage;
 	}
 
 	std::list<KdCollider::CollisionResult> retSphereList;
-	std::shared_ptr<EnemyBase> hitEnemy;
 
-	for (auto& sphere : SceneManager::Instance().GetEnemyList())
+	for (int i = 0; i < sphereInfoList.size(); ++i)
 	{
-		if (owner->m_ParryID != -1 && sphere->GetID() != owner->m_ParryID)continue;
-
-		for (int i = 0; i < sphereInfoList.size(); ++i)
-		{
-			if (sphere->Intersects(sphereInfoList[i], &retSphereList))
-			{
-				hitEnemy = sphere;
-			}
-		}
+		if (m_CounterEnemy.lock()->Intersects(sphereInfoList[i], &retSphereList))break;
 	}
 
 	for (auto& ret : retSphereList)
 	{
-		if (hitEnemy->GetParam().Hp > 0 && hitEnemy->GetActionType() != EnemyBase::Action::AppealType && hitEnemy->GetinviTime() == 0)
-		{
-			owner->m_camera.lock()->GetState()->SetShakeFlg(true);
-			hitEnemy->Damage(owner->m_param.Atk * 5);
-			hitEnemy->SetInviTime(owner->m_inviTime);
-			m_handle = KdEffekseerManager::GetInstance().Play("Player/CounterHit.efkefc", ret.m_hitPos, 1.0f, 0.8f, false).lock()->GetHandle();
-			KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/刀で斬る2.WAV", 0.05f, false);
-		}
+		owner->m_camera.lock()->GetState()->SetShakeFlg(true);
+		m_CounterEnemy.lock()->Damage(owner->m_param.Atk * 5);
+		m_CounterEnemy.lock()->SetInviTime(owner->m_inviTime);
+		m_handle = KdEffekseerManager::GetInstance().Play("Player/CounterHit.efkefc", ret.m_hitPos, 1.0f, 0.8f, false).lock()->GetHandle();
+		KdEffekseerManager::GetInstance().SetRotation(m_handle, Math::Vector3{ 0.0f,1.0f,0.0f }, DirectX::XMConvertToRadians(owner->GetAngle().y));
+		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/刀で斬る2.WAV", 0.05f, false);
 	}
+}
+
+void Player::Counter::CounterMove(std::shared_ptr<Player> owner)
+{
+	Math::Vector3 _dir = m_CounterEnemy.lock()->GetPos() - owner->m_pos;
+	_dir.Normalize();
+	owner->Rotate(_dir);
+
+	KdCollider::SphereInfo sphereInfo;
+	sphereInfo.m_sphere.Center = owner->m_pos;
+	sphereInfo.m_sphere.Radius = 6.0f;
+	sphereInfo.m_type = KdCollider::TypeBump;
+
+	if (m_CounterEnemy.lock()->Intersects(sphereInfo, nullptr))return;
+
+	owner->SetMove(_dir,10.0f);
 }
 //=================================================================================================
 

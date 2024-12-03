@@ -157,12 +157,16 @@ void ObjectManager::NextStageLiberation()
 {
 	m_camera.lock()->FixedChange();
 	m_player.lock()->IdolChange();
+	m_slowFlg = false;
+	m_slow    = 1.0f;
 }
 
 void ObjectManager::GameClear()
 {
 	m_camera.lock()->ClearChange();
 	m_player.lock()->IdolChange();
+	m_slowFlg = false;
+	m_slow = 1.0f;
 }
 
 void ObjectManager::NextTeleport()
