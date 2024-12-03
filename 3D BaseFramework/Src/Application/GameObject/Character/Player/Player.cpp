@@ -981,7 +981,7 @@ void Player::Roll::Update(std::shared_ptr<Player> owner)
 {
 	if (!owner->IsAnimCheck("Roll"))
 	{
-		owner->SetAnime("Roll", false, 1.5f);
+		owner->SetAnime("Roll", false, 1.0f);
 		KdEffekseerManager::GetInstance().Play("Player/Smoke.efkefc", owner->m_pos, 0.5f, 1.0f, false);
 		return;
 	}

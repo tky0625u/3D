@@ -50,47 +50,50 @@ void EnemyBase::PostUpdate()
 		m_groundFlg = true;
 	}
 
-	KdCollider::SphereInfo sphereInfo;
-	Math::Matrix _mat = m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(m_mWorld.Translation()));
-	sphereInfo.m_sphere.Center = _mat.Translation();
-	sphereInfo.m_sphere.Radius = m_HitSphereSize;
-	sphereInfo.m_type = KdCollider::TypeBump;
-
-	//デバッグ用
-	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
-
-	std::list<KdCollider::CollisionResult>retSphereList;
-	for (auto& ret : SceneManager::Instance().GetObjList())
+	if (m_actionType != Action::AppealType)
 	{
-		ret->Intersects(sphereInfo, &retSphereList);
-	}
-	for (auto& ret : SceneManager::Instance().GetEnemyList())
-	{
-		if (ret->IsExpired())return;
-		if (m_id == ret->GetID())continue;
-		ret->Intersects(sphereInfo, &retSphereList);
-	}
-	if (m_id != SceneManager::Instance().GetPlayer()->GetID())SceneManager::Instance().GetPlayer()->Intersects(sphereInfo, &retSphereList);
+		KdCollider::SphereInfo sphereInfo;
+		Math::Matrix _mat = m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(m_mWorld.Translation()));
+		sphereInfo.m_sphere.Center = _mat.Translation();
+		sphereInfo.m_sphere.Radius = m_HitSphereSize;
+		sphereInfo.m_type = KdCollider::TypeBump;
 
-	Math::Vector3 HitDir = Math::Vector3::Zero;
-	float maxOverLap = 0.0f;
-	bool HitFlg = false;
+		//デバッグ用
+		//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
 
-	for (auto& sphere : retSphereList)
-	{
-		if (maxOverLap < sphere.m_overlapDistance)
+		std::list<KdCollider::CollisionResult>retSphereList;
+		for (auto& ret : SceneManager::Instance().GetObjList())
 		{
-			maxOverLap = sphere.m_overlapDistance;
-			HitDir = sphere.m_hitDir;
-			HitFlg = true;
+			ret->Intersects(sphereInfo, &retSphereList);
 		}
-	}
+		for (auto& ret : SceneManager::Instance().GetEnemyList())
+		{
+			if (ret->IsExpired())return;
+			if (m_id == ret->GetID())continue;
+			ret->Intersects(sphereInfo, &retSphereList);
+		}
+		if (m_id != SceneManager::Instance().GetPlayer()->GetID())SceneManager::Instance().GetPlayer()->Intersects(sphereInfo, &retSphereList);
 
-	if (HitFlg == true)
-	{
-		HitDir.y = 0.0f;
-		HitDir.Normalize();
-		m_pos += maxOverLap * HitDir;
+		Math::Vector3 HitDir = Math::Vector3::Zero;
+		float maxOverLap = 0.0f;
+		bool HitFlg = false;
+
+		for (auto& sphere : retSphereList)
+		{
+			if (maxOverLap < sphere.m_overlapDistance)
+			{
+				maxOverLap = sphere.m_overlapDistance;
+				HitDir = sphere.m_hitDir;
+				HitFlg = true;
+			}
+		}
+
+		if (HitFlg == true)
+		{
+			HitDir.y = 0.0f;
+			HitDir.Normalize();
+			m_pos += maxOverLap * HitDir;
+		}
 	}
 
 	if (m_camera.lock()->GetState()->GetShakeFlg())return;

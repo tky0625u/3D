@@ -47,14 +47,14 @@ void Sword::Init()
 
 void Sword::MakeTraject()
 {
-	//Traject _traject;
+	Traject _traject;
 
-	//std::shared_ptr<KdTrailPolygon> _trajePoly = std::make_shared<KdTrailPolygon>();
-	//_trajePoly->SetMaterial(m_trajeTex);
-	//_trajePoly->SetLength(m_trajePointNUM);
-	//_traject.m_trajectPolyGon = _trajePoly;
-	//m_traject = _traject;
-	//m_beforeModelTopPos = GetModelTop().Translation();
+	std::shared_ptr<KdTrailPolygon> _trajePoly = std::make_shared<KdTrailPolygon>();
+	_trajePoly->SetMaterial(m_trajeTex);
+	_trajePoly->SetLength(m_trajePointNUM);
+	_traject.m_trajectPolyGon = _trajePoly;
+	m_traject = _traject;
+	m_beforeModelTopPos = GetModelTop().Translation();
 }
 
 void Sword::ClearTraject()
@@ -65,26 +65,26 @@ void Sword::ClearTraject()
 
 void Sword::SetTrajectMat()
 {
-	//if (m_beforeModelTopPos == GetModelTop().Translation())return;
-	//
-	//Math::Vector3 _ModelTopPos = GetModelTop().Translation();
-	//Math::Vector3 _BM = (1.0f - 0.5f) * m_beforeModelTopPos + 0.5f * _ModelTopPos;
-	//Math::Vector3 _targetDir = m_target.lock()->GetPos() - _BM;
-	//_targetDir *= -1.0f;
-	//_targetDir.Normalize();
-	//Math::Vector3 _CenterPos = _BM + (0.5f * _targetDir);
-	//Math::Vector3 _BC = (1.0f - 0.5f) * m_beforeModelTopPos + 0.5f * _CenterPos;
-	//Math::Vector3 _CM = (1.0f - 0.5f) * _CenterPos + 0.5f * _ModelTopPos;
-	//Math::Vector3 _pos = (1.0f - 0.5f) * _BC + 0.5f * _CM;
+	if (m_beforeModelTopPos == GetModelTop().Translation())return;
+	
+	Math::Vector3 _ModelTopPos = GetModelTop().Translation();
+	Math::Vector3 _BM = (1.0f - 0.5f) * m_beforeModelTopPos + 0.5f * _ModelTopPos;
+	Math::Vector3 _targetDir = m_target.lock()->GetPos() - _BM;
+	_targetDir *= -1.0f;
+	_targetDir.Normalize();
+	Math::Vector3 _CenterPos = _BM + (0.5f * _targetDir);
+	Math::Vector3 _BC = (1.0f - 0.5f) * m_beforeModelTopPos + 0.5f * _CenterPos;
+	Math::Vector3 _CM = (1.0f - 0.5f) * _CenterPos + 0.5f * _ModelTopPos;
+	Math::Vector3 _pos = (1.0f - 0.5f) * _BC + 0.5f * _CM;
 
-	//for (int i=0;i<2;++i)
-	//{
-	//	Math::Matrix _trans;
-	//	if (i == 0)_trans = Math::Matrix::CreateTranslation(_pos);
-	//	else { _trans = Math::Matrix::CreateTranslation(_ModelTopPos); }
+	for (int i=0;i<2;++i)
+	{
+		Math::Matrix _trans;
+		if (i == 0)_trans = Math::Matrix::CreateTranslation(_pos);
+		else { _trans = Math::Matrix::CreateTranslation(_ModelTopPos); }
 
-	//	m_traject.m_trajectMatList[i] = _trans;
-	//}
+		m_traject.m_trajectMatList[i] = _trans;
+	}
 
-	//m_beforeModelTopPos = _ModelTopPos;
+	m_beforeModelTopPos = _ModelTopPos;
 }
