@@ -171,11 +171,11 @@
     <ClInclude Include="Src\Application\GameObject\Character\Player\Player.h" />
     <ClInclude Include="Src\Application\GameObject\Loading\Loading.h" />
     <ClInclude Include="Src\Application\GameObject\ObjectManager.h" />
-    <ClInclude Include="Src\Application\GameObject\SkyBox\SkyBox.h" />
     <ClInclude Include="Src\Application\GameObject\StageManager.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Circle\Circle.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Ground\Ground.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\MagicPolygon\MagicPolygon.h" />
+    <ClInclude Include="Src\Application\GameObject\Stage\SkyBox\SkyBox.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Wall\Wall.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Enemy\HP\Enemy_HP.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Player\Floor\Floor.h" />
@@ -259,11 +259,11 @@
     <ClCompile Include="Src\Application\GameObject\Character\Player\Player.cpp" />
     <ClCompile Include="Src\Application\GameObject\Loading\Loading.cpp" />
     <ClCompile Include="Src\Application\GameObject\ObjectManager.cpp" />
-    <ClCompile Include="Src\Application\GameObject\SkyBox\SkyBox.cpp" />
     <ClCompile Include="Src\Application\GameObject\StageManager.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Circle\Circle.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Ground\Ground.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\MagicPolygon\MagicPolygon.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Stage\SkyBox\SkyBox.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Wall\Wall.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Enemy\HP\Enemy_HP.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\Floor\Floor.cpp" />

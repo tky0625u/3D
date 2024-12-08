@@ -13,7 +13,7 @@
 		"FixedPosZ": -13.0,
 		"FixedViewAngle": 60.0,
 		"Name": "Camera",
-		"PlayerAngleX": 0.0,
+		"PlayerAngleX": 10.0,
 		"PlayerAngleY": 0.0,
 		"PlayerPosX": 0.0,
 		"PlayerPosY": 3.0,

@@ -82,9 +82,6 @@
     <Filter Include="Src\Application\GameObject\Character\Player">
       <UniqueIdentifier>{e406b39c-98ca-4dbc-aad2-f3d943bd632b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\GameObject\SkyBox">
-      <UniqueIdentifier>{9c58ef51-86d0-4bf5-9205-a04249ca4610}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Src\Application\GameObject\Stage">
       <UniqueIdentifier>{3239d098-54de-43c1-9f96-56c300b188c0}</UniqueIdentifier>
     </Filter>
@@ -189,6 +186,9 @@
     </Filter>
     <Filter Include="Src\Application\GameObject\UI\Player\GameStateUI">
       <UniqueIdentifier>{fa956f5b-0531-439c-bef8-3419bad725d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Stage\SkyBox">
+      <UniqueIdentifier>{fc60f74c-521e-4f40-84b3-d5f4ad514e86}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -366,9 +366,6 @@
     <ClInclude Include="Src\Application\GameObject\Character\Player\Player.h">
       <Filter>Src\Application\GameObject\Character\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\SkyBox\SkyBox.h">
-      <Filter>Src\Application\GameObject\SkyBox</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\ObjectManager.h">
       <Filter>Src\Application\GameObject</Filter>
     </ClInclude>
@@ -470,6 +467,9 @@
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\UI\Player\GameStateUI\GameStateUI.h">
       <Filter>Src\Application\GameObject\UI\Player\GameStateUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Stage\SkyBox\SkyBox.h">
+      <Filter>Src\Application\GameObject\Stage\SkyBox</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -620,9 +620,6 @@
     <ClCompile Include="Src\Application\GameObject\Character\Player\Player.cpp">
       <Filter>Src\Application\GameObject\Character\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\SkyBox\SkyBox.cpp">
-      <Filter>Src\Application\GameObject\SkyBox</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\GameObject\ObjectManager.cpp">
       <Filter>Src\Application\GameObject</Filter>
     </ClCompile>
@@ -724,6 +721,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\UI\Player\GameStateUI\GameStateUI.cpp">
       <Filter>Src\Application\GameObject\UI\Player\GameStateUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Stage\SkyBox\SkyBox.cpp">
+      <Filter>Src\Application\GameObject\Stage\SkyBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

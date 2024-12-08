@@ -16,7 +16,7 @@
 //壁
 #include"Stage/Wall/Wall.h"
 //スカイボックス
-#include"SkyBox/SkyBox.h"
+#include"Stage/SkyBox/SkyBox.h"
 //剣
 #include"Weapon/Sword/Sword.h"
 //盾
@@ -27,7 +27,7 @@
 #include"Camera/GameCamera/GameCamera.h"
 //骨
 #include"Character/Enemy/Bone/Bone.h"
-//骨教科個体
+//骨色違い
 #include"Character/Enemy/BoneAlpha/BoneAlpha.h"
 //ゴーレム
 #include"Character/Enemy/Golem/Golem.h"
@@ -66,10 +66,10 @@ void ObjectManager::SceneCheck()
 {
 	switch (SceneManager::Instance().GetNowSceneType())
 	{
-	case SceneManager::SceneType::Title:
+	case SceneManager::SceneType::Title: // タイトルシーン
 		m_nowScene = "Title";
 		break;
-	case SceneManager::SceneType::Game:
+	case SceneManager::SceneType::Game: // ゲームシーン
 		m_nowScene = "Game";
 		break;
 	default:
@@ -79,6 +79,7 @@ void ObjectManager::SceneCheck()
 
 void ObjectManager::DeleteEnemyList()
 {
+	// HPバー
 	auto hp = m_EnemyHPList.begin();
 
 	while (hp != m_EnemyHPList.end())
@@ -93,20 +94,7 @@ void ObjectManager::DeleteEnemyList()
 		}
 	}
 
-	auto enemy = m_EnemyList.begin();
-
-	while (enemy != m_EnemyList.end())
-	{
-		if (enemy->expired())
-		{
-			enemy = m_EnemyList.erase(enemy);
-		}
-		else
-		{
-			++enemy;
-		}
-	}
-
+	// 骨色違い
 	auto alpha = m_BoneAlphaList.begin();
 
 	while (alpha != m_BoneAlphaList.end())
@@ -120,10 +108,26 @@ void ObjectManager::DeleteEnemyList()
 			++alpha;
 		}
 	}
+
+	// 敵
+	auto enemy = m_EnemyList.begin();
+
+	while (enemy != m_EnemyList.end())
+	{
+		if (enemy->expired())
+		{
+			enemy = m_EnemyList.erase(enemy);
+		}
+		else
+		{
+			++enemy;
+		}
+	}
 }
 
 void ObjectManager::DeleteObjectList()
 {
+	// キャラクター以外のオブジェクト
 	auto Obj = m_ObjectList.begin();
 
 	while (Obj != m_ObjectList.end())
@@ -141,6 +145,7 @@ void ObjectManager::DeleteObjectList()
 
 void ObjectManager::SlowChange()
 {
+	// 呼び出されたらそのときのフラグの反対になる
 	if (m_slowFlg)
 	{
 		m_slowFlg = false;
@@ -155,22 +160,31 @@ void ObjectManager::SlowChange()
 
 void ObjectManager::NextStageLiberation()
 {
+	// テレポート位置
 	m_camera.lock()->FixedChange();
+	
+	// 待機
 	m_player.lock()->IdolChange();
-	m_slowFlg = false;
-	m_slow    = 1.0f;
+	
+	// スロー切り替え
+	if (m_slowFlg)SlowChange();
 }
 
 void ObjectManager::GameClear()
 {
+	// クリア位置
 	m_camera.lock()->ClearChange();
+	
+	// 待機
 	m_player.lock()->IdolChange();
-	m_slowFlg = false;
-	m_slow = 1.0f;
+	
+	// スロー切り替え
+	if (m_slowFlg)SlowChange();
 }
 
 void ObjectManager::NextTeleport()
 {
+	// テレポート演出
 	m_player.lock()->TeleportChange();
 }
 
@@ -186,28 +200,37 @@ void ObjectManager::CreateStage(std::shared_ptr<StageManager> _stage)
 		ifs >> _json;
 	}
 
+	// ステージ数
 	int _stageNum = 1;
+	
 	for (auto& stage : _json["Ground"])
 	{
+		// 現在のステージになるまで
 		if (_stage->GetnowStage() != _stageNum)
 		{
 			_stageNum++;
 			continue;
 		}
+
+		// 座標
 		Math::Vector3 _pos = Math::Vector3::Zero;
 		_pos.x = stage["PosX"];
 		_pos.y = stage["PosY"];
 		_pos.z = stage["PosZ"];
 
+		// 大きさ
 		float _size = 0.0f;
 		_size = stage["Size"];
 
+		// 角度
 		Math::Vector3 _angle = Math::Vector3::Zero;
 		_angle.y = stage["Angle"];
 
+		// 名前
 		std::string _name;
 		_name = stage["Name"];
 
+		// 読み込んだ値をセット
 		if (!m_ground.expired())
 		{
 			m_ground.lock()->SetPos(_pos);
@@ -218,22 +241,25 @@ void ObjectManager::CreateStage(std::shared_ptr<StageManager> _stage)
 		break;
 	}
 
-	Math::Matrix _Scale;
-	Math::Matrix _Rot;
-	Math::Matrix _Trans;
+	Math::Matrix _Scale; // 拡縮
+	Math::Matrix _Rot;   // 回転
+	Math::Matrix _Trans; // 座標
 
+	// 地面
 	_Scale = Math::Matrix::CreateScale(m_ground.lock()->GetSize());
 	_Rot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_ground.lock()->GetAngle().y));
 	_Trans = Math::Matrix::CreateTranslation(m_ground.lock()->GetPos());
 	Math::Matrix _GroundMat = _Scale * _Rot * _Trans;
 	m_ground.lock()->SetMatrix(_GroundMat);
 
+	// 魔法陣の台
 	_Scale = Math::Matrix::CreateScale(m_circle.lock()->GetSize());
 	_Rot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_circle.lock()->GetAngle().y));
 	_Trans = Math::Matrix::CreateTranslation(m_circle.lock()->GetPos());
 	Math::Matrix _CircleMat = _Scale * _Rot * _Trans * _GroundMat;
 	m_circle.lock()->SetMatrix(_CircleMat);
 
+	// 魔法陣
 	_Scale = Math::Matrix::CreateScale(m_magic.lock()->GetSize());
 	_Rot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_magic.lock()->GetAngle().y));
 	_Trans = Math::Matrix::CreateTranslation(m_magic.lock()->GetPos());
@@ -242,26 +268,31 @@ void ObjectManager::CreateStage(std::shared_ptr<StageManager> _stage)
 
 	ifs.close();
 
+	// 敵生成
 	std::string _filePath = ("Asset/Json/Game/Enemy/Stage") + (std::to_string(_stage->GetnowStage())) + (".json");
 	SetEnemyParam(_filePath, _stage);
 
+	// プレイヤーを次のステージに移動
 	m_player.lock()->SetPos(m_ground.lock()->GetPos());
+	// テレポート中から解除
 	m_player.lock()->SetTeleportFlg(false);
 
-	m_camera.lock()->SetDegAng(Math::Vector3::Zero);
+	// カメラを正面を向くようにする
+	Math::Vector3 _angle = Math::Vector3::Zero;
+	_angle.x = 10.0f;
+	m_camera.lock()->SetDegAng(_angle);
 }
 
 void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 {
-	// FPS
-//ImGui::Text("FPS : %d", m_fpsController.m_nowfps);
-
+	// オブジェクトの動きを止める
 	static bool stop = false;
 	ImGui::Checkbox((const char*)u8"ストップ", &stop);
 	SceneManager::Instance().m_stop = stop;
 
 	std::string _filePath;
 
+	// 現在のシーン シーンごとのファイルを分けているため
 	switch (SceneManager::Instance().GetNowSceneType())
 	{
 	case SceneManager::SceneType::Title:
@@ -274,15 +305,19 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 		break;
 	}
 
+	// タイトルシーン
 	if (ImGui::TreeNode("Title"))
 	{
+		// カメラ
 		if (ImGui::TreeNode("Camera"))
 		{
+			// 保存
 			if (ImGui::Button((const char*)u8"Camera保存"))
 			{
 				TitleCameraWrite();
 			}
 
+			// 生成
 			if (ImGui::Button((const char*)u8"Camera追加"))
 			{
 				AddTitleCamera();
@@ -308,6 +343,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				ImGui::SliderFloat("AngleY", &_DegAngY, -180, 180);
 				ImGui::SliderFloat("AngleZ", &_DegAngZ, -180, 180);
 
+				// セット
 				_camera->SetPos(_TitleCameraPos);
 				_camera->SetDegAng(Math::Vector3{ _DegAngX,_DegAngY,_DegAngZ });
 			}
@@ -315,15 +351,19 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 			ImGui::TreePop();
 		}
 
+		// タイトルUI
 		if (ImGui::TreeNode("TitleUI"))
 		{
+			// タイトル名
 			if (ImGui::TreeNode("Title"))
 			{
+				// 保存
 				if (ImGui::Button((const char*)u8"Title保存"))
 				{
 					TitleWrite();
 				}
-
+				
+				// 生成
 				if (ImGui::Button((const char*)u8"Title追加"))
 				{
 					AddTitle();
@@ -344,6 +384,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					float _TitleSize = _title->GetSize();
 					ImGui::SliderFloat("Size", &_TitleSize, 1, 100);
 
+					// セット
 					_title->SetPos(_TitlePos);
 					_title->SetSize(_TitleSize);
 				}
@@ -351,13 +392,16 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				ImGui::TreePop();
 			}
 
+			// ゲームに入るUI
 			if (ImGui::TreeNode("Game"))
 			{
+				// 保存
 				if (ImGui::Button((const char*)u8"Game保存"))
 				{
 					GameWrite();
 				}
 
+				// 生成
 				if (ImGui::Button((const char*)u8"Game追加"))
 				{
 					AddGame();
@@ -378,6 +422,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					float _GameSize = _game->GetSize();
 					ImGui::SliderFloat("Size", &_GameSize, 0.01, 1);
 
+					// セット
 					_game->SetPos(_GamePos);
 					_game->SetSize(_GameSize);
 				}
@@ -385,13 +430,16 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				ImGui::TreePop();
 			}
 
+			// ゲームを閉じるUI
 			if (ImGui::TreeNode("Exit"))
 			{
+				// 保存
 				if (ImGui::Button((const char*)u8"Exit保存"))
 				{
 					ExitWrite();
 				}
 
+				// 生成
 				if (ImGui::Button((const char*)u8"Exit追加"))
 				{
 					AddExit();
@@ -412,6 +460,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					float _ExitSize = _exit->GetSize();
 					ImGui::SliderFloat("Size", &_ExitSize, 0.01, 1);
 
+					// セット
 					_exit->SetPos(_ExitPos);
 					_exit->SetSize(_ExitSize);
 				}
@@ -419,13 +468,16 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				ImGui::TreePop();
 			}
 
+			// タイトルでのキー説明
 			if (ImGui::TreeNode("Guide"))
 			{
+				// 保存
 				if (ImGui::Button((const char*)u8"Guide保存"))
 				{
 					TitleGuideWrite();
 				}
 
+				// 生成
 				if (ImGui::Button((const char*)u8"Guide追加"))
 				{
 					AddTitleGuide();
@@ -446,6 +498,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					float _TitleGuideSize = _guide->GetSize();
 					ImGui::SliderFloat("Size", &_TitleGuideSize, 0.01, 1);
 
+					// セット
 					_guide->SetPos(_TitleGuidePos);
 					_guide->SetSize(_TitleGuideSize);
 				}
@@ -453,13 +506,16 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				ImGui::TreePop();
 			}
 
+			// カーソル
 			if (ImGui::TreeNode("Cursor"))
 			{
+				// 保存
 				if (ImGui::Button((const char*)u8"Cursor保存"))
 				{
 					CursorWrite();
 				}
 
+				// 生成
 				if (ImGui::Button((const char*)u8"Cursor追加"))
 				{
 					AddCursor();
@@ -489,6 +545,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					float _CursorChangeAlpha = _cursor->GetChangeAlphaNum();
 					ImGui::SliderFloat("ChangeAlpha", &_CursorChangeAlpha, 0.01, 1);
 
+					// セット
 					_cursor->SetMaxSize(_CursorMaxSize);
 					_cursor->SetChangeSizeNum(_CursorChangeSize);
 					_cursor->SetMaxAlpha(_CursorMaxAlpha);
@@ -503,10 +560,13 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 		ImGui::TreePop();
 	}
 
+	// ゲームシーン
 	if (ImGui::TreeNode("Game"))
 	{
+		// カメラ
 		if (ImGui::TreeNode("Camera"))
 		{
+			// 保存
 			if (ImGui::Button((const char*)u8"Camera保存"))
 			{
 				GameCameraWrite();
@@ -517,8 +577,10 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 			{
 				std::shared_ptr<GameCamera> _camera = m_camera.lock();
 
+				// ステートの切り替え
 				if (_camera->GetCameraType() != GameCamera::CameraType::PlayerType)
 				{
+					// プレイヤー
 					if (ImGui::Button((const char*)u8"Player"))
 					{
 						_camera->SetCameraType(GameCamera::CameraType::PlayerType);
@@ -527,6 +589,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				}
 				if (_camera->GetCameraType() != GameCamera::CameraType::FixedType)
 				{
+					// テレポー開放
 					if (ImGui::Button((const char*)u8"Fixed"))
 					{
 						_camera->SetCameraType(GameCamera::CameraType::FixedType);
@@ -535,6 +598,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				}
 				if (_camera->GetCameraType() != GameCamera::CameraType::ClearType)
 				{
+					// クリア
 					if (ImGui::Button((const char*)u8"Clear"))
 					{
 						_camera->SetCameraType(GameCamera::CameraType::ClearType);
@@ -568,6 +632,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 
 				ImGui::SliderFloat("ViewAngle", &ViewAngle, 0, 360);
 
+				// セット
 				_camera->SetPos(pos);
 				_camera->SetDegAng(Math::Vector3{ angleX,angleY,0.0f });
 				_camera->SetViewAng(ViewAngle);
@@ -576,6 +641,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 			ImGui::TreePop();
 		}
 
+		// プレイヤー
 		if (ImGui::TreeNode("Player"))
 		{
 			if (ImGui::Button((const char*)u8"Player保存"))
@@ -676,6 +742,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 							traje = _sword->GetTraject();
 							ImGui::SliderInt("Traject", &traje, 1, 100);
 
+							// セット
 							_sword->SetPos(swordPos);
 							_sword->SetATK(swordAtk);
 							_sword->SetSize(swordSize);
@@ -719,6 +786,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 							shieldSize = _shield->GetSize();
 							ImGui::SliderFloat("Size", &shieldSize, 1, 100);
 
+							// セット
 							_shield->SetPos(shieldPos);
 							_shield->SetSize(shieldSize);
 
@@ -728,9 +796,11 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 
 					ImGui::TreePop();
 
+					// 武器の切替
 					ChangeWeapon(_swordName, _shieldName);
 				}
 
+				// セット
 				_player->SetParam(hp, _player->GetSword().lock()->GetATK(), speed, stamina);
 				_player->SetPos(pos);
 				_player->SetAngle(angle);
@@ -738,10 +808,13 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				_player->SetAtkRange(range);
 				_player->SetInviTime(_inviTime);
 
+				// UI
 				if (ImGui::TreeNode("UI"))
 				{
+					// HP
 					if (ImGui::TreeNode("HP"))
 					{
+						// 保存
 						if (ImGui::Button((const char*)u8"HP保存"))
 						{
 							PlayerHPWrite();
@@ -762,6 +835,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 							float _HPSize = _hp->GetSize();
 							ImGui::SliderFloat("Size", &_HPSize, 0.01f, 1.0f);
 
+							// セット
 							_hp->SetPos(_HPPos);
 							_hp->SetSize(_HPSize);
 						}
@@ -769,8 +843,10 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 						ImGui::TreePop();
 					}
 
+					// スタミナ
 					if (ImGui::TreeNode("Stamina"))
 					{
+						// 保存
 						if (ImGui::Button((const char*)u8"Stamina保存"))
 						{
 							PlayerStaminaWrite();
@@ -791,6 +867,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 							float _StaminaSize = _stamina->GetSize();
 							ImGui::SliderFloat("Size", &_StaminaSize, 0.01f, 1.0f);
 
+							// セット
 							_stamina->SetPos(_StaminaPos);
 							_stamina->SetSize(_StaminaSize);
 						}
@@ -798,8 +875,10 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 						ImGui::TreePop();
 					}
 
+					// ロックオンカーソル
 					if (ImGui::TreeNode("LockON"))
 					{
+						// 保存
 						if (ImGui::Button((const char*)u8"LockON保存"))
 						{
 							LockONWrite();
@@ -830,6 +909,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 							float _LockAlphaChange = _lock->GetChangeAlpha();
 							ImGui::SliderFloat("AlphaChange", &_LockAlphaChange, 0.01, 1.00);
 
+							// セット
 							_lock->SetPos(_LockPos);
 							_lock->SetSize(_LockSize);
 							_lock->SetChangeSize(_LockSizeChange);
@@ -839,8 +919,10 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 						ImGui::TreePop();
 					}
 
+					// ステージ数
 					if (ImGui::TreeNode("Floor"))
 					{
+						// 保存
 						if (ImGui::Button((const char*)u8"Floor保存"))
 						{
 							FloorWrite();
@@ -861,6 +943,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 							float _FloorSize = _floor->GetSize();
 							ImGui::SliderFloat("Size", &_FloorSize, 1, 100);
 
+							// セット
 							_floor->SetPos(_FloorPos);
 							_floor->SetSize(_FloorSize);
 						}
@@ -868,8 +951,10 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 						ImGui::TreePop();
 					}
 
+					// テレポート可能UI
 					if (ImGui::TreeNode("Teleport"))
 					{
+						// 保存
 						if (ImGui::Button((const char*)u8"Teleport保存"))
 						{
 							TeleportWrite();
@@ -895,6 +980,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 							float _TeleportAlphaChange = _teleport->GetChangeAlpha();
 							ImGui::SliderFloat("AlphaChange", &_TeleportAlphaChange, 0.01, 1.00);
 
+							// セット
 							_teleport->SetPos(_TeleportPos);
 							_teleport->SetSize(_TeleportSize);
 							_teleport->SetChangeAlpha(_TeleportAlphaChange);
@@ -903,8 +989,10 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 						ImGui::TreePop();
 					}
 
+					// ゲームオーバー・クリア
 					if (ImGui::TreeNode("GameStateUI"))
 					{
+						// 保存
 						if (ImGui::Button((const char*)u8"GameStateUI保存"))
 						{
 							GameStateWrite();
@@ -930,6 +1018,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 							float _GameStateAlphaChange =_gameState->GetAlphaChange();
 							ImGui::SliderFloat("AlphaChange", &_GameStateAlphaChange, 0.01, 1.00);
 
+							// セット
 							_gameState->SetPos(_GameStatePos);
 							_gameState->SetSize(_GameStateSize);
 							_gameState->SetChangeAlpha(_GameStateAlphaChange);
@@ -946,49 +1035,68 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 			}
 		}
 
+		// 敵
 		if (ImGui::TreeNode("Enemy"))
 		{
+			// 骨
 			std::vector<std::weak_ptr<EnemyBase>> _boneList;
+			// 骨色違い
 			std::vector<std::weak_ptr<EnemyBase>> _alphaList;
+			// ゴーレム
 			std::vector<std::weak_ptr<EnemyBase>> _golemList;
+			// リストに格納 オブジェクトの名前で判断
 			for (auto& enemy : m_EnemyList)
 			{
 				if (enemy.expired() == false)
 				{
-					if (enemy.lock()->GetName() == "Bone")
+					if (enemy.lock()->GetName() == "Bone") // 骨
 					{
 						_boneList.push_back(enemy);
 					}
-					if (enemy.lock()->GetName() == "BoneAlpha")
+					if (enemy.lock()->GetName() == "BoneAlpha") // 骨色違い
 					{
 						_alphaList.push_back(enemy);
 					}
-					if (enemy.lock()->GetName() == "Golem")
+					if (enemy.lock()->GetName() == "Golem") // ゴーレム
 					{
 						_golemList.push_back(enemy);
 					}
 				}
 			}
 
+			// ステージの数
 			static int _stageNum = 1;
 			ImGui::Text((const char*)u8"ステージ数 : %d", _stageNum);
+			
+			// 現在のステージ
 			static int _nowStage = _stage->GetnowStage();
+			
+			// 設定したいステージに切り替え
 			ImGui::SliderInt((const char*)u8"ステージ", &_nowStage, 1, _stageNum);
+			// ステージ追加
 			if (ImGui::Button((const char*)u8"ステージ追加"))
 			{
 				_stageNum++;
 				if (_stageNum - 1 == _nowStage)_nowStage = _stageNum;
 			}
 
+
+			// ウェーブ数
 			static int _wave = _stage->GetMaxWave();
 			ImGui::Text((const char*)u8"ウェーブ数 : %d", _wave);
+			
+			// 現在のウェーブ
 			static int _nowWave = _stage->GetnowWave();
+			
+			// 設定したいウェーブに切り替え
 			ImGui::SliderInt((const char*)u8"ウェーブ", &_nowWave, 1, _wave);
+			// ウェーブ追加
 			if (ImGui::Button((const char*)u8"ウェーブ追加"))
 			{
 				_wave++;
 				if (_wave - 1 == _nowWave)_nowWave = _wave;
 			}
+			// 削除
 			if (ImGui::Button((const char*)u8"ウェーブ削除"))
 			{
 				if (_wave > 1)
@@ -998,6 +1106,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				}
 			}
 
+			// 保存
 			if (ImGui::Button((const char*)u8"Enemy保存"))
 			{
 				EnemyWrite(_nowStage, _nowWave, (("Asset/Json/") + _filePath + ("/Enemy/Stage")));
@@ -1008,259 +1117,268 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				}
 			}
 
+			// 骨
 			if (ImGui::TreeNode("Bone"))
 			{
+				// 生成
 				if (ImGui::Button((const char*)u8"Bone追加"))
 				{
 					AddBone();
 				}
 
+				// 設定したい敵
 				static int operation = -1;
 				if (!SceneManager::Instance().m_stop)operation = -1;
 
-				if (ImGui::TreeNode("Bone"))
+				// 骨の数
+				ImGui::Text((const char*)u8"ボーン:%d体", _boneList.size());
+				for (int bone = 0; bone < _boneList.size(); ++bone)
 				{
-					ImGui::Text((const char*)u8"ボーン:%d体", _boneList.size());
-					for (int bone = 0; bone < _boneList.size(); ++bone)
+					if (ImGui::Button(std::to_string(bone + 1).c_str()))
 					{
-						if (ImGui::Button(std::to_string(bone + 1).c_str()))
-						{
-							operation = bone;
-						}
+						operation = bone;
+					}
+				}
+
+				if (operation != -1)
+				{
+					ImGui::Text((const char*)u8"%d体目", operation + 1);
+					// 体力
+					ImGui::Text((const char*)u8"　体力 　　HP=%d", _boneList[operation].lock()->GetParam().Hp);
+					int hp = _boneList[operation].lock()->GetParam().Hp;
+					ImGui::SliderInt("HP", &hp, 1, 100);
+					// 攻撃力
+					ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _boneList[operation].lock()->GetParam().Atk);
+					int atk = _boneList[operation].lock()->GetParam().Atk;
+					ImGui::SliderInt("ATK", &atk, 1, 100);
+					// 素早さ
+					ImGui::Text((const char*)u8"　素早さ 　SP=%.2f", _boneList[operation].lock()->GetParam().Sp);
+					float speed = _boneList[operation].lock()->GetParam().Sp;
+					ImGui::SliderFloat("Speed", &speed, 1, 100);
+					// スタミナ
+					ImGui::Text((const char*)u8"　スタミナ SM=%d", _boneList[operation].lock()->GetParam().Sm);
+					int stamina = _boneList[operation].lock()->GetParam().Sm;
+					ImGui::SliderInt("Stamina", &stamina, 1, 100);
+					// 位置
+					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetPos().x, _boneList[operation].lock()->GetPos().y, _boneList[operation].lock()->GetPos().z);
+					Math::Vector3 pos = _boneList[operation].lock()->GetPos();
+					ImGui::SliderFloat("PosX", &pos.x, -100, 100);
+					ImGui::SliderFloat("PosY", &pos.y, 0, 400);
+					ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
+					// 方向
+					ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetDir().x, _boneList[operation].lock()->GetDir().y, _boneList[operation].lock()->GetDir().z);
+					// 角度
+					ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _boneList[operation].lock()->GetAngle());
+					Math::Vector3 angle = _boneList[operation].lock()->GetAngle();
+					ImGui::SliderFloat("Angle", &angle.y, 0, 360);
+					// 大きさ
+					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _boneList[operation].lock()->GetSize());
+					float size = _boneList[operation].lock()->GetSize();
+					ImGui::SliderFloat("Size", &size, 1, 100);
+					// 攻撃範囲
+					ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _boneList[operation].lock()->GetParam().AtkRange);
+					float range = _boneList[operation].lock()->GetParam().AtkRange;
+					ImGui::SliderFloat("ATKRange", &range, 1, 100);
+					// 前方方向
+					ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetForward().x, _boneList[operation].lock()->GetForward().y, _boneList[operation].lock()->GetForward().z);
+
+					// セット
+					_boneList[operation].lock()->SetParam(hp, atk, speed, stamina);
+					_boneList[operation].lock()->SetPos(pos);
+					_boneList[operation].lock()->SetAngle(angle);
+					_boneList[operation].lock()->SetSize(size);
+					_boneList[operation].lock()->SetAtkRange(range);
+
+					//消滅
+					if (ImGui::Button((const char*)u8"消滅"))
+					{
+						_boneList[operation].lock()->Expired();
+						operation = -1;
 					}
 
-					if (operation != -1)
-					{
-						ImGui::Text((const char*)u8"%d体目", operation + 1);
-						// 体力
-						ImGui::Text((const char*)u8"　体力 　　HP=%d", _boneList[operation].lock()->GetParam().Hp);
-						int hp = _boneList[operation].lock()->GetParam().Hp;
-						ImGui::SliderInt("HP", &hp, 1, 100);
-						// 攻撃力
-						ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _boneList[operation].lock()->GetParam().Atk);
-						int atk = _boneList[operation].lock()->GetParam().Atk;
-						ImGui::SliderInt("ATK", &atk, 1, 100);
-						// 素早さ
-						ImGui::Text((const char*)u8"　素早さ 　SP=%.2f", _boneList[operation].lock()->GetParam().Sp);
-						float speed = _boneList[operation].lock()->GetParam().Sp;
-						ImGui::SliderFloat("Speed", &speed, 1, 100);
-						// スタミナ
-						ImGui::Text((const char*)u8"　スタミナ SM=%d", _boneList[operation].lock()->GetParam().Sm);
-						int stamina = _boneList[operation].lock()->GetParam().Sm;
-						ImGui::SliderInt("Stamina", &stamina, 1, 100);
-						// 位置
-						ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetPos().x, _boneList[operation].lock()->GetPos().y, _boneList[operation].lock()->GetPos().z);
-						Math::Vector3 pos = _boneList[operation].lock()->GetPos();
-						ImGui::SliderFloat("PosX", &pos.x, -100, 100);
-						ImGui::SliderFloat("PosY", &pos.y, 0, 400);
-						ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
-						// 方向
-						ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetDir().x, _boneList[operation].lock()->GetDir().y, _boneList[operation].lock()->GetDir().z);
-						// 角度
-						ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _boneList[operation].lock()->GetAngle());
-						Math::Vector3 angle = _boneList[operation].lock()->GetAngle();
-						ImGui::SliderFloat("Angle", &angle.y, 0, 360);
-						// 大きさ
-						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _boneList[operation].lock()->GetSize());
-						float size = _boneList[operation].lock()->GetSize();
-						ImGui::SliderFloat("Size", &size, 1, 100);
-						// 攻撃範囲
-						ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _boneList[operation].lock()->GetParam().AtkRange);
-						float range = _boneList[operation].lock()->GetParam().AtkRange;
-						ImGui::SliderFloat("ATKRange", &range, 1, 100);
-						// 前方方向
-						ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetForward().x, _boneList[operation].lock()->GetForward().y, _boneList[operation].lock()->GetForward().z);
-
-						_boneList[operation].lock()->SetParam(hp, atk, speed, stamina);
-						_boneList[operation].lock()->SetPos(pos);
-						_boneList[operation].lock()->SetAngle(angle);
-						_boneList[operation].lock()->SetSize(size);
-						_boneList[operation].lock()->SetAtkRange(range);
-
-						if (ImGui::Button((const char*)u8"消滅"))
-						{
-							_boneList[operation].lock()->Expired();
-							operation = -1;
-						}
-
-						ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-					}
-					ImGui::TreePop();
+					ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 				}
 
 				ImGui::TreePop();
 			}
 
+			// 骨色違い
 			if (ImGui::TreeNode("BoneAlpha"))
 			{
+				// 生成
 				if (ImGui::Button((const char*)u8"BoneAlpha追加"))
 				{
 					AddBoneAlpha();
 				}
 
+				// 設定したい敵
 				static int operation = -1;
 				if (!SceneManager::Instance().m_stop)operation = -1;
 
-				if (ImGui::TreeNode("BoneAlpha"))
+				// 骨色違いの数
+				ImGui::Text((const char*)u8"ボーンアルファ:%d体", _alphaList.size());
+				for (int alpha = 0; alpha < _alphaList.size(); ++alpha)
 				{
-					ImGui::Text((const char*)u8"ボーンアルファ:%d体", _alphaList.size());
-					for (int alpha = 0; alpha < _alphaList.size(); ++alpha)
+					if (ImGui::Button(std::to_string(alpha + 1).c_str()))
 					{
-						if (ImGui::Button(std::to_string(alpha + 1).c_str()))
-						{
-							operation = alpha;
-						}
+						operation = alpha;
+					}
+				}
+
+				if (operation != -1)
+				{
+					ImGui::Text((const char*)u8"%d体目", operation + 1);
+					// 体力
+					ImGui::Text((const char*)u8"　体力 　　HP=%d", _alphaList[operation].lock()->GetParam().Hp);
+					int hp = _alphaList[operation].lock()->GetParam().Hp;
+					ImGui::SliderInt("HP", &hp, 1, 100);
+					// 攻撃力
+					ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _alphaList[operation].lock()->GetParam().Atk);
+					int atk = _alphaList[operation].lock()->GetParam().Atk;
+					ImGui::SliderInt("ATK", &atk, 1, 100);
+					// 素早さ
+					ImGui::Text((const char*)u8"　素早さ 　SP=%.2f", _alphaList[operation].lock()->GetParam().Sp);
+					float speed = _alphaList[operation].lock()->GetParam().Sp;
+					ImGui::SliderFloat("Speed", &speed, 1, 100);
+					// スタミナ
+					ImGui::Text((const char*)u8"　スタミナ SM=%d", _alphaList[operation].lock()->GetParam().Sm);
+					int stamina = _alphaList[operation].lock()->GetParam().Sm;
+					ImGui::SliderInt("Stamina", &stamina, 1, 100);
+					// 位置
+					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _alphaList[operation].lock()->GetPos().x, _alphaList[operation].lock()->GetPos().y, _alphaList[operation].lock()->GetPos().z);
+					Math::Vector3 pos = _alphaList[operation].lock()->GetPos();
+					ImGui::SliderFloat("PosX", &pos.x, -100, 100);
+					ImGui::SliderFloat("PosY", &pos.y, 0, 400);
+					ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
+					// 方向
+					ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _alphaList[operation].lock()->GetDir().x, _alphaList[operation].lock()->GetDir().y, _alphaList[operation].lock()->GetDir().z);
+					// 角度
+					ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _alphaList[operation].lock()->GetAngle());
+					Math::Vector3 angle = _alphaList[operation].lock()->GetAngle();
+					ImGui::SliderFloat("Angle", &angle.y, 0, 360);
+					// 大きさ
+					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _alphaList[operation].lock()->GetSize());
+					float size = _alphaList[operation].lock()->GetSize();
+					ImGui::SliderFloat("Size", &size, 1, 100);
+					// 攻撃範囲
+					ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _alphaList[operation].lock()->GetParam().AtkRange);
+					float range = _alphaList[operation].lock()->GetParam().AtkRange;
+					ImGui::SliderFloat("ATKRange", &range, 1, 100);
+					// 前方方向
+					ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _alphaList[operation].lock()->GetForward().x, _alphaList[operation].lock()->GetForward().y, _alphaList[operation].lock()->GetForward().z);
+
+					// セット
+					_alphaList[operation].lock()->SetParam(hp, atk, speed, stamina);
+					_alphaList[operation].lock()->SetPos(pos);
+					_alphaList[operation].lock()->SetAngle(angle);
+					_alphaList[operation].lock()->SetSize(size);
+					_alphaList[operation].lock()->SetAtkRange(range);
+
+					// 消滅
+					if (ImGui::Button((const char*)u8"消滅"))
+					{
+						_alphaList[operation].lock()->Expired();
+						operation = -1;
 					}
 
-					if (operation != -1)
-					{
-						ImGui::Text((const char*)u8"%d体目", operation + 1);
-						// 体力
-						ImGui::Text((const char*)u8"　体力 　　HP=%d", _alphaList[operation].lock()->GetParam().Hp);
-						int hp = _alphaList[operation].lock()->GetParam().Hp;
-						ImGui::SliderInt("HP", &hp, 1, 100);
-						// 攻撃力
-						ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _alphaList[operation].lock()->GetParam().Atk);
-						int atk = _alphaList[operation].lock()->GetParam().Atk;
-						ImGui::SliderInt("ATK", &atk, 1, 100);
-						// 素早さ
-						ImGui::Text((const char*)u8"　素早さ 　SP=%.2f", _alphaList[operation].lock()->GetParam().Sp);
-						float speed = _alphaList[operation].lock()->GetParam().Sp;
-						ImGui::SliderFloat("Speed", &speed, 1, 100);
-						// スタミナ
-						ImGui::Text((const char*)u8"　スタミナ SM=%d", _alphaList[operation].lock()->GetParam().Sm);
-						int stamina = _alphaList[operation].lock()->GetParam().Sm;
-						ImGui::SliderInt("Stamina", &stamina, 1, 100);
-						// 位置
-						ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _alphaList[operation].lock()->GetPos().x, _alphaList[operation].lock()->GetPos().y, _alphaList[operation].lock()->GetPos().z);
-						Math::Vector3 pos = _alphaList[operation].lock()->GetPos();
-						ImGui::SliderFloat("PosX", &pos.x, -100, 100);
-						ImGui::SliderFloat("PosY", &pos.y, 0, 400);
-						ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
-						// 方向
-						ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _alphaList[operation].lock()->GetDir().x, _alphaList[operation].lock()->GetDir().y, _alphaList[operation].lock()->GetDir().z);
-						// 角度
-						ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _alphaList[operation].lock()->GetAngle());
-						Math::Vector3 angle = _alphaList[operation].lock()->GetAngle();
-						ImGui::SliderFloat("Angle", &angle.y, 0, 360);
-						// 大きさ
-						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _alphaList[operation].lock()->GetSize());
-						float size = _alphaList[operation].lock()->GetSize();
-						ImGui::SliderFloat("Size", &size, 1, 100);
-						// 攻撃範囲
-						ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _alphaList[operation].lock()->GetParam().AtkRange);
-						float range = _alphaList[operation].lock()->GetParam().AtkRange;
-						ImGui::SliderFloat("ATKRange", &range, 1, 100);
-						// 前方方向
-						ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _alphaList[operation].lock()->GetForward().x, _alphaList[operation].lock()->GetForward().y, _alphaList[operation].lock()->GetForward().z);
-
-						_alphaList[operation].lock()->SetParam(hp, atk, speed, stamina);
-						_alphaList[operation].lock()->SetPos(pos);
-						_alphaList[operation].lock()->SetAngle(angle);
-						_alphaList[operation].lock()->SetSize(size);
-						_alphaList[operation].lock()->SetAtkRange(range);
-
-						if (ImGui::Button((const char*)u8"消滅"))
-						{
-							_alphaList[operation].lock()->Expired();
-							operation = -1;
-						}
-
-						ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-					}
-					ImGui::TreePop();
+					ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 				}
 
 				ImGui::TreePop();
 			}
 
+			// ゴーレム
 			if (ImGui::TreeNode("Golem"))
 			{
+				// 生成
 				if (ImGui::Button((const char*)u8"Golem追加"))
 				{
 					AddGolem();
 				}
 
+				// 設定したい敵
 				static int operation = -1;
 				if (!SceneManager::Instance().m_stop)operation = -1;
 
-				if (ImGui::TreeNode("Golem"))
+				// ゴーレムの数
+				ImGui::Text((const char*)u8"Golem:%d体", _golemList.size());
+				for (int golem = 0; golem < _golemList.size(); ++golem)
 				{
-					ImGui::Text((const char*)u8"Golem:%d体", _golemList.size());
-					for (int golem = 0; golem < _golemList.size(); ++golem)
+					if (ImGui::Button(std::to_string(golem + 1).c_str()))
 					{
-						if (ImGui::Button(std::to_string(golem + 1).c_str()))
-						{
-							operation = golem;
-						}
+						operation = golem;
+					}
+				}
+
+				if (operation != -1)
+				{
+					ImGui::Text((const char*)u8"%d体目", operation + 1);
+					// 体力
+					ImGui::Text((const char*)u8"　体力 　　HP=%d", _golemList[operation].lock()->GetParam().Hp);
+					int hp = _golemList[operation].lock()->GetParam().Hp;
+					ImGui::SliderInt("HP", &hp, 1, 100);
+					// 攻撃力
+					ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _golemList[operation].lock()->GetParam().Atk);
+					int atk = _golemList[operation].lock()->GetParam().Atk;
+					ImGui::SliderInt("ATK", &atk, 1, 100);
+					// 素早さ
+					ImGui::Text((const char*)u8"　素早さ 　SP=%.2f", _golemList[operation].lock()->GetParam().Sp);
+					float speed = _golemList[operation].lock()->GetParam().Sp;
+					ImGui::SliderFloat("Speed", &speed, 1, 100);
+					// スタミナ
+					ImGui::Text((const char*)u8"　スタミナ SM=%d", _golemList[operation].lock()->GetParam().Sm);
+					int stamina = _golemList[operation].lock()->GetParam().Sm;
+					ImGui::SliderInt("Stamina", &stamina, 1, 100);
+					// 位置
+					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _golemList[operation].lock()->GetPos().x, _golemList[operation].lock()->GetPos().y, _golemList[operation].lock()->GetPos().z);
+					Math::Vector3 pos = _golemList[operation].lock()->GetPos();
+					ImGui::SliderFloat("PosX", &pos.x, -100, 100);
+					ImGui::SliderFloat("PosY", &pos.y, 0, 400);
+					ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
+					// 方向
+					ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _golemList[operation].lock()->GetDir().x, _golemList[operation].lock()->GetDir().y, _golemList[operation].lock()->GetDir().z);
+					// 角度
+					ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _golemList[operation].lock()->GetAngle());
+					Math::Vector3 angle = _golemList[operation].lock()->GetAngle();
+					ImGui::SliderFloat("Angle", &angle.y, 0, 360);
+					// 大きさ
+					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _golemList[operation].lock()->GetSize());
+					float size = _golemList[operation].lock()->GetSize();
+					ImGui::SliderFloat("Size", &size, 0.01, 1.5);
+					// 攻撃範囲
+					ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _golemList[operation].lock()->GetParam().AtkRange);
+					float range = _golemList[operation].lock()->GetParam().AtkRange;
+					ImGui::SliderFloat("ATKRange", &range, 1, 100);
+					// 前方方向
+					ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _golemList[operation].lock()->GetForward().x, _golemList[operation].lock()->GetForward().y, _golemList[operation].lock()->GetForward().z);
+
+					// セット
+					_golemList[operation].lock()->SetParam(hp, atk, speed, stamina);
+					_golemList[operation].lock()->SetPos(pos);
+					_golemList[operation].lock()->SetAngle(angle);
+					_golemList[operation].lock()->SetSize(size);
+					_golemList[operation].lock()->SetAtkRange(range);
+
+					// 消滅
+					if (ImGui::Button((const char*)u8"消滅"))
+					{
+						_golemList[operation].lock()->Expired();
+						operation = -1;
 					}
 
-					if (operation != -1)
-					{
-						ImGui::Text((const char*)u8"%d体目", operation + 1);
-						// 体力
-						ImGui::Text((const char*)u8"　体力 　　HP=%d", _golemList[operation].lock()->GetParam().Hp);
-						int hp = _golemList[operation].lock()->GetParam().Hp;
-						ImGui::SliderInt("HP", &hp, 1, 100);
-						// 攻撃力
-						ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _golemList[operation].lock()->GetParam().Atk);
-						int atk = _golemList[operation].lock()->GetParam().Atk;
-						ImGui::SliderInt("ATK", &atk, 1, 100);
-						// 素早さ
-						ImGui::Text((const char*)u8"　素早さ 　SP=%.2f", _golemList[operation].lock()->GetParam().Sp);
-						float speed = _golemList[operation].lock()->GetParam().Sp;
-						ImGui::SliderFloat("Speed", &speed, 1, 100);
-						// スタミナ
-						ImGui::Text((const char*)u8"　スタミナ SM=%d", _golemList[operation].lock()->GetParam().Sm);
-						int stamina = _golemList[operation].lock()->GetParam().Sm;
-						ImGui::SliderInt("Stamina", &stamina, 1, 100);
-						// 位置
-						ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _golemList[operation].lock()->GetPos().x, _golemList[operation].lock()->GetPos().y, _golemList[operation].lock()->GetPos().z);
-						Math::Vector3 pos = _golemList[operation].lock()->GetPos();
-						ImGui::SliderFloat("PosX", &pos.x, -100, 100);
-						ImGui::SliderFloat("PosY", &pos.y, 0, 400);
-						ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
-						// 方向
-						ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _golemList[operation].lock()->GetDir().x, _golemList[operation].lock()->GetDir().y, _golemList[operation].lock()->GetDir().z);
-						// 角度
-						ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _golemList[operation].lock()->GetAngle());
-						Math::Vector3 angle = _golemList[operation].lock()->GetAngle();
-						ImGui::SliderFloat("Angle", &angle.y, 0, 360);
-						// 大きさ
-						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _golemList[operation].lock()->GetSize());
-						float size = _golemList[operation].lock()->GetSize();
-						ImGui::SliderFloat("Size", &size, 0.01, 1.5);
-						// 攻撃範囲
-						ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _golemList[operation].lock()->GetParam().AtkRange);
-						float range = _golemList[operation].lock()->GetParam().AtkRange;
-						ImGui::SliderFloat("ATKRange", &range, 1, 100);
-						// 前方方向
-						ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _golemList[operation].lock()->GetForward().x, _golemList[operation].lock()->GetForward().y, _golemList[operation].lock()->GetForward().z);
-
-						_golemList[operation].lock()->SetParam(hp, atk, speed, stamina);
-						_golemList[operation].lock()->SetPos(pos);
-						_golemList[operation].lock()->SetAngle(angle);
-						_golemList[operation].lock()->SetSize(size);
-						_golemList[operation].lock()->SetAtkRange(range);
-
-						if (ImGui::Button((const char*)u8"消滅"))
-						{
-							_golemList[operation].lock()->Expired();
-							operation = -1;
-						}
-
-						ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-					}
-					ImGui::TreePop();
+					ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 				}
 
 				ImGui::TreePop();
 			}
 
+			// UI
 			if (ImGui::TreeNode("UI"))
 			{
+				// HP
 				if (ImGui::TreeNode("HP"))
 				{
+					// 保存
 					if (ImGui::Button((const char*)u8"HP保存"))
 					{
 						EnemyHPWrite();
@@ -1283,6 +1401,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 							float _HPSize = _hp->GetSize();
 							ImGui::SliderFloat("Size", &_HPSize, 1, 100);
 
+							// セット
 							_hp->SetPos(_HPPos);
 							_hp->SetSize(_HPSize);
 						}
@@ -1297,48 +1416,64 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 			ImGui::TreePop();
 		}
 
+		// キャラクター以外のオブジェクト
 		if (ImGui::TreeNode("Object"))
 		{
+			// 保存
 			if (ImGui::Button((const char*)u8"Object保存")) ObjectWrite(("Asset/Json/") + _filePath + ("/Object/Object.json"));
+			
+			// 設定したいオブジェクト
 			static int Goperation = -1;
 			static int Coperation = -1;
 			static int Woperation = -1;
 
+			// オブジェクトリスト
+			// 地面
 			std::vector<std::weak_ptr<KdGameObject>> groundList;
+			// 魔法陣の台
 			std::vector<std::weak_ptr<KdGameObject>> circleList;
+			// 魔法陣
 			std::vector<std::weak_ptr<KdGameObject>> magicList;
+			// 壁
 			std::vector<std::weak_ptr<KdGameObject>> wallList;
+			// 空
 			std::vector<std::weak_ptr<KdGameObject>> skyboxList;
+			
+			// それぞれのリストの格納
 			for (auto& obj : m_ObjectList)
 			{
 				if (obj.expired() == false)
 				{
-					if (obj.lock()->GetName() == "Ground")
+					if (obj.lock()->GetName() == "Ground")      // 地面
 					{
 						groundList.push_back(obj);
 					}
-					else if (obj.lock()->GetName() == "Circle")
+					else if (obj.lock()->GetName() == "Circle") // 魔法陣の台
 					{
 						circleList.push_back(obj);
 					}
-					else if (obj.lock()->GetName() == "Magic")
+					else if (obj.lock()->GetName() == "Magic")  // 魔法陣
 					{
 						magicList.push_back(obj);
 					}
-					else if (obj.lock()->GetName() == "Wall")
+					else if (obj.lock()->GetName() == "Wall")   // 壁 
 					{
 						wallList.push_back(obj);
 					}
-					else if (obj.lock()->GetName() == "SkyBox")
+					else if (obj.lock()->GetName() == "SkyBox") // 空
 					{
 						skyboxList.push_back(obj);
 					}
 				}
 			}
 
+			// 地面
 			if (ImGui::TreeNode("Ground"))
 			{
+				// 生成
 				if (ImGui::Button((const char*)u8"Ground追加")) AddGround();
+				
+				// 設定したいオブジェクト
 				for (int g = 0; g < groundList.size(); ++g)
 				{
 					if (ImGui::Button(std::to_string(g + 1).c_str()))Goperation = g;
@@ -1362,10 +1497,12 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					float size = groundList[Goperation].lock()->GetSize();
 					ImGui::SliderFloat("Size", &size, 1, 100);
 
+					// セット
 					groundList[Goperation].lock()->SetPos(pos);
 					groundList[Goperation].lock()->SetSize(size);
 					groundList[Goperation].lock()->SetAngle(angle);
 
+					// 消滅
 					if (ImGui::Button((const char*)u8"消滅"))
 					{
 						groundList[Goperation].lock()->Expired();
@@ -1383,8 +1520,11 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				}
 				ImGui::TreePop();
 			}
+
+			// 魔法陣の台
 			if (ImGui::TreeNode("Circle"))
 			{
+				// 生成
 				if (ImGui::Button((const char*)u8"Circle追加"))
 				{
 					if (groundList.size() > circleList.size()) AddCircle();
@@ -1403,9 +1543,11 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 
 					for (int c = 0; c < circleList.size(); ++c)
 					{
+						// 角度と大きさは全て共通
 						circleList[c].lock()->SetSize(size);
 						circleList[c].lock()->SetAngle(angle);
 
+						// 設定したいオブジェクト
 						if (ImGui::Button(std::to_string(c + 1).c_str()))Coperation = c;
 					}
 
@@ -1422,12 +1564,14 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 							ImGui::SliderFloat("PosX", &pos.x, -100, 100);
 							ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
 
+							// セット
 							circleList[Coperation].lock()->SetPos(pos);
 
+							// 消滅
 							if (ImGui::Button((const char*)u8"消滅"))
 							{
 								circleList[Coperation].lock()->Expired();
-								magicList[Coperation].lock()->Expired();
+								magicList[Coperation].lock()->Expired(); // 魔法陣も消滅
 								DeleteObjectList();
 								Coperation = -1;
 							}
@@ -1437,6 +1581,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 
 					ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
+					// 魔法陣
 					if (ImGui::TreeNode("Magic"))
 					{
 						float size = 0.0f;
@@ -1450,6 +1595,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 
 						for (int m = 0; m < magicList.size(); ++m)
 						{
+							// セット
 							if (circleList[m].expired() == false)
 							{
 								magicList[m].lock()->SetSize(size);
@@ -1461,9 +1607,13 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 
 				ImGui::TreePop();
 			}
+
+			// 壁
 			if (ImGui::TreeNode("Wall"))
 			{
+				// 生成
 				if (ImGui::Button((const char*)u8"Wall追加")) AddWall();
+				// 設定したいオブジェクト
 				for (int w = 0; w < wallList.size(); ++w)
 				{
 					if (ImGui::Button(std::to_string(w + 1).c_str()))Woperation = w;
@@ -1487,10 +1637,12 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					float size = wallList[Woperation].lock()->GetSize();
 					ImGui::SliderFloat("Size", &size, 1, 100);
 
+					// セット
 					wallList[Woperation].lock()->SetPos(pos);
 					wallList[Woperation].lock()->SetSize(size);
 					wallList[Woperation].lock()->SetAngle(angle);
 
+					// 消滅
 					if (ImGui::Button((const char*)u8"消滅"))
 					{
 						wallList[Woperation].lock()->Expired();
@@ -1502,8 +1654,11 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				}
 				ImGui::TreePop();
 			}
+
+			// 空
 			if (ImGui::TreeNode("SkyBox"))
 			{
+				// 生成
 				if (ImGui::Button((const char*)u8"SkyBox追加")) AddSkyBox();
 
 				if (skyboxList.size() > 0)
@@ -1523,6 +1678,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					float size = skyboxList[0].lock()->GetSize();
 					ImGui::SliderFloat("Size", &size, 1, 100);
 
+					// セット
 					skyboxList[0].lock()->SetPos(pos);
 					skyboxList[0].lock()->SetSize(size);
 					skyboxList[0].lock()->SetAngle(angle);
@@ -1535,13 +1691,16 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 			ImGui::TreePop();
 		}
 
+		// シーンの切り替え
 		if (ImGui::TreeNode((const char*)u8"シーン切替"))
 		{
+			// タイトル
 			if (ImGui::Button("Title"))
 			{
 				SceneManager::Instance().SetNextScene(SceneManager::SceneType::Title);
 				KdEffekseerManager::GetInstance().StopAllEffect();
 			}
+			// ゲーム
 			if (ImGui::Button("Game"))
 			{
 				SceneManager::Instance().SetNextScene(SceneManager::SceneType::Game);
@@ -1560,14 +1719,20 @@ void ObjectManager::TitleCameraWrite()
 
 	nlohmann::json _json;
 
+	// 名前
 	_json["TitleCamera"]["Name"] = "TitleCamera";
+	
+	// 座標
 	_json["TitleCamera"]["PosX"] = m_titleCamera.lock()->GetPos().x;
 	_json["TitleCamera"]["PosY"] = m_titleCamera.lock()->GetPos().y;
 	_json["TitleCamera"]["PosZ"] = m_titleCamera.lock()->GetPos().z;
+	
+	// 角度
 	_json["TitleCamera"]["DegAngX"] = m_titleCamera.lock()->GetDegAng().x;
 	_json["TitleCamera"]["DegAngY"] = m_titleCamera.lock()->GetDegAng().y;
 	_json["TitleCamera"]["DegAngZ"] = m_titleCamera.lock()->GetDegAng().z;
 
+	// ファイルに保存
 	std::ofstream _file("Asset/Json/Title/Camera/TitleCamera.json");
 	if (_file.is_open())
 	{
@@ -1582,11 +1747,17 @@ void ObjectManager::TitleWrite()
 
 	nlohmann::json _json;
 
+	// 名前
 	_json["Title"]["Name"] = "Title";
+	
+	// 座標
 	_json["Title"]["PosX"] = m_title.lock()->GetVector2Pos().x;
 	_json["Title"]["PosY"] = m_title.lock()->GetVector2Pos().y;
+	
+	// 大きさ
 	_json["Title"]["Size"] = m_title.lock()->GetSize();
 
+	// ファイルに保存
 	std::ofstream _file("Asset/Json/Title/Title/Title.json");
 	if (_file.is_open())
 	{
@@ -1601,11 +1772,17 @@ void ObjectManager::GameWrite()
 
 	nlohmann::json _json;
 
+	// 名前
 	_json["Game"]["Name"] = "Game";
+	
+	// 座標
 	_json["Game"]["PosX"] = m_game.lock()->GetVector2Pos().x;
 	_json["Game"]["PosY"] = m_game.lock()->GetVector2Pos().y;
+	
+	// 大きさ
 	_json["Game"]["Size"] = m_game.lock()->GetSize();
 
+	// ファイルに保存
 	std::ofstream _file("Asset/Json/Title/Game/Game.json");
 	if (_file.is_open())
 	{
@@ -1620,11 +1797,17 @@ void ObjectManager::ExitWrite()
 
 	nlohmann::json _json;
 
+	// 名前
 	_json["Exit"]["Name"] = "Exit";
+	
+	// 座標
 	_json["Exit"]["PosX"] = m_exit.lock()->GetVector2Pos().x;
 	_json["Exit"]["PosY"] = m_exit.lock()->GetVector2Pos().y;
+	
+	// 大きさ
 	_json["Exit"]["Size"] = m_exit.lock()->GetSize();
 
+	// ファイルに保存
 	std::ofstream _file("Asset/Json/Title/Exit/Exit.json");
 	if (_file.is_open())
 	{
@@ -1639,11 +1822,17 @@ void ObjectManager::TitleGuideWrite()
 
 	nlohmann::json _json;
 
+	// 名前
 	_json["TitleGuide"]["Name"] = "TitleGuide";
+	
+	// 座標
 	_json["TitleGuide"]["PosX"] = m_titleGuide.lock()->GetVector2Pos().x;
 	_json["TitleGuide"]["PosY"] = m_titleGuide.lock()->GetVector2Pos().y;
+	
+	// 大きさ
 	_json["TitleGuide"]["Size"] = m_titleGuide.lock()->GetSize();
 
+	// ファイルに保存
 	std::ofstream _file("Asset/Json/Title/Guide/Guide.json");
 	if (_file.is_open())
 	{
@@ -1658,12 +1847,20 @@ void ObjectManager::CursorWrite()
 
 	nlohmann::json _json;
 
+	// 名前
 	_json["Cursor"]["Name"] = "Title";
+	
+	// 最大サイズ
 	_json["Cursor"]["MaxSize"] = m_cursor.lock()->GetMaxSize();
+	// 大きさ変化量
 	_json["Cursor"]["ChangeSize"] = m_cursor.lock()->GetChangeSizeNum();
+	
+	// 最大アルファ値
 	_json["Cursor"]["MaxAlpha"] = m_cursor.lock()->GetMaxAlpha();
+	// アルファ値変化量
 	_json["Cursor"]["ChangeAlpha"] = m_cursor.lock()->GetChangeAlphaNum();
 
+	// ファイルに保存
 	std::ofstream _file("Asset/Json/Title/Cursor/Cursor.json");
 	if (_file.is_open())
 	{
@@ -1682,6 +1879,7 @@ void ObjectManager::GameCameraWrite()
 		_oldFile.close();
 	}
 
+	// 保存するステート
 	std::string _cameraType;
 	switch (m_camera.lock()->GetCameraType())
 	{
@@ -1698,14 +1896,22 @@ void ObjectManager::GameCameraWrite()
 		break;
 	}
 
+	// 名前
 	_json["Camera"]["Name"] = "Camera";
+	
+	// 座標
 	_json["Camera"][_cameraType + "PosX"] = m_camera.lock()->GetNowPos().x;
 	_json["Camera"][_cameraType + "PosY"] = m_camera.lock()->GetNowPos().y;
 	_json["Camera"][_cameraType + "PosZ"] = m_camera.lock()->GetNowPos().z;
+	
+	// 角度
 	_json["Camera"][_cameraType + "AngleX"] = m_camera.lock()->GetNowDegAng().x;
 	_json["Camera"][_cameraType + "AngleY"] = m_camera.lock()->GetNowDegAng().y;
+	
+	// 視野角
 	_json["Camera"][_cameraType + "ViewAngle"] = m_camera.lock()->GetNowViewAng();
 
+	// ファイルに保存
 	std::ofstream _newfile("Asset/Json/Game/Camera/Camera.json");
 	if (_newfile.is_open())
 	{
@@ -1718,28 +1924,48 @@ void ObjectManager::PlayerWrite(std::string _fileName)
 {
 	nlohmann::json _json;
 
+	// 名前
 	_json["Player"]["Name"] = "Player";
+	
+	// 座標
 	_json["Player"]["PosX"] = m_player.lock()->GetPos().x;
 	_json["Player"]["PosY"] = m_player.lock()->GetPos().y;
 	_json["Player"]["PosZ"] = m_player.lock()->GetPos().z;
-	_json["Player"]["DirX"] = m_player.lock()->GetDir().x;
-	_json["Player"]["DirY"] = m_player.lock()->GetDir().y;
-	_json["Player"]["DirZ"] = m_player.lock()->GetDir().z;
+	
+	// 大きさ
 	_json["Player"]["Size"] = m_player.lock()->GetSize();
+	
+	// 角度
 	_json["Player"]["Angle"] = m_player.lock()->GetAngle().y;
+	
+	// HP
 	_json["Player"]["HP"] = m_player.lock()->GetParam().Hp;
+	
+	// 攻撃力
 	_json["Player"]["ATK"] = m_player.lock()->GetParam().Atk;
+	
+	// 素早さ
 	_json["Player"]["Speed"] = m_player.lock()->GetParam().Sp;
+	
+	// スタミナ
 	_json["Player"]["Stamina"] = m_player.lock()->GetParam().Sm;
+	
+	// 攻撃範囲
 	_json["Player"]["ATKRange"] = m_player.lock()->GetParam().AtkRange;
+	
+	// 前方方向
 	_json["Player"]["ForwardX"] = m_player.lock()->GetForward().x;
 	_json["Player"]["ForwardY"] = m_player.lock()->GetForward().y;
 	_json["Player"]["ForwardZ"] = m_player.lock()->GetForward().z;
+	
+	// 無敵付与時間
 	_json["Player"]["InviTime"] = m_player.lock()->GetinviTime();
+	
+	// 武器
 	_json["Player"]["SwordName"] = m_player.lock()->GetSword().lock()->GetName();
 	_json["Player"]["ShieldName"] = m_player.lock()->GetShield().lock()->GetName();
 
-
+	// ファイルに保存
 	std::ofstream _file(_fileName);
 	if (_file.is_open())
 	{
@@ -1754,11 +1980,17 @@ void ObjectManager::PlayerHPWrite()
 
 	nlohmann::json _json;
 
+	// 名前
 	_json["HP"]["Name"] = "HP";
+	
+	// 座標
 	_json["HP"]["PosX"] = m_PlayerHP.lock()->GetVector2Pos().x;
 	_json["HP"]["PosY"] = m_PlayerHP.lock()->GetVector2Pos().y;
+	
+	// 大きさ
 	_json["HP"]["Size"] = m_PlayerHP.lock()->GetSize();
 
+	// ファイルに保存
 	std::ofstream _file("Asset/Json/Game/UI/Player/HP/HP.json");
 	if (_file.is_open())
 	{
@@ -1773,11 +2005,17 @@ void ObjectManager::PlayerStaminaWrite()
 
 	nlohmann::json _json;
 
+	// 名前
 	_json["Stamina"]["Name"] = "Stamina";
+	
+	// 座標
 	_json["Stamina"]["PosX"] = m_PlayerStamina.lock()->GetVector2Pos().x;
 	_json["Stamina"]["PosY"] = m_PlayerStamina.lock()->GetVector2Pos().y;
+	
+	// 大きさ
 	_json["Stamina"]["Size"] = m_PlayerStamina.lock()->GetSize();
 
+	// ファイルに保存
 	std::ofstream _file("Asset/Json/Game/UI/Player/Stamina/Stamina.json");
 	if (_file.is_open())
 	{
@@ -1792,13 +2030,23 @@ void ObjectManager::LockONWrite()
 
 	nlohmann::json _json;
 
+	// 名前
 	_json["LockON"]["Name"] = "LockON";
+	
+	// 座標
 	_json["LockON"]["PosX"] = m_lockON.lock()->GetVector2Pos().x;
 	_json["LockON"]["PosY"] = m_lockON.lock()->GetVector2Pos().y;
+	
+	// 大きさ
 	_json["LockON"]["Size"] = m_lockON.lock()->GetSize();
+	
+	// 大きさ変化量
 	_json["LockON"]["SizeChange"] = m_lockON.lock()->GetChangeSize();
+	
+	// アルファ値変化量
 	_json["LockON"]["AlphaChange"] = m_lockON.lock()->GetChangeAlpha();
 
+	// ファイルに保存
 	std::ofstream _file("Asset/Json/Game/UI/Player/LockON/LockON.json");
 	if (_file.is_open())
 	{
@@ -1813,11 +2061,17 @@ void ObjectManager::FloorWrite()
 
 	nlohmann::json _json;
 
+	// 名前
 	_json["Floor"]["Name"] = "Floor";
+	
+	// 座標
 	_json["Floor"]["PosX"] = m_floor.lock()->GetVector2Pos().x;
 	_json["Floor"]["PosY"] = m_floor.lock()->GetVector2Pos().y;
+	
+	// 大きさ
 	_json["Floor"]["Size"] = m_floor.lock()->GetSize();
 
+	// ファイルに保存
 	std::ofstream _file("Asset/Json/Game/UI/Player/Floor/Floor.json");
 	if (_file.is_open())
 	{
@@ -1832,12 +2086,20 @@ void ObjectManager::TeleportWrite()
 
 	nlohmann::json _json;
 
+	// 名前
 	_json["Teleport"]["Name"] = "Teleport";
+	
+	// 座標
 	_json["Teleport"]["PosX"] = m_teleport.lock()->GetVector2Pos().x;
 	_json["Teleport"]["PosY"] = m_teleport.lock()->GetVector2Pos().y;
+	
+	// 大きさ
 	_json["Teleport"]["Size"] = m_teleport.lock()->GetSize();
+	
+	// アルファ値変化量
 	_json["Teleport"]["AlphaChange"] = m_teleport.lock()->GetChangeAlpha();
 
+	// ファイルに保存
 	std::ofstream _file("Asset/Json/Game/UI/Player/Teleport/Teleport.json");
 	if (_file.is_open())
 	{
@@ -1852,12 +2114,20 @@ void ObjectManager::GameStateWrite()
 
 	nlohmann::json _json;
 
+	// 名前
 	_json["GameState"]["Name"] = "GameStateUI";
+	
+	// 座標
 	_json["GameState"]["PosX"] = m_gameStateUI.lock()->GetVector2Pos().x;
 	_json["GameState"]["PosY"] = m_gameStateUI.lock()->GetVector2Pos().y;
+	
+	// 大きさ
 	_json["GameState"]["Size"] = m_gameStateUI.lock()->GetSize();
+	
+	// アルファ値変化量
 	_json["GameState"]["AlphaChange"] = m_gameStateUI.lock()->GetAlphaChange();
 
+	// ファイルに保存
 	std::ofstream _file("Asset/Json/Game/UI/Player/GameState/GameState.json");
 	if (_file.is_open())
 	{
@@ -1870,6 +2140,7 @@ void ObjectManager::EnemyWrite(int _stage, int _wave, std::string _fileName)
 {
 	std::string _stagePath = (_fileName)+std::to_string(_stage).c_str() + ((std::string)".json");
 	nlohmann::json _json;
+	// 前の状態
 	std::ifstream _oldFile(_stagePath);
 	if (_oldFile.is_open())
 	{
@@ -1877,54 +2148,76 @@ void ObjectManager::EnemyWrite(int _stage, int _wave, std::string _fileName)
 		_oldFile.close();
 	}
 
+	// 変更するウェーブ
 	std::string wave = (std::to_string(_wave).c_str()) + ((std::string)"Wave");
 	_json[wave].clear();
 
 	for (auto& enemy : m_EnemyList)
 	{
-		std::string _category;
-		std::string _name;
+		std::string _category; // 種類
+		std::string _num;      // 番号
+
+		// 骨
 		if (enemy.lock()->GetName() == "Bone")
 		{
 			static int b = 0;
 			_category = "Bone";
-			_name = (std::to_string(b).c_str()) + ((std::string)"Bone");
+			_num = (std::to_string(b).c_str()) + ((std::string)"Bone");
 			b++;
 		}
-		if (enemy.lock()->GetName() == "BoneAlpha")
+		// 骨色違い
+		else if (enemy.lock()->GetName() == "BoneAlpha")
 		{
 			static int b = 0;
 			_category = "BoneAlpha";
-			_name = (std::to_string(b).c_str()) + ((std::string)"BoneAlpha");
+			_num = (std::to_string(b).c_str()) + ((std::string)"BoneAlpha");
 			b++;
 		}
+		// ゴーレム
 		else if (enemy.lock()->GetName() == "Golem")
 		{
 			static int g = 0;
 			_category = "Golem";
-			_name = (std::to_string(g).c_str()) + ((std::string)"Golem");
+			_num = (std::to_string(g).c_str()) + ((std::string)"Golem");
 			g++;
 		}
 
-		_json[wave][_category][_name]["Name"] = enemy.lock()->GetName();
-		_json[wave][_category][_name]["PosX"] = enemy.lock()->GetPos().x;
-		_json[wave][_category][_name]["PosY"] = enemy.lock()->GetPos().y;
-		_json[wave][_category][_name]["PosZ"] = enemy.lock()->GetPos().z;
-		_json[wave][_category][_name]["DirX"] = enemy.lock()->GetDir().x;
-		_json[wave][_category][_name]["DirY"] = enemy.lock()->GetDir().y;
-		_json[wave][_category][_name]["DirZ"] = enemy.lock()->GetDir().z;
-		_json[wave][_category][_name]["Size"] = enemy.lock()->GetSize();
-		_json[wave][_category][_name]["Angle"] = enemy.lock()->GetAngle().y;
-		_json[wave][_category][_name]["HP"] = enemy.lock()->GetParam().Hp;
-		_json[wave][_category][_name]["ATK"] = enemy.lock()->GetParam().Atk;
-		_json[wave][_category][_name]["Speed"] = enemy.lock()->GetParam().Sp;
-		_json[wave][_category][_name]["Stamina"] = enemy.lock()->GetParam().Sm;
-		_json[wave][_category][_name]["ATKRange"] = enemy.lock()->GetParam().AtkRange;
-		_json[wave][_category][_name]["ForwardX"] = enemy.lock()->GetForward().x;
-		_json[wave][_category][_name]["ForwardY"] = enemy.lock()->GetForward().y;
-		_json[wave][_category][_name]["ForwardZ"] = enemy.lock()->GetForward().z;
+		// 名前
+		_json[wave][_category][_num]["Name"] = enemy.lock()->GetName();
+
+		// 座標　
+		_json[wave][_category][_num]["PosX"] = enemy.lock()->GetPos().x;
+		_json[wave][_category][_num]["PosY"] = enemy.lock()->GetPos().y;
+		_json[wave][_category][_num]["PosZ"] = enemy.lock()->GetPos().z;
+		
+		// 大きさ
+		_json[wave][_category][_num]["Size"] = enemy.lock()->GetSize();
+		
+		// 角度
+		_json[wave][_category][_num]["Angle"] = enemy.lock()->GetAngle().y;
+		
+		// HP
+		_json[wave][_category][_num]["HP"] = enemy.lock()->GetParam().Hp;
+		
+		// 攻撃力
+		_json[wave][_category][_num]["ATK"] = enemy.lock()->GetParam().Atk;
+		
+		// 素早さ
+		_json[wave][_category][_num]["Speed"] = enemy.lock()->GetParam().Sp;
+		
+		// スタミナ
+		_json[wave][_category][_num]["Stamina"] = enemy.lock()->GetParam().Sm;
+		
+		// 攻撃範囲
+		_json[wave][_category][_num]["ATKRange"] = enemy.lock()->GetParam().AtkRange;
+		
+		// 前方方向
+		_json[wave][_category][_num]["ForwardX"] = enemy.lock()->GetForward().x;
+		_json[wave][_category][_num]["ForwardY"] = enemy.lock()->GetForward().y;
+		_json[wave][_category][_num]["ForwardZ"] = enemy.lock()->GetForward().z;
 	}
 
+	// ファイルに保存
 	std::ofstream _newFile(_stagePath);
 	if (_newFile.is_open())
 	{
@@ -1939,11 +2232,17 @@ void ObjectManager::EnemyHPWrite()
 
 	nlohmann::json _json;
 
+	// 名前
 	_json["HP"]["Name"] = "HP";
+	
+	// 座標
 	_json["HP"]["PosX"] = m_EnemyHPList[0].lock()->GetVector2Pos().x;
 	_json["HP"]["PosY"] = m_EnemyHPList[0].lock()->GetVector2Pos().y;
+	
+	// 大きさ
 	_json["HP"]["Size"] = m_EnemyHPList[0].lock()->GetSize();
 
+	// ファイルに保存
 	std::ofstream _file("Asset/Json/Game/UI/Enemy/HP/HP.json");
 	if (_file.is_open())
 	{
@@ -1955,6 +2254,7 @@ void ObjectManager::EnemyHPWrite()
 void ObjectManager::SwordWrite(std::string _swordName, std::string _fileName)
 {
 	nlohmann::json _json;
+	// 前の状態のファイル
 	std::ifstream _oldFile(_fileName);
 	if (_oldFile.is_open())
 	{
@@ -1966,14 +2266,22 @@ void ObjectManager::SwordWrite(std::string _swordName, std::string _fileName)
 	{
 		if (_sword["Name"] != _swordName)continue;
 
+		// 座標
 		_sword["PosX"] = m_player.lock()->GetSword().lock()->GetPos().x;
 		_sword["PosY"] = m_player.lock()->GetSword().lock()->GetPos().y;
 		_sword["PosZ"] = m_player.lock()->GetSword().lock()->GetPos().z;
+		
+		// 攻撃力
 		_sword["ATK"] = m_player.lock()->GetSword().lock()->GetATK();
+		
+		// 大きさ
 		_sword["Size"] = m_player.lock()->GetSword().lock()->GetSize();
+		
+		// 軌跡の長さ
 		_sword["Traject"] = m_player.lock()->GetSword().lock()->GetTraject();
 	}
 
+	// ファイルに保存
 	std::ofstream _newFile(_fileName);
 	if (_newFile.is_open())
 	{
@@ -1985,6 +2293,7 @@ void ObjectManager::SwordWrite(std::string _swordName, std::string _fileName)
 void ObjectManager::ShieldWrite(std::string _shieldName, std::string _fileName)
 {
 	nlohmann::json _json;
+	// 前の状態のファイル
 	std::ifstream _oldFile(_fileName);
 	if (_oldFile.is_open())
 	{
@@ -1996,12 +2305,16 @@ void ObjectManager::ShieldWrite(std::string _shieldName, std::string _fileName)
 	{
 		if (_shield["Name"] != _shieldName)continue;
 
+		// 座標
 		_shield["PosX"] = m_player.lock()->GetShield().lock()->GetPos().x;
 		_shield["PosY"] = m_player.lock()->GetShield().lock()->GetPos().y;
 		_shield["PosZ"] = m_player.lock()->GetShield().lock()->GetPos().z;
+		
+		// 大きさ
 		_shield["Size"] = m_player.lock()->GetShield().lock()->GetSize();
 	}
 
+	// ファイルに保存
 	std::ofstream _newFile(_fileName);
 	if (_newFile.is_open())
 	{
@@ -2016,52 +2329,60 @@ void ObjectManager::ObjectWrite(std::string _fileName)
 
 	for (auto& obj : m_ObjectList)
 	{
-		std::string _category;
-		std::string _name;
-		if (obj.lock()->GetName() == "Ground")
+		std::string _category; // 種類
+		std::string _num;      // 番号
+		if (obj.lock()->GetName() == "Ground") // 地面
 		{
 			static int g = 0;
 			_category = "Ground";
-			_name = (std::to_string(g).c_str()) + ((std::string)"Ground");
+			_num = (std::to_string(g).c_str()) + ((std::string)"Ground");
 			g++;
 		}
-		else if (obj.lock()->GetName() == "Circle")
+		else if (obj.lock()->GetName() == "Circle") // 魔法陣の台
 		{
 			static int c = 0;
 			_category = "Circle";
-			_name = (std::to_string(c).c_str()) + ((std::string)"Circle");
+			_num = (std::to_string(c).c_str()) + ((std::string)"Circle");
 			c++;
 		}
-		else if (obj.lock()->GetName() == "Magic")
+		else if (obj.lock()->GetName() == "Magic") // 魔法陣
 		{
 			static int m = 0;
 			_category = "Magic";
-			_name = (std::to_string(m).c_str()) + ((std::string)"Magic");
+			_num = (std::to_string(m).c_str()) + ((std::string)"Magic");
 			m++;
 		}
-		else if (obj.lock()->GetName() == "Wall")
+		else if (obj.lock()->GetName() == "Wall") // 壁
 		{
 			static int w = 0;
 			_category = "Wall";
-			_name = (std::to_string(w).c_str()) + ((std::string)"Wall");
+			_num = (std::to_string(w).c_str()) + ((std::string)"Wall");
 			w++;
 		}
-		else if (obj.lock()->GetName() == "SkyBox")
+		else if (obj.lock()->GetName() == "SkyBox") // 空
 		{
 			static int s = 0;
 			_category = "SkyBox";
-			_name = (std::to_string(s).c_str()) + ((std::string)"SkyBox");
+			_num = (std::to_string(s).c_str()) + ((std::string)"SkyBox");
 			s++;
 		}
 
-		_json[_category][_name]["Name"] = obj.lock()->GetName();
-		_json[_category][_name]["PosX"] = obj.lock()->GetPos().x;
-		_json[_category][_name]["PosY"] = obj.lock()->GetPos().y;
-		_json[_category][_name]["PosZ"] = obj.lock()->GetPos().z;
-		_json[_category][_name]["Size"] = obj.lock()->GetSize();
-		_json[_category][_name]["Angle"] = obj.lock()->GetAngle().y;
+		// 名前
+		_json[_category][_num]["Name"] = obj.lock()->GetName();
+		
+		// 座標
+		_json[_category][_num]["PosX"] = obj.lock()->GetPos().x;
+		_json[_category][_num]["PosY"] = obj.lock()->GetPos().y;
+		_json[_category][_num]["PosZ"] = obj.lock()->GetPos().z;
+		
+		// 大きさ
+		_json[_category][_num]["Size"] = obj.lock()->GetSize();
+		
+		// 角度
+		_json[_category][_num]["Angle"] = obj.lock()->GetAngle().y;
 	}
 
+	// ファイルに保存
 	std::ofstream _file(_fileName);
 	if (_file.is_open())
 	{
@@ -2072,16 +2393,21 @@ void ObjectManager::ObjectWrite(std::string _fileName)
 
 void ObjectManager::ModelLoad()
 {
+	// 骨
 	std::shared_ptr<KdModelWork>_boneModel = std::make_shared<KdModelWork>();
 	_boneModel->SetModelData("Asset/Models/Character/Enemy/Bone/Bone.gltf");
 
+	// 骨色違い
 	std::shared_ptr<KdModelWork>_boneAlphaModel = std::make_shared<KdModelWork>();
 	_boneAlphaModel->SetModelData("Asset/Models/Character/Enemy/BoneAlpha/BoneAlpha.gltf");
+	// 弾
 	std::shared_ptr<KdModelWork>_boneAlphaBulletModel = std::make_shared<KdModelWork>();
 	_boneAlphaBulletModel->SetEnable("Asset/Models/Character/Enemy/BoneAlpha/Bullet/Bullet.gltf");
 	
+	// ゴーレム
 	std::shared_ptr<KdModelWork>_golemModel = std::make_shared<KdModelWork>();
 	_golemModel->SetEnable("Asset/Models/Character/Enemy/Golem/golem.gltf");
+	// 弾
 	std::shared_ptr<KdModelWork>_golemBulletModel = std::make_shared<KdModelWork>();
 	_golemBulletModel->SetModelData("Asset/Models/Character/Enemy/Golem/Bullet/Bullet.gltf");
 }
@@ -2098,22 +2424,26 @@ void ObjectManager::SetTitleCamera()
 		ifs >> _json;
 	}
 
-	for (auto& stage : _json)
+	for (auto& obj : _json)
 	{
+		// 座標
 		Math::Vector3 _pos = Math::Vector3::Zero;
-		_pos.x = stage["PosX"];
-		_pos.y = stage["PosY"];
-		_pos.z = stage["PosZ"];
+		_pos.x = obj["PosX"];
+		_pos.y = obj["PosY"];
+		_pos.z = obj["PosZ"];
 
+		// 角度
 		Math::Vector3 _DegAng = Math::Vector3::Zero;
-		_DegAng.x = stage["DegAngX"];
-		_DegAng.y = stage["DegAngY"];
-		_DegAng.z = stage["DegAngZ"];
+		_DegAng.x = obj["DegAngX"];
+		_DegAng.y = obj["DegAngY"];
+		_DegAng.z = obj["DegAngZ"];
 
+		// 名前
 		std::string _name;
-		_name = stage["Name"];
-		std::shared_ptr<TitleCamera> camera = std::make_shared<TitleCamera>();
+		_name = obj["Name"];
 
+		// セット
+		std::shared_ptr<TitleCamera> camera = std::make_shared<TitleCamera>();
 		camera->SetPos(_pos);
 		camera->SetDegAng(_DegAng);
 		camera->SetName(_name);
@@ -2141,17 +2471,22 @@ void ObjectManager::SetTitleParam()
 		ifs >> _json;
 	}
 
-	for (auto& stage : _json)
+	for (auto& obj : _json)
 	{
+		// 座標
 		Math::Vector2 _pos = Math::Vector2::Zero;
-		_pos.x = stage["PosX"];
-		_pos.y = stage["PosY"];
+		_pos.x = obj["PosX"];
+		_pos.y = obj["PosY"];
 
+		// 大きさ
 		float _size = 1.0f;
-		_size = stage["Size"];
+		_size = obj["Size"];
 
+		// 名前
 		std::string _name;
-		_name = stage["Name"];
+		_name = obj["Name"];
+		
+		// セット
 		std::shared_ptr<Title> title = std::make_shared<Title>();
 		title->SetPos(_pos);
 		title->SetSize(_size);
@@ -2179,19 +2514,23 @@ void ObjectManager::SetGameParam()
 		ifs >> _json;
 	}
 
-	for (auto& stage : _json)
+	for (auto& obj : _json)
 	{
+		// 座標
 		Math::Vector2 _pos = Math::Vector2::Zero;
-		_pos.x = stage["PosX"];
-		_pos.y = stage["PosY"];
+		_pos.x = obj["PosX"];
+		_pos.y = obj["PosY"];
 
+		// 大きさ
 		float _size = 1.0f;
-		_size = stage["Size"];
+		_size = obj["Size"];
 
+		// 名前
 		std::string _name;
-		_name = stage["Name"];
-		std::shared_ptr<Game> game = std::make_shared<Game>();
+		_name = obj["Name"];
 
+		// セット
+		std::shared_ptr<Game> game = std::make_shared<Game>();
 		game->SetPos(_pos);
 		game->SetSize(_size);
 		game->SetName(_name);
@@ -2218,19 +2557,23 @@ void ObjectManager::SetExitParam()
 		ifs >> _json;
 	}
 
-	for (auto& stage : _json)
+	for (auto& obj : _json)
 	{
+		// 座標
 		Math::Vector2 _pos = Math::Vector2::Zero;
-		_pos.x = stage["PosX"];
-		_pos.y = stage["PosY"];
+		_pos.x = obj["PosX"];
+		_pos.y = obj["PosY"];
 
+		// 大きさ
 		float _size = 1.0f;
-		_size = stage["Size"];
+		_size = obj["Size"];
 
+		// 名前
 		std::string _name;
-		_name = stage["Name"];
-		std::shared_ptr<Exit> exit = std::make_shared<Exit>();
+		_name = obj["Name"];
 
+		// セット
+		std::shared_ptr<Exit> exit = std::make_shared<Exit>();
 		exit->SetPos(_pos);
 		exit->SetSize(_size);
 		exit->SetName(_name);
@@ -2257,19 +2600,23 @@ void ObjectManager::SetTitleGuideParam()
 		ifs >> _json;
 	}
 
-	for (auto& stage : _json)
+	for (auto& obj : _json)
 	{
+		// 座標
 		Math::Vector2 _pos = Math::Vector2::Zero;
-		_pos.x = stage["PosX"];
-		_pos.y = stage["PosY"];
+		_pos.x = obj["PosX"];
+		_pos.y = obj["PosY"];
 
+		// 大きさ
 		float _size = 1.0f;
-		_size = stage["Size"];
+		_size = obj["Size"];
 
+		// 名前
 		std::string _name;
-		_name = stage["Name"];
-		std::shared_ptr<TitleGuide> guide = std::make_shared<TitleGuide>();
+		_name = obj["Name"];
 
+		// セット
+		std::shared_ptr<TitleGuide> guide = std::make_shared<TitleGuide>();
 		guide->SetPos(_pos);
 		guide->SetSize(_size);
 		guide->SetName(_name);
@@ -2296,24 +2643,30 @@ void ObjectManager::SetCursorParam()
 		ifs >> _json;
 	}
 
-	for (auto& stage : _json)
+	for (auto& obj : _json)
 	{
+		// 最大サイズ
 		float _MaxSize = 1.0f;
-		_MaxSize = stage["MaxSize"];
+		_MaxSize = obj["MaxSize"];
 
+		// 大きさ変化量
 		float _ChangeSize = 0.01f;
-		_ChangeSize = stage["ChangeSize"];
+		_ChangeSize = obj["ChangeSize"];
 
+		// 最大アルファ値
 		float _MaxAlpha = 1.0f;
-		_MaxAlpha = stage["MaxAlpha"];
+		_MaxAlpha = obj["MaxAlpha"];
 
+		// アルファ値変化量
 		float _ChangeAlpha = 0.01f;
-		_ChangeAlpha = stage["ChangeAlpha"];
+		_ChangeAlpha = obj["ChangeAlpha"];
 
+		// 名前
 		std::string _name;
-		_name = stage["Name"];
-		std::shared_ptr<Cursor> cursor = std::make_shared<Cursor>();
+		_name = obj["Name"];
 
+		// セット
+		std::shared_ptr<Cursor> cursor = std::make_shared<Cursor>();
 		if (!m_game.expired())cursor->SetPosList(m_game.lock()->GetVector2Pos());
 		if (!m_exit.expired())cursor->SetPosList(m_exit.lock()->GetVector2Pos());
 		cursor->SetMaxSize(_MaxSize);
@@ -2321,10 +2674,10 @@ void ObjectManager::SetCursorParam()
 		cursor->SetMaxAlpha(_MaxAlpha);
 		cursor->SetChangeAlphaNum(_ChangeAlpha);
 		cursor->SetName(_name);
-		cursor->SetGame(m_game.lock());
-		cursor->SetExit(m_exit.lock());
 		cursor->SetID(m_id);
 		cursor->Init();
+		cursor->SetGame(m_game.lock());
+		cursor->SetExit(m_exit.lock());
 		m_id++;
 
 		m_cursor = cursor;
@@ -2346,56 +2699,73 @@ void ObjectManager::SetGameCameraParam(std::shared_ptr<StageManager> _stage)
 		ifs >> _json;
 	}
 
-	for (auto& stage : _json)
+	for (auto& obj : _json)
 	{
+		// プレイヤーステート
+		// 座標
 		Math::Vector3 _PlayerPos = Math::Vector3::Zero;
-		_PlayerPos.x = stage["PlayerPosX"];
-		_PlayerPos.y = stage["PlayerPosY"];
-		_PlayerPos.z = stage["PlayerPosZ"];
+		_PlayerPos.x = obj["PlayerPosX"];
+		_PlayerPos.y = obj["PlayerPosY"];
+		_PlayerPos.z = obj["PlayerPosZ"];
 
-		Math::Vector3 _FixedPos = Math::Vector3::Zero;
-		_FixedPos.x = stage["FixedPosX"];
-		_FixedPos.y = stage["FixedPosY"];
-		_FixedPos.z = stage["FixedPosZ"];
-
-		Math::Vector3 _ClearPos = Math::Vector3::Zero;
-		_ClearPos.x = stage["ClearPosX"];
-		_ClearPos.y = stage["ClearPosY"];
-		_ClearPos.z = stage["ClearPosZ"];
-
+		// 角度
 		Math::Vector3 _PlayerAngle = Math::Vector3::Zero;
-		_PlayerAngle.x = stage["PlayerAngleX"];
-		_PlayerAngle.y = stage["PlayerAngleY"];
+		_PlayerAngle.x = obj["PlayerAngleX"];
+		_PlayerAngle.y = obj["PlayerAngleY"];
 
-		Math::Vector3 _FixedAngle = Math::Vector3::Zero;
-		_FixedAngle.x = stage["FixedAngleX"];
-		_FixedAngle.y = stage["FixedAngleY"];
-
-		Math::Vector3 _ClearAngle = Math::Vector3::Zero;
-		_ClearAngle.x = stage["ClearAngleX"];
-		_ClearAngle.y = stage["ClearAngleY"];
-
+		// 視野角
 		float _PlayerViewAngle = 0.0f;
-		_PlayerViewAngle = stage["PlayerViewAngle"];
+		_PlayerViewAngle = obj["PlayerViewAngle"];
 
+
+		// テレポート開放ステート
+		// 座標
+		Math::Vector3 _FixedPos = Math::Vector3::Zero;
+		_FixedPos.x = obj["FixedPosX"];
+		_FixedPos.y = obj["FixedPosY"];
+		_FixedPos.z = obj["FixedPosZ"];
+
+		// 角度
+		Math::Vector3 _FixedAngle = Math::Vector3::Zero;
+		_FixedAngle.x = obj["FixedAngleX"];
+		_FixedAngle.y = obj["FixedAngleY"];
+
+		// 視野角
 		float _FixedViewAngle = 0.0f;
-		_FixedViewAngle = stage["FixedViewAngle"];
+		_FixedViewAngle = obj["FixedViewAngle"];
 
+
+		// クリアステート
+		// 座標
+		Math::Vector3 _ClearPos = Math::Vector3::Zero;
+		_ClearPos.x = obj["ClearPosX"];
+		_ClearPos.y = obj["ClearPosY"];
+		_ClearPos.z = obj["ClearPosZ"];
+
+		// 角度
+		Math::Vector3 _ClearAngle = Math::Vector3::Zero;
+		_ClearAngle.x = obj["ClearAngleX"];
+		_ClearAngle.y = obj["ClearAngleY"];
+
+		// 視野角
 		float _ClearViewAngle = 0.0f;
-		_ClearViewAngle = stage["ClearViewAngle"];
+		_ClearViewAngle = obj["ClearViewAngle"];
 
+
+		// 名前
 		std::string _name;
-		_name = stage["Name"];
-		std::shared_ptr<GameCamera> camera = std::make_shared<GameCamera>();
+		_name = obj["Name"];
 
+		// セット
+		std::shared_ptr<GameCamera> camera = std::make_shared<GameCamera>();
 		camera->SetPosList(_PlayerPos, _FixedPos, _ClearPos);
 		camera->SetDegAngList(_PlayerAngle, _FixedAngle, _ClearAngle);
 		camera->SetViewAngList(_PlayerViewAngle, _FixedViewAngle, _ClearViewAngle);
 		camera->SetName(_name);
 		camera->SetObjManager(shared_from_this());
 		camera->SetStageManager(_stage);
-		camera->Init();
 		camera->SetID(m_id);
+		camera->Init();
 		m_id++;
 
 		m_camera = camera;
@@ -2417,41 +2787,52 @@ void ObjectManager::SetObjectParam(std::shared_ptr<StageManager> _stage)
 		ifs >> _json;
 	}
 
-	std::shared_ptr<Ground> ground;
-	std::shared_ptr<Circle> circle;
-	std::shared_ptr<MagicPolygon> magic;
+	std::shared_ptr<Ground> ground;      // 地面
+	std::shared_ptr<Circle> circle;      // 魔法陣の台
+	std::shared_ptr<MagicPolygon> magic; // 魔法陣
 
 	for (auto& category : _json)
 	{
-		for (auto& stage : category)
+
+		// 種類ごとに読み込んでいく
+
+		for (auto& obj : category)
 		{
+			// 座標
 			Math::Vector3 _pos = Math::Vector3::Zero;
-			_pos.x = stage["PosX"];
-			_pos.y = stage["PosY"];
-			_pos.z = stage["PosZ"];
+			_pos.x = obj["PosX"];
+			_pos.y = obj["PosY"];
+			_pos.z = obj["PosZ"];
 
+			// 大きさ
 			float _size = 0.0f;
-			_size = stage["Size"];
+			_size = obj["Size"];
 
+			// 角度
 			Math::Vector3 _angle = Math::Vector3::Zero;
-			_angle.y = stage["Angle"];
+			_angle.y = obj["Angle"];
 
+			// 名前
 			std::string _name;
-			_name = stage["Name"];
+			_name = obj["Name"];
+
+			// セット
 			std::shared_ptr<KdGameObject> obj;
-			if (_name == "Ground")
+			if (_name == "Ground") // 地面
 			{
+				if (!m_ground.expired())break;
+
 				ground = std::make_shared<Ground>();
 				m_ground = ground;
 				obj = ground;
 			}
-			if (_name == "Circle")
+			if (_name == "Circle") // 魔法陣の台
 			{
 				circle = std::make_shared<Circle>();
 				m_circle = circle;
 				obj = circle;
 			}
-			if (_name == "Magic")
+			if (_name == "Magic") // 魔法陣
 			{
 				magic = std::make_shared<MagicPolygon>();
 				magic->SetStageManager(_stage);
@@ -2459,15 +2840,14 @@ void ObjectManager::SetObjectParam(std::shared_ptr<StageManager> _stage)
 				if (m_camera.expired() == false)m_camera.lock()->SetFixedTarget(magic);
 				obj = magic;
 			}
-			if (_name == "Wall")
+			if (_name == "Wall") // 壁
 			{
 				obj = std::make_shared<Wall>();
 			}
-			if (_name == "SkyBox")
+			if (_name == "SkyBox") // 空
 			{
 				obj = std::make_shared<SkyBox>();
 			}
-
 			obj->SetPos(_pos);
 			obj->SetSize(_size);
 			obj->SetAngle(_angle);
@@ -2478,22 +2858,22 @@ void ObjectManager::SetObjectParam(std::shared_ptr<StageManager> _stage)
 
 			m_ObjectList.push_back(obj);
 			SceneManager::Instance().AddObject(obj);
-			break;
 		}
 	}
 
+	// ステージ数測定
 	int _maxStage = 0;
-	for (auto& stage : _json["Ground"])
+	for (auto& stage : _json["Ground"]) // 登録されている地面の数 ＝ ステージ数
 	{
 		_maxStage++;
 	}
 
-	if (m_nowScene == "Game")_stage->SetMaxStage(_maxStage);
+	if (m_nowScene == "Game")_stage->SetMaxStage(_maxStage); // ステージマネジャにステージ数をセット
 
 	ifs.close();
 
-	if (circle && ground)circle->SetGround(ground);
-	if (magic && circle)magic->SetCircle(circle);
+	if (circle && ground)circle->SetGround(ground); // 地面と同じ位置にするためセット
+	if (magic && circle) magic->SetCircle(circle);  // 台と同じ位置にするためにセット
 }
 
 void ObjectManager::SetPlayerParam(std::shared_ptr<StageManager> _stage)
@@ -2508,56 +2888,62 @@ void ObjectManager::SetPlayerParam(std::shared_ptr<StageManager> _stage)
 		ifs >> _json;
 	}
 
-	for (auto& stage : _json)
+	for (auto& obj : _json)
 	{
+		// 名前
 		std::string _name;
-		_name = stage["Name"];
+		_name = obj["Name"];
 
+		// 座標
 		Math::Vector3 _pos = Math::Vector3::Zero;
 		_pos = m_circle.lock()->GetPos();
 
-		Math::Vector3 _dir = Math::Vector3::Zero;
-		_dir.x = stage["DirX"];
-		_dir.y = stage["DirY"];
-		_dir.z = stage["DirZ"];
-
+		// 大きさ
 		float _size = 0.0f;
-		_size = stage["Size"];
+		_size = obj["Size"];
 
+		// 角度
 		Math::Vector3 _angle = Math::Vector3::Zero;
-		_angle.y = stage["Angle"];
+		_angle.y = obj["Angle"];
 
+		// HP
 		int _hp = 0;
-		_hp = stage["HP"];
+		_hp = obj["HP"];
 
+		// 素早さ
 		float _speed = 0.0f;
-		_speed = stage["Speed"];
+		_speed = obj["Speed"];
 
+		// スタミナ
 		int _stamina = 0;
-		_stamina = stage["Stamina"];
+		_stamina = obj["Stamina"];
 
+		// 攻撃範囲
 		float _atkRange = 0.0f;
-		_atkRange = stage["ATKRange"];
+		_atkRange = obj["ATKRange"];
 
+		// 前方方向
 		Math::Vector3 _forward = Math::Vector3::Zero;
-		_forward.x = stage["ForwardX"];
-		_forward.y = stage["ForwardY"];
-		_forward.z = stage["ForwardZ"];
+		_forward.x = obj["ForwardX"];
+		_forward.y = obj["ForwardY"];
+		_forward.z = obj["ForwardZ"];
 
+		// 無敵付与時間
 		int _inviTime = 0;
-		_inviTime = stage["InviTime"];
+		_inviTime = obj["InviTime"];
 
 		std::shared_ptr<Player> player = std::make_shared<Player>();
 		m_player = player;
 
-		SetWeaponParam((("Asset/Json/") + m_nowScene + ("/Weapon/Sword/Sword.json")), stage["SwordName"]);
-		SetWeaponParam((("Asset/Json/") + m_nowScene + ("/Weapon/Shield/Shield.json")), stage["ShieldName"]);
+		// 武器
+		SetWeaponParam((("Asset/Json/") + m_nowScene + ("/Weapon/Sword/Sword.json")), obj["SwordName"]);    // 剣
+		SetWeaponParam((("Asset/Json/") + m_nowScene + ("/Weapon/Shield/Shield.json")), obj["ShieldName"]); // 盾
 
+		// セット
 		player->SetCamera(m_camera.lock());
 		player->SetParam(_hp, player->GetSword().lock()->GetATK(), _speed, _stamina);
 		player->SetPos(_pos);
 		player->SetSize(_size);
-		player->SetDir(_dir);
 		player->SetAngle(_angle);
 		player->SetAtkRange(_atkRange);
 		player->SetForward(_forward);
@@ -2583,10 +2969,19 @@ void ObjectManager::SetPlayerParam(std::shared_ptr<StageManager> _stage)
 
 void ObjectManager::SetPlayerUI(std::shared_ptr<StageManager> _stage)
 {
+	// HP
 	SetPlayerHPParam();
+	
+	// スタミナ
 	SetPlayerStaminaParam();
+	
+	// 照準
 	SetLockONParam();
+	
+	// ステージ数
 	SetFloorParam(_stage);
+	
+	// テレポート可能UI
 	SetTeleportParam();
 }
 
@@ -2602,19 +2997,23 @@ void ObjectManager::SetPlayerHPParam()
 		ifs >> _json;
 	}
 
-	for (auto& stage : _json)
+	for (auto& obj : _json)
 	{
+		// 座標
 		Math::Vector2 _pos = Math::Vector2::Zero;
-		_pos.x = stage["PosX"];
-		_pos.y = stage["PosY"];
+		_pos.x = obj["PosX"];
+		_pos.y = obj["PosY"];
 
+		// 大きさ
 		float _size = 1.0f;
-		_size = stage["Size"];
+		_size = obj["Size"];
 
+		// 名前
 		std::string _name;
-		_name = stage["Name"];
-		std::shared_ptr<Player_HP> hp = std::make_shared<Player_HP>();
+		_name = obj["Name"];
 
+		// セット
+		std::shared_ptr<Player_HP> hp = std::make_shared<Player_HP>();
 		hp->SetPos(_pos);
 		hp->SetSize(_size);
 		hp->SetName(_name);
@@ -2642,19 +3041,23 @@ void ObjectManager::SetPlayerStaminaParam()
 		ifs >> _json;
 	}
 
-	for (auto& stage : _json)
+	for (auto& obj : _json)
 	{
+		// 座標
 		Math::Vector2 _pos = Math::Vector2::Zero;
-		_pos.x = stage["PosX"];
-		_pos.y = stage["PosY"];
+		_pos.x = obj["PosX"];
+		_pos.y = obj["PosY"];
 
+		// 大きさ
 		float _size = 1.0f;
-		_size = stage["Size"];
+		_size = obj["Size"];
 
+		// 名前
 		std::string _name;
-		_name = stage["Name"];
-		std::shared_ptr<Player_Stamina> stamina = std::make_shared<Player_Stamina>();
+		_name = obj["Name"];
 
+		// セット
+		std::shared_ptr<Player_Stamina> stamina = std::make_shared<Player_Stamina>();
 		stamina->SetPos(_pos);
 		stamina->SetSize(_size);
 		stamina->SetName(_name);
@@ -2682,25 +3085,31 @@ void ObjectManager::SetLockONParam()
 		ifs >> _json;
 	}
 
-	for (auto& stage : _json)
+	for (auto& obj : _json)
 	{
+		// 座標
 		Math::Vector2 _pos = Math::Vector2::Zero;
-		_pos.x = stage["PosX"];
-		_pos.y = stage["PosY"];
+		_pos.x = obj["PosX"];
+		_pos.y = obj["PosY"];
 
+		// 大きさ
 		float _size = 1.0f;
-		_size = stage["Size"];
+		_size = obj["Size"];
 
+		// 大きさ変化量
 		float _sizeChange = 0.0f;
-		_sizeChange = stage["SizeChange"];
+		_sizeChange = obj["SizeChange"];
 
+		// アルファ値変化量
 		float _alphaChange = 0.0f;
-		_alphaChange = stage["AlphaChange"];
+		_alphaChange = obj["AlphaChange"];
 
+		// 名前
 		std::string _name;
-		_name = stage["Name"];
-		std::shared_ptr<LockON> lockON = std::make_shared<LockON>();
+		_name = obj["Name"];
 
+		// セット
+		std::shared_ptr<LockON> lockON = std::make_shared<LockON>();
 		lockON->SetPos(_pos);
 		lockON->SetSize(_size);
 		lockON->SetChangeSize(_sizeChange);
@@ -2730,19 +3139,23 @@ void ObjectManager::SetFloorParam(std::shared_ptr<StageManager> _stage)
 		ifs >> _json;
 	}
 
-	for (auto& stage : _json)
+	for (auto& obj : _json)
 	{
+		// 座標
 		Math::Vector2 _pos = Math::Vector2::Zero;
-		_pos.x = stage["PosX"];
-		_pos.y = stage["PosY"];
+		_pos.x = obj["PosX"];
+		_pos.y = obj["PosY"];
 
+		// 大きさ
 		float _size = 1.0f;
-		_size = stage["Size"];
+		_size = obj["Size"];
 
+		// 名前
 		std::string _name;
-		_name = stage["Name"];
-		std::shared_ptr<Floor> floor = std::make_shared<Floor>();
+		_name = obj["Name"];
 
+		// セット
+		std::shared_ptr<Floor> floor = std::make_shared<Floor>();
 		floor->SetSize(_size);
 		floor->SetPos(_pos);
 		floor->SetName(_name);
@@ -2770,22 +3183,27 @@ void ObjectManager::SetTeleportParam()
 		ifs >> _json;
 	}
 
-	for (auto& stage : _json)
+	for (auto& obj : _json)
 	{
+		// 座標
 		Math::Vector2 _pos = Math::Vector2::Zero;
-		_pos.x = stage["PosX"];
-		_pos.y = stage["PosY"];
+		_pos.x = obj["PosX"];
+		_pos.y = obj["PosY"];
 
+		// 大きさ
 		float _size = 1.0f;
-		_size = stage["Size"];
+		_size = obj["Size"];
 
+		// アルファ値変化量
 		float _alphaChange = 0.0f;
-		_alphaChange = stage["AlphaChange"];
+		_alphaChange = obj["AlphaChange"];
 
+		// 名前
 		std::string _name;
-		_name = stage["Name"];
-		std::shared_ptr<Teleport> teleport = std::make_shared<Teleport>();
+		_name = obj["Name"];
 
+		// セット
+		std::shared_ptr<Teleport> teleport = std::make_shared<Teleport>();
 		teleport->SetPos(_pos);
 		teleport->SetSize(_size);
 		teleport->SetChangeAlpha(_alphaChange);
@@ -2816,22 +3234,27 @@ void ObjectManager::SetGameStateParam(bool _IsClear)
 		ifs >> _json;
 	}
 
-	for (auto& stage : _json)
+	for (auto& obj : _json)
 	{
+		// 座標
 		Math::Vector2 _pos = Math::Vector2::Zero;
-		_pos.x = stage["PosX"];
-		_pos.y = stage["PosY"];
+		_pos.x = obj["PosX"];
+		_pos.y = obj["PosY"];
 
+		// 大きさ
 		float _size = 1.0f;
-		_size = stage["Size"];
+		_size = obj["Size"];
 
+		// アルファ値変化量
 		float _alphaChange = 0.0f;
-		_alphaChange = stage["AlphaChange"];
+		_alphaChange = obj["AlphaChange"];
 
+		// 名前
 		std::string _name;
-		_name = stage["Name"];
-		std::shared_ptr<GameStateUI> state = std::make_shared<GameStateUI>();
+		_name = obj["Name"];
 
+		// セット
+		std::shared_ptr<GameStateUI> state = std::make_shared<GameStateUI>();
 		state->SetState(_IsClear);
 		state->SetPos(_pos);
 		state->SetSize(_size);
@@ -2859,44 +3282,51 @@ void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponNam
 		ifs >> _json;
 	}
 
-	for (auto& stage : _json)
+	for (auto& obj : _json)
 	{
-		if (stage["ObjectName"] == "Sword")
+		// リストに名前を格納
+		if (obj["ObjectName"] == "Sword") // 剣
 		{
-			m_swordNameList.push_back(stage["Name"]);
+			m_swordNameList.push_back(obj["Name"]);
 		}
-		else if (stage["ObjectName"] == "Shield")
+		else if (obj["ObjectName"] == "Shield") // 盾
 		{
-			m_shieldNameList.push_back(stage["Name"]);
+			m_shieldNameList.push_back(obj["Name"]);
 		}
 
-		if (stage["Name"] != _weaponName)continue;
+		if (obj["Name"] != _weaponName)continue;
 
+		// 座標
 		Math::Vector3 _pos = Math::Vector3::Zero;
-		_pos.x = stage["PosX"];
-		_pos.y = stage["PosY"];
-		_pos.z = stage["PosZ"];
+		_pos.x = obj["PosX"];
+		_pos.y = obj["PosY"];
+		_pos.z = obj["PosZ"];
 
+		// 大きさ
 		float _size = 0.0f;
-		_size = stage["Size"];
+		_size = obj["Size"];
 
+		// 角度
 		Math::Vector3 _angle = Math::Vector3::Zero;
-		_angle.y = stage["Angle"];
+		_angle.y = obj["Angle"];
 
+		// 名前
 		std::string _name;
-		_name = stage["Name"];
+		_name = obj["Name"];
+
+		// セット
 		std::shared_ptr<WeaponBase> weapon = nullptr;
-		if (stage["ObjectName"] == "Sword")
+		if (obj["ObjectName"] == "Sword")
 		{
 			std::shared_ptr<Sword> sword = std::make_shared<Sword>();
 			int weaponATK = 0;
-			weaponATK = stage["ATK"];
+			weaponATK = obj["ATK"];
 			sword->SetATK(weaponATK);
-			sword->SetTrajectPointNUM(stage["Traject"]);
+			sword->SetTrajectPointNUM(obj["Traject"]);
 			m_player.lock()->SetSword(sword);
 			weapon = sword;
 		}
-		else if (stage["ObjectName"] == "Shield")
+		else if (obj["ObjectName"] == "Shield")
 		{
 			std::shared_ptr<Shield> shield = std::make_shared<Shield>();
 			m_player.lock()->SetShield(shield);
@@ -2904,16 +3334,16 @@ void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponNam
 		}
 
 		std::string _modelPath;
-		_modelPath = stage["Path"];
+		_modelPath = obj["Path"];
 
 		weapon->SetModelPath(_modelPath);
-		weapon->Init();
 		weapon->SetPos(_pos);
 		weapon->SetSize(_size);
 		weapon->SetAngle(_angle);
 		weapon->SetTarget(m_player.lock());
 		weapon->SetName(_name);
 		weapon->SetID(m_id);
+		weapon->Init();
 		m_id++;
 
 		SceneManager::Instance().AddWeapon(weapon);
@@ -2931,16 +3361,17 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 	std::string fileName = _filePath;
 
 	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
 	if (ifs.is_open())
 	{
-		ifs >> m_EnemyJson;
+		ifs >> _json;
 		ifs.close();
 	}
 
 	int _wave = 0;
 	int _nowWave = 1;
 
-	for (auto& wave : m_EnemyJson)
+	for (auto& wave : _json)
 	{
 		_wave++;
 		if (_nowWave != _stage->GetnowWave())
@@ -2953,60 +3384,55 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 		{
 			for (auto& category : wave)
 			{
-				for (auto& stage : category)
+				for (auto& obj : category)
 				{
 					std::string _name;
-					_name = stage["Name"];
+					_name = obj["Name"];
 
 					Math::Vector3 _pos = Math::Vector3::Zero;
-					_pos.x = stage["PosX"];
+					_pos.x = obj["PosX"];
 					_pos.y = m_ground.lock()->GetPos().y;
-					_pos.z = stage["PosZ"];
-
-					Math::Vector3 _dir = Math::Vector3::Zero;
-					_dir.x = stage["DirX"];
-					_dir.y = stage["DirY"];
-					_dir.z = stage["DirZ"];
+					_pos.z = obj["PosZ"];
 
 					float _size = 0.0f;
-					_size = stage["Size"];
+					_size = obj["Size"];
 
 					Math::Vector3 _angle = Math::Vector3::Zero;
-					_angle.y = stage["Angle"];
+					_angle.y = obj["Angle"];
 
 					int _hp = 0;
-					_hp = stage["HP"];
+					_hp = obj["HP"];
 
 					int _atk = 0;
-					_atk = stage["ATK"];
+					_atk = obj["ATK"];
 
 					float _speed = 0.0f;
-					_speed = stage["Speed"];
+					_speed = obj["Speed"];
 
 					int _stamina = 0;
-					_stamina = stage["Stamina"];
+					_stamina = obj["Stamina"];
 
 					float _atkRange = 0.0f;
-					_atkRange = stage["ATKRange"];
+					_atkRange = obj["ATKRange"];
 
 					Math::Vector3 _forward = Math::Vector3::Zero;
-					_forward.x = stage["ForwardX"];
-					_forward.y = stage["ForwardY"];
-					_forward.z = stage["ForwardZ"];
+					_forward.x = obj["ForwardX"];
+					_forward.y = obj["ForwardY"];
+					_forward.z = obj["ForwardZ"];
 
 					std::shared_ptr<EnemyBase> enemy = nullptr;
-					if (stage["Name"] == "Bone")
+					if (obj["Name"] == "Bone")
 					{
 						std::shared_ptr<Bone> bone = std::make_shared<Bone>();
 						enemy = bone;
 					}
-					else if (stage["Name"] == "BoneAlpha")
+					else if (obj["Name"] == "BoneAlpha")
 					{
 						std::shared_ptr<BoneAlpha> alpha = std::make_shared<BoneAlpha>();
 						m_BoneAlphaList.push_back(alpha);
 						enemy = alpha;
 					}
-					else if (stage["Name"] == "Golem")
+					else if (obj["Name"] == "Golem")
 					{
 						std::shared_ptr<Golem> golem = std::make_shared<Golem>();
 						m_golem = golem;
@@ -3016,7 +3442,6 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 					enemy->SetParam(_hp, _atk, _speed, _stamina);
 					enemy->SetPos(_pos);
 					enemy->SetSize(_size);
-					enemy->SetDir(_dir);
 					enemy->SetAngle(_angle);
 					enemy->SetAtkRange(_atkRange);
 					enemy->SetForward(_forward);
@@ -3051,19 +3476,23 @@ void ObjectManager::SetEnemyHPParam(std::shared_ptr<EnemyBase> _enemy)
 		ifs >> _json;
 	}
 
-	for (auto& stage : _json)
+	for (auto& obj : _json)
 	{
+		// 座標
 		Math::Vector2 _pos = Math::Vector2::Zero;
-		_pos.x = stage["PosX"];
-		_pos.y = stage["PosY"];
+		_pos.x = obj["PosX"];
+		_pos.y = obj["PosY"];
 
+		// 大きさ
 		float _size = 1.0f;
-		_size = stage["Size"];
+		_size = obj["Size"];
 
+		// 名前
 		std::string _name;
-		_name = stage["Name"];
-		std::shared_ptr<Enemy_HP> hp = std::make_shared<Enemy_HP>();
+		_name = obj["Name"];
 
+		// セット
+		std::shared_ptr<Enemy_HP> hp = std::make_shared<Enemy_HP>();
 		hp->SetPos(_pos);
 		hp->SetSize(_size);
 		hp->SetName(_name);
@@ -3123,7 +3552,7 @@ void ObjectManager::SetBoneAlphaBulletParam(int id)
 	SceneManager::Instance().AddObject(_bullet);
 }
 
-const bool& ObjectManager::GetTeleportFlg()
+const bool ObjectManager::GetTeleportFlg()
 {
 	return m_magic.lock()->GetTeleport();
 }
@@ -3373,35 +3802,35 @@ void ObjectManager::AddWeapon(std::string _filePath, std::string _weaponName)
 		ifs >> _json;
 	}
 
-	for (auto& stage : _json)
+	for (auto& obj : _json)
 	{
 		std::string _name;
-		_name = stage["Name"];
+		_name = obj["Name"];
 		if (_name != _weaponName)continue;
 
 		Math::Vector3 _pos = Math::Vector3::Zero;
-		_pos.x = stage["PosX"];
-		_pos.y = stage["PosY"];
-		_pos.z = stage["PosZ"];
+		_pos.x = obj["PosX"];
+		_pos.y = obj["PosY"];
+		_pos.z = obj["PosZ"];
 
 		float _size = 0.0f;
-		_size = stage["Size"];
+		_size = obj["Size"];
 
 		Math::Vector3 _angle = Math::Vector3::Zero;
-		_angle.y = stage["Angle"];
+		_angle.y = obj["Angle"];
 
 		std::shared_ptr<WeaponBase> weapon = nullptr;
-		if (stage["ObjectName"] == "Sword")
+		if (obj["ObjectName"] == "Sword")
 		{
 			std::shared_ptr<Sword> sword = std::make_shared<Sword>();
 			int weaponATK = 0;
-			weaponATK = stage["ATK"];
-			sword->SetTrajectPointNUM(stage["Traject"]);
+			weaponATK = obj["ATK"];
+			sword->SetTrajectPointNUM(obj["Traject"]);
 			sword->SetATK(weaponATK);
 			m_player.lock()->SetSword(sword);
 			weapon = sword;
 		}
-		else if (stage["ObjectName"] == "Shield")
+		else if (obj["ObjectName"] == "Shield")
 		{
 			std::shared_ptr<Shield> shield = std::make_shared<Shield>();
 			m_player.lock()->SetShield(shield);
@@ -3409,7 +3838,7 @@ void ObjectManager::AddWeapon(std::string _filePath, std::string _weaponName)
 		}
 
 		std::string _modelPath;
-		_modelPath = stage["Path"];
+		_modelPath = obj["Path"];
 		
 		weapon->SetModelPath(_modelPath);
 		weapon->Init();

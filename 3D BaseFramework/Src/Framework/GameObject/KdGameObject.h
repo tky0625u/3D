@@ -18,6 +18,7 @@ public:
 		eDrawTypeDepthOfShadow = 1 << 4,
 	};
 
+	// オブジェクトタイプ　そのオブジェクトがどのタイプになるのかを設定
 	enum ObjType
 	{
 		oPlayer,
@@ -75,8 +76,7 @@ public:
 
 	const Math::Matrix& GetMatrix() const { return m_mWorld; }
 
-	// デバッグ
-	void Expired() { m_isExpired = true; }
+	void Expired() { m_isExpired = true; }// 消滅フラグ
 	virtual bool IsExpired() const { return m_isExpired; }
 
 	virtual bool IsVisible()	const { return false; }
@@ -123,6 +123,7 @@ protected:
 	// デバッグ情報クラス
 	std::unique_ptr<KdDebugWireFrame> m_pDebugWire = nullptr;
 
+	// オブジェクトの名前
 	std::string m_name;
 
 	Math::Vector3 m_pos = Math::Vector3::Zero;
@@ -134,5 +135,6 @@ protected:
 	//ID
 	UINT m_id = 0;
 
+	// オブジェクト管理クラス
 	std::weak_ptr<ObjectManager> m_ObjectManager;
 };

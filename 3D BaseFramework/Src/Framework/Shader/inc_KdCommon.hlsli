@@ -67,4 +67,5 @@ cbuffer cbEffect : register(b10)
 	int    g_ColorEnable; // 有効化
 	float3 g_ColorPos;    // 座標
 	float  g_ColorRadius; // 半径
+	float4 g_Color;       // 色
 };

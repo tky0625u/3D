@@ -72,7 +72,7 @@ void Sword::SetTrajectMat()
 	Math::Vector3 _targetDir = m_target.lock()->GetPos() - _BM;
 	_targetDir *= -1.0f;
 	_targetDir.Normalize();
-	Math::Vector3 _CenterPos = _BM + (0.5f * _targetDir);
+	Math::Vector3 _CenterPos = _BM + (0.25f * _targetDir);
 	Math::Vector3 _BC = (1.0f - 0.5f) * m_beforeModelTopPos + 0.5f * _CenterPos;
 	Math::Vector3 _CM = (1.0f - 0.5f) * _CenterPos + 0.5f * _ModelTopPos;
 	Math::Vector3 _pos = (1.0f - 0.5f) * _BC + 0.5f * _CM;

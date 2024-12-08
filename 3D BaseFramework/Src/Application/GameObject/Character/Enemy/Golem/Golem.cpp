@@ -322,6 +322,7 @@ void Golem::Attack2::Enter(std::shared_ptr<EnemyBase> owner)
 void Golem::Attack2::Update(std::shared_ptr<EnemyBase> owner)
 {
 	static Math::Vector3 _dir = Math::Vector3::Zero;
+	static float _playerDist = 0.0f;
 	if (!owner->IsAnimCheck("Attack2"))
 	{
 		owner->SetAnime("Attack2", false, 1.0f);
@@ -332,7 +333,7 @@ void Golem::Attack2::Update(std::shared_ptr<EnemyBase> owner)
 		m_playerPos = _playerPos;
 		Math::Vector3 _pos = owner->GetPos();
 		Math::Vector3 _moveDir = _playerPos - _pos;
-		float dist = _moveDir.Length();
+		_playerDist = Math::Vector3{ _moveDir.x,0.0f,_moveDir.z }.Length();
 		_moveDir.Normalize();
 		_dir = _moveDir;
 		owner->SetColorLightFlg(true);
@@ -352,13 +353,14 @@ void Golem::Attack2::Update(std::shared_ptr<EnemyBase> owner)
 
 	Math::Vector3 _pos = owner->GetPos();
 	Math::Vector3 _moveDir = m_playerPos - _pos;
-	float dist = _moveDir.Length();
+	float dist = Math::Vector3{ _moveDir.x,0.0f,_moveDir.z }.Length();
+	m_AttackSphereRange = 60.0f * ((_playerDist - dist) / _playerDist);
 	_moveDir.Normalize();
 	_dir = _moveDir;
 
 	if (_pos != m_playerPos)owner->SetMove(_dir, 10.0f);
 
-	KdShaderManager::Instance().WriteCBColor(m_playerPos, 60.0f);
+	KdShaderManager::Instance().WriteCBColor(m_playerPos, m_AttackSphereRange,Math::Color{1.0f,0.0f,0.0f,1.0f});
 }
 
 void Golem::Attack2::Exit(std::shared_ptr<EnemyBase> owner)
@@ -460,8 +462,10 @@ void Golem::Attack3::Update(std::shared_ptr<EnemyBase> owner)
 	}
 
 
+	m_AttackSphereRange = 50.0f * (m_ActionFPS / 180.0f);
+	KdShaderManager::Instance().WriteCBColor(owner->GetPos(), m_AttackSphereRange,Math::Color{1.0f,0.0f,0.0f,1.0f});
+	
 	m_ActionFPS++;
-	KdShaderManager::Instance().WriteCBColor(owner->GetPos(), 50.0f);
 }
 
 void Golem::Attack3::Exit(std::shared_ptr<EnemyBase> owner)

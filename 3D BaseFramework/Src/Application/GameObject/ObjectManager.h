@@ -32,21 +32,38 @@ public:
 	ObjectManager() {};
 	~ObjectManager() {};
 
+	// 今がどのシーンかを確認する
 	void SceneCheck();
+	
+	// 消滅したら配列から削除
 	void DeleteEnemyList();
 	void DeleteObjectList();
+	
+	// スロー状態の切替
 	void SlowChange();
+
+	// ワープ解放時の演出の準備
 	void NextStageLiberation();
+
+	// ゲームクリア
 	void GameClear();
+
+	// テレポート演出の準備
 	void NextTeleport();
+
+	// 次のステージを生成
 	void CreateStage(std::shared_ptr<StageManager> _stage);
 
+
+	// ImGuiで動的にオブジェクトの設定をする
 	void DebugObject(std::shared_ptr<StageManager> _stage = nullptr);
 
+
+	// Jsonファイルに保存======================================================
 	void TitleCameraWrite();
-	void TitleWrite();
-	void GameWrite();
-	void ExitWrite();
+	void TitleWrite();      
+	void GameWrite();       
+	void ExitWrite();       
 	void TitleGuideWrite();
 	void CursorWrite();
 	void GameCameraWrite();
@@ -62,8 +79,12 @@ public:
 	void SwordWrite(std::string _swordName, std::string _fileName);
 	void ShieldWrite(std::string _shieldName, std::string _fileName);
 	void ObjectWrite(std::string _fileName);
+	//=========================================================================
 
+	// モデルを事前に読み込む
 	void ModelLoad();
+
+	// オブジェクトの生成======================================================
 	void SetTitleCamera();
 	void SetTitleParam();
 	void SetGameParam();
@@ -85,11 +106,14 @@ public:
 	void SetEnemyHPParam(std::shared_ptr<EnemyBase> _enemy);
 	std::shared_ptr<Bullet> SetBulletParam();
 	void SetBoneAlphaBulletParam(int id);
+	//=========================================================================
 
-	const bool& GetTeleportFlg();
+	// テレポート位置からのフラグ trueならテレポートが可能
+	const bool GetTeleportFlg();
+	// ゴーレムのメンバ変数
 	const std::weak_ptr<Golem>& GetGolem()const { return m_golem; }
 
-	// デバッグ
+	// オブジェクトを動的に生成 ImGuiで使用====================================
 	void AddTitleCamera();
 	void AddTitle();
 	void AddGame();
@@ -105,11 +129,16 @@ public:
 	void AddWall();
 	void AddSkyBox();
 	void ChangeWeapon(std::string _swordName, std::string _shieldName);
+	//============================================================================
 
+	// スロー値
 	const float GetSlow()const { return m_slow; }
+	// スローフラグ　trueならスロー中
 	const bool GetSlowFlg()const { return m_slowFlg; }
 
 private:
+
+	// オブジェクトのポインタ==================================================
 	std::weak_ptr<TitleCamera>               m_titleCamera;
 	std::weak_ptr<Title>                     m_title;
 	std::weak_ptr<Game>                      m_game;
@@ -130,17 +159,26 @@ private:
 	std::weak_ptr<Golem>                     m_golem;
 	std::vector<std::weak_ptr<BoneAlpha>>    m_BoneAlphaList;
 	std::vector<std::weak_ptr<Enemy_HP>>     m_EnemyHPList;
-	UINT                                     m_id = 0;
-	float                                    m_slow = 1.0f;
-	bool                                     m_slowFlg = false;
-	std::vector<std::weak_ptr<EnemyBase>>    m_EnemyList;
-	std::vector<std::weak_ptr<KdGameObject>> m_ObjectList;
-	nlohmann::json                           m_EnemyJson;
+	//=========================================================================
 
-	//デバッグ							     
+	// オブジェクトのID
+	UINT                                     m_id = 0;
+	
+	// スロー値
+	float                                    m_slow = 1.0f;
+	// スローフラグ
+	bool                                     m_slowFlg = false;
+	
+	// 敵配列
+	std::vector<std::weak_ptr<EnemyBase>>    m_EnemyList;
+	// キャラクター以外の配列
+	std::vector<std::weak_ptr<KdGameObject>> m_ObjectList;
+
+	// 武器の名前配列 ImGuiで生成するときに使用
 	std::vector<std::string>                 m_swordNameList;
 	std::vector<std::string>                 m_shieldNameList;
 
+	// 今のシーン
 	std::string                              m_nowScene;
 
 };

@@ -106,9 +106,9 @@ float4 main(VSOutput In) : SV_Target0
 			float3 col = (baseColor.r + baseColor.g + baseColor.b) / 3;
 
 			// セピア色
-			col.r *= 1;
-			col.g *= 0.7;
-			col.b *= 0.4;
+			col.r *= g_Color.r;
+			col.g *= g_Color.g;
+			col.b *= g_Color.b;
 			
 			baseColor.rgb = col;
 		}

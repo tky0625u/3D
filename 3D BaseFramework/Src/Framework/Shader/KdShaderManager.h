@@ -128,6 +128,8 @@ public:
 
 		float         ColorRadius = 0; // 半径
 		float         dummy[3]    = { 0,0,0 };
+
+		Math::Color   Color;           // 色
 	};
 
 	static KdShaderManager& Instance()
@@ -207,7 +209,7 @@ public:
 	void WriteCBShadowArea(const Math::Matrix& proj, float dirLightHeight);
 	void WriteCBPointLight(const std::list<PointLight>& pointLights);
 	void WriteCBColorEnable(bool _enable);
-	void WriteCBColor(const Math::Vector3 _pos, float _radius);
+	void WriteCBColor(const Math::Vector3 _pos, float _radius,Math::Color _color);
 
 	//==========================
 	//

@@ -33,6 +33,8 @@ const Math::Vector3& BoneAlpha::GetFrontDir()
 	return _nowVec;
 }
 
+
+// Attack==========================================================================================
 void BoneAlpha::Attack::Enter(std::shared_ptr<EnemyBase> owner)
 {
 	owner->SetFlow(EnemyBase::Flow::UpdateType);
@@ -81,3 +83,4 @@ void BoneAlpha::Attack::Exit(std::shared_ptr<EnemyBase> owner)
 {
 
 }
+//=================================================================================================

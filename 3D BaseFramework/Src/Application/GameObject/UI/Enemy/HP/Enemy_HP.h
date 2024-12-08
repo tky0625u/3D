@@ -31,9 +31,9 @@ private:
 	std::weak_ptr<EnemyBase>   m_target;
 	std::shared_ptr<KdTexture> m_pTex[HP::num];
 	Math::Rectangle            m_rect[HP::num];
-	int                        m_MaxHP = 0;
+	int                        m_MaxHP    = 0;
 	int                        m_beforeHP = 0;
-	float                      m_MaxWidth = 0.0f;
 	int                        m_DownTime = 0;
-	float                      m_alpha = 1.0f;
+	float                      m_MaxWidth = 0.0f;
+	float                      m_alpha    = 1.0f;
 };

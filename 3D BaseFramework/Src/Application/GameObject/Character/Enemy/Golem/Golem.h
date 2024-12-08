@@ -49,6 +49,7 @@ private:
 
 	private:
 		Math::Vector3 m_playerPos = Math::Vector3::Zero;
+		float         m_AttackSphereRange = 0.0f;
 
 	};
 
@@ -65,7 +66,7 @@ private:
 		void AttackHit(std::shared_ptr<EnemyBase> owner);
 
 	private:
-
+		float         m_AttackSphereRange = 0.0f;
 	};
 
 };

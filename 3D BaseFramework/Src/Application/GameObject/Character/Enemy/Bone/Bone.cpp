@@ -41,9 +41,7 @@ void Bone::Attack::Update(std::shared_ptr<EnemyBase> owner)
 	if (owner->GetIsAnimator())
 	{
 		// Idol
-		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
-		owner->SetNextAction(_idol, EnemyBase::Action::IdolType);
-		owner->SetFlow(EnemyBase::Flow::UpdateType);
+		owner->IdolChange();
 		return;
 	}
 

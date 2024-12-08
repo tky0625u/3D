@@ -7,7 +7,7 @@
 #include"GameObject/Character/Player/Player.h"
 #include"GameObject/Weapon/Sword/Sword.h"
 #include"GameObject/Weapon/Shield/Shield.h"
-#include"GameObject/SkyBox/SkyBox.h"
+#include"GameObject/Stage/SkyBox/SkyBox.h"
 #include"GameObject/Stage/Ground/Ground.h"
 #include"GameObject/Stage/Wall/Wall.h"
 #include"GameObject/Camera/GameCamera/GameCamera.h"

@@ -498,10 +498,11 @@ void KdShaderManager::WriteCBColorEnable(bool _enable)
 	m_cb10_Effect.Write();
 }
 
-void KdShaderManager::WriteCBColor(const Math::Vector3 _pos, float _radius)
+void KdShaderManager::WriteCBColor(const Math::Vector3 _pos, float _radius,Math::Color _color)
 {
 	m_cb10_Effect.Work().ColorPos    = _pos;
 	m_cb10_Effect.Work().ColorRadius = _radius;
+	m_cb10_Effect.Work().Color       = _color;
 	m_cb10_Effect.Write();
 }
 

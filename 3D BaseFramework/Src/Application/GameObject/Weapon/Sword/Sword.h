@@ -21,6 +21,12 @@ public:
 	Math::Matrix GetModelTop()    { return m_spModel->FindWorkNode("sword.Top")->m_worldTransform * m_mWorld; }
 	Math::Matrix GetModelCenter() { return m_spModel->FindWorkNode("sword.Center")->m_localTransform * m_spModel->FindWorkNode("sword.Top")->m_worldTransform * m_mWorld; }
 	Math::Matrix GetModelBottom() { return m_spModel->FindWorkNode("sword.Bottom")->m_localTransform * m_spModel->FindWorkNode("sword.Center")->m_worldTransform * m_mWorld; }
+	const bool GetTrajectPolygon()const 
+	{
+		if (m_traject.m_trajectPolyGon)return true;
+
+		return false;
+	}
 	const int GetATK()const { return m_atk; }
 	// デバッグ
 	const int GetTraject()const { return m_trajePointNUM; }

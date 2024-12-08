@@ -570,7 +570,7 @@ void Player::Attack::Enter(std::shared_ptr<Player> owner)
 		m_ChangeTime = 20;
 		break;
 	case 3:
-		m_ChangeTime = 23;
+		m_ChangeTime = 35;
 		break;
 	default:
 		break;
@@ -611,15 +611,8 @@ void Player::Attack::Update(std::shared_ptr<Player> owner)
 
 	Event(owner);
 
-	if (owner->GetSword().expired() == false)
-	{
-		owner->GetSword().lock()->SetTrajectMat();
-	}
-
 	if (owner->GetIsAnimator())
 	{
-		owner->GetSword().lock()->ClearTraject();
-
 		// Idol
 		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
 		owner->m_NextState = _idol;
@@ -658,14 +651,34 @@ void Player::Attack::Attack1(std::shared_ptr<Player> owner)
 {
 	owner->SetMove(m_AttackDir, 0.5f);
 
-	if (m_ActionFPS >= 15 && m_ActionFPS <= 30)AttackHit(owner);
+	if (m_ActionFPS > 30 && owner->GetSword().lock()->GetTrajectPolygon())
+	{
+		owner->GetSword().lock()->ClearTraject();
+		return;
+	}
+
+	if (m_ActionFPS < 15 && m_ActionFPS > 30)return;
+	AttackHit(owner);
+
+	if (owner->GetSword().expired())return;
+	owner->GetSword().lock()->SetTrajectMat();
 }
 
 void Player::Attack::Attack2(std::shared_ptr<Player> owner)
 {
 	owner->SetMove(m_AttackDir, 1.0f);
 
-	if (m_ActionFPS >= 10 && m_ActionFPS <= 20)AttackHit(owner);
+	if (m_ActionFPS > 25 && owner->GetSword().lock()->GetTrajectPolygon())
+	{
+		owner->GetSword().lock()->ClearTraject();
+		return;
+	}
+
+	if (m_ActionFPS < 10 && m_ActionFPS > 25)return;
+	AttackHit(owner);
+
+	if (owner->GetSword().expired())return;
+	owner->GetSword().lock()->SetTrajectMat();
 }
 
 void Player::Attack::Attack3(std::shared_ptr<Player> owner)
@@ -673,7 +686,17 @@ void Player::Attack::Attack3(std::shared_ptr<Player> owner)
 	owner->Rotate(m_AttackDir);
 	owner->SetMove(m_AttackDir, 1.2f);
 
-	if (m_ActionFPS >= 12 && m_ActionFPS <= 36)AttackHit(owner);
+	if (m_ActionFPS > 36 && owner->GetSword().lock()->GetTrajectPolygon())
+	{
+		owner->GetSword().lock()->ClearTraject();
+		return;
+	}
+
+	if (m_ActionFPS < 12 && m_ActionFPS > 36)return;
+	AttackHit(owner);
+
+	if (owner->GetSword().expired())return;
+	owner->GetSword().lock()->SetTrajectMat();
 }
 
 void Player::Attack::AttackDirCheck(std::shared_ptr<Player> owner)
@@ -858,12 +881,16 @@ void Player::Counter::Update(std::shared_ptr<Player> owner)
 		return;
 	}
 
-	if (owner->GetSword().expired() == false)
+	if (m_ActionFPS > 66 && owner->GetSword().lock()->GetTrajectPolygon())
 	{
+		owner->GetSword().lock()->ClearTraject();
+	}
+
+	if (40 <= m_ActionFPS && m_ActionFPS <= 66)
+	{
+		AttackHit(owner);
 		owner->GetSword().lock()->SetTrajectMat();
 	}
-	
-	if (40 <= m_ActionFPS && m_ActionFPS <= 66)AttackHit(owner);
 
 	CounterMove(owner);
 
