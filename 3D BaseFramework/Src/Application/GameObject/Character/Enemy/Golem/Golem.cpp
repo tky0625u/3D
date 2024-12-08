@@ -262,7 +262,7 @@ void Golem::Attack1::Update(std::shared_ptr<EnemyBase> owner)
 
 	if (m_ActionFPS == 10)
 	{
-		KdEffekseerManager::GetInstance().Play("Enemy/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 2.0f, 2.0f, false);
+		KdEffekseerManager::GetInstance().Play("Enemy/AttackSignal/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 2.0f, 2.0f, false);
 		Math::Matrix RotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(owner->GetAngle().y));
 		Math::Vector3 _dir = Math::Vector3::TransformNormal(owner->GetForward(), RotY);
 		m_bullet.lock()->SetDir(_dir);
@@ -345,7 +345,7 @@ void Golem::Attack2::Update(std::shared_ptr<EnemyBase> owner)
 	{
 		AttackHit(owner);
 		owner->SetColorLightFlg(false);
-		KdEffekseerManager::GetInstance().Play("Enemy/Golem/smash.efkefc", owner->GetPos(), Math::Vector3{60.0f,15.0f,60.0f}, 1.0f, false);
+		KdEffekseerManager::GetInstance().Play("Enemy/Golem/Attack2/smash.efkefc", owner->GetPos(), Math::Vector3{60.0f,15.0f,60.0f}, 1.0f, false);
 		owner->SetFlow(EnemyBase::Flow::ExitType);
 		return;
 	}
@@ -445,13 +445,13 @@ void Golem::Attack3::Update(std::shared_ptr<EnemyBase> owner)
 	}
 	else if (162 == m_ActionFPS)
 	{
-		KdEffekseerManager::GetInstance().Play("Enemy/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 2.0f, 2.0f, false);
+		KdEffekseerManager::GetInstance().Play("Enemy/AttackSignal/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 2.0f, 2.0f, false);
 	}
 	else if (180 == m_ActionFPS)
 	{
 		AttackHit(owner);
 		owner->SetColorLightFlg(false);
-		KdEffekseerManager::GetInstance().Play("Enemy/Golem/smash.efkefc", owner->GetPos(), Math::Vector3{ 57.0f,15.0f,57.0f }, 1.0f, false);
+		KdEffekseerManager::GetInstance().Play("Enemy/Golem/Attack3/smash.efkefc", owner->GetPos(), Math::Vector3{ 57.0f,15.0f,57.0f }, 1.0f, false);
 	}
 	else
 	{

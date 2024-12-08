@@ -307,7 +307,7 @@ void Player::StateBase::AttackHit(std::shared_ptr<Player> owner)
 			owner->m_camera.lock()->GetState()->SetShakeFlg(true);
 			hitEnemy->Damage(owner->m_param.Atk);
 			hitEnemy->SetInviTime(owner->m_inviTime);
-			KdEffekseerManager::GetInstance().Play("Enemy/hit_eff.efkefc", ret.m_hitPos, 1.0f, 0.8f, false);
+			KdEffekseerManager::GetInstance().Play("Enemy/Hit/hit_eff.efkefc", ret.m_hitPos, 1.0f, 0.8f, false);
 			KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/刀で斬る2.WAV", 0.05f, false);
 		}
 	}
@@ -657,7 +657,7 @@ void Player::Attack::Attack1(std::shared_ptr<Player> owner)
 		return;
 	}
 
-	if (m_ActionFPS < 15 && m_ActionFPS > 30)return;
+	if (m_ActionFPS < 15 || m_ActionFPS > 30)return;
 	AttackHit(owner);
 
 	if (owner->GetSword().expired())return;
@@ -674,7 +674,7 @@ void Player::Attack::Attack2(std::shared_ptr<Player> owner)
 		return;
 	}
 
-	if (m_ActionFPS < 10 && m_ActionFPS > 25)return;
+	if (m_ActionFPS < 10 || m_ActionFPS > 25)return;
 	AttackHit(owner);
 
 	if (owner->GetSword().expired())return;
@@ -692,7 +692,7 @@ void Player::Attack::Attack3(std::shared_ptr<Player> owner)
 		return;
 	}
 
-	if (m_ActionFPS < 12 && m_ActionFPS > 36)return;
+	if (m_ActionFPS < 12 || m_ActionFPS > 36)return;
 	AttackHit(owner);
 
 	if (owner->GetSword().expired())return;
@@ -948,7 +948,7 @@ void Player::Counter::AttackHit(std::shared_ptr<Player> owner)
 		owner->m_camera.lock()->GetState()->SetShakeFlg(true);
 		m_CounterEnemy.lock()->Damage(owner->m_param.Atk * 5);
 		m_CounterEnemy.lock()->SetInviTime(owner->m_inviTime);
-		m_handle = KdEffekseerManager::GetInstance().Play("Player/CounterHit.efkefc", ret.m_hitPos, 1.0f, 0.8f, false).lock()->GetHandle();
+		m_handle = KdEffekseerManager::GetInstance().Play("Player/Counter/CounterHit.efkefc", ret.m_hitPos, 1.0f, 0.8f, false).lock()->GetHandle();
 		KdEffekseerManager::GetInstance().SetRotation(m_handle, Math::Vector3{ 0.0f,1.0f,0.0f }, DirectX::XMConvertToRadians(owner->GetAngle().y));
 		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/刀で斬る2.WAV", 0.05f, false);
 	}
@@ -1009,7 +1009,7 @@ void Player::Roll::Update(std::shared_ptr<Player> owner)
 	if (!owner->IsAnimCheck("Roll"))
 	{
 		owner->SetAnime("Roll", false, 1.0f);
-		KdEffekseerManager::GetInstance().Play("Player/Smoke.efkefc", owner->m_pos, 0.5f, 1.0f, false);
+		KdEffekseerManager::GetInstance().Play("Player/Smoke/Smoke.efkefc", owner->m_pos, 0.5f, 1.0f, false);
 		return;
 	}
 
@@ -1268,7 +1268,7 @@ void Player::GuardReaction::Update(std::shared_ptr<Player> owner)
 	{
 		owner->SetAnime("GuardReaction", false, 1.0f);
 		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/ロボットを殴る1.WAV", 0.05f, false);
-		KdEffekseerManager::GetInstance().Play("Player/Spark.efkefc",owner->GetShieldMat().Translation(), 1.0f, 1.0f, false);
+		KdEffekseerManager::GetInstance().Play("Player/Guard/Spark.efkefc",owner->GetShieldMat().Translation(), 1.0f, 1.0f, false);
 		return;
 	}
 
@@ -1303,7 +1303,7 @@ void Player::Parry::Update(std::shared_ptr<Player> owner)
 	if (!owner->IsAnimCheck("Parrying"))
 	{
 		owner->SetAnime("Parrying", false, 1.0f);
-		KdEffekseerManager::GetInstance().Play("Player/hit_hanmado_0409.efkefc", owner->GetShield().lock()->GetParryPoint().Translation(), 1.0f, 0.5f, false);
+		KdEffekseerManager::GetInstance().Play("Player/Parry/hit_hanmado_0409.efkefc", owner->GetShield().lock()->GetParryPoint().Translation(), 1.0f, 0.5f, false);
 		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/maou_se_magic_ice05.WAV", 0.1f, false);
 		return;
 	}
@@ -1482,7 +1482,7 @@ void Player::Teleport::Update(std::shared_ptr<Player> owner)
 	if (m_ActionFPS == 38)
 	{
 		owner->m_dissolve = 1.0f;
-		m_handle = KdEffekseerManager::GetInstance().Play("Player/LightEnd.efkefc", owner->m_pos, owner->m_size, 1.0f, false).lock()->GetHandle();
+		m_handle = KdEffekseerManager::GetInstance().Play("Player/Teleport/LightEnd.efkefc", owner->m_pos, owner->m_size, 1.0f, false).lock()->GetHandle();
 	}
 
 	if (m_ActionFPS >= 38 && !KdEffekseerManager::GetInstance().IsPlaying(m_handle))SceneManager::Instance().BlackAlphaChange(0.01f, true);
@@ -1496,7 +1496,7 @@ void Player::Teleport::Exit(std::shared_ptr<Player> owner)
 	{
 		owner->SetAnime("TeleportToIdol", false, 1.0f);
 		owner->m_dissolve = 0.0f;
-		KdEffekseerManager::GetInstance().Play("Player/LightEnd.efkefc", owner->m_pos, owner->m_size, 1.0f, false);
+		KdEffekseerManager::GetInstance().Play("Player/Teleport/LightEnd.efkefc", owner->m_pos, owner->m_size, 1.0f, false);
 		return;
 	}
 

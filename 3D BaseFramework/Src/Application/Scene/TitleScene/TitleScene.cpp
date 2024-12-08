@@ -38,7 +38,7 @@ void TitleScene::Init()
 	Math::Vector3 _pos = SceneManager::Instance().GetCamera()->GetPos();
 	_pos.z -= 1.0f;
 	_pos.y -= 5.0f;
-	KdEffekseerManager::GetInstance().Play("Smoke.efkefc", _pos, 1.0f, 0.5f, true);
+	KdEffekseerManager::GetInstance().Play("Smoke/Smoke.efkefc", _pos, 1.0f, 0.5f, true);
 	SceneManager::Instance().GetCamera()->WorkCamera()->SetFocus(8, 5, 600);
 
 	KdAudioManager::Instance().Play("Asset/Sound/Title/BGM/Formidable-Enemy.WAV", 0.01f, true);

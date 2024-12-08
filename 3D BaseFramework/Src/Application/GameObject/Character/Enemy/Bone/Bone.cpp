@@ -47,7 +47,7 @@ void Bone::Attack::Update(std::shared_ptr<EnemyBase> owner)
 
 	if (m_ActionFPS == 35)
 	{
-		KdEffekseerManager::GetInstance().Play("Enemy/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 0.3f, 2.0f, false);
+		KdEffekseerManager::GetInstance().Play("Enemy/AttackSignal/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 0.3f, 2.0f, false);
 	}
 	if (50 <= m_ActionFPS && 67 >= m_ActionFPS)
 	{
@@ -107,7 +107,7 @@ void Bone::Attack::HitCheck(std::shared_ptr<EnemyBase> owner)
 		{
 			if (SceneManager::Instance().GetPlayer()->GetActionType() != Player::Action::GuardType)
 			{
-				KdEffekseerManager::GetInstance().Play("Player/hit_effe.efkefc", ret.m_hitPos, 1.0f, 0.8f, false);
+				KdEffekseerManager::GetInstance().Play("Player/Hit/hit_effe.efkefc", ret.m_hitPos, 1.0f, 0.8f, false);
 			}
 			SceneManager::Instance().GetPlayer()->Damage(owner->GetParam().Atk, owner->shared_from_this());
 		}

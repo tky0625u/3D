@@ -56,7 +56,7 @@ void BoneAlpha::Attack::Update(std::shared_ptr<EnemyBase> owner)
 
 	if (m_ActionFPS == 35)
 	{
-		KdEffekseerManager::GetInstance().Play("Enemy/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 0.3f, 2.0f, false);
+		KdEffekseerManager::GetInstance().Play("Enemy/AttackSignal/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 0.3f, 2.0f, false);
 	}
 	else 
 	{

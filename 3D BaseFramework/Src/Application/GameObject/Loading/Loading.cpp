@@ -5,7 +5,7 @@ void Loading::Update()
 	m_load[0].m_angle += 0.005f;
 
 	static float _angle = 0.0f;
-	_angle += 0.1f;
+	_angle += 0.025f;
 	if (_angle > 360.0f)_angle -= 360.0f;
 	m_load[1].m_alpha = sin(DirectX::XMConvertToRadians(_angle)) + 1.5f;
 	m_load[1].m_color = { 1,1,1,m_load[1].m_alpha };

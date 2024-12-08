@@ -219,7 +219,7 @@ void EnemyBase::Appeal::Update(std::shared_ptr<EnemyBase> owner)
 	if (!owner->IsAnimCheck("Appeal"))
 	{
 		owner->SetAnime("Appeal", false, 1.0f);
-		m_handle = KdEffekseerManager::GetInstance().Play("Enemy/MagicDrak.efkefc", owner->m_pos, owner->GetAppealEffectSize(), 1.0f, false).lock()->GetHandle();
+		m_handle = KdEffekseerManager::GetInstance().Play("Enemy/Appeal/MagicDrak.efkefc", owner->m_pos, owner->GetAppealEffectSize(), 1.0f, false).lock()->GetHandle();
 		return;
 	}
 
