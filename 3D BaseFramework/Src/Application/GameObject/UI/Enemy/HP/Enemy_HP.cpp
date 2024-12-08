@@ -18,7 +18,7 @@ void Enemy_HP::Update()
 	if (m_target.lock()->GetParam().Hp != m_beforeHP)
 	{
 		float hp = (m_MaxWidth / m_MaxHP) * m_target.lock()->GetParam().Hp;
-		m_rect[HP::hp] = { 0,0,long(hp),10 };
+		m_rect[HP::hp] = { 0,0,long(hp),64 };
 		m_beforeHP = m_target.lock()->GetParam().Hp;
 		m_DownTime = 60;
 	}
@@ -27,7 +27,7 @@ void Enemy_HP::Update()
 	else
 	{
 		m_DownTime = 0;
-		if (m_rect[HP::down].width != m_rect[HP::hp].width)m_rect[HP::down].width--; //現在のHPまで徐々に減少
+		if (m_rect[HP::down].width != m_rect[HP::hp].width)m_rect[HP::down].width-=2.0f; //現在のHPまで徐々に減少
 	}
 
 	//座標変換
@@ -47,7 +47,7 @@ void Enemy_HP::Update()
 		m_alpha = -1.0f;
 	}
 
-	m_pos = { _pos.x,_pos.y };
+	m_pos = { _pos.x + m_posXCorrection,_pos.y };
 	m_color = { 1,1,1,m_alpha };
 }
 
@@ -62,7 +62,7 @@ void Enemy_HP::DrawSprite()
 void Enemy_HP::Init()
 {
 	m_pivot = { 0.0f,0.5f };
-	m_MaxWidth = 200;
+	m_MaxWidth = 1024;
 	m_alpha = 1.0f;
 	m_color = { 1,1,1,m_alpha };
 	if (m_target.expired())return;
@@ -70,17 +70,17 @@ void Enemy_HP::Init()
 	m_beforeHP = m_MaxHP;
 
 	//HPバー
-	m_rect[HP::hp] = { 0,0,(long)m_MaxWidth,10 };
+	m_rect[HP::hp] = { 0,0,(long)m_MaxWidth,64 };
 	m_pTex[HP::hp] = std::make_shared<KdTexture>();
-	m_pTex[HP::hp]->Load("Asset/Textures/UI/Enemy/Enemy_HP.png");
+	m_pTex[HP::hp]->Load("Asset/Textures/UI/Enemy/Enemy_HP_line.png");
 
 	//HPボックス
-	m_rect[HP::box] = { 0,0,(long)m_MaxWidth,10 };
+	m_rect[HP::box] = { 0,0,(long)m_MaxWidth,64 };
 	m_pTex[HP::box] = std::make_shared<KdTexture>();
-	m_pTex[HP::box]->Load("Asset/Textures/UI/Enemy/Enemy_HPBox.png");
+	m_pTex[HP::box]->Load("Asset/Textures/UI/Enemy/frame.png");
 
 	//HP減少ゲージ
-	m_rect[HP::down] = { 0,0,(long)m_MaxWidth,10 };
+	m_rect[HP::down] = { 0,0,(long)m_MaxWidth,64 };
 	m_pTex[HP::down] = std::make_shared<KdTexture>();
-	m_pTex[HP::down]->Load("Asset/Textures/UI/Enemy/Enemy_HPDown.png");
+	m_pTex[HP::down]->Load("Asset/Textures/UI/Enemy/Enemy_HP_Downline.png");
 }

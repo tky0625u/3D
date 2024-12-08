@@ -11,7 +11,7 @@ void Player_Stamina::Update()
 		int a = 0;
 		a = m_target.lock()->GetParam().Sm;
 		float stamina = (m_MaxWidth / m_MaxStamina) * m_target.lock()->GetParam().Sm;
-		m_rect[Stamina::stamina] = { 0,0,long(stamina),93 };
+		m_rect[Stamina::stamina] = { 0,0,long(stamina),64 };
 		m_beforeStamina = m_target.lock()->GetParam().Sm;
 	}
 }
@@ -27,19 +27,19 @@ void Player_Stamina::DrawSprite()
 void Player_Stamina::Init()
 {
 	m_pivot = { 0.0f,0.5f };
-	m_MaxWidth = 875;
+	m_MaxWidth = 1024;
 	m_color = { 1,1,1,1 };
 	if (m_target.expired())return;
 	m_MaxStamina = m_target.lock()->GetParam().Sm;
 	m_beforeStamina = m_MaxStamina;
 
 	//スタミナバー
-	m_rect[Stamina::stamina] = { 0,0,long(m_MaxWidth),93 };
+	m_rect[Stamina::stamina] = { 0,0,long(m_MaxWidth),64 };
 	m_pTex[Stamina::stamina] = std::make_shared<KdTexture>();
-	m_pTex[Stamina::stamina]->Load("Asset/Textures/UI/Player/Stamina/Steampunk_UI_Stamina.png");
+	m_pTex[Stamina::stamina]->Load("Asset/Textures/UI/Player/Stamina/Player_Stamina_line.png");
 
 	//スタミナボックス
-	m_rect[Stamina::box] = { 0,0,long(m_MaxWidth),93 };
+	m_rect[Stamina::box] = { 0,0,long(m_MaxWidth),64 };
 	m_pTex[Stamina::box] = std::make_shared<KdTexture>();
-	m_pTex[Stamina::box]->Load("Asset/Textures/UI/Player/Stamina/Steampunk_UI_Stamina_Box.png");
+	m_pTex[Stamina::box]->Load("Asset/Textures/UI/Player/Stamina/frame.png");
 }

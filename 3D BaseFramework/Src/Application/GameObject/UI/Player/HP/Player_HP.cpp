@@ -9,7 +9,7 @@ void Player_HP::Update()
 	if (m_target.lock()->GetParam().Hp != m_beforeHP)
 	{
 		float hp = (m_MaxWidth / m_MaxHP) * m_target.lock()->GetParam().Hp;
-		m_rect[HP::hp] = { 0,0,long(hp),93 };
+		m_rect[HP::hp] = { 0,0,long(hp),64 };
 		m_beforeHP = m_target.lock()->GetParam().Hp;
 		m_DownTime = 60;
 	}
@@ -33,24 +33,24 @@ void Player_HP::DrawSprite()
 void Player_HP::Init()
 {
 	m_pivot = { 0.0f,0.5f };
-	m_MaxWidth = 875;
+	m_MaxWidth = 1024;
 	m_color = { 1,1,1,1 };
 	if (m_target.expired())return;
 	m_MaxHP = m_target.lock()->GetParam().Hp;
 	m_beforeHP = m_MaxHP;
 
 	//HPバー
-	m_rect[HP::hp] = { 0,0,long(m_MaxWidth),93 };
+	m_rect[HP::hp] = { 0,0,long(m_MaxWidth),64 };
 	m_pTex[HP::hp] = std::make_shared<KdTexture>();
-	m_pTex[HP::hp]->Load("Asset/Textures/UI/Player/HP/Steampunk_UI_HP.png");
+	m_pTex[HP::hp]->Load("Asset/Textures/UI/Player/HP/Player_Hp_line.png");
 
 	//HPボックス
-	m_rect[HP::box] = { 0,0,long(m_MaxWidth),93 };
+	m_rect[HP::box] = { 0,0,long(m_MaxWidth),64 };
 	m_pTex[HP::box] = std::make_shared<KdTexture>();
-	m_pTex[HP::box]->Load("Asset/Textures/UI/Player/HP/Steampunk_UI_HP_Box.png");
+	m_pTex[HP::box]->Load("Asset/Textures/UI/Player/HP/frame.png");
 
 	//HP減少ゲージ
-	m_rect[HP::down] = { 0,0,long(m_MaxWidth),93 };
+	m_rect[HP::down] = { 0,0,long(m_MaxWidth),64 };
 	m_pTex[HP::down] = std::make_shared<KdTexture>();
-	m_pTex[HP::down]->Load("Asset/Textures/UI/Player/HP/Steampunk_UI_HPDown.png");
+	m_pTex[HP::down]->Load("Asset/Textures/UI/Player/HP/Player_Hp_Downline.png");
 }

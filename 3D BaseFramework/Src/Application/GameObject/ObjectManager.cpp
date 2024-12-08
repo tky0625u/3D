@@ -1396,13 +1396,19 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 							ImGui::SliderFloat("PosX", &_HPPos.x, -640, 640);
 							ImGui::SliderFloat("PosY", &_HPPos.y, -360, 360);
 
+							// 位置補正
+							ImGui::Text((const char*)u8"　位置補正 　　x=%.2f", _hp->GetPosXCorrection());
+							float _HPPosCorrection = _hp->GetPosXCorrection();
+							ImGui::SliderFloat("PosCorrection", &_HPPosCorrection, -640, 640);
+
 							// 大きさ
 							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _hp->GetSize());
 							float _HPSize = _hp->GetSize();
-							ImGui::SliderFloat("Size", &_HPSize, 1, 100);
+							ImGui::SliderFloat("Size", &_HPSize, 0.01f, 1.0f);
 
 							// セット
 							_hp->SetPos(_HPPos);
+							_hp->SetPosXCorrection(_HPPosCorrection);
 							_hp->SetSize(_HPSize);
 						}
 					}
@@ -2239,6 +2245,9 @@ void ObjectManager::EnemyHPWrite()
 	_json["HP"]["PosX"] = m_EnemyHPList[0].lock()->GetVector2Pos().x;
 	_json["HP"]["PosY"] = m_EnemyHPList[0].lock()->GetVector2Pos().y;
 	
+	// 座標補正
+	_json["HP"]["Correction"] = m_EnemyHPList[0].lock()->GetPosXCorrection();
+
 	// 大きさ
 	_json["HP"]["Size"] = m_EnemyHPList[0].lock()->GetSize();
 
@@ -3483,6 +3492,10 @@ void ObjectManager::SetEnemyHPParam(std::shared_ptr<EnemyBase> _enemy)
 		_pos.x = obj["PosX"];
 		_pos.y = obj["PosY"];
 
+		// 位置補正
+		float _posCorrection = 0.0f;
+		_posCorrection = obj["Correction"];
+
 		// 大きさ
 		float _size = 1.0f;
 		_size = obj["Size"];
@@ -3494,6 +3507,7 @@ void ObjectManager::SetEnemyHPParam(std::shared_ptr<EnemyBase> _enemy)
 		// セット
 		std::shared_ptr<Enemy_HP> hp = std::make_shared<Enemy_HP>();
 		hp->SetPos(_pos);
+		hp->SetPosXCorrection(_posCorrection);
 		hp->SetSize(_size);
 		hp->SetName(_name);
 		hp->SetCamera(m_camera.lock());

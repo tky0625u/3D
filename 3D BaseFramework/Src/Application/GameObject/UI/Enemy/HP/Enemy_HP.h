@@ -16,6 +16,9 @@ public:
 
 	void SetTarget(std::shared_ptr<EnemyBase> _target) { m_target = _target; }
 	void SetCamera(std::shared_ptr<GameCamera> _camera) { m_camera = _camera; }
+	void SetPosXCorrection(float _correction) { m_posXCorrection = _correction; }
+
+	const float& GetPosXCorrection()const { return m_posXCorrection; }
 
 private:
 
@@ -36,4 +39,5 @@ private:
 	int                        m_DownTime = 0;
 	float                      m_MaxWidth = 0.0f;
 	float                      m_alpha    = 1.0f;
+	float                      m_posXCorrection = 0.0f;
 };
