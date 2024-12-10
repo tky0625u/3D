@@ -519,6 +519,31 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				ImGui::TreePop();
 			}
 
+			// カーソル
+			if (ImGui::TreeNode("Cursor"))
+			{
+				// 保存
+				if (ImGui::Button((const char*)u8"Cursor保存"))
+				{
+					CursorWrite();
+				}
+
+				if (m_cursor.expired() == false)
+				{
+					std::shared_ptr<Cursor> _cursor = m_cursor.lock();
+
+					// サイズ
+					ImGui::Text((const char*)u8"　サイズ 　Size=%.2f", _cursor->GetSize());
+					float _size = _cursor->GetSize();
+					ImGui::SliderFloat("Size", &_size, 0.01, 1);
+
+					// セット
+					_cursor->SetSize(_size);
+				}
+
+				ImGui::TreePop();
+			}
+
 			ImGui::TreePop();
 		}
 		ImGui::TreePop();
@@ -1706,26 +1731,43 @@ void ObjectManager::ExitWrite()
 
 void ObjectManager::SelectWrite()
 {
-}
-
-void ObjectManager::CursorWrite()
-{
-	if (m_cursor.expired())return;
+	if (m_select.expired())return;
 
 	nlohmann::json _json;
 
 	// 名前
-	_json["Cursor"]["Name"] = "Title";
-	
+	_json["Select"]["Name"] = "Select";
+
 	// 最大サイズ
-	_json["Cursor"]["MaxSize"] = m_cursor.lock()->GetMaxSize();
+	_json["Select"]["MaxSize"] = m_select.lock()->GetMaxSize();
 	// 大きさ変化量
-	_json["Cursor"]["ChangeSize"] = m_cursor.lock()->GetChangeSizeNum();
-	
+	_json["Select"]["ChangeSize"] = m_select.lock()->GetChangeSizeNum();
+
 	// 最大アルファ値
-	_json["Cursor"]["MaxAlpha"] = m_cursor.lock()->GetMaxAlpha();
+	_json["Select"]["MaxAlpha"] = m_select.lock()->GetMaxAlpha();
 	// アルファ値変化量
-	_json["Cursor"]["ChangeAlpha"] = m_cursor.lock()->GetChangeAlphaNum();
+	_json["Select"]["ChangeAlpha"] = m_select.lock()->GetChangeAlphaNum();
+
+	// ファイルに保存
+	std::ofstream _file("Asset/Json/Title/Select/Select.json");
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
+	}
+}
+
+void ObjectManager::CursorWrite()
+{
+	if (m_select.expired())return;
+
+	nlohmann::json _json;
+
+	// 名前
+	_json["Cursor"]["Name"] = "Cursor";
+
+	// サイズ
+	_json["Cursor"]["Size"] = m_select.lock()->GetSize();
 
 	// ファイルに保存
 	std::ofstream _file("Asset/Json/Title/Cursor/Cursor.json");
@@ -2454,7 +2496,41 @@ void ObjectManager::SetSelectParam()
 
 void ObjectManager::SetCursorParam()
 {
+	//jsonファイル
+	std::string fileName = "Asset/Json/Title/Cursor/Cursor.json";
 
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& obj : _json)
+	{
+		// サイズ
+		float _size = 1.0f;
+		_size = obj["Size"];
+
+		// 名前
+		std::string _name;
+		_name = obj["Name"];
+
+		// セット
+		std::shared_ptr<Cursor> cursor = std::make_shared<Cursor>();
+
+		cursor->SetSize(_size);
+		cursor->SetName(_name);
+		cursor->SetID(m_id);
+		cursor->SetObjManager(shared_from_this());
+		cursor->Init();
+		m_id++;
+
+		m_cursor = cursor;
+		SceneManager::Instance().AddUI(cursor);
+	}
+
+	ifs.close();
 }
 
 void ObjectManager::SetGameCameraParam(std::shared_ptr<StageManager> _stage)

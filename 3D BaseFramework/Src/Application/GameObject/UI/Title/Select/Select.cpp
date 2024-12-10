@@ -81,5 +81,5 @@ void Select::Init()
 	m_rect = { 0,0,long(520),long(141) };
 	m_size = m_MaxSize;
 	m_pTex = std::make_shared<KdTexture>();
-	m_pTex->Load("Asset/Textures/UI/Title/Cursor/Particle_Soft.png");
+	m_pTex->Load("Asset/Textures/UI/Title/Select/Particle_Soft.png");
 }

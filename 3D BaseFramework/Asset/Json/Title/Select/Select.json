@@ -1,1 +1,9 @@
-{"Cursor":{"ChangeAlpha":0.03999999910593033,"ChangeSize":0.035999998450279236,"MaxAlpha":1.0,"MaxSize":0.5009999871253967,"Name":"Select"}}
+{
+	"Select": {
+		"ChangeAlpha": 0.03999999910593033,
+		"ChangeSize": 0.035999998450279236,
+		"MaxAlpha": 1.0,
+		"MaxSize": 0.5009999871253967,
+		"Name": "Select"
+	}
+}
