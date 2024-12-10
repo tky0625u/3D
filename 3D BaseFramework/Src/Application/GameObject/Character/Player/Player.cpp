@@ -7,18 +7,7 @@
 #include"../BulletBase/BulletBase.h"
 #include"../../Weapon/Sword/Sword.h"
 #include"../../Weapon/Shield/Shield.h"
-
-
-void Player::Update()
-{
-	if (m_TeleportFlg && m_actionType != Action::TeleportType)
-	{
-		if (GetAsyncKeyState('E') & 0x8000)m_ObjectManager.lock()->NextTeleport();
-	}
-	CharacterBase::Update();
-
-
-}
+#include"../../Stage/MagicPolygon/MagicPolygon.h"
 
 void Player::Action()
 {
@@ -72,88 +61,33 @@ void Player::CrushingAction()
 	}
 }
 
-void Player::LockONCheck()
-{
-	if (m_LockONFlg && !m_LockONTarget.expired() && m_LockONTarget.lock()->GetParam().Hp > 0)
-	{
-		m_LockONFlg = false;
-		m_LockONTarget.lock()->SetLockONFlg(false);
-		return;
-	}
-
-	bool HitFlg = false;
-	int listNum = 0;
-	Math::Vector3 _2dPos = Math::Vector3::Zero;
-
-	for (int e = 0; e < SceneManager::Instance().GetEnemyList().size(); ++e)
-	{
-		if (SceneManager::Instance().GetEnemyList()[e]->GetParam().Hp > 0)
-		{
-			if (!HitFlg)
-			{
-				m_camera.lock()->GetCamera()->ConvertWorldToScreenDetail(SceneManager::Instance().GetEnemyList()[e]->GetPos(), _2dPos);
-				HitFlg = true;
-				listNum = e;
-			}
-			else
-			{
-				Math::Vector3 _tmp2dPos = Math::Vector3::Zero;
-				m_camera.lock()->GetCamera()->ConvertWorldToScreenDetail(SceneManager::Instance().GetEnemyList()[e]->GetPos(), _tmp2dPos);
-				if (_2dPos.z < 0.0f && _tmp2dPos.z >= 0.0f)
-				{
-					_2dPos = _tmp2dPos;
-					listNum = e;
-				}
-				else if ((_2dPos.z >= 0.0f && _tmp2dPos.z >= 0.0f) || (_2dPos.z < 0.0f && _tmp2dPos.z < 0.0f))
-				{
-					if (_2dPos.Length() > _tmp2dPos.Length())
-					{
-						_2dPos = _tmp2dPos;
-						listNum = e;
-					}
-				}
-			}
-		}
-	}
-
-	if (HitFlg == true)
-	{
-		SceneManager::Instance().GetEnemyList()[listNum]->SetLockONFlg(true);
-		m_LockONTarget = SceneManager::Instance().GetEnemyList()[listNum];
-		m_LockONFlg = true;
-	}
-	else
-	{
-		m_LockONFlg = false;
-	}
-}
-
 void Player::NextStageCheck()
 {
-	if (SceneManager::Instance().GetEnemyList().size() == 0 &&
-		m_camera.lock()->GetCameraType() == GameCamera::CameraType::PlayerType)
+	if (SceneManager::Instance().GetEnemyList().size() > 0)return;
+	if (m_camera.lock()->GetCameraType() != GameCamera::CameraType::PlayerType)return;
+	if (m_actionType == Player::Action::TeleportType)return;
+
+	KdCollider::RayInfo rayInfo;
+	rayInfo.m_pos = m_pos;
+	float LitleUP = 1.0f;
+	rayInfo.m_pos.y += LitleUP;
+	rayInfo.m_dir = Math::Vector3::Down;
+	rayInfo.m_range = m_gravity + LitleUP;
+	rayInfo.m_type = KdCollider::TypeEvent;
+
+	//デバッグ用
+	Math::Color color = { 1,1,1,1 };
+	//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
+
+	std::list<KdCollider::CollisionResult> retRayList;
+	for (auto& ret : SceneManager::Instance().GetObjList())
 	{
-		KdCollider::RayInfo rayInfo;
-		rayInfo.m_pos = m_pos;
-		float LitleUP = 1.0f;
-		rayInfo.m_pos.y += LitleUP;
-		rayInfo.m_dir = Math::Vector3::Down;
-		rayInfo.m_range = m_gravity + LitleUP;
-		rayInfo.m_type = KdCollider::TypeEvent;
-
-		//デバッグ用
-		Math::Color color = { 1,1,1,1 };
-		//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
-
-		std::list<KdCollider::CollisionResult> retRayList;
-		for (auto& ret : SceneManager::Instance().GetObjList())
+		if (ret->Intersects(rayInfo, &retRayList))
 		{
-			if (ret->Intersects(rayInfo, &retRayList))
-			{
-				/*m_StageManager.lock()->NextStage();*/
-				m_TeleportFlg = true;
-				return;
-			}
+			/*m_StageManager.lock()->NextStage();*/
+			TeleportChange();
+			m_TeleportFlg = true;
+			return;
 		}
 	}
 
@@ -177,7 +111,7 @@ void Player::TeleportChange()
 	std::shared_ptr<Teleport> _teleport = std::make_shared<Teleport>();
 	m_NextState = _teleport;
 	m_NextActionType = Action::TeleportType;
-	m_flow = CharacterBase::Flow::UpdateType;
+	m_flow = CharacterBase::Flow::EnterType;
 }
 
 void Player::StateBase::StateUpdate(std::shared_ptr<Player> owner)
@@ -198,17 +132,6 @@ void Player::StateBase::StateUpdate(std::shared_ptr<Player> owner)
 	if (owner->m_camera.lock()->GetCameraType() != GameCamera::CameraType::PlayerType)return;
 
 	owner->KeyCheck();
-	if (owner->m_LockONFlg)
-	{
-		if (!owner->m_LockONTarget.expired())
-		{
-			if (owner->m_LockONTarget.lock()->GetParam().Hp <= 0)
-			{
-				owner->m_LockONTarget.lock()->SetLockONFlg(false);
-				owner->LockONCheck();
-			}
-		}
-	}
 	ChangeState(owner);
 	owner->m_BeforeKeyType = owner->m_keyType;
 }
@@ -353,17 +276,6 @@ void Player::KeyCheck()
 	else if (m_keyType & Player::KeyType::RollKey)
 	{
 		m_keyType ^= Player::KeyType::RollKey;
-	}
-
-	//ロックオン
-	if (GetAsyncKeyState(VK_LSHIFT) & 0x8000)
-	{
-		if (!(m_BeforeKeyType & Player::KeyType::LockONKey))LockONCheck();
-		m_keyType |= Player::KeyType::LockONKey;
-	}
-	else if (m_keyType & Player::KeyType::LockONKey)
-	{
-		m_keyType ^= Player::KeyType::LockONKey;
 	}
 }
 
@@ -703,81 +615,74 @@ void Player::Attack::AttackDirCheck(std::shared_ptr<Player> owner)
 {
 	m_AttackDir = Math::Vector3::Zero;
 
-	if (!owner->m_LockONFlg)
+	if (GetAsyncKeyState('W') & 0x8000)
 	{
-		if (GetAsyncKeyState('W') & 0x8000)
+		m_AttackDir.z = 1.0f;
+	}
+	if (GetAsyncKeyState('S') & 0x8000)
+	{
+		m_AttackDir.z = -1.0f;
+	}
+	if (GetAsyncKeyState('A') & 0x8000)
+	{
+		m_AttackDir.x = -1.0f;
+	}
+	if (GetAsyncKeyState('D') & 0x8000)
+	{
+		m_AttackDir.x = 1.0f;
+	}
+
+	if (m_AttackDir == Math::Vector3::Zero)
+	{
+		KdCollider::SphereInfo sphereInfo;
+		sphereInfo.m_sphere.Center = owner->m_pos;
+		sphereInfo.m_sphere.Radius = 5.0f;
+		sphereInfo.m_type = KdCollider::Type::TypeBump;
+
+		std::list<KdCollider::CollisionResult> retSphereList;
+		for (auto& ret : SceneManager::Instance().GetEnemyList())
 		{
-			m_AttackDir.z = 1.0f;
+			if (ret->GetParam().Hp <= 0)continue;
+			ret->Intersects(sphereInfo, &retSphereList);
 		}
-		if (GetAsyncKeyState('S') & 0x8000)
+
+		float _maxOverLap = 0.0f;
+		Math::Vector3 _hitDir = Math::Vector3::Zero;
+		bool _hitFlg = false;
+
+		for (auto& sphere : retSphereList)
 		{
-			m_AttackDir.z = -1.0f;
+			if (_maxOverLap < sphere.m_overlapDistance)
+			{
+				_maxOverLap = sphere.m_overlapDistance;
+				_hitDir = sphere.m_hitDir;
+				_hitFlg = true;
+			}
 		}
-		if (GetAsyncKeyState('A') & 0x8000)
+
+		if (_hitFlg)
 		{
-			m_AttackDir.x = -1.0f;
-		}
-		if (GetAsyncKeyState('D') & 0x8000)
-		{
-			m_AttackDir.x = 1.0f;
-		}
-
-		if (m_AttackDir == Math::Vector3::Zero)
-		{
-			KdCollider::SphereInfo sphereInfo;
-			sphereInfo.m_sphere.Center = owner->m_pos;
-			sphereInfo.m_sphere.Radius = 5.0f;
-			sphereInfo.m_type = KdCollider::Type::TypeBump;
-
-			std::list<KdCollider::CollisionResult> retSphereList;
-			for (auto& ret : SceneManager::Instance().GetEnemyList())
-			{
-				ret->Intersects(sphereInfo, &retSphereList);
-			}
-
-			float _maxOverLap     = 0.0f;
-			Math::Vector3 _hitDir = Math::Vector3::Zero;
-			bool _hitFlg          = false;
-
-			for (auto& sphere : retSphereList)
-			{
-				if (_maxOverLap < sphere.m_overlapDistance)
-				{
-					_maxOverLap = sphere.m_overlapDistance;
-					_hitDir     = sphere.m_hitDir;
-					_hitFlg     = true;
-				}
-			}
-
-			if (_hitFlg)
-			{
-				_hitDir.y = 0.0f;
-				_hitDir *= -1.0f;
-				_hitDir.Normalize();
-				m_AttackDir = _hitDir;
-			}
-			else
-			{
-				//今の方向
-				Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(owner->m_angle.y));
-				Math::Vector3 nowVec = Math::Vector3::TransformNormal(owner->m_forward, nowRot);
-				m_AttackDir = nowVec;
-			}
+			_hitDir.y = 0.0f;
+			_hitDir *= -1.0f;
+			_hitDir.Normalize();
+			m_AttackDir = _hitDir;
 		}
 		else
 		{
-			Math::Matrix cameraRotYMat = Math::Matrix::Identity;
-			if (owner->m_camera.expired() == false)
-			{
-				cameraRotYMat = owner->m_camera.lock()->GetRotationYMatrix();
-			}
-			m_AttackDir = m_AttackDir.TransformNormal(m_AttackDir, cameraRotYMat);
+			//今の方向
+			Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(owner->m_angle.y));
+			Math::Vector3 nowVec = Math::Vector3::TransformNormal(owner->m_forward, nowRot);
+			m_AttackDir = nowVec;
 		}
 	}
 	else
 	{
-		m_AttackDir = owner->m_LockONTarget.lock()->GetPos() - owner->m_pos;
-		m_AttackDir.y = 0.0f;
+		Math::Matrix cameraRotYMat = Math::Matrix::Identity;
+		if (owner->m_camera.expired() == false)
+		{
+			cameraRotYMat = owner->m_camera.lock()->GetRotationYMatrix();
+		}
+		m_AttackDir = m_AttackDir.TransformNormal(m_AttackDir, cameraRotYMat);
 	}
 
 	m_AttackDir.Normalize(); //正規化
@@ -1461,7 +1366,27 @@ void Player::Crushing::ChangeState(std::shared_ptr<Player> owner)
 // Teleport========================================================================================
 void Player::Teleport::Enter(std::shared_ptr<Player> owner)
 {
+	Math::Vector3 _playerPos = owner->GetPos();
+	_playerPos.y = 0.0f;
+	Math::Vector3 _magicPolygonPos = owner->m_ObjectManager.lock()->GetMagicPolygon().lock()->GetPos();
+	_magicPolygonPos.y = 0.0f;
+	if (_playerPos.x >= _magicPolygonPos.x - 0.5f && _playerPos.x <= _magicPolygonPos.x + 0.5f && 
+		_playerPos.z >= _magicPolygonPos.z - 0.5f && _playerPos.z <= _magicPolygonPos.z + 0.5f)
+	{
+		owner->m_flow = Player::Flow::UpdateType;
+	}
 
+	if (!owner->IsAnimCheck("Run"))owner->SetAnime("Run", true, 1.0f);
+
+	Math::Vector3 _dir = _magicPolygonPos - _playerPos;
+	_dir.y = 0.0f;
+	float _dist = _dir.Length();
+	_dir.Normalize();
+
+	float _speed = owner->GetParam().Sp;
+	if (_dist < _speed)_speed = _dist;
+	owner->SetMove(_dir, _speed);
+	owner->Rotate(_dir);
 }
 
 void Player::Teleport::Update(std::shared_ptr<Player> owner)

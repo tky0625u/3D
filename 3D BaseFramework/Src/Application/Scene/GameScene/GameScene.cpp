@@ -32,8 +32,6 @@ void GameScene::Event()
 		m_state->Exit(shared_from_this());
 		break;
 	}
-
-	KdShaderManager::Instance().WorkAmbientController().SetDirLight(Math::Vector3{ 0.5f,-1.0f,0.5f }, Math::Vector3{ 1.0f,1.0,0.8f });
 }
 
 void GameScene::Update()
@@ -105,6 +103,8 @@ void GameScene::Init()
 	m_StageManager = _StageManager;
 	m_ObjManager = _ObjManager;
 
+	KdShaderManager::Instance().WorkAmbientController().SetDirLight(Math::Vector3{ 0.5f,-1.0f,0.5f }, Math::Vector3{ 1.0f,1.0,0.8f });
+
 	std::shared_ptr<Normal> _normal = std::make_shared<Normal>();
 	m_state = _normal;
 
@@ -139,14 +139,6 @@ void GameScene::Normal::Update(std::shared_ptr<GameScene> owner)
 	owner->m_ObjManager->DeleteEnemyList();
 
 	if (SceneManager::Instance().GetEnemyList().size() == 0)owner->m_StageManager->WaveCheck();
-
-	if (SceneManager::Instance().GetEnemyList().size() == 0)
-	{
-		if (GetAsyncKeyState(VK_RETURN) & 0x8000)
-		{
-			SceneManager::Instance().BlackAlphaChange(0.01f, true);
-		}
-	}
 
 	ChangeState(owner);
 }
@@ -195,7 +187,7 @@ void GameScene::GameOver::Update(std::shared_ptr<GameScene> owner)
 	}
 	else
 	{
-		if (GetAsyncKeyState(VK_RETURN) & 0x8000)
+		if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 		{
 			SceneManager::Instance().BlackAlphaChange(0.01f, true);
 		}
@@ -233,7 +225,7 @@ void GameScene::Clear::Update(std::shared_ptr<GameScene> owner)
 	}
 	else
 	{
-		if (GetAsyncKeyState(VK_RETURN) & 0x8000)
+		if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 		{
 			SceneManager::Instance().BlackAlphaChange(0.01f, true);
 		}

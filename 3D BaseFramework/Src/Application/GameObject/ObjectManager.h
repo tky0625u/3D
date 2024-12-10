@@ -8,7 +8,7 @@ class Title;
 class Game;
 class Exit;
 class Cursor;
-class TitleGuide;
+class Select;
 class TitleCamera;
 class Ground;
 class Circle;
@@ -16,9 +16,7 @@ class MagicPolygon;
 class StageManager;
 class Player_HP;
 class Player_Stamina;
-class LockON;
 class Floor;
-class Teleport;
 class Enemy_HP;
 class GameStateUI;
 class Golem;
@@ -64,15 +62,13 @@ public:
 	void TitleWrite();      
 	void GameWrite();       
 	void ExitWrite();       
-	void TitleGuideWrite();
+	void SelectWrite();
 	void CursorWrite();
 	void GameCameraWrite();
 	void PlayerWrite(std::string _fileName);
 	void PlayerHPWrite();
 	void PlayerStaminaWrite();
-	void LockONWrite();
 	void FloorWrite();
-	void TeleportWrite();
 	void GameStateWrite();
 	void EnemyWrite(int _stage, int _wave, std::string _fileName);
 	void EnemyHPWrite();
@@ -89,7 +85,7 @@ public:
 	void SetTitleParam();
 	void SetGameParam();
 	void SetExitParam();
-	void SetTitleGuideParam();
+	void SetSelectParam();
 	void SetCursorParam();
 	void SetGameCameraParam(std::shared_ptr<StageManager> _stage);
 	void SetObjectParam(std::shared_ptr<StageManager> _stage = nullptr);
@@ -97,9 +93,7 @@ public:
 	void SetPlayerUI(std::shared_ptr<StageManager> _stage);
 	void SetPlayerHPParam();
 	void SetPlayerStaminaParam();
-	void SetLockONParam();
 	void SetFloorParam(std::shared_ptr<StageManager> _stage);
-	void SetTeleportParam();
 	void SetGameStateParam(bool _IsClear);
 	void SetWeaponParam(std::string _filePath, std::string _weaponName);
 	void SetEnemyParam(std::string _filePath = "none", std::shared_ptr<StageManager> _stage = nullptr);
@@ -110,16 +104,24 @@ public:
 
 	// テレポート位置からのフラグ trueならテレポートが可能
 	const bool GetTeleportFlg();
-	// ゴーレムのメンバ変数
+	// ゴーレム
 	const std::weak_ptr<Golem>& GetGolem()const { return m_golem; }
+	// 魔法陣
+	const std::weak_ptr<MagicPolygon>& GetMagicPolygon()const { return m_magic; }
+	// ゲームUI
+	const std::weak_ptr<Game>& GetGame()const { return m_game; }
+	// ゲーム終了UI
+	const std::weak_ptr<Exit>& GetExit()const { return m_exit; }
+	// カーソル
+	const std::weak_ptr<Cursor>& GetCursor()const { return m_cursor; }
+	
 
 	// オブジェクトを動的に生成 ImGuiで使用====================================
 	void AddTitleCamera();
 	void AddTitle();
 	void AddGame();
 	void AddExit();
-	void AddTitleGuide();
-	void AddCursor();
+	void AddSelect();
 	void AddBone();
 	void AddBoneAlpha();
 	void AddGolem();
@@ -143,8 +145,8 @@ private:
 	std::weak_ptr<Title>                     m_title;
 	std::weak_ptr<Game>                      m_game;
 	std::weak_ptr<Exit>                      m_exit;
+	std::weak_ptr<Select>                    m_select;
 	std::weak_ptr<Cursor>                    m_cursor;
-	std::weak_ptr<TitleGuide>                m_titleGuide;
 	std::weak_ptr<GameCamera>                m_camera;
 	std::weak_ptr<Player>                    m_player;
 	std::weak_ptr<Ground>                    m_ground;
@@ -152,9 +154,7 @@ private:
 	std::weak_ptr<MagicPolygon>              m_magic;
 	std::weak_ptr<Player_HP>                 m_PlayerHP;
 	std::weak_ptr<Player_Stamina>            m_PlayerStamina;
-	std::weak_ptr<LockON>                    m_lockON;
 	std::weak_ptr<Floor>                     m_floor;
-	std::weak_ptr<Teleport>                  m_teleport;
 	std::weak_ptr<GameStateUI>               m_gameStateUI;
 	std::weak_ptr<Golem>                     m_golem;
 	std::vector<std::weak_ptr<BoneAlpha>>    m_BoneAlphaList;

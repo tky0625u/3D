@@ -210,11 +210,7 @@ void EnemyManager::PreDraw()
 
 void EnemyManager::DrawLit()
 {
-	for (auto& enemy : m_EnemyList)
-	{
-		enemy->DrawLit();
-		enemy->DrawOutLine();
-	}
+	for (auto& enemy : m_EnemyList)enemy->DrawLit();
 }
 
 void EnemyManager::DrawUnLit()

@@ -127,12 +127,6 @@ void EnemyBase::PostUpdate()
 	KdShaderManager::Instance().WriteCBColorEnable(m_ColorLightFlg);
 }
 
-void EnemyBase::DrawOutLine()
-{
-	KdShaderManager::Instance().m_StandardShader.SetEnableOutLineDraw(m_LockONFlg);
-	if(m_LockONFlg)KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
-}
-
 void EnemyBase::Action()
 {
 	if (m_NextState)

@@ -31,7 +31,7 @@ void TitleScene::Init()
 	m_ObjManager->SetTitleParam();
 	m_ObjManager->SetGameParam();
 	m_ObjManager->SetExitParam();
-	m_ObjManager->SetTitleGuideParam();
+	m_ObjManager->SetSelectParam();
 	m_ObjManager->SetCursorParam();
 	m_ObjManager->SetObjectParam();
 	KdEffekseerManager::GetInstance().Create(1280, 720);
@@ -44,4 +44,6 @@ void TitleScene::Init()
 	KdAudioManager::Instance().Play("Asset/Sound/Title/BGM/Formidable-Enemy.WAV", 0.01f, true);
 
 	SceneManager::Instance().BlackAlphaChange(0.01f, false);
+
+	ShowCursor(false);
 }

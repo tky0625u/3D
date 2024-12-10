@@ -1,5 +1,4 @@
-﻿#include "KdEffekseerManager.h"
-
+﻿
 void KdEffekseerManager::Create(int w, int h)
 {
 	// エフェクトのレンダラーの作成

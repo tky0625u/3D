@@ -33,13 +33,11 @@ public:
 	Player()                  {}
 	~Player()        override {};
 
-	void Update()    override;
 	void Action()    override;
 	void PostUpdate()override;
 	void Init()      override;
 
 	void CrushingAction()override;
-	void LockONCheck();
 	void NextStageCheck();
 	void StaminaRecovery() { 
 		if (m_StaminaRecoveryTime > 0)return;
@@ -59,25 +57,21 @@ public:
 
 	int GetMaxStamina()const { return m_MaxStamina; }
 	std::weak_ptr<Shield> GetShield() { return m_shield; }
-	const std::weak_ptr<EnemyBase>& GetLockONTarget()const { return m_LockONTarget; }
 	const int GetStaminaRecoveryTime()const { return m_StaminaRecoveryTime; }
 	const UINT GetParryID()const { return m_ParryID; }
 	const Math::Matrix& GetEnemyAttackPointMat() const { return (m_model->FindWorkNode("EnemyAttackPoint")->m_worldTransform) * m_mWorld; }
 	const Math::Matrix& GetCameraPointMat()const { return (m_model->FindWorkNode("CameraPoint")->m_worldTransform) * m_mWorld; }
 	const UINT& GetActionType()const { return m_actionType; }
 	const std::weak_ptr<ObjectManager>& GetObjectManager()const { return m_ObjectManager; }
-	const bool& GetLockONFlg()const { return m_LockONFlg; }
 	const bool& GetTeleportFlg()const { return m_TeleportFlg; }
 
 private:
 	std::weak_ptr<StageManager>  m_StageManager;
 	std::weak_ptr<Shield>        m_shield;
-	std::weak_ptr<EnemyBase>     m_LockONTarget;
 	float                        m_FocusBackRange = 2000.0f;
 	int                          m_MaxStamina     = 0;
 	int                          m_StaminaRecoveryTime = 0;
 	bool                         m_TeleportFlg    = false;
-	bool                         m_LockONFlg      = false;
 	UINT                         m_ParryID        = -1;
 
 private:
@@ -332,7 +326,6 @@ private:
 		AttackKey = 1 << 1,
 		GuardKey  = 1 << 2,
 		RollKey   = 1 << 3,
-		LockONKey = 1 << 4,
 	};
 
 	std::shared_ptr<StateBase> m_state          = nullptr;

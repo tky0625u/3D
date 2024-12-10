@@ -31,7 +31,8 @@ void Sword::PostUpdate()
 void Sword::DrawUnLit()
 {
 	KdShaderManager::Instance().ChangeBlendState(KdBlendState::Add);
-	if (m_traject.m_trajectPolyGon != nullptr)KdShaderManager::Instance().m_StandardShader.DrawPolygon(*m_traject.m_trajectPolyGon);
+	Math::Color _color = { 1.0f,1.0f,1.0f,0.5f };
+	if (m_traject.m_trajectPolyGon != nullptr)KdShaderManager::Instance().m_StandardShader.DrawPolygon(*m_traject.m_trajectPolyGon, Math::Matrix::Identity, _color);
 	KdShaderManager::Instance().ChangeBlendState(KdBlendState::Alpha);
 }
 

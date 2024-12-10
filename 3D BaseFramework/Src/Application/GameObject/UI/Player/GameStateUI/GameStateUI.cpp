@@ -9,7 +9,7 @@ void GameStateUI::GameOver::Enter(std::shared_ptr<GameStateUI> owner)
 {
 	m_alpha = 0.0f;
 	owner->m_pTex = std::make_shared<KdTexture>();
-	owner->m_pTex->Load("Asset/Textures/UI/Player/GameStateUI/GameOver/Death.png");
+	owner->m_pTex->Load("Asset/Textures/UI/Player/GameStateUI/GameOver/Dead.png");
 	owner->m_color = { 1,1,1,m_alpha };
 	owner->m_rect  = { 0,0,1280,107 };
 	owner->m_flow = GameStateUI::Flow::UpdateType;

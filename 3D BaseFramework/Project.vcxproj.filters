@@ -136,9 +136,6 @@
     <Filter Include="Src\Application\GameObject\Character\Enemy\Golem">
       <UniqueIdentifier>{6180fbf8-467c-4202-83a6-29ab5659f332}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\GameObject\UI\Player\LockON">
-      <UniqueIdentifier>{04eb853b-cfff-4568-aa40-301bc7597af6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Src\Application\GameObject\UI\Player\Floor">
       <UniqueIdentifier>{d279b14f-5150-41ef-ad65-e70061b65305}</UniqueIdentifier>
     </Filter>
@@ -166,9 +163,6 @@
     <Filter Include="Src\Application\GameObject\Camera\GameCamera">
       <UniqueIdentifier>{a70532aa-9b5e-4308-8f79-0a6d219a0072}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\GameObject\UI\Player\Teleport">
-      <UniqueIdentifier>{2c0df679-32d7-4eec-bd37-139c32a93e7a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Src\Application\GameObject\UI\Player\GameOver">
       <UniqueIdentifier>{52949f5a-c768-4fdb-ad67-a8892628cc71}</UniqueIdentifier>
     </Filter>
@@ -189,6 +183,9 @@
     </Filter>
     <Filter Include="Src\Application\GameObject\Stage\SkyBox">
       <UniqueIdentifier>{fc60f74c-521e-4f40-84b3-d5f4ad514e86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\UI\Title\Select">
+      <UniqueIdentifier>{0f7be622-2a42-4808-8b24-024cf380cdd3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -414,9 +411,6 @@
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\Golem\Golem.h">
       <Filter>Src\Application\GameObject\Character\Enemy\Golem</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\UI\Player\LockON\LockON.h">
-      <Filter>Src\Application\GameObject\UI\Player\LockON</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\UI\Player\Floor\Floor.h">
       <Filter>Src\Application\GameObject\UI\Player\Floor</Filter>
     </ClInclude>
@@ -447,9 +441,6 @@
     <ClInclude Include="Src\Application\GameObject\StageManager.h">
       <Filter>Src\Application\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\UI\Player\Teleport\Teleport.h">
-      <Filter>Src\Application\GameObject\UI\Player\Teleport</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\UI\Player\GameOver\GameOver.h">
       <Filter>Src\Application\GameObject\UI\Player\GameOver</Filter>
     </ClInclude>
@@ -470,6 +461,9 @@
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Stage\SkyBox\SkyBox.h">
       <Filter>Src\Application\GameObject\Stage\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\UI\Title\Select\Select.h">
+      <Filter>Src\Application\GameObject\UI\Title\Select</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -668,9 +662,6 @@
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\Golem\Golem.cpp">
       <Filter>Src\Application\GameObject\Character\Enemy\Golem</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\UI\Player\LockON\LockON.cpp">
-      <Filter>Src\Application\GameObject\UI\Player\LockON</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\GameObject\UI\Player\Floor\Floor.cpp">
       <Filter>Src\Application\GameObject\UI\Player\Floor</Filter>
     </ClCompile>
@@ -701,9 +692,6 @@
     <ClCompile Include="Src\Application\GameObject\StageManager.cpp">
       <Filter>Src\Application\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\UI\Player\Teleport\Teleport.cpp">
-      <Filter>Src\Application\GameObject\UI\Player\Teleport</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\GameObject\UI\Player\GameOver\GameOver.cpp">
       <Filter>Src\Application\GameObject\UI\Player\GameOver</Filter>
     </ClCompile>
@@ -724,6 +712,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Stage\SkyBox\SkyBox.cpp">
       <Filter>Src\Application\GameObject\Stage\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\UI\Title\Select\Select.cpp">
+      <Filter>Src\Application\GameObject\UI\Title\Select</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

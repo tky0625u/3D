@@ -41,6 +41,8 @@
 #include"UI/Title/Guide/Guide.h"
 //カーソル
 #include"UI/Title/Cursor/Cursor.h"
+//セレクト
+#include"UI/Title/Select/Select.h"
 //タイトルカメラ
 #include"Camera/TitleCamera/TitleCamera.h"
 //プレイヤーHP
@@ -468,88 +470,50 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				ImGui::TreePop();
 			}
 
-			// タイトルでのキー説明
-			if (ImGui::TreeNode("Guide"))
+			// セレクト
+			if (ImGui::TreeNode("Select"))
 			{
 				// 保存
-				if (ImGui::Button((const char*)u8"Guide保存"))
+				if (ImGui::Button((const char*)u8"Select保存"))
 				{
-					TitleGuideWrite();
+					SelectWrite();
 				}
 
 				// 生成
-				if (ImGui::Button((const char*)u8"Guide追加"))
+				if (ImGui::Button((const char*)u8"Select追加"))
 				{
-					AddTitleGuide();
-				}
-
-				if (m_titleGuide.expired() == false)
-				{
-					std::shared_ptr<TitleGuide> _guide = m_titleGuide.lock();
-
-					// 位置
-					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f", _guide->GetVector2Pos().x, _guide->GetVector2Pos().y);
-					Math::Vector2 _TitleGuidePos = _guide->GetVector2Pos();
-					ImGui::SliderFloat("PosX", &_TitleGuidePos.x, -640, 640);
-					ImGui::SliderFloat("PosY", &_TitleGuidePos.y, -360, 360);
-
-					// 大きさ
-					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _guide->GetSize());
-					float _TitleGuideSize = _guide->GetSize();
-					ImGui::SliderFloat("Size", &_TitleGuideSize, 0.01, 1);
-
-					// セット
-					_guide->SetPos(_TitleGuidePos);
-					_guide->SetSize(_TitleGuideSize);
-				}
-
-				ImGui::TreePop();
-			}
-
-			// カーソル
-			if (ImGui::TreeNode("Cursor"))
-			{
-				// 保存
-				if (ImGui::Button((const char*)u8"Cursor保存"))
-				{
-					CursorWrite();
-				}
-
-				// 生成
-				if (ImGui::Button((const char*)u8"Cursor追加"))
-				{
-					AddCursor();
+					AddSelect();
 				}
 
 				if (m_cursor.expired() == false)
 				{
-					std::shared_ptr<Cursor> _cursor = m_cursor.lock();
+					std::shared_ptr<Select> _select = m_select.lock();
 
 					// 最大サイズ
-					ImGui::Text((const char*)u8"　最大サイズ 　MaxSize=%.2f", _cursor->GetMaxSize());
-					float _CursorMaxSize = _cursor->GetMaxSize();
-					ImGui::SliderFloat("MaxSize", &_CursorMaxSize, 0.01, 1);
+					ImGui::Text((const char*)u8"　最大サイズ 　MaxSize=%.2f", _select->GetMaxSize());
+					float _SelectMaxSize = _select->GetMaxSize();
+					ImGui::SliderFloat("MaxSize", &_SelectMaxSize, 0.01, 1);
 
 					// 大きさ変化量
-					ImGui::Text((const char*)u8"　大きさ変化量 　ChangeSizeNum=%.2f", _cursor->GetChangeSizeNum());
-					float _CursorChangeSize = _cursor->GetChangeSizeNum();
-					ImGui::SliderFloat("ChangeSize", &_CursorChangeSize, 0.01, 1);
+					ImGui::Text((const char*)u8"　大きさ変化量 　ChangeSizeNum=%.2f", _select->GetChangeSizeNum());
+					float _SelectChangeSize = _select->GetChangeSizeNum();
+					ImGui::SliderFloat("ChangeSize", &_SelectChangeSize, 0.01, 1);
 
 					// 最大アルファ値
-					ImGui::Text((const char*)u8"　最大アルファ値 　MaxAlpha=%.2f", _cursor->GetMaxAlpha());
-					float _CursorMaxAlpha = _cursor->GetMaxAlpha();
-					ImGui::SliderFloat("MaxAlpha", &_CursorMaxAlpha, 0.01, 1);
+					ImGui::Text((const char*)u8"　最大アルファ値 　MaxAlpha=%.2f", _select->GetMaxAlpha());
+					float _SelectMaxAlpha = _select->GetMaxAlpha();
+					ImGui::SliderFloat("MaxAlpha", &_SelectMaxAlpha, 0.01, 1);
 
 					// アルファ値変化量
-					ImGui::Text((const char*)u8"　アルファ値変化量 　ChangeAlphaNum=%.2f", _cursor->GetChangeAlphaNum());
-					float _CursorChangeAlpha = _cursor->GetChangeAlphaNum();
-					ImGui::SliderFloat("ChangeAlpha", &_CursorChangeAlpha, 0.01, 1);
+					ImGui::Text((const char*)u8"　アルファ値変化量 　ChangeAlphaNum=%.2f", _select->GetChangeAlphaNum());
+					float _SelectChangeAlpha = _select->GetChangeAlphaNum();
+					ImGui::SliderFloat("ChangeAlpha", &_SelectChangeAlpha, 0.01, 1);
 
 					// セット
-					_cursor->SetMaxSize(_CursorMaxSize);
-					_cursor->SetChangeSizeNum(_CursorChangeSize);
-					_cursor->SetMaxAlpha(_CursorMaxAlpha);
-					_cursor->SetChangeAlphaNum(_CursorChangeAlpha);
+					_select->SetMaxSize(_SelectMaxSize);
+					_select->SetChangeSizeNum(_SelectChangeSize);
+					_select->SetMaxAlpha(_SelectMaxAlpha);
+					_select->SetChangeAlphaNum(_SelectChangeAlpha);
 				}
 
 				ImGui::TreePop();
@@ -875,50 +839,6 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 						ImGui::TreePop();
 					}
 
-					// ロックオンカーソル
-					if (ImGui::TreeNode("LockON"))
-					{
-						// 保存
-						if (ImGui::Button((const char*)u8"LockON保存"))
-						{
-							LockONWrite();
-						}
-
-						if (m_lockON.expired() == false)
-						{
-							std::shared_ptr<LockON> _lock = m_lockON.lock();
-
-							// 位置
-							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f", _lock->GetVector2Pos().x, _lock->GetVector2Pos().y);
-							Math::Vector2 _LockPos = _lock->GetVector2Pos();
-							ImGui::SliderFloat("PosX", &_LockPos.x, -640, 640);
-							ImGui::SliderFloat("PosY", &_LockPos.y, -360, 360);
-
-							// 大きさ
-							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _lock->GetSize());
-							float _LockSize = _lock->GetSize();
-							ImGui::SliderFloat("Size", &_LockSize, 1, 100);
-
-							// 大きさ変化量
-							ImGui::Text((const char*)u8"　大きさ変化量 　ChangeSize=%.2f", _lock->GetChangeSize());
-							float _LockSizeChange = _lock->GetChangeSize();
-							ImGui::SliderFloat("SizeChange", &_LockSizeChange, 0.01, 1.00);
-
-							// アルファ値変化量
-							ImGui::Text((const char*)u8"　アルファ値変化量 　ChangeAlpha=%.2f", _lock->GetChangeAlpha());
-							float _LockAlphaChange = _lock->GetChangeAlpha();
-							ImGui::SliderFloat("AlphaChange", &_LockAlphaChange, 0.01, 1.00);
-
-							// セット
-							_lock->SetPos(_LockPos);
-							_lock->SetSize(_LockSize);
-							_lock->SetChangeSize(_LockSizeChange);
-							_lock->SetChangeAlpha(_LockAlphaChange);
-						}
-
-						ImGui::TreePop();
-					}
-
 					// ステージ数
 					if (ImGui::TreeNode("Floor"))
 					{
@@ -946,44 +866,6 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 							// セット
 							_floor->SetPos(_FloorPos);
 							_floor->SetSize(_FloorSize);
-						}
-
-						ImGui::TreePop();
-					}
-
-					// テレポート可能UI
-					if (ImGui::TreeNode("Teleport"))
-					{
-						// 保存
-						if (ImGui::Button((const char*)u8"Teleport保存"))
-						{
-							TeleportWrite();
-						}
-
-						if (m_teleport.expired() == false)
-						{
-							std::shared_ptr<Teleport> _teleport = m_teleport.lock();
-
-							// 位置
-							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f", _teleport->GetVector2Pos().x, _teleport->GetVector2Pos().y);
-							Math::Vector2 _TeleportPos = _teleport->GetVector2Pos();
-							ImGui::SliderFloat("PosX", &_TeleportPos.x, -640, 640);
-							ImGui::SliderFloat("PosY", &_TeleportPos.y, -360, 360);
-
-							// 大きさ
-							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _teleport->GetSize());
-							float _TeleportSize = _teleport->GetSize();
-							ImGui::SliderFloat("Size", &_TeleportSize, 1, 100);
-
-							// アルファ値変化量
-							ImGui::Text((const char*)u8"　アルファ値変化量 　ChangeAlpha=%.2f", _teleport->GetChangeAlpha());
-							float _TeleportAlphaChange = _teleport->GetChangeAlpha();
-							ImGui::SliderFloat("AlphaChange", &_TeleportAlphaChange, 0.01, 1.00);
-
-							// セット
-							_teleport->SetPos(_TeleportPos);
-							_teleport->SetSize(_TeleportSize);
-							_teleport->SetChangeAlpha(_TeleportAlphaChange);
 						}
 
 						ImGui::TreePop();
@@ -1822,29 +1704,8 @@ void ObjectManager::ExitWrite()
 	}
 }
 
-void ObjectManager::TitleGuideWrite()
+void ObjectManager::SelectWrite()
 {
-	if (m_titleGuide.expired())return;
-
-	nlohmann::json _json;
-
-	// 名前
-	_json["TitleGuide"]["Name"] = "TitleGuide";
-	
-	// 座標
-	_json["TitleGuide"]["PosX"] = m_titleGuide.lock()->GetVector2Pos().x;
-	_json["TitleGuide"]["PosY"] = m_titleGuide.lock()->GetVector2Pos().y;
-	
-	// 大きさ
-	_json["TitleGuide"]["Size"] = m_titleGuide.lock()->GetSize();
-
-	// ファイルに保存
-	std::ofstream _file("Asset/Json/Title/Guide/Guide.json");
-	if (_file.is_open())
-	{
-		_file << _json.dump();
-		_file.close();
-	}
 }
 
 void ObjectManager::CursorWrite()
@@ -2030,37 +1891,6 @@ void ObjectManager::PlayerStaminaWrite()
 	}
 }
 
-void ObjectManager::LockONWrite()
-{
-	if (m_lockON.expired())return;
-
-	nlohmann::json _json;
-
-	// 名前
-	_json["LockON"]["Name"] = "LockON";
-	
-	// 座標
-	_json["LockON"]["PosX"] = m_lockON.lock()->GetVector2Pos().x;
-	_json["LockON"]["PosY"] = m_lockON.lock()->GetVector2Pos().y;
-	
-	// 大きさ
-	_json["LockON"]["Size"] = m_lockON.lock()->GetSize();
-	
-	// 大きさ変化量
-	_json["LockON"]["SizeChange"] = m_lockON.lock()->GetChangeSize();
-	
-	// アルファ値変化量
-	_json["LockON"]["AlphaChange"] = m_lockON.lock()->GetChangeAlpha();
-
-	// ファイルに保存
-	std::ofstream _file("Asset/Json/Game/UI/Player/LockON/LockON.json");
-	if (_file.is_open())
-	{
-		_file << _json.dump();
-		_file.close();
-	}
-}
-
 void ObjectManager::FloorWrite()
 {
 	if (m_floor.expired())return;
@@ -2079,34 +1909,6 @@ void ObjectManager::FloorWrite()
 
 	// ファイルに保存
 	std::ofstream _file("Asset/Json/Game/UI/Player/Floor/Floor.json");
-	if (_file.is_open())
-	{
-		_file << _json.dump();
-		_file.close();
-	}
-}
-
-void ObjectManager::TeleportWrite()
-{
-	if (m_teleport.expired())return;
-
-	nlohmann::json _json;
-
-	// 名前
-	_json["Teleport"]["Name"] = "Teleport";
-	
-	// 座標
-	_json["Teleport"]["PosX"] = m_teleport.lock()->GetVector2Pos().x;
-	_json["Teleport"]["PosY"] = m_teleport.lock()->GetVector2Pos().y;
-	
-	// 大きさ
-	_json["Teleport"]["Size"] = m_teleport.lock()->GetSize();
-	
-	// アルファ値変化量
-	_json["Teleport"]["AlphaChange"] = m_teleport.lock()->GetChangeAlpha();
-
-	// ファイルに保存
-	std::ofstream _file("Asset/Json/Game/UI/Player/Teleport/Teleport.json");
 	if (_file.is_open())
 	{
 		_file << _json.dump();
@@ -2597,53 +2399,10 @@ void ObjectManager::SetExitParam()
 	ifs.close();
 }
 
-void ObjectManager::SetTitleGuideParam()
+void ObjectManager::SetSelectParam()
 {
 	//jsonファイル
-	std::string fileName = "Asset/Json/Title/Guide/Guide.json";
-
-	std::ifstream ifs(fileName.c_str());
-	nlohmann::json _json;
-	if (ifs.is_open())
-	{
-		ifs >> _json;
-	}
-
-	for (auto& obj : _json)
-	{
-		// 座標
-		Math::Vector2 _pos = Math::Vector2::Zero;
-		_pos.x = obj["PosX"];
-		_pos.y = obj["PosY"];
-
-		// 大きさ
-		float _size = 1.0f;
-		_size = obj["Size"];
-
-		// 名前
-		std::string _name;
-		_name = obj["Name"];
-
-		// セット
-		std::shared_ptr<TitleGuide> guide = std::make_shared<TitleGuide>();
-		guide->SetPos(_pos);
-		guide->SetSize(_size);
-		guide->SetName(_name);
-		guide->SetID(m_id);
-		guide->Init();
-		m_id++;
-
-		m_titleGuide = guide;
-		SceneManager::Instance().AddUI(guide);
-	}
-
-	ifs.close();
-}
-
-void ObjectManager::SetCursorParam()
-{
-	//jsonファイル
-	std::string fileName = "Asset/Json/Title/Cursor/Cursor.json";
+	std::string fileName = "Asset/Json/Title/Select/Select.json";
 
 	std::ifstream ifs(fileName.c_str());
 	nlohmann::json _json;
@@ -2675,25 +2434,27 @@ void ObjectManager::SetCursorParam()
 		_name = obj["Name"];
 
 		// セット
-		std::shared_ptr<Cursor> cursor = std::make_shared<Cursor>();
-		if (!m_game.expired())cursor->SetPosList(m_game.lock()->GetVector2Pos());
-		if (!m_exit.expired())cursor->SetPosList(m_exit.lock()->GetVector2Pos());
-		cursor->SetMaxSize(_MaxSize);
-		cursor->SetChangeSizeNum(_ChangeSize);
-		cursor->SetMaxAlpha(_MaxAlpha);
-		cursor->SetChangeAlphaNum(_ChangeAlpha);
-		cursor->SetName(_name);
-		cursor->SetID(m_id);
-		cursor->Init();
-		cursor->SetGame(m_game.lock());
-		cursor->SetExit(m_exit.lock());
+		std::shared_ptr<Select> select = std::make_shared<Select>();
+		select->SetMaxSize(_MaxSize);
+		select->SetChangeSizeNum(_ChangeSize);
+		select->SetMaxAlpha(_MaxAlpha);
+		select->SetChangeAlphaNum(_ChangeAlpha);
+		select->SetName(_name);
+		select->SetID(m_id);
+		select->SetObjManager(shared_from_this());
+		select->Init();
 		m_id++;
 
-		m_cursor = cursor;
-		SceneManager::Instance().AddUI(cursor);
+		m_select = select;
+		SceneManager::Instance().AddUI(select);
 	}
 
 	ifs.close();
+}
+
+void ObjectManager::SetCursorParam()
+{
+
 }
 
 void ObjectManager::SetGameCameraParam(std::shared_ptr<StageManager> _stage)
@@ -2984,14 +2745,8 @@ void ObjectManager::SetPlayerUI(std::shared_ptr<StageManager> _stage)
 	// スタミナ
 	SetPlayerStaminaParam();
 	
-	// 照準
-	SetLockONParam();
-	
 	// ステージ数
 	SetFloorParam(_stage);
-	
-	// テレポート可能UI
-	SetTeleportParam();
 }
 
 void ObjectManager::SetPlayerHPParam()
@@ -3082,60 +2837,6 @@ void ObjectManager::SetPlayerStaminaParam()
 	ifs.close();
 }
 
-void ObjectManager::SetLockONParam()
-{
-	//jsonファイル
-	std::string fileName = "Asset/Json/Game/UI/Player/LockON/LockON.json";
-
-	std::ifstream ifs(fileName.c_str());
-	nlohmann::json _json;
-	if (ifs.is_open())
-	{
-		ifs >> _json;
-	}
-
-	for (auto& obj : _json)
-	{
-		// 座標
-		Math::Vector2 _pos = Math::Vector2::Zero;
-		_pos.x = obj["PosX"];
-		_pos.y = obj["PosY"];
-
-		// 大きさ
-		float _size = 1.0f;
-		_size = obj["Size"];
-
-		// 大きさ変化量
-		float _sizeChange = 0.0f;
-		_sizeChange = obj["SizeChange"];
-
-		// アルファ値変化量
-		float _alphaChange = 0.0f;
-		_alphaChange = obj["AlphaChange"];
-
-		// 名前
-		std::string _name;
-		_name = obj["Name"];
-
-		// セット
-		std::shared_ptr<LockON> lockON = std::make_shared<LockON>();
-		lockON->SetPos(_pos);
-		lockON->SetSize(_size);
-		lockON->SetChangeSize(_sizeChange);
-		lockON->SetChangeAlpha(_alphaChange);
-		lockON->SetName(_name);
-		lockON->SetTraget(m_player.lock());
-		lockON->SetID(m_id);
-		lockON->Init();
-		m_id++;
-
-		m_lockON = lockON;
-		SceneManager::Instance().AddPlayerUI(lockON);
-	}
-
-	ifs.close();
-}
-
 void ObjectManager::SetFloorParam(std::shared_ptr<StageManager> _stage)
 {
 	//jsonファイル
@@ -3175,55 +2876,6 @@ void ObjectManager::SetFloorParam(std::shared_ptr<StageManager> _stage)
 
 		m_floor = floor;
 		SceneManager::Instance().AddPlayerUI(floor);
-	}
-
-	ifs.close();
-}
-
-void ObjectManager::SetTeleportParam()
-{
-	//jsonファイル
-	std::string fileName = "Asset/Json/Game/UI/Player/Teleport/Teleport.json";
-
-	std::ifstream ifs(fileName.c_str());
-	nlohmann::json _json;
-	if (ifs.is_open())
-	{
-		ifs >> _json;
-	}
-
-	for (auto& obj : _json)
-	{
-		// 座標
-		Math::Vector2 _pos = Math::Vector2::Zero;
-		_pos.x = obj["PosX"];
-		_pos.y = obj["PosY"];
-
-		// 大きさ
-		float _size = 1.0f;
-		_size = obj["Size"];
-
-		// アルファ値変化量
-		float _alphaChange = 0.0f;
-		_alphaChange = obj["AlphaChange"];
-
-		// 名前
-		std::string _name;
-		_name = obj["Name"];
-
-		// セット
-		std::shared_ptr<Teleport> teleport = std::make_shared<Teleport>();
-		teleport->SetPos(_pos);
-		teleport->SetSize(_size);
-		teleport->SetChangeAlpha(_alphaChange);
-		teleport->SetName(_name);
-		teleport->SetPlayer(m_player.lock());
-		teleport->SetID(m_id);
-		teleport->Init();
-		m_id++;
-
-		m_teleport = teleport;
-		SceneManager::Instance().AddPlayerUI(teleport);
 	}
 
 	ifs.close();
@@ -3639,26 +3291,9 @@ void ObjectManager::AddExit()
 	SceneManager::Instance().AddObject(_exit);
 }
 
-void ObjectManager::AddTitleGuide()
+void ObjectManager::AddSelect()
 {
-	if (!m_titleGuide.expired())return;
-
-	std::string _name = "TitleGuide";
-	Math::Vector2 _pos = Math::Vector2::Zero;
-	float _size = 1.0f;
-
-	std::shared_ptr<TitleGuide> _guide = std::make_shared<TitleGuide>();
-	_guide->SetPos(_pos);
-	_guide->SetSize(_size);
-	_guide->Init();
-
-	m_titleGuide = _guide;
-	SceneManager::Instance().AddObject(_guide);
-}
-
-void ObjectManager::AddCursor()
-{
-	if (!m_cursor.expired())return;
+	if (!m_select.expired())return;
 
 	std::string _name = "Cursor";
 	float _MaxSize = 1.0f;
@@ -3666,17 +3301,15 @@ void ObjectManager::AddCursor()
 	float _MaxAlpha = 1.0f;
 	float _ChangeAlpha = 0.01f;
 
-	std::shared_ptr<Cursor> _cursor = std::make_shared<Cursor>();
-	if (!m_game.expired())_cursor->SetPosList(m_game.lock()->GetVector2Pos());
-	if (!m_exit.expired())_cursor->SetPosList(m_exit.lock()->GetVector2Pos());
-	_cursor->SetMaxSize(_MaxSize);
-	_cursor->SetChangeSizeNum(_ChangeSize);
-	_cursor->SetMaxAlpha(_MaxAlpha);
-	_cursor->SetChangeAlphaNum(_ChangeAlpha);
-	_cursor->Init();
+	std::shared_ptr<Select> _select = std::make_shared<Select>();
+	_select->SetMaxSize(_MaxSize);
+	_select->SetChangeSizeNum(_ChangeSize);
+	_select->SetMaxAlpha(_MaxAlpha);
+	_select->SetChangeAlphaNum(_ChangeAlpha);
+	_select->Init();
 
-	m_cursor = _cursor;
-	SceneManager::Instance().AddObject(_cursor);
+	m_select = _select;
+	SceneManager::Instance().AddObject(_select);
 }
 
 void ObjectManager::AddBone()

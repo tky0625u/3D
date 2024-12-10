@@ -161,7 +161,6 @@ private:
 
 		void ChangeState(std::shared_ptr<GameCamera> owner)override;
 
-		void LockON(std::shared_ptr<GameCamera> owner);
 		void Shake (std::shared_ptr<GameCamera> owner, Math::Matrix& _trans);
 
 	private:
