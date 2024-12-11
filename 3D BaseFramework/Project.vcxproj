@@ -184,6 +184,7 @@
     <ClInclude Include="Src\Application\GameObject\UI\Player\HP\Player_HP.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Player\Stamina\Player_Stamina.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Title\Cursor\Cursor.h" />
+    <ClInclude Include="Src\Application\GameObject\UI\Title\Cursor\Particle\Particle.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Title\Exit\Exit.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Title\Game\Game.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Title\Guide\Guide.h" />
@@ -271,6 +272,7 @@
     <ClCompile Include="Src\Application\GameObject\UI\Player\HP\Player_HP.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\Stamina\Player_Stamina.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Title\Cursor\Cursor.cpp" />
+    <ClCompile Include="Src\Application\GameObject\UI\Title\Cursor\Particle\Particle.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Title\Exit\Exit.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Title\Game\Game.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Title\Guide\Guide.cpp" />

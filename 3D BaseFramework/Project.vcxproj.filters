@@ -187,6 +187,9 @@
     <Filter Include="Src\Application\GameObject\UI\Title\Select">
       <UniqueIdentifier>{0f7be622-2a42-4808-8b24-024cf380cdd3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\UI\Title\Cursor\Particle">
+      <UniqueIdentifier>{0268134e-ba7d-4d04-9620-09f9abce9f7c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -465,6 +468,9 @@
     <ClInclude Include="Src\Application\GameObject\UI\Title\Select\Select.h">
       <Filter>Src\Application\GameObject\UI\Title\Select</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\UI\Title\Cursor\Particle\Particle.h">
+      <Filter>Src\Application\GameObject\UI\Title\Cursor\Particle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -715,6 +721,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\UI\Title\Select\Select.cpp">
       <Filter>Src\Application\GameObject\UI\Title\Select</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\UI\Title\Cursor\Particle\Particle.cpp">
+      <Filter>Src\Application\GameObject\UI\Title\Cursor\Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
