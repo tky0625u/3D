@@ -31,8 +31,8 @@ void TitleScene::Init()
 	m_ObjManager->SetTitleParam();
 	m_ObjManager->SetGameParam();
 	m_ObjManager->SetExitParam();
-	m_ObjManager->SetCursorParam();
 	m_ObjManager->SetSelectParam();
+	m_ObjManager->SetCursorParam();
 	m_ObjManager->SetObjectParam();
 	KdEffekseerManager::GetInstance().Create(1280, 720);
 	Math::Vector3 _pos = SceneManager::Instance().GetCamera()->GetPos();

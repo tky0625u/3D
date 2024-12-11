@@ -78,10 +78,11 @@ void Sword::SetTrajectMat()
 	Math::Vector3 _CM = (1.0f - 0.5f) * _CenterPos + 0.5f * _ModelTopPos;
 	Math::Vector3 _pos = (1.0f - 0.5f) * _BC + 0.5f * _CM;
 
-	for (int i=0;i<2;++i)
+	for (int i=0;i<3;++i)
 	{
 		Math::Matrix _trans;
-		if (i == 0)_trans = Math::Matrix::CreateTranslation(_pos);
+		if (i == 0)_trans = Math::Matrix::CreateTranslation(m_beforeModelTopPos);
+		else if (i == 1)_trans = Math::Matrix::CreateTranslation(_pos);
 		else { _trans = Math::Matrix::CreateTranslation(_ModelTopPos); }
 
 		m_traject.m_trajectMatList[i] = _trans;

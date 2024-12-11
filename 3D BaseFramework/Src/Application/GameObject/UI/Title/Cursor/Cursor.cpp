@@ -9,27 +9,27 @@ void Cursor::Update()
 		POINT _cursor;
 		GetCursorPos(&_cursor);
 		m_pos = { float(_cursor.x - 640.0f),float(-_cursor.y + 390.0f) };
+	}
 
-		if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+	{
+		if (!m_ClickFlg)
 		{
-			if (!m_ClickFlg)
+			for (int p = 0; p < m_ParticleNum; ++p)
 			{
-				for (int p = 0; p < m_ParticleNum; ++p)
-				{
-					std::shared_ptr<Particle> _particle = std::make_shared<Particle>();
-					_particle->Init();
-					Math::Vector2 _move = { (rand() % 20 - 10 + 1) * 0.1f,(rand() % 20 - 10 + 1) * 0.1f };
-					float         _size = (rand() % 10 - 5 + 1) * 0.1f;
-					_particle->SetParam(m_pos, _move, _size);
-					m_ParticleList.push_back(_particle);
-				}
-				m_ClickFlg = true;
+				std::shared_ptr<Particle> _particle = std::make_shared<Particle>();
+				_particle->Init();
+				Math::Vector2 _move = { (rand() % 20 - 10 + 1) * 0.1f,(rand() % 20 - 10 + 1) * 0.1f };
+				float         _size = (rand() % 10 - 5 + 1) * 0.1f;
+				_particle->SetParam(m_pos, _move, _size);
+				m_ParticleList.push_back(_particle);
 			}
+			m_ClickFlg = true;
 		}
-		else
-		{
-			m_ClickFlg = false;
-		}
+	}
+	else if(!SceneManager::Instance().GetBlackAlphaFlg())
+	{
+		m_ClickFlg = false;
 	}
 
 	for (auto& _particle : m_ParticleList)_particle->Update();
