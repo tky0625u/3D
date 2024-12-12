@@ -35,10 +35,9 @@ void TitleScene::Init()
 	m_ObjManager->SetCursorParam();
 	m_ObjManager->SetObjectParam();
 	KdEffekseerManager::GetInstance().Create(1280, 720);
-	Math::Vector3 _pos = SceneManager::Instance().GetCamera()->GetPos();
-	_pos.z -= 1.0f;
-	_pos.y -= 5.0f;
-	KdEffekseerManager::GetInstance().Play("Smoke/Smoke.efkefc", _pos, 1.0f, 0.5f, true);
+	Math::Vector3 _pos = Math::Vector3::Zero;
+	_pos.y = SceneManager::Instance().GetCamera()->GetPos().y - 50.0f;
+	KdEffekseerManager::GetInstance().Play("Smoke/Smoke.efkefc", _pos, Math::Vector3{20.0f,1.0f,20.0f}, 0.1f, true);
 	SceneManager::Instance().GetCamera()->WorkCamera()->SetFocus(8, 5, 600);
 
 	KdAudioManager::Instance().Play("Asset/Sound/Title/BGM/Formidable-Enemy.WAV", 0.01f, true);

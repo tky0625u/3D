@@ -2,9 +2,13 @@
 
 void TitleCamera::Update()
 {
-	m_mLocalPos = Math::Matrix::CreateTranslation(m_pos);
+	m_angle += 0.05f;
+	if (m_angle > 360.0f)m_angle -= 360.0f;
+
 	m_mRotation = GetRotationMatrix();
-	m_mWorld = m_mRotation * m_mLocalPos;
+	m_mLocalPos = Math::Matrix::CreateTranslation(m_pos);
+	Math::Matrix _rotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
+	m_mWorld = m_mRotation * m_mLocalPos * _rotY;
 }
 
 void TitleCamera::Init()

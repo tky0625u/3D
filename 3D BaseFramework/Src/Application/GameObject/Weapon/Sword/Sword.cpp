@@ -78,11 +78,15 @@ void Sword::SetTrajectMat()
 	Math::Vector3 _CM = (1.0f - 0.5f) * _CenterPos + 0.5f * _ModelTopPos;
 	Math::Vector3 _pos = (1.0f - 0.5f) * _BC + 0.5f * _CM;
 
-	for (int i=0;i<3;++i)
+	Math::Vector3 _t = DirectX::XMVectorCatmullRom(m_beforeModelTopPos, _BC, _CM, _ModelTopPos, 0.5f);
+
+	for (int i=0;i<5;++i)
 	{
 		Math::Matrix _trans;
 		if (i == 0)_trans = Math::Matrix::CreateTranslation(m_beforeModelTopPos);
-		else if (i == 1)_trans = Math::Matrix::CreateTranslation(_pos);
+		else if (i == 1)_trans = Math::Matrix::CreateTranslation(_BC);
+		else if (i == 2)_trans = Math::Matrix::CreateTranslation(_t);
+		else if (i == 3)_trans = Math::Matrix::CreateTranslation(_CM);
 		else { _trans = Math::Matrix::CreateTranslation(_ModelTopPos); }
 
 		m_traject.m_trajectMatList[i] = _trans;

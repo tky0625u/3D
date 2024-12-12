@@ -139,6 +139,7 @@ private:
 		virtual void ChangeState(std::shared_ptr<GameCamera> owner) = 0; // ステート切替
 
 		void SetShakeFlg(bool _shakeFlg) { m_shakeFlg = _shakeFlg; }
+		void SetShakeMove(float _move) { m_move = _move; }
 
 		const float& GetShakeFlg()const  { return m_shakeFlg; }
 

@@ -16,5 +16,5 @@ public:
 	const Math::Vector3 GetDegAng()const { return m_DegAng; }
 
 private:
-
+	float m_angle = 0.0f;
 };

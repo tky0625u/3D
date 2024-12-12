@@ -8,16 +8,16 @@
 
 void Select::Update()
 {
+	Math::Vector2 _gamePos = m_ObjectManager.lock()->GetGame().lock()->GetVector2Pos();
+	Math::Vector2 _exitPos = m_ObjectManager.lock()->GetExit().lock()->GetVector2Pos();
+	float _gameHarfHeight = m_ObjectManager.lock()->GetGame().lock()->GetHeight() / 2.0f;
+	float _gameHarfWidth = m_ObjectManager.lock()->GetGame().lock()->GetWidth() / 2.0f;
+	float _exitHarfHeight = m_ObjectManager.lock()->GetExit().lock()->GetHeight() / 2.0f;
+	float _exitHarfWidth = m_ObjectManager.lock()->GetExit().lock()->GetWidth() / 2.0f;
+	Math::Vector2 _cursorPos = m_ObjectManager.lock()->GetCursor().lock()->GetVector2Pos();
+
 	if (!SceneManager::Instance().GetBlackAlphaFlg())
 	{
-		Math::Vector2 _gamePos = m_ObjectManager.lock()->GetGame().lock()->GetVector2Pos();
-		Math::Vector2 _exitPos = m_ObjectManager.lock()->GetExit().lock()->GetVector2Pos();
-		float _gameHarfHeight = m_ObjectManager.lock()->GetGame().lock()->GetHeight() / 2.0f;
-		float _gameHarfWidth = m_ObjectManager.lock()->GetGame().lock()->GetWidth() / 2.0f;
-		float _exitHarfHeight = m_ObjectManager.lock()->GetExit().lock()->GetHeight() / 2.0f;
-		float _exitHarfWidth = m_ObjectManager.lock()->GetExit().lock()->GetWidth() / 2.0f;
-		Math::Vector2 _cursorPos = m_ObjectManager.lock()->GetCursor().lock()->GetVector2Pos();
-
 		if (m_pos != _gamePos &&
 			_cursorPos.x <= _gamePos.x + _gameHarfWidth && _cursorPos.x >= _gamePos.x - _gameHarfWidth &&
 			_cursorPos.y <= _gamePos.y + _gameHarfHeight && _cursorPos.y >= _gamePos.y - _gameHarfHeight)
@@ -61,7 +61,15 @@ void Select::Update()
 
 	m_SingleAngle += 2.0f;
 	if (m_SingleAngle > 360.0f)m_SingleAngle -= 360.0f;
-	m_alpha = (sin(DirectX::XMConvertToRadians(m_SingleAngle))) + 1.5f;
+	
+	if ((_cursorPos.x <= _gamePos.x + _gameHarfWidth  && _cursorPos.x >= _gamePos.x - _gameHarfWidth &&
+		 _cursorPos.y <= _gamePos.y + _gameHarfHeight && _cursorPos.y >= _gamePos.y - _gameHarfHeight) ||
+		(_cursorPos.x <= _exitPos.x + _exitHarfWidth  && _cursorPos.x >= _exitPos.x - _exitHarfWidth &&
+		 _cursorPos.y <= _exitPos.y + _exitHarfHeight && _cursorPos.y >= _exitPos.y - _exitHarfHeight))
+	{
+		m_alpha = (sin(DirectX::XMConvertToRadians(m_SingleAngle))) + 1.5f;
+	}
+	else { m_alpha = 0.0f;}
 
 	m_color = { 1.0f,1.0f,1.0f,m_alpha };
 }

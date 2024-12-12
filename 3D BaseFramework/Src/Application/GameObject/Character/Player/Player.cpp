@@ -791,6 +791,11 @@ void Player::Counter::Update(std::shared_ptr<Player> owner)
 		owner->GetSword().lock()->ClearTraject();
 	}
 
+	if (m_ActionFPS == 40)
+	{
+		KdEffekseerManager::GetInstance().Play("Player/Counter/CounterImpact/CounterImpact.efkefc", owner->m_pos, 2.0f, 1.0f, false);
+	}
+
 	if (40 <= m_ActionFPS && m_ActionFPS <= 66)
 	{
 		AttackHit(owner);
@@ -850,10 +855,11 @@ void Player::Counter::AttackHit(std::shared_ptr<Player> owner)
 
 	for (auto& ret : retSphereList)
 	{
+		owner->m_camera.lock()->GetState()->SetShakeMove(0.5f);
 		owner->m_camera.lock()->GetState()->SetShakeFlg(true);
 		m_CounterEnemy.lock()->Damage(owner->m_param.Atk * 5);
 		m_CounterEnemy.lock()->SetInviTime(owner->m_inviTime);
-		m_handle = KdEffekseerManager::GetInstance().Play("Player/Counter/CounterHit.efkefc", ret.m_hitPos, 1.0f, 0.8f, false).lock()->GetHandle();
+		m_handle = KdEffekseerManager::GetInstance().Play("Player/Counter/CounterHit/CounterHit.efkefc", ret.m_hitPos, 5.0f, 0.8f, false).lock()->GetHandle();
 		KdEffekseerManager::GetInstance().SetRotation(m_handle, Math::Vector3{ 0.0f,1.0f,0.0f }, DirectX::XMConvertToRadians(owner->GetAngle().y));
 		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/刀で斬る2.WAV", 0.05f, false);
 	}

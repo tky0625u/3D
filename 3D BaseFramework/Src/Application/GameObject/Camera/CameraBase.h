@@ -55,7 +55,7 @@ protected:
 	virtual void UpdateRotateByMouse();
 
 	std::shared_ptr<KdCamera>	m_spCamera		= nullptr;
-	std::weak_ptr<Player>	m_wpTarget;
+	std::weak_ptr<Player>	    m_wpTarget;
 
 	Math::Matrix				m_mLocalPos		= Math::Matrix::Identity;
 	Math::Matrix				m_mRotation     = Math::Matrix::Identity;

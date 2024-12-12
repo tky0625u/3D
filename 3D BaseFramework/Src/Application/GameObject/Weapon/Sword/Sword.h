@@ -35,7 +35,7 @@ private:
 	struct Traject
 	{
 		std::shared_ptr<KdTrailPolygon> m_trajectPolyGon = nullptr;
-		Math::Matrix                    m_trajectMatList[3];
+		Math::Matrix                    m_trajectMatList[5];
 	};
 
 	Math::Vector3                     m_beforeModelTopPos = Math::Vector3::Zero;

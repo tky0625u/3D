@@ -27,7 +27,7 @@ void Enemy_HP::Update()
 	else
 	{
 		m_DownTime = 0;
-		if (m_rect[HP::down].width != m_rect[HP::hp].width)m_rect[HP::down].width-=2.0f; //現在のHPまで徐々に減少
+		if (m_rect[HP::down].width != m_rect[HP::hp].width)m_rect[HP::down].width-=15.0f; //現在のHPまで徐々に減少
 	}
 
 	//座標変換
