@@ -19,7 +19,7 @@ void Golem::Action()
 
 void Golem::PostUpdate()
 {
-	CharacterBase::PostUpdate();
+	EnemyBase::PostUpdate();
 
 	KdShaderManager::Instance().WriteCBColorEnable(m_ColorLightFlg);
 }

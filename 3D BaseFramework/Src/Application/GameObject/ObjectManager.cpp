@@ -162,6 +162,9 @@ void ObjectManager::SlowChange()
 
 void ObjectManager::NextStageLiberation()
 {
+	// テレポート開放演出
+	m_magic.lock()->NextChange();
+
 	// テレポート位置
 	m_camera.lock()->FixedChange();
 	
@@ -261,6 +264,7 @@ void ObjectManager::CreateStage(std::shared_ptr<StageManager> _stage)
 	_Trans = Math::Matrix::CreateTranslation(m_magic.lock()->GetPos());
 	Math::Matrix _MagicMat = _Scale * _Rot * _Trans * _CircleMat;
 	m_magic.lock()->SetMatrix(_MagicMat);
+	m_magic.lock()->NormalChange();
 
 	ifs.close();
 
@@ -270,8 +274,6 @@ void ObjectManager::CreateStage(std::shared_ptr<StageManager> _stage)
 
 	// プレイヤーを次のステージに移動
 	m_player.lock()->SetPos(m_ground.lock()->GetPos());
-	// テレポート中から解除
-	m_player.lock()->SetTeleportFlg(false);
 
 	// カメラを正面を向くようにする
 	Math::Vector3 _angle = Math::Vector3::Zero;

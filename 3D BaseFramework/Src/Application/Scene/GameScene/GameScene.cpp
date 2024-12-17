@@ -127,12 +127,9 @@ void GameScene::Normal::Enter(std::shared_ptr<GameScene> owner)
 // Normal==========================================================================================
 void GameScene::Normal::Update(std::shared_ptr<GameScene> owner)
 {
-	if (SceneManager::Instance().GetBlackAlphaFlg())
+	if (SceneManager::Instance().GetBlackAlphaFlg() && owner->m_player->GetActionType() == Player::Action::TeleportType && SceneManager::Instance().GetBlackAlpha() >= 1.0f)
 	{
-		if (SceneManager::Instance().GetBlackAlpha() >= 1.0f)
-		{
-			owner->m_StageManager->NextStage();
-		}
+		owner->m_StageManager->NextStage();
 		return;
 	}
 

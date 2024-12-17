@@ -1,34 +1,48 @@
 ﻿#include "Player.h"
+
+// シーンマネジャ
 #include"../../../Scene/SceneManager.h"
+// ステージマネジャ
 #include"../../StageManager.h"
+// オブジェクトマネジャ
 #include"../../ObjectManager.h"
+// ゲームカメラ
 #include"../../Camera/GameCamera/GameCamera.h"
+// 敵基底
 #include"../Enemy/EnemyBase.h"
+// 弾基底
 #include"../BulletBase/BulletBase.h"
+// 剣
 #include"../../Weapon/Sword/Sword.h"
+// 盾
 #include"../../Weapon/Shield/Shield.h"
+// 魔法陣
 #include"../../Stage/MagicPolygon/MagicPolygon.h"
 
 void Player::Action()
 {
+	// 次の行動が決まっていたら
 	if (m_NextState != nullptr)
 	{
+		// 切り替え
 		m_state = m_NextState;
 		m_actionType = m_NextActionType;
-		m_NextState.reset();
+		m_NextState.reset(); // 切り替えが完了したらリセット
 	}
-	m_state->StateUpdate(shared_from_this());
+	m_state->StateUpdate(shared_from_this()); // ステート更新
 }
 
 void Player::PostUpdate()
 {
+	// テレポートが開放していたら
 	if (m_ObjectManager.lock()->GetTeleportFlg())
 	{
-		NextStageCheck();
+		NextStageCheck(); // テレポート位置判定
 	}
 
 	CharacterBase::PostUpdate();
 
+	// スタミナ回復開始時間が経っていたらスタミナ回復
 	if (m_StaminaRecoveryTime > 0)m_StaminaRecoveryTime--;
 	else if (m_param.Sm < m_MaxStamina) { StaminaRecovery(); }
 }
@@ -41,6 +55,7 @@ void Player::Init()
 	m_model->SetModelData("Asset/Models/Character/Player/Player.gltf");
 	m_animator->SetAnimation(m_model->GetData()->GetAnimation(m_anime), m_animeFlg);
 
+	// 待機
 	std::shared_ptr<Idol> idol = std::make_shared<Idol>();
 	m_state = idol;
 	m_actionType = Action::IdolType;
@@ -63,40 +78,47 @@ void Player::CrushingAction()
 
 void Player::NextStageCheck()
 {
-	if (SceneManager::Instance().GetEnemyList().size() > 0)return;
-	if (m_camera.lock()->GetCameraType() != GameCamera::CameraType::PlayerType)return;
-	if (m_actionType == Player::Action::TeleportType)return;
+	if (SceneManager::Instance().GetEnemyList().size() > 0)return; // ←敵が居たら
+	if (m_camera.lock()->GetCameraType() != GameCamera::CameraType::PlayerType)return; // カメラの状態がプレイヤーじゃなかったら
+	if (m_actionType == Player::Action::TeleportType)return; // プレイヤーがテレポート開始していたら
 
+	// レイ判定
 	KdCollider::RayInfo rayInfo;
+
+	// 開始位置
 	rayInfo.m_pos = m_pos;
 	float LitleUP = 1.0f;
-	rayInfo.m_pos.y += LitleUP;
+	rayInfo.m_pos.y += LitleUP; // 埋まらないために少し上げる
+	
+	// 方向
 	rayInfo.m_dir = Math::Vector3::Down;
+	
+	// 長さ
 	rayInfo.m_range = m_gravity + LitleUP;
+	
+	// 対象
 	rayInfo.m_type = KdCollider::TypeEvent;
 
 	//デバッグ用
-	Math::Color color = { 1,1,1,1 };
+	//Math::Color color = { 1,1,1,1 };
 	//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, color);
 
-	std::list<KdCollider::CollisionResult> retRayList;
+	// 当たり判定
 	for (auto& ret : SceneManager::Instance().GetObjList())
 	{
-		if (ret->Intersects(rayInfo, &retRayList))
+		std::list<KdCollider::CollisionResult> _list;
+		if (ret->Intersects(rayInfo, &_list))
 		{
-			/*m_StageManager.lock()->NextStage();*/
+			// テレポート切り替え
 			TeleportChange();
-			m_TeleportFlg = true;
 			return;
 		}
 	}
-
-	m_TeleportFlg = false;
 }
 
 void Player::IdolChange()
 {
-	m_sword.lock()->ClearTraject();
+	m_sword.lock()->ClearTraject(); // 剣の軌跡を削除
 
 	std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
 	m_NextState = _idol;
@@ -106,7 +128,7 @@ void Player::IdolChange()
 
 void Player::TeleportChange()
 {
-	m_sword.lock()->ClearTraject();
+	m_sword.lock()->ClearTraject(); // 剣の軌跡を削除
 
 	std::shared_ptr<Teleport> _teleport = std::make_shared<Teleport>();
 	m_NextState = _teleport;
@@ -358,7 +380,7 @@ void Player::Run::Enter(std::shared_ptr<Player> owner)
 		return;
 	}
 
-	Event(owner);
+	Move(owner);
 }
 
 void Player::Run::Update(std::shared_ptr<Player> owner)
@@ -375,7 +397,7 @@ void Player::Run::Update(std::shared_ptr<Player> owner)
 		return;
 	}
 
-	Event(owner);
+	Move(owner);
 }
 
 void Player::Run::Exit(std::shared_ptr<Player> owner)
@@ -403,7 +425,7 @@ void Player::Run::Exit(std::shared_ptr<Player> owner)
 	}
 }
 
-void Player::Run::Event(std::shared_ptr<Player> owner)
+void Player::Run::Move(std::shared_ptr<Player> owner)
 {
 	Math::Vector3 dir = Math::Vector3::Zero;
 	if (GetAsyncKeyState('W') & 0x8000)
@@ -521,7 +543,20 @@ void Player::Attack::Update(std::shared_ptr<Player> owner)
 		break;
 	}
 
-	Event(owner);
+	switch (m_atkNum)
+	{
+	case 1:
+		Attack1(owner);
+		break;
+	case 2:
+		Attack2(owner);
+		break;
+	case 3:
+		Attack3(owner);
+		break;
+	default:
+		break;
+	}
 
 	if (owner->GetIsAnimator())
 	{
@@ -539,24 +574,6 @@ void Player::Attack::Update(std::shared_ptr<Player> owner)
 void Player::Attack::Exit(std::shared_ptr<Player> owner)
 {
 
-}
-
-void Player::Attack::Event(std::shared_ptr<Player> owner)
-{
-	switch (m_atkNum)
-	{
-	case 1:
-		Attack1(owner);
-		break;
-	case 2:
-		Attack2(owner);
-		break;
-	case 3:
-		Attack3(owner);
-		break;
-	default:
-		break;
-	}
 }
 
 void Player::Attack::Attack1(std::shared_ptr<Player> owner)
@@ -941,7 +958,7 @@ void Player::Roll::Update(std::shared_ptr<Player> owner)
 		return;
 	}
 
-	if (m_ActionFPS < 32)Event(owner);
+	if (m_ActionFPS < 32)RollMove(owner);
 
 	m_ActionFPS++;
 }
@@ -951,7 +968,7 @@ void Player::Roll::Exit(std::shared_ptr<Player> owner)
 
 }
 
-void Player::Roll::Event(std::shared_ptr<Player> owner)
+void Player::Roll::RollMove(std::shared_ptr<Player> owner)
 {
 	Math::Vector3 dir = Math::Vector3::Zero;
 
@@ -1034,10 +1051,6 @@ void Player::Guard::Exit(std::shared_ptr<Player> owner)
 		owner->m_flow = Player::Flow::EnterType;
 		return;
 	}
-}
-
-void Player::Guard::Event(std::shared_ptr<Player> owner)
-{
 }
 
 void Player::Guard::ChangeState(std::shared_ptr<Player> owner)
@@ -1411,26 +1424,25 @@ void Player::Teleport::Update(std::shared_ptr<Player> owner)
 		return;
 	}
 
-
-	if (!owner->m_TeleportFlg)
-	{
-		owner->m_flow = Player::Flow::ExitType;
-		return;
-	}
-
 	if (m_ActionFPS == 38)
 	{
 		owner->m_dissolve = 1.0f;
 		m_handle = KdEffekseerManager::GetInstance().Play("Player/Teleport/LightEnd.efkefc", owner->m_pos, owner->m_size, 1.0f, false).lock()->GetHandle();
 	}
 
-	if (m_ActionFPS >= 38 && !KdEffekseerManager::GetInstance().IsPlaying(m_handle))SceneManager::Instance().BlackAlphaChange(0.01f, true);
+	if (m_ActionFPS >= 38 && !KdEffekseerManager::GetInstance().IsPlaying(m_handle))
+	{
+		SceneManager::Instance().BlackAlphaChange(0.01f, true);
+		owner->m_flow = Player::Flow::ExitType;
+	}
 
 	m_ActionFPS++;
 }
 
 void Player::Teleport::Exit(std::shared_ptr<Player> owner)
 {
+	if (owner->m_ObjectManager.lock()->GetTeleportFlg())return;
+
 	if (!owner->IsAnimCheck("TeleportToIdol"))
 	{
 		owner->SetAnime("TeleportToIdol", false, 1.0f);
@@ -1442,10 +1454,7 @@ void Player::Teleport::Exit(std::shared_ptr<Player> owner)
 	if (owner->GetIsAnimator())
 	{
 		// Idol
-		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
-		owner->m_NextState = _idol;
-		owner->m_NextActionType = Player::Action::IdolType;
-		owner->m_flow = KdGameObject::Flow::UpdateType;
+		owner->IdolChange();
 		return;
 	}
 }
