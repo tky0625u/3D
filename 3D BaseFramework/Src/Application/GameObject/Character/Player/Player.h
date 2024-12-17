@@ -157,6 +157,7 @@ private:
 		static const int AttackNUM    = 3;
 		int              m_atkNum     = 1;
 		int              m_ChangeTime = 0;
+		Effekseer::Handle m_handle;
 	};
 
 	class Counter :public StateBase
@@ -241,7 +242,7 @@ private:
 		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override { return; } // 遠距離攻撃による被弾
 
 	private:
-
+		Effekseer::Handle m_handle;
 	};
 
 	class Parry :public StateBase
@@ -330,7 +331,6 @@ private:
 
 	std::shared_ptr<StateBase> m_state          = nullptr;
 	std::shared_ptr<StateBase> m_NextState      = nullptr;
-	UINT                       m_flow           = CharacterBase::Flow::UpdateType;
 	UINT                       m_actionType     = Action::IdolType;
 	UINT                       m_NextActionType = m_actionType;
 	UINT                       m_keyType        = 0;

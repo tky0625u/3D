@@ -26,6 +26,14 @@ public:
 		oObject,
 	};
 
+	// 現在のステートの実行関数タイプ
+	enum Flow
+	{
+		EnterType,
+		UpdateType,
+		ExitType
+	};
+
 	KdGameObject() {}
 	virtual ~KdGameObject() { Release(); }
 
@@ -132,8 +140,11 @@ protected:
 
 	Math::Vector3 m_angle = Math::Vector3::Zero;
 
-	//ID
+	// ID
 	UINT m_id = 0;
+
+	// 現在のステートの実行関数タイプ
+	UINT m_flow = Flow::UpdateType;
 
 	// オブジェクト管理クラス
 	std::weak_ptr<ObjectManager> m_ObjectManager;

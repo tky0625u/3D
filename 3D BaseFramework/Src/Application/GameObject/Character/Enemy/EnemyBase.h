@@ -7,13 +7,6 @@ class Player;
 class EnemyBase :public CharacterBase,public std::enable_shared_from_this<EnemyBase>
 {
 public:
-	enum Flow
-	{
-		EnterType,
-		UpdateType,
-		ExitType
-	};
-
 	enum Action
 	{
 		IdolType,
@@ -33,6 +26,8 @@ public:
 	virtual void Init()  override;
 
 	void CrushingAction()override;
+	void GroundCheck()   override;
+	virtual void BumpCheck()     override;
 	void IdolChange()
 	{
 		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
@@ -194,7 +189,6 @@ protected:
 
 	std::shared_ptr<StateBase> m_state = nullptr;
 	std::shared_ptr<StateBase> m_NextState = nullptr;
-	UINT                       m_flow = CharacterBase::Flow::UpdateType;
 	UINT                       m_actionType = Action::IdolType;
 	UINT                       m_NextActionType = m_actionType;
 	float                      m_AppealEffectSize = 1.0f;

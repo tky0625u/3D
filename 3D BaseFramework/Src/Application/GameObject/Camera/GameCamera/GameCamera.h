@@ -1,9 +1,9 @@
 ﻿#pragma once
 #include"../CameraBase.h"
 
-class GameCamera_ConText;
-class GameCamera_State;
+// 魔法陣
 class MagicPolygon;
+// ステージマネージャ
 class StageManager;
 
 class GameCamera :public CameraBase,public std::enable_shared_from_this<GameCamera>
@@ -11,14 +11,6 @@ class GameCamera :public CameraBase,public std::enable_shared_from_this<GameCame
 public:
 	GameCamera() {};
 	~GameCamera()override {};
-
-	// 現在のステートの実行関数タイプ
-	enum Flow
-	{
-		EnterType,
-		UpdateType,
-		ExitType
-	};
 
 	// 現在のステートタイプ
 	enum CameraType
@@ -33,26 +25,48 @@ public:
 	void Init()      override;
 
 	void UpdateRotateByMouse()override; // マウスカーソルでカメラを動かす
-	void HitCheck();
+	void HitCheck(); //壁や地面の当たり判定
 
-	void SetMatrix      (Math::Matrix _mWorld)                        { m_mWorld = _mWorld; }
-	void SetDegAng      (Math::Vector3 _deg)                          { m_DegAngList[m_CameraType] = _deg; }
-	void SetPos         (Math::Vector3 _pos)                          { m_PosList[m_CameraType] = _pos; }
-	void SetViewAng     (float _viewAng)                              { m_ViewAngList[m_CameraType] = _viewAng; }
-	void SetDegAngList  (Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _clear);
-	void SetPosList     (Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _clear);
-	void SetViewAngList (float _player, float _fixed, float _clear);
-	void SetFixedTarget (std::shared_ptr<MagicPolygon> _Obj)          { m_FixedTarget = _Obj; }
-	void SetCameraType  (UINT _cameraType)                            { m_CameraType = _cameraType; }
-	void SetStageManager(std::shared_ptr<StageManager> _stageManager) { m_stageManager = _stageManager; }
+	// セッター===================================================================================================
+	void SetMatrix           (Math::Matrix _mWorld)                        { m_mWorld = _mWorld; }
+	void SetDegAng           (Math::Vector3 _deg)                          { m_DegAngList[m_CameraType] = _deg; }
+	void SetPos              (Math::Vector3 _pos)                          { m_PosList[m_CameraType] = _pos; }
+	void SetViewAng          (float _viewAng)                              { m_ViewAngList[m_CameraType] = _viewAng; }
+	void SetDegAngList       (Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _clear);
+	void SetPosList          (Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _clear);
+	void SetViewAngList      (float _player, float _fixed, float _clear);
+	void SetFixedTarget      (std::shared_ptr<MagicPolygon> _Obj)          { m_FixedTarget = _Obj; }
+	void SetCameraType       (UINT _cameraType)                            { m_CameraType = _cameraType; }
+	void SetStageManager     (std::shared_ptr<StageManager> _stageManager) { m_stageManager = _stageManager; }
+	void SetShakeFlg         (bool _shakeFlg)                              { m_shakeFlg = _shakeFlg; }
+	void SetChangeClearAngle (float _angle)                                { m_ChangeClearAngle = _angle; }
+	void SetChangeShakeAngle (float _angle)                                { m_ChangeShakeAngle = _angle; }
+	void SetDefaultShakeMove (float _move)                                 
+	{ 
+		m_DefaultMove = _move;
+		m_move = m_DefaultMove;
+	}
+	void SetShakeMove        (float _move)                                 { m_move = _move; }
+	void SetDefaultShakeTime (int _time)                                   
+	{
+		m_DefaultShakeTime = _time;
+		m_shakeTime = m_DefaultShakeTime;
+	}
+	//============================================================================================================
 
-	const Math::Vector3&                 GetNowPos()        const { return m_PosList[m_CameraType]; }
-	const Math::Vector3&                 GetNowDegAng()     const { return m_DegAngList[m_CameraType]; }
-	const std::shared_ptr<MagicPolygon>& GetFixedTarget()   const { return m_FixedTarget; }
-	const std::weak_ptr<Player>&         GetwpTarget()      const { return m_wpTarget; }
-	const float&                         GetNowViewAng()    const { return m_ViewAngList[m_CameraType]; }
-	const UINT&                          GetCameraType()    const { return m_CameraType; }
-	const Math::Matrix                   GetRotationMatrix()const override
+	// ゲッター===================================================================================================
+	const Math::Vector3&                 GetNowPos()           const { return m_PosList[m_CameraType]; }
+	const Math::Vector3&                 GetNowDegAng()        const { return m_DegAngList[m_CameraType]; }
+	const std::weak_ptr<MagicPolygon>&   GetFixedTarget()      const { return m_FixedTarget; }
+	const std::weak_ptr<Player>&         GetwpTarget()         const { return m_wpTarget; }
+	const float&                         GetNowViewAng()       const { return m_ViewAngList[m_CameraType]; }
+	const float&                         GetChangeClearAngle() const { return m_ChangeClearAngle; }
+	const float&                         GetChangeShakeAngle() const { return m_ChangeShakeAngle; }
+	const float&                         GetDefaultMove()      const { return m_DefaultMove; }
+	const int&                           GetDefaultShakeTime() const { return m_DefaultShakeTime; }
+	const bool                           GetShakeFlg()         const { return m_shakeFlg; }
+	const UINT&                          GetCameraType()       const { return m_CameraType; }
+	const Math::Matrix                   GetRotationMatrix()   const override
 	{
 		return Math::Matrix::CreateFromYawPitchRoll(
 			DirectX::XMConvertToRadians(m_DegAngList[m_CameraType].y),
@@ -65,40 +79,49 @@ public:
 			DirectX::XMConvertToRadians(m_DegAngList[m_CameraType].x));
 	}
 
-	virtual const Math::Matrix GetRotationYMatrix() const override
+	const Math::Matrix GetRotationYMatrix() const override
 	{
 		return Math::Matrix::CreateRotationY(
 			DirectX::XMConvertToRadians(m_DegAngList[m_CameraType].y));
 	}
+	//============================================================================================================
 
-	void PlayerChange()
+	// ステート切り替え===========================================================================================
+	void PlayerChange() // プレイヤー
 	{
 		std::shared_ptr<PlayerCamera> _player = std::make_shared<PlayerCamera>();
 		m_NextState = _player;
 		m_flow = GameCamera::Flow::EnterType;
 		return;
 	}
-	void FixedChange()
+	void FixedChange() // テレポート開放
 	{
 		std::shared_ptr<FixedCamera> _fixed = std::make_shared<FixedCamera>();
 		m_NextState = _fixed;
 		m_flow = GameCamera::Flow::EnterType;
 		return;
 	}
-	void ClearChange()
+	void ClearChange() // クリア
 	{
 		std::shared_ptr<ClearCamera> _clear = std::make_shared<ClearCamera>();
 		m_NextState = _clear;
 		m_flow = GameCamera::Flow::EnterType;
 		return;
 	}
-
+	//============================================================================================================
 private:
-	std::vector<Math::Vector3>     m_PosList;      // それぞれのステートの位置
-	std::vector<Math::Vector3>     m_DegAngList;   // それぞれのステートの角度
-	std::vector<float>             m_ViewAngList;  // それぞれのステートの視野角
-	std::shared_ptr<MagicPolygon>  m_FixedTarget;  // テレポート解放時のターゲット
-	std::weak_ptr<StageManager>    m_stageManager; // ステージマネージャ
+	std::vector<Math::Vector3>     m_PosList;                               // それぞれのステートの位置
+	std::vector<Math::Vector3>     m_DegAngList;                            // それぞれのステートの角度
+	std::vector<float>             m_ViewAngList;                           // それぞれのステートの視野角
+	std::weak_ptr<MagicPolygon>    m_FixedTarget;                           // テレポート解放時のターゲット
+	std::weak_ptr<StageManager>    m_stageManager;                          // ステージマネージャ
+	float                          m_ChangeClearAngle = 0.0f;               // クリア時の回転角度変化量
+	float                          m_ChangeShakeAngle = 0.0f;               // 振動時のsinカーブ変化量
+	float                          m_DefaultMove      = 0.1f;               // 初期移動量
+	float                          m_move             = m_DefaultMove;      // 移動量
+	int                            m_shakeTime        = m_DefaultShakeTime; // カメラ振動時間
+	int                            m_DefaultShakeTime = 10;                 // 初期カメラ振動時間
+	bool                           m_shakeFlg         = false;              // カメラ振動フラグ
 
 	// デバッグ
 	bool showFlg = false; // マウスカーソル可視化フラグ
@@ -138,15 +161,6 @@ private:
 
 		virtual void ChangeState(std::shared_ptr<GameCamera> owner) = 0; // ステート切替
 
-		void SetShakeFlg(bool _shakeFlg) { m_shakeFlg = _shakeFlg; }
-		void SetShakeMove(float _move) { m_move = _move; }
-
-		const float& GetShakeFlg()const  { return m_shakeFlg; }
-
-	protected:
-		float m_move      = 0.1f;  // 移動量
-		float m_shakeTime = 10.0f; // カメラ振動時間
-		bool  m_shakeFlg  = false; // カメラ振動フラグ
 	};
 
 	// プレイヤー
@@ -204,7 +218,6 @@ private:
 
 	std::shared_ptr<StateBase> m_state      = nullptr;                // 現在のステート
 	std::shared_ptr<StateBase> m_NextState  = nullptr;                // 次のステート
-	UINT                       m_flow       = Flow::UpdateType;       // 現在のステートの実行関数
 	UINT                       m_CameraType = CameraType::PlayerType; // 現在のステート
 
 public:

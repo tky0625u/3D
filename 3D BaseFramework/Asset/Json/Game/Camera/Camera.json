@@ -1,11 +1,15 @@
 {
 	"Camera": {
+		"ChangeClearAngle": 0.05,
+		"ChangeShakeAngle": 100.0,
 		"ClearAngleX": 0.0,
 		"ClearAngleY": 0.0,
 		"ClearPosX": 0.0,
 		"ClearPosY": 3.0,
 		"ClearPosZ": -8.0,
 		"ClearViewAngle": 60.0,
+		"DefaultMove": 0.1,
+		"DefaultShakeTime": 10,
 		"FixedAngleX": 45.0,
 		"FixedAngleY": 0.0,
 		"FixedPosX": 0.0,

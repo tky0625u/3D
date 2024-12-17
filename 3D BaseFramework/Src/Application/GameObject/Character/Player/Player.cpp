@@ -44,7 +44,7 @@ void Player::Init()
 	std::shared_ptr<Idol> idol = std::make_shared<Idol>();
 	m_state = idol;
 	m_actionType = Action::IdolType;
-	m_flow = CharacterBase::Flow::UpdateType;
+	m_flow = KdGameObject::Flow::UpdateType;
 
 	m_pCollider = std::make_unique<KdCollider>();
 	m_pCollider->RegisterCollisionShape("Player", m_model, KdCollider::TypeBump | KdCollider::TypeDamage | KdCollider::TypeEvent);
@@ -101,7 +101,7 @@ void Player::IdolChange()
 	std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
 	m_NextState = _idol;
 	m_NextActionType = Action::IdolType;
-	m_flow = CharacterBase::Flow::UpdateType;
+	m_flow = KdGameObject::Flow::UpdateType;
 }
 
 void Player::TeleportChange()
@@ -111,20 +111,20 @@ void Player::TeleportChange()
 	std::shared_ptr<Teleport> _teleport = std::make_shared<Teleport>();
 	m_NextState = _teleport;
 	m_NextActionType = Action::TeleportType;
-	m_flow = CharacterBase::Flow::EnterType;
+	m_flow = KdGameObject::Flow::EnterType;
 }
 
 void Player::StateBase::StateUpdate(std::shared_ptr<Player> owner)
 {
 	switch (owner->m_flow)
 	{
-	case Player::Flow::EnterType:
+	case KdGameObject::Flow::EnterType:
 		Enter(owner);
 		break;
-	case Player::Flow::UpdateType:
+	case KdGameObject::Flow::UpdateType:
 		Update(owner);
 		break;
-	case Player::Flow::ExitType:
+	case KdGameObject::Flow::ExitType:
 		Exit(owner);
 		break;
 	}
@@ -145,7 +145,7 @@ void Player::StateBase::Damage(std::shared_ptr<Player> owner, int _damage, std::
 		std::shared_ptr<Crushing> _crush = std::make_shared<Crushing>();
 		owner->m_NextState = _crush;
 		owner->m_NextActionType = Player::Action::CrushingType;
-		owner->m_flow = CharacterBase::Flow::UpdateType;
+		owner->m_flow = KdGameObject::Flow::UpdateType;
 		return;
 		return;
 	}
@@ -153,7 +153,7 @@ void Player::StateBase::Damage(std::shared_ptr<Player> owner, int _damage, std::
 	std::shared_ptr<Hit> _hit = std::make_shared<Hit>();
 	owner->m_NextState = _hit;
 	owner->m_NextActionType = Player::Action::HitType;
-	owner->m_flow = CharacterBase::Flow::UpdateType;
+	owner->m_flow = KdGameObject::Flow::UpdateType;
 	return;
 }
 
@@ -167,7 +167,7 @@ void Player::StateBase::Damage(std::shared_ptr<Player> owner, int _damage, std::
 		std::shared_ptr<Crushing> _crush = std::make_shared<Crushing>();
 		owner->m_NextState = _crush;
 		owner->m_NextActionType = Player::Action::CrushingType;
-		owner->m_flow = CharacterBase::Flow::UpdateType;
+		owner->m_flow = KdGameObject::Flow::UpdateType;
 		return;
 		return;
 	}
@@ -175,7 +175,7 @@ void Player::StateBase::Damage(std::shared_ptr<Player> owner, int _damage, std::
 	std::shared_ptr<Hit> _hit = std::make_shared<Hit>();
 	owner->m_NextState = _hit;
 	owner->m_NextActionType = Player::Action::HitType;
-	owner->m_flow = CharacterBase::Flow::UpdateType;
+	owner->m_flow = KdGameObject::Flow::UpdateType;
 	return;
 }
 
@@ -227,9 +227,9 @@ void Player::StateBase::AttackHit(std::shared_ptr<Player> owner)
 	{
 		if (hitEnemy->GetParam().Hp > 0 && hitEnemy->GetActionType() != EnemyBase::Action::AppealType && hitEnemy->GetinviTime() == 0)
 		{
-			owner->m_camera.lock()->GetState()->SetShakeFlg(true);
+			owner->m_camera.lock()->SetShakeFlg(true);
 			hitEnemy->Damage(owner->m_param.Atk);
-			hitEnemy->SetInviTime(owner->m_inviTime);
+			hitEnemy->SetInviTime(owner->m_inviAddTime);
 			KdEffekseerManager::GetInstance().Play("Enemy/Hit/hit_eff.efkefc", ret.m_hitPos, 1.0f, 0.8f, false);
 			KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/刀で斬る2.WAV", 0.05f, false);
 		}
@@ -305,7 +305,7 @@ void Player::Idol::ChangeState(std::shared_ptr<Player> owner)
 		std::shared_ptr<Roll> _roll = std::make_shared<Roll>();
 		owner->m_NextState = _roll;
 		owner->m_NextActionType = Player::Action::RollType;
-		owner->m_flow = CharacterBase::Flow::EnterType;
+		owner->m_flow = KdGameObject::Flow::EnterType;
 		return;
 	}
 	else if (owner->m_keyType & Player::KeyType::MoveKey)
@@ -313,7 +313,7 @@ void Player::Idol::ChangeState(std::shared_ptr<Player> owner)
 		std::shared_ptr<Run> _run = std::make_shared<Run>();
 		owner->m_NextState = _run;
 		owner->m_NextActionType = Player::Action::RunType;
-		owner->m_flow = CharacterBase::Flow::EnterType;
+		owner->m_flow = KdGameObject::Flow::EnterType;
 		return;
 	}
 	else if (owner->m_keyType & Player::KeyType::AttackKey && !(owner->m_BeforeKeyType & Player::KeyType::AttackKey))
@@ -321,7 +321,7 @@ void Player::Idol::ChangeState(std::shared_ptr<Player> owner)
 		std::shared_ptr<Attack> _attack = std::make_shared<Attack>();
 		owner->m_NextState = _attack;
 		owner->m_NextActionType = Player::Action::AttackType;
-		owner->m_flow = CharacterBase::Flow::EnterType;
+		owner->m_flow = KdGameObject::Flow::EnterType;
 		return;
 	}
 	else if (owner->m_keyType & Player::KeyType::GuardKey)
@@ -329,7 +329,7 @@ void Player::Idol::ChangeState(std::shared_ptr<Player> owner)
 		std::shared_ptr<Guard> _guard = std::make_shared<Guard>();
 		owner->m_NextState = _guard;
 		owner->m_NextActionType = Player::Action::GuardType;
-		owner->m_flow = CharacterBase::Flow::EnterType;
+		owner->m_flow = KdGameObject::Flow::EnterType;
 		return;
 	}
 
@@ -392,7 +392,7 @@ void Player::Run::Exit(std::shared_ptr<Player> owner)
 		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
 		owner->m_NextState = _idol;
 		owner->m_NextActionType = Player::Action::IdolType;
-		owner->m_flow = CharacterBase::Flow::UpdateType;
+		owner->m_flow = KdGameObject::Flow::UpdateType;
 		return;
 	}
 
@@ -436,7 +436,7 @@ void Player::Run::ChangeState(std::shared_ptr<Player> owner)
 		std::shared_ptr<Attack> _attack = std::make_shared<Attack>();
 		owner->m_NextState = _attack;
 		owner->m_NextActionType = Player::Action::AttackType;
-		owner->m_flow = CharacterBase::Flow::EnterType;
+		owner->m_flow = KdGameObject::Flow::EnterType;
 		return;
 	}
 	else if (owner->m_keyType & Player::KeyType::GuardKey)
@@ -444,7 +444,7 @@ void Player::Run::ChangeState(std::shared_ptr<Player> owner)
 		std::shared_ptr<Guard> _guard = std::make_shared<Guard>();
 		owner->m_NextState = _guard;
 		owner->m_NextActionType = Player::Action::GuardType;
-		owner->m_flow = CharacterBase::Flow::EnterType;
+		owner->m_flow = KdGameObject::Flow::EnterType;
 		return;
 	}
 	else if (owner->m_keyType & Player::KeyType::RollKey && !(owner->m_BeforeKeyType & Player::KeyType::RollKey))
@@ -454,7 +454,7 @@ void Player::Run::ChangeState(std::shared_ptr<Player> owner)
 		std::shared_ptr<Roll> _roll = std::make_shared<Roll>();
 		owner->m_NextState = _roll;
 		owner->m_NextActionType = Player::Action::RollType;
-		owner->m_flow = CharacterBase::Flow::EnterType;
+		owner->m_flow = KdGameObject::Flow::EnterType;
 		return;
 	}
 }
@@ -529,7 +529,7 @@ void Player::Attack::Update(std::shared_ptr<Player> owner)
 		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
 		owner->m_NextState = _idol;
 		owner->m_NextActionType = Player::Action::IdolType;
-		owner->m_flow = CharacterBase::Flow::UpdateType;
+		owner->m_flow = KdGameObject::Flow::UpdateType;
 		return;
 	}
 
@@ -570,6 +570,13 @@ void Player::Attack::Attack1(std::shared_ptr<Player> owner)
 	}
 
 	if (m_ActionFPS < 15 || m_ActionFPS > 30)return;
+	if (m_ActionFPS == 15)
+	{
+		//m_handle = KdEffekseerManager::GetInstance().Play("Player/Sword/Slash.efkefc", owner->GetSword().lock()->GetModelTop().Translation(), 1.0f, 1.0f, false).lock()->GetHandle();
+
+		//KdEffekseerManager::GetInstance().SetWorldMatrix(m_handle, owner->GetSword().lock()->GetMatrix());
+		////KdEffekseerManager::GetInstance().SetRotation(m_handle, Math::Vector3{ 0.0f,1.0f,0.0f }, DirectX::XMConvertToRadians(owner->GetAngle().y));
+	}
 	AttackHit(owner);
 
 	if (owner->GetSword().expired())return;
@@ -708,7 +715,7 @@ void Player::Attack::ChangeState(std::shared_ptr<Player> owner)
 		std::shared_ptr<Guard> _guard = std::make_shared<Guard>();
 		owner->m_NextState = _guard;
 		owner->m_NextActionType = Player::Action::GuardType;
-		owner->m_flow = CharacterBase::Flow::EnterType;
+		owner->m_flow = KdGameObject::Flow::EnterType;
 		return;
 	}
 	else if (owner->m_keyType & Player::KeyType::RollKey && !(owner->m_BeforeKeyType & Player::KeyType::RollKey))
@@ -719,7 +726,7 @@ void Player::Attack::ChangeState(std::shared_ptr<Player> owner)
 		std::shared_ptr<Roll> _roll = std::make_shared<Roll>();
 		owner->m_NextState = _roll;
 		owner->m_NextActionType = Player::Action::RollType;
-		owner->m_flow = CharacterBase::Flow::EnterType;
+		owner->m_flow = KdGameObject::Flow::EnterType;
 		return;
 	}
 }
@@ -782,7 +789,7 @@ void Player::Counter::Update(std::shared_ptr<Player> owner)
 		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
 		owner->m_NextState = _idol;
 		owner->m_NextActionType = Player::Action::IdolType;
-		owner->m_flow = CharacterBase::Flow::UpdateType;
+		owner->m_flow = KdGameObject::Flow::UpdateType;
 		return;
 	}
 
@@ -855,10 +862,10 @@ void Player::Counter::AttackHit(std::shared_ptr<Player> owner)
 
 	for (auto& ret : retSphereList)
 	{
-		owner->m_camera.lock()->GetState()->SetShakeMove(0.5f);
-		owner->m_camera.lock()->GetState()->SetShakeFlg(true);
+		owner->m_camera.lock()->SetShakeMove(0.5f);
+		owner->m_camera.lock()->SetShakeFlg(true);
 		m_CounterEnemy.lock()->Damage(owner->m_param.Atk * 5);
-		m_CounterEnemy.lock()->SetInviTime(owner->m_inviTime);
+		m_CounterEnemy.lock()->SetInviTime(owner->m_inviAddTime);
 		m_handle = KdEffekseerManager::GetInstance().Play("Player/Counter/CounterHit/CounterHit.efkefc", ret.m_hitPos, 5.0f, 0.8f, false).lock()->GetHandle();
 		KdEffekseerManager::GetInstance().SetRotation(m_handle, Math::Vector3{ 0.0f,1.0f,0.0f }, DirectX::XMConvertToRadians(owner->GetAngle().y));
 		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/刀で斬る2.WAV", 0.05f, false);
@@ -930,7 +937,7 @@ void Player::Roll::Update(std::shared_ptr<Player> owner)
 		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
 		owner->m_NextState = _idol;
 		owner->m_NextActionType = Player::Action::IdolType;
-		owner->m_flow = CharacterBase::Flow::UpdateType;
+		owner->m_flow = KdGameObject::Flow::UpdateType;
 		return;
 	}
 
@@ -1018,7 +1025,7 @@ void Player::Guard::Exit(std::shared_ptr<Player> owner)
 		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
 		owner->m_NextState = _idol;
 		owner->m_NextActionType = Player::Action::IdolType;
-		owner->m_flow = CharacterBase::Flow::UpdateType;
+		owner->m_flow = KdGameObject::Flow::UpdateType;
 		return;
 	}
 
@@ -1088,7 +1095,7 @@ void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shar
 		std::shared_ptr<Parry> _parry = std::make_shared<Parry>();
 		owner->m_NextState = _parry;
 		owner->m_NextActionType = Player::Action::ParryType;
-		owner->m_flow = CharacterBase::Flow::UpdateType;
+		owner->m_flow = KdGameObject::Flow::UpdateType;
 
 		owner->m_ParryID = _enemy->GetID();
 		_enemy->StumbleChange();
@@ -1109,7 +1116,7 @@ void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shar
 			std::shared_ptr<GuardReaction> _reaction = std::make_shared<GuardReaction>();
 			owner->m_NextState = _reaction;
 			owner->m_NextActionType = Player::Action::GuardReactionType;
-			owner->m_flow = CharacterBase::Flow::UpdateType;
+			owner->m_flow = KdGameObject::Flow::UpdateType;
 		}
 	}
 }
@@ -1130,7 +1137,7 @@ void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shar
 		std::shared_ptr<Parry> _parry = std::make_shared<Parry>();
 		owner->m_NextState = _parry;
 		owner->m_NextActionType = Player::Action::ParryType;
-		owner->m_flow = CharacterBase::Flow::UpdateType;
+		owner->m_flow = KdGameObject::Flow::UpdateType;
 
 		Math::Matrix RotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(owner->m_angle.y));
 		Math::Vector3 _dir = Math::Vector3::TransformNormal(owner->m_forward, RotY);
@@ -1159,7 +1166,7 @@ void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shar
 			std::shared_ptr<GuardReaction> _reaction = std::make_shared<GuardReaction>();
 			owner->m_NextState = _reaction;
 			owner->m_NextActionType = Player::Action::GuardReactionType;
-			owner->m_flow = CharacterBase::Flow::UpdateType;
+			owner->m_flow = KdGameObject::Flow::UpdateType;
 
 			_bullet->SetCrush(true);
 		}
@@ -1179,7 +1186,8 @@ void Player::GuardReaction::Update(std::shared_ptr<Player> owner)
 	{
 		owner->SetAnime("GuardReaction", false, 1.0f);
 		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/ロボットを殴る1.WAV", 0.05f, false);
-		KdEffekseerManager::GetInstance().Play("Player/Guard/Spark.efkefc",owner->GetShieldMat().Translation(), 1.0f, 1.0f, false);
+		m_handle=KdEffekseerManager::GetInstance().Play("Player/Guard/Spark.efkefc",owner->GetShieldMat().Translation(), 1.0f, 1.0f, false).lock()->GetHandle();
+		KdEffekseerManager::GetInstance().SetRotation(m_handle, Math::Vector3{ 0.0f,1.0f,0.0f }, DirectX::XMConvertToRadians((owner->GetAngle().y) + 180.0f));
 		return;
 	}
 
@@ -1189,7 +1197,7 @@ void Player::GuardReaction::Update(std::shared_ptr<Player> owner)
 		_guard->SetGuardTime(11);
 		owner->m_NextState = _guard;
 		owner->m_NextActionType = Player::Action::GuardType;
-		owner->m_flow = CharacterBase::Flow::UpdateType;
+		owner->m_flow = KdGameObject::Flow::UpdateType;
 		return;
 	}
 }
@@ -1227,7 +1235,7 @@ void Player::Parry::Update(std::shared_ptr<Player> owner)
 		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
 		owner->m_NextState = _idol;
 		owner->m_NextActionType = Player::Action::IdolType;
-		owner->m_flow = CharacterBase::Flow::UpdateType;
+		owner->m_flow = KdGameObject::Flow::UpdateType;
 
 		owner->m_ObjectManager.lock()->SlowChange();
 		return;
@@ -1252,14 +1260,14 @@ void Player::Parry::ChangeState(std::shared_ptr<Player> owner)
 			std::shared_ptr<Counter> _counter = std::make_shared<Counter>();
 			owner->m_NextState = _counter;
 			owner->m_NextActionType = Player::Action::CounterType;
-			owner->m_flow = CharacterBase::Flow::EnterType;
+			owner->m_flow = KdGameObject::Flow::EnterType;
 		}
 		else 
 		{
 			std::shared_ptr<Attack> _attack = std::make_shared<Attack>();
 			owner->m_NextState = _attack;
 			owner->m_NextActionType = Player::Action::AttackType;
-			owner->m_flow = CharacterBase::Flow::EnterType;
+			owner->m_flow = KdGameObject::Flow::EnterType;
 		}
 		owner->m_ObjectManager.lock()->SlowChange();
 		return;
@@ -1272,7 +1280,7 @@ void Player::Parry::ChangeState(std::shared_ptr<Player> owner)
 		std::shared_ptr<Run> _run = std::make_shared<Run>();
 		owner->m_NextState = _run;
 		owner->m_NextActionType = Player::Action::RunType;
-		owner->m_flow = CharacterBase::Flow::EnterType;
+		owner->m_flow = KdGameObject::Flow::EnterType;
 		owner->m_ObjectManager.lock()->SlowChange();
 		return;
 	}
@@ -1283,7 +1291,7 @@ void Player::Parry::ChangeState(std::shared_ptr<Player> owner)
 		std::shared_ptr<Guard> _guard = std::make_shared<Guard>();
 		owner->m_NextState = _guard;
 		owner->m_NextActionType = Player::Action::GuardType;
-		owner->m_flow = CharacterBase::Flow::EnterType;
+		owner->m_flow = KdGameObject::Flow::EnterType;
 		owner->m_ObjectManager.lock()->SlowChange();
 		return;
 	}
@@ -1295,7 +1303,7 @@ void Player::Parry::ChangeState(std::shared_ptr<Player> owner)
 		std::shared_ptr<Roll> _roll = std::make_shared<Roll>();
 		owner->m_NextState = _roll;
 		owner->m_NextActionType = Player::Action::RollType;
-		owner->m_flow = CharacterBase::Flow::EnterType;
+		owner->m_flow = KdGameObject::Flow::EnterType;
 		owner->m_ObjectManager.lock()->SlowChange();
 		return;
 	}
@@ -1322,7 +1330,7 @@ void Player::Hit::Update(std::shared_ptr<Player> owner)
 		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
 		owner->m_NextState = _idol;
 		owner->m_NextActionType = Player::Action::IdolType;
-		owner->m_flow = CharacterBase::Flow::UpdateType;
+		owner->m_flow = KdGameObject::Flow::UpdateType;
 		return;
 	}
 }
@@ -1437,7 +1445,7 @@ void Player::Teleport::Exit(std::shared_ptr<Player> owner)
 		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
 		owner->m_NextState = _idol;
 		owner->m_NextActionType = Player::Action::IdolType;
-		owner->m_flow = CharacterBase::Flow::UpdateType;
+		owner->m_flow = KdGameObject::Flow::UpdateType;
 		return;
 	}
 }

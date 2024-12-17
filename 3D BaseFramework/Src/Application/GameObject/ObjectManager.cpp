@@ -184,12 +184,6 @@ void ObjectManager::GameClear()
 	if (m_slowFlg)SlowChange();
 }
 
-void ObjectManager::NextTeleport()
-{
-	// テレポート演出
-	m_player.lock()->TeleportChange();
-}
-
 void ObjectManager::CreateStage(std::shared_ptr<StageManager> _stage)
 {
 	//jsonファイル
@@ -345,9 +339,21 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				ImGui::SliderFloat("AngleY", &_DegAngY, -180, 180);
 				ImGui::SliderFloat("AngleZ", &_DegAngZ, -180, 180);
 
+				// 視野角
+				ImGui::Text((const char*)u8"　視野角 　　ViewingAngle=%.2f", _camera->GetViewingAngle());
+				float _ViewingAngle = _camera->GetViewingAngle();
+				ImGui::SliderFloat("ViewingAngle", &_ViewingAngle, 1.0f, 100.0f);
+
+				// 回転角度変化量
+				ImGui::Text((const char*)u8"　回転角度変化量 　　ChangeAngle=%.2f", _camera->GetChangeAngle());
+				float _ChangeAngle=_camera->GetChangeAngle();
+				ImGui::SliderFloat("ChangeAngle", &_ChangeAngle, -10.00f, 10.00f);
+
 				// セット
 				_camera->SetPos(_TitleCameraPos);
 				_camera->SetDegAng(Math::Vector3{ _DegAngX,_DegAngY,_DegAngZ });
+				_camera->SetViewingAngle(_ViewingAngle);
+				_camera->SetChangeAngle(_ChangeAngle);
 			}
 
 			ImGui::TreePop();
@@ -595,6 +601,26 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					}
 				}
 
+				// クリア時回転角度変化量
+				ImGui::Text((const char*)u8"　クリア時回転角度変化量 　　ChangeClearAngle=%.2f", _camera->GetChangeShakeAngle());
+				float ChangeClearAngle = _camera->GetChangeClearAngle();
+				ImGui::SliderFloat("ChangeClearAngle", &ChangeClearAngle, 0.01f, 359.99f);
+
+				// 振動時sinカーブ変化量
+				ImGui::Text((const char*)u8"　振動sinカーブ変化量 　　ChangeShakeAngle=%.2f", _camera->GetChangeShakeAngle());
+				float ChangeShakeAngle=_camera->GetChangeShakeAngle();
+				ImGui::SliderFloat("ChangeShakeAngle", &ChangeShakeAngle, 0.1f, 359.9f);
+
+				// 振動移動量
+				ImGui::Text((const char*)u8"　振動移動量 　　Move=%.2f", _camera->GetDefaultMove());
+				float move = _camera->GetDefaultMove();
+				ImGui::SliderFloat("Move", &move, 0.1f, 100.0f);
+
+				// 振動時間
+				ImGui::Text((const char*)u8"　振動時間 　　ShakeTime=%d", _camera->GetDefaultShakeTime());
+				int time = _camera->GetDefaultShakeTime();
+				ImGui::SliderInt("ShakeTime", &time, 1, 300);
+
 				// 位置
 				ImGui::Text((const char*)u8"　カメラ位置 　　x=%.2f,y=%.2f,z=%.2f", _camera->GetNowPos().x, _camera->GetNowPos().y, _camera->GetNowPos().z);
 				Math::Vector3 pos = _camera->GetNowPos();
@@ -622,6 +648,10 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				ImGui::SliderFloat("ViewAngle", &ViewAngle, 0, 360);
 
 				// セット
+				_camera->SetChangeClearAngle(ChangeClearAngle);
+				_camera->SetChangeShakeAngle(ChangeShakeAngle);
+				_camera->SetDefaultShakeMove(move);
+				_camera->SetDefaultShakeTime(time);
 				_camera->SetPos(pos);
 				_camera->SetDegAng(Math::Vector3{ angleX,angleY,0.0f });
 				_camera->SetViewAng(ViewAngle);
@@ -679,8 +709,8 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				// 前方方向
 				ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _player->GetForward().x, _player->GetForward().y, _player->GetForward().z);
 				// 無敵時間
-				ImGui::Text((const char*)u8"　無敵付与時間 InviTime=%d", _player->GetinviTime());
-				int _inviTime = _player->GetinviTime();
+				ImGui::Text((const char*)u8"　無敵付与時間 InviTime=%d", _player->GetinviAddTime());
+				int _inviTime = _player->GetinviAddTime();
 				ImGui::SliderInt("InviTIme", &_inviTime, 0, 300);
 
 				// 武器
@@ -795,7 +825,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				_player->SetAngle(angle);
 				_player->SetSize(size);
 				_player->SetAtkRange(range);
-				_player->SetInviTime(_inviTime);
+				_player->SetInviAddTime(_inviTime);
 
 				// UI
 				if (ImGui::TreeNode("UI"))
@@ -1645,6 +1675,12 @@ void ObjectManager::TitleCameraWrite()
 	_json["TitleCamera"]["DegAngY"] = m_titleCamera.lock()->GetDegAng().y;
 	_json["TitleCamera"]["DegAngZ"] = m_titleCamera.lock()->GetDegAng().z;
 
+	// 視野角
+	_json["TitleCamera"]["ViewingAngle"] = m_titleCamera.lock()->GetViewingAngle();
+
+	// 回転角度変化量
+	_json["TitleCamera"]["ChangeAngle"] = m_titleCamera.lock()->GetChangeAngle();
+
 	// ファイルに保存
 	std::ofstream _file("Asset/Json/Title/Camera/TitleCamera.json");
 	if (_file.is_open())
@@ -1808,6 +1844,18 @@ void ObjectManager::GameCameraWrite()
 	// 名前
 	_json["Camera"]["Name"] = "Camera";
 	
+	// クリア時回転角度変化量
+	_json["Camera"]["ChangeClearAngle"] = m_camera.lock()->GetChangeClearAngle();
+
+	// 振動時sinカーブ変化量
+	_json["Camera"]["ChangeShakeAngle"] = m_camera.lock()->GetChangeShakeAngle();
+
+	// 振動移動量
+	_json["Camera"]["DefaultMove"] = m_camera.lock()->GetDefaultMove();
+
+	// 振動時間
+	_json["Camera"]["DefaultShakeTime"] = m_camera.lock()->GetDefaultShakeTime();
+
 	// 座標
 	_json["Camera"][_cameraType + "PosX"] = m_camera.lock()->GetNowPos().x;
 	_json["Camera"][_cameraType + "PosY"] = m_camera.lock()->GetNowPos().y;
@@ -1868,7 +1916,7 @@ void ObjectManager::PlayerWrite(std::string _fileName)
 	_json["Player"]["ForwardZ"] = m_player.lock()->GetForward().z;
 	
 	// 無敵付与時間
-	_json["Player"]["InviTime"] = m_player.lock()->GetinviTime();
+	_json["Player"]["InviAddTime"] = m_player.lock()->GetinviAddTime();
 	
 	// 武器
 	_json["Player"]["SwordName"] = m_player.lock()->GetSword().lock()->GetName();
@@ -2279,6 +2327,10 @@ void ObjectManager::SetTitleCamera()
 
 	for (auto& obj : _json)
 	{
+		// 名前
+		std::string _name;
+		_name = obj["Name"];
+
 		// 座標
 		Math::Vector3 _pos = Math::Vector3::Zero;
 		_pos.x = obj["PosX"];
@@ -2291,15 +2343,20 @@ void ObjectManager::SetTitleCamera()
 		_DegAng.y = obj["DegAngY"];
 		_DegAng.z = obj["DegAngZ"];
 
-		// 名前
-		std::string _name;
-		_name = obj["Name"];
+		float _ViewingAngle = 0.0f;
+		_ViewingAngle = obj["ViewingAngle"];
+
+		// 回転角度変化量
+		float _ChangeAngle = 0.0f;
+		_ChangeAngle = obj["ChangeAngle"];
 
 		// セット
 		std::shared_ptr<TitleCamera> camera = std::make_shared<TitleCamera>();
+		camera->SetName(_name);
 		camera->SetPos(_pos);
 		camera->SetDegAng(_DegAng);
-		camera->SetName(_name);
+		camera->SetViewingAngle(_ViewingAngle);
+		camera->SetChangeAngle(_ChangeAngle);
 		camera->SetID(m_id);
 		camera->Init();
 		m_id++;
@@ -2547,6 +2604,26 @@ void ObjectManager::SetGameCameraParam(std::shared_ptr<StageManager> _stage)
 
 	for (auto& obj : _json)
 	{
+		// 名前
+		std::string _name;
+		_name = obj["Name"];
+
+		// クリア時回転角度変化量
+		float _ChangeClearAngle = 0.0f;
+		_ChangeClearAngle = obj["ChangeClearAngle"];
+
+		// 振動時sinカーブ変化量
+		float _shakeAngle = 0.0f;
+		_shakeAngle = obj[ "ChangeShakeAngle" ];
+
+		// 振動移動量
+		float _move = 0.0f;
+		_move = obj["DefaultMove"];
+
+		// 振動時間
+		int _shakeTime = 0;
+		_shakeTime = obj["DefaultShakeTime"];
+
 		// プレイヤーステート
 		// 座標
 		Math::Vector3 _PlayerPos = Math::Vector3::Zero;
@@ -2598,13 +2675,13 @@ void ObjectManager::SetGameCameraParam(std::shared_ptr<StageManager> _stage)
 		_ClearViewAngle = obj["ClearViewAngle"];
 
 
-		// 名前
-		std::string _name;
-		_name = obj["Name"];
-
 		// セット
 		std::shared_ptr<GameCamera> camera = std::make_shared<GameCamera>();
 		camera->SetPosList(_PlayerPos, _FixedPos, _ClearPos);
+		camera->SetChangeClearAngle(_ChangeClearAngle);
+		camera->SetChangeShakeAngle(_shakeAngle);
+		camera->SetDefaultShakeMove(_move);
+		camera->SetDefaultShakeTime(_shakeTime);
 		camera->SetDegAngList(_PlayerAngle, _FixedAngle, _ClearAngle);
 		camera->SetViewAngList(_PlayerViewAngle, _FixedViewAngle, _ClearViewAngle);
 		camera->SetName(_name);
@@ -2776,7 +2853,7 @@ void ObjectManager::SetPlayerParam(std::shared_ptr<StageManager> _stage)
 
 		// 無敵付与時間
 		int _inviTime = 0;
-		_inviTime = obj["InviTime"];
+		_inviTime = obj["InviAddTime"];
 
 		std::shared_ptr<Player> player = std::make_shared<Player>();
 		m_player = player;
@@ -2796,7 +2873,7 @@ void ObjectManager::SetPlayerParam(std::shared_ptr<StageManager> _stage)
 		player->SetObjManager(shared_from_this());
 		player->SetStageManager(_stage);
 		player->Init();
-		player->SetInviTime(_inviTime);
+		player->SetInviAddTime(_inviTime);
 		player->SetName(_name);
 		player->SetID(m_id);
 		m_id++;

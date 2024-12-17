@@ -23,14 +23,12 @@ void Select::Update()
 			_cursorPos.y <= _gamePos.y + _gameHarfHeight && _cursorPos.y >= _gamePos.y - _gameHarfHeight)
 		{
 			m_pos = _gamePos;
-			KdAudioManager::Instance().Play("Asset/Sound/Title/SE/キャンセル1.WAV", 0.05f, false);
 		}
 		if (m_pos != _exitPos &&
 			_cursorPos.x <= _exitPos.x + _exitHarfWidth && _cursorPos.x >= _exitPos.x - _exitHarfWidth &&
 			_cursorPos.y <= _exitPos.y + _exitHarfHeight && _cursorPos.y >= _exitPos.y - _exitHarfHeight)
 		{
 			m_pos = _exitPos;
-			KdAudioManager::Instance().Play("Asset/Sound/Title/SE/キャンセル1.WAV", 0.05f, false);
 		}
 
 		if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
@@ -67,6 +65,7 @@ void Select::Update()
 		(_cursorPos.x <= _exitPos.x + _exitHarfWidth  && _cursorPos.x >= _exitPos.x - _exitHarfWidth &&
 		 _cursorPos.y <= _exitPos.y + _exitHarfHeight && _cursorPos.y >= _exitPos.y - _exitHarfHeight))
 	{
+		if (m_alpha == 0)	KdAudioManager::Instance().Play("Asset/Sound/Title/SE/キャンセル1.WAV", 0.05f, false);
 		m_alpha = (sin(DirectX::XMConvertToRadians(m_SingleAngle))) + 1.5f;
 	}
 	else { m_alpha = 0.0f;}

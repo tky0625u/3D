@@ -2,12 +2,15 @@
 
 void TitleCamera::Update()
 {
-	m_angle += 0.05f;
+	// カメラ回転
+	m_angle += m_ChangeAngle;
 	if (m_angle > 360.0f)m_angle -= 360.0f;
 
-	m_mRotation = GetRotationMatrix();
-	m_mLocalPos = Math::Matrix::CreateTranslation(m_pos);
-	Math::Matrix _rotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
+	// 行列
+	m_mRotation = GetRotationMatrix(); // 回転(傾き)
+	m_mLocalPos = Math::Matrix::CreateTranslation(m_pos); // 座標
+	Math::Matrix _rotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle)); // 回転(公転)
+	// 行列合成
 	m_mWorld = m_mRotation * m_mLocalPos * _rotY;
 }
 
@@ -18,6 +21,5 @@ void TitleCamera::Init()
 		m_spCamera = std::make_shared<KdCamera>();
 	}
 
-	m_ViewingAngle = 60;
 	m_spCamera->SetProjectionMatrix(m_ViewingAngle);
 }

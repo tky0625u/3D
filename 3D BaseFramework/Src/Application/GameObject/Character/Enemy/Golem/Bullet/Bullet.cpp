@@ -103,8 +103,7 @@ void Bullet::Init()
 {
 	BulletBase::Init();
 
-	m_model = std::make_shared<KdModelWork>();
-	m_model->SetModelData("Asset/Models/Character/Enemy/Golem/Bullet/Bullet.gltf");
+	m_model = KdAssets::Instance().m_modeldatas.GetData("Asset/Models/Character/Enemy/Golem/Bullet/Bullet.gltf");
 	m_size = 0.0f;
 
 	m_pCollider = std::make_unique<KdCollider>();

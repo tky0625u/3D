@@ -1,14 +1,19 @@
 ﻿#include "GameCamera.h"
+
+// シーンマネジャ
 #include"../../../Scene/SceneManager.h"
+// オブジェクトマネジャ
 #include"../../ObjectManager.h"
+// ステージマネジャ
 #include"../../StageManager.h"
+// プレイヤー
 #include"../../Character/Player/Player.h"
+// 魔法陣
 #include"../../Stage/MagicPolygon/MagicPolygon.h"
-#include"../../Character/Enemy/EnemyBase.h"
 
 void GameCamera::Update()
 {
-	// デバッグ
+	// デバッグ====================================================================================
 	static bool key = false;
 	if (GetAsyncKeyState('C') & 0x8000)
 	{
@@ -30,7 +35,6 @@ void GameCamera::Update()
 		key = false;
 	}
 
-	// デバッグ
 	if (SceneManager::Instance().m_stop)
 	{
 		Math::Vector3 dir = Math::Vector3::Zero;
@@ -57,6 +61,7 @@ void GameCamera::Update()
 
 
 	ShowCursor(showFlg);
+	//=============================================================================================
 }
 
 void GameCamera::PostUpdate()
@@ -223,13 +228,16 @@ void GameCamera::PlayerCamera::Update(std::shared_ptr<GameCamera> owner)
 		_targetMat = Math::Matrix::CreateTranslation(_spTarget->GetPos());
 	}
 
-	owner->UpdateRotateByMouse();
+	owner->UpdateRotateByMouse(); // マウスでの視点移動
 
-
-	Math::Matrix _rot   = owner->GetRotationMatrix();
-	Math::Matrix _trans = Math::Matrix::CreateTranslation(owner->GetNowPos());
+	// 行列
+	Math::Matrix _rot   = owner->GetRotationMatrix();                          // 回転
+	Math::Matrix _trans = Math::Matrix::CreateTranslation(owner->GetNowPos()); // 座標
 	
-	if (m_shakeFlg)Shake(owner,_trans);
+	// 画面振動
+	if (owner->m_shakeFlg)Shake(owner,_trans);
+	
+	// 行列合成
 	owner->m_mWorld = _trans * _rot * _targetMat;
 }
 
@@ -244,19 +252,19 @@ void GameCamera::PlayerCamera::ChangeState(std::shared_ptr<GameCamera> owner)
 
 void GameCamera::PlayerCamera::Shake(std::shared_ptr<GameCamera> owner,Math::Matrix& _trans)
 {
-	Math::Vector3 _pos   = owner->GetNowPos();
+	Math::Vector3 _pos   = owner->GetNowPos(); // カメラ位置
 	static float  _angle = 0.0f;
 
-	_angle += 100.0f;
+	_angle += owner->m_ChangeShakeAngle;
 	if (_angle > 360.0f)_angle -= 360.0f;
-	_pos.y += m_move * (cos(DirectX::XMConvertToRadians(_angle)));
+	_pos.y += owner->m_move * (sin(DirectX::XMConvertToRadians(_angle))); // sinカーブでのY座標を上下に動かす
 	_trans  = Math::Matrix::CreateTranslation(_pos);
-	m_shakeTime--;
-	if (m_shakeTime <= 0.0f)
+	owner->m_shakeTime--;
+	if (owner->m_shakeTime <= 0.0f) // 制限時間が経てば終了
 	{
-		m_shakeTime = 10.0f;
-		m_move = 0.1f;
-		m_shakeFlg  = false;
+		owner->m_shakeTime = owner->m_DefaultShakeTime;
+		owner->m_move      = owner->m_DefaultMove;
+		owner->m_shakeFlg  = false;
 	}
 }
 //=================================================================================================
@@ -272,15 +280,19 @@ void GameCamera::FixedCamera::Enter(std::shared_ptr<GameCamera> owner)
 void GameCamera::FixedCamera::Update(std::shared_ptr<GameCamera> owner)
 {
 	Math::Matrix								_targetMat = Math::Matrix::Identity;
-	const std::shared_ptr<MagicPolygon>	_spTarget = owner->GetFixedTarget();
+	
+	// 魔法陣
+	const std::shared_ptr<MagicPolygon>	_spTarget = owner->GetFixedTarget().lock();
 	if (_spTarget)
 	{
+		// 座標行列
 		_targetMat = Math::Matrix::CreateTranslation(_spTarget->GetMatrix().Translation());
 	}
 
-	Math::Matrix _rot   = owner->GetRotationMatrix();
-	Math::Matrix _trans = Math::Matrix::CreateTranslation(owner->GetNowPos());
-
+	// 行列
+	Math::Matrix _rot   = owner->GetRotationMatrix();                          // 回転
+	Math::Matrix _trans = Math::Matrix::CreateTranslation(owner->GetNowPos()); // 座標
+	// 合成
 	owner->m_mWorld = _trans * _rot * _targetMat;
 
 	ChangeState(owner);
@@ -292,8 +304,10 @@ void GameCamera::FixedCamera::Exit(std::shared_ptr<GameCamera> owner)
 
 void GameCamera::FixedCamera::ChangeState(std::shared_ptr<GameCamera> owner)
 {
+	// テレポートの準備が整ったら
 	if (owner->m_ObjectManager.lock()->GetTeleportFlg())
 	{
+		// プレイヤー
 		std::shared_ptr<PlayerCamera> _player = std::make_shared<PlayerCamera>();
 		owner->m_NextState = _player;
 		owner->m_flow = GameCamera::Flow::EnterType;
@@ -312,24 +326,28 @@ void GameCamera::ClearCamera::Enter(std::shared_ptr<GameCamera> owner)
 
 void GameCamera::ClearCamera::Update(std::shared_ptr<GameCamera> owner)
 {
+	// カメラ回転
 	Math::Vector3 _angle = owner->GetNowDegAng();
-	_angle.y += 0.05f;
+	_angle.y += owner->m_ChangeClearAngle;
 	if (_angle.y >= 360.0f)_angle.y -= 360.0f;
 	owner->SetDegAng(_angle);
 
-	// ターゲットの行列(有効な場合利用する)
+	// プレイヤーの行列(有効な場合利用する)
 	Math::Matrix				  _targetMat = Math::Matrix::Identity;
 	const std::shared_ptr<Player> _spTarget = owner->m_wpTarget.lock();
 	if (_spTarget)
-	{
-		Math::Matrix _rotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(_spTarget->GetAngle().y + 180.0f));
-		Math::Matrix _trans = Math::Matrix::CreateTranslation(_spTarget->GetPos());
-		_targetMat = _rotY * _trans;
+	{            
+		// 行列
+		                                                                              // プレイヤーの正面
+		Math::Matrix _rotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(_spTarget->GetAngle().y + 180.0f)); // 回転
+		Math::Matrix _trans = Math::Matrix::CreateTranslation(_spTarget->GetPos());                                        // プレイヤー座標
+		_targetMat = _rotY * _trans; // プレイヤー行列
 	}
 
-	Math::Matrix _rot = owner->GetRotationMatrix();
-	Math::Matrix _trans = Math::Matrix::CreateTranslation(owner->GetNowPos());
+	Math::Matrix _rot = owner->GetRotationMatrix();                            // 回転
+	Math::Matrix _trans = Math::Matrix::CreateTranslation(owner->GetNowPos()); // 座標
 
+	// 行列合成
 	owner->m_mWorld = _trans * _rot * _targetMat;
 }
 

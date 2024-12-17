@@ -82,8 +82,7 @@ void BoneAlpha_Bullet::DrawBright()
 
 void BoneAlpha_Bullet::Init()
 {
-	m_model = std::make_shared<KdModelWork>();
-	m_model->SetModelData("Asset/Models/Character/Enemy/BoneAlpha/Bullet/Bullet.gltf");
+	m_model = KdAssets::Instance().m_modeldatas.GetData("Asset/Models/Character/Enemy/BoneAlpha/Bullet/Bullet.gltf");
 	m_size = 0.5f;
 	m_speed = 1.2f;
 	m_dir = Math::Vector3::Zero;

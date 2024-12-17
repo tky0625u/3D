@@ -6,8 +6,60 @@
 
 void EnemyBase::PostUpdate()
 {
-	if (m_camera.lock()->GetState()->GetShakeFlg())return;
+	CharacterBase::PostUpdate();
 
+	if (m_inviTime>0)
+	{
+		m_inviTime--;
+	}
+
+	// デバッグ
+	if (GetAsyncKeyState('P') & 0x8000)
+	{
+		m_param.Hp = 0;
+		std::shared_ptr<Crushing> _crush = std::make_shared<Crushing>();
+		m_NextState = _crush;
+		m_NextActionType = EnemyBase::Action::CrushingType;
+		m_flow = Flow::UpdateType;
+		return;
+	}
+}
+
+void EnemyBase::Action()
+{
+	if (m_NextState)
+	{
+		m_state = m_NextState;
+		m_actionType = m_NextActionType;
+		m_NextState.reset();
+	}
+	m_state->StateUpdate(shared_from_this());
+}
+
+void EnemyBase::Init()
+{
+	CharacterBase::Init();
+
+	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
+	m_mWorld = Trans;
+
+	m_ObjType = ObjType::oEnemy;
+
+	srand(timeGetTime());
+}
+
+void EnemyBase::CrushingAction()
+{
+	CharacterBase::CrushingAction();
+
+	if (m_dissolve >= 1.0f)
+	{
+		m_isExpired = true;
+	}
+}
+
+void EnemyBase::GroundCheck()
+{
 	KdCollider::RayInfo rayInfo;
 	rayInfo.m_pos = m_pos;
 	float LitleUP = 1.0f;
@@ -49,114 +101,53 @@ void EnemyBase::PostUpdate()
 		m_param.JumpPow = 0.0f;
 		m_groundFlg = true;
 	}
-
-	if (m_actionType != Action::AppealType)
-	{
-		KdCollider::SphereInfo sphereInfo;
-		Math::Matrix _mat = m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(m_mWorld.Translation()));
-		sphereInfo.m_sphere.Center = _mat.Translation();
-		sphereInfo.m_sphere.Radius = m_HitSphereSize;
-		sphereInfo.m_type = KdCollider::TypeBump;
-
-		//デバッグ用
-		//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
-
-		std::list<KdCollider::CollisionResult>retSphereList;
-		for (auto& ret : SceneManager::Instance().GetObjList())
-		{
-			ret->Intersects(sphereInfo, &retSphereList);
-		}
-		for (auto& ret : SceneManager::Instance().GetEnemyList())
-		{
-			if (ret->IsExpired())return;
-			if (m_id == ret->GetID())continue;
-			ret->Intersects(sphereInfo, &retSphereList);
-		}
-		if (m_id != SceneManager::Instance().GetPlayer()->GetID())SceneManager::Instance().GetPlayer()->Intersects(sphereInfo, &retSphereList);
-
-		Math::Vector3 HitDir = Math::Vector3::Zero;
-		float maxOverLap = 0.0f;
-		bool HitFlg = false;
-
-		for (auto& sphere : retSphereList)
-		{
-			if (maxOverLap < sphere.m_overlapDistance)
-			{
-				maxOverLap = sphere.m_overlapDistance;
-				HitDir = sphere.m_hitDir;
-				HitFlg = true;
-			}
-		}
-
-		if (HitFlg == true)
-		{
-			HitDir.y = 0.0f;
-			HitDir.Normalize();
-			m_pos += maxOverLap * HitDir;
-		}
-	}
-
-	if (m_camera.lock()->GetState()->GetShakeFlg())return;
-
-	//アニメーションの更新
-	if (m_anime != m_beforeAnime)
-	{
-		m_animator->SetAnimation(m_model->GetData()->GetAnimation(m_anime), m_animeFlg);
-		m_beforeAnime = m_anime;
-	}
-	float _slow = 1.0f;
-	_slow = m_ObjectManager.lock()->GetSlow();
-	m_animator->AdvanceTime(m_model->WorkNodes(), m_animeSpeed * _slow);
-	m_model->CalcNodeMatrices();
-
-	if (m_inviTime > 0)
-	{
-		m_inviTime--;
-	}
-
-	// デバッグ
-	if (GetAsyncKeyState('P') & 0x8000)
-	{
-		m_param.Hp = 0;
-		std::shared_ptr<Crushing> _crush = std::make_shared<Crushing>();
-		m_NextState = _crush;
-		m_NextActionType = CharacterBase::Action::CrushingType;
-		m_flow = Flow::UpdateType;
-		return;
-	}
-	KdShaderManager::Instance().WriteCBColorEnable(m_ColorLightFlg);
 }
 
-void EnemyBase::Action()
+void EnemyBase::BumpCheck()
 {
-	if (m_NextState)
+	if (m_actionType == Action::AppealType)return;
+
+	KdCollider::SphereInfo sphereInfo;
+	Math::Matrix _mat = m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(m_mWorld.Translation()));
+	sphereInfo.m_sphere.Center = _mat.Translation();
+	sphereInfo.m_sphere.Radius = m_HitSphereSize;
+	sphereInfo.m_type = KdCollider::TypeBump;
+
+	//デバッグ用
+	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
+
+	std::list<KdCollider::CollisionResult>retSphereList;
+	for (auto& ret : SceneManager::Instance().GetObjList())
 	{
-		m_state = m_NextState;
-		m_actionType = m_NextActionType;
-		m_NextState.reset();
+		ret->Intersects(sphereInfo, &retSphereList);
 	}
-	m_state->StateUpdate(shared_from_this());
-}
-
-void EnemyBase::Init()
-{
-	CharacterBase::Init();
-
-	Math::Matrix Trans = Math::Matrix::CreateTranslation(m_pos);
-	m_mWorld = Trans;
-
-	m_ObjType = ObjType::oEnemy;
-
-	srand(timeGetTime());
-}
-
-void EnemyBase::CrushingAction()
-{
-	CharacterBase::CrushingAction();
-
-	if (m_dissolve >= 1.0f)
+	for (auto& ret : SceneManager::Instance().GetEnemyList())
 	{
-		m_isExpired = true;
+		if (ret->IsExpired())return;
+		if (m_id == ret->GetID())continue;
+		ret->Intersects(sphereInfo, &retSphereList);
+	}
+	if (m_id != SceneManager::Instance().GetPlayer()->GetID())SceneManager::Instance().GetPlayer()->Intersects(sphereInfo, &retSphereList);
+
+	Math::Vector3 HitDir = Math::Vector3::Zero;
+	float maxOverLap = 0.0f;
+	bool HitFlg = false;
+
+	for (auto& sphere : retSphereList)
+	{
+		if (maxOverLap < sphere.m_overlapDistance)
+		{
+			maxOverLap = sphere.m_overlapDistance;
+			HitDir = sphere.m_hitDir;
+			HitFlg = true;
+		}
+	}
+
+	if (HitFlg == true)
+	{
+		HitDir.y = 0.0f;
+		HitDir.Normalize();
+		m_pos += maxOverLap * HitDir;
 	}
 }
 
@@ -196,7 +187,7 @@ void EnemyBase::StateBase::Damage(std::shared_ptr<EnemyBase> owner, int _damage)
 		std::shared_ptr<Crushing> _crush = std::make_shared<Crushing>();
 		owner->m_NextState = _crush;
 		owner->m_NextActionType = EnemyBase::Action::CrushingType;
-		owner->m_flow = EnemyBase::Flow::UpdateType;
+		owner->m_flow = KdGameObject::Flow::UpdateType;
 		return;
 	}
 
@@ -223,7 +214,7 @@ void EnemyBase::Appeal::Update(std::shared_ptr<EnemyBase> owner)
 		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
 		owner->m_NextState = _idol;
 		owner->m_NextActionType = EnemyBase::Action::IdolType;
-		owner->m_flow = EnemyBase::Flow::UpdateType;
+		owner->m_flow = KdGameObject::Flow::UpdateType;
 		return;
 	}
 }
@@ -272,7 +263,7 @@ void EnemyBase::Run::Enter(std::shared_ptr<EnemyBase> owner)
 
 	if (owner->GetIsAnimator())
 	{
-		owner->m_flow = EnemyBase::Flow::UpdateType;
+		owner->m_flow = KdGameObject::Flow::UpdateType;
 		return;
 	}
 
@@ -304,7 +295,7 @@ void EnemyBase::Run::Exit(std::shared_ptr<EnemyBase> owner)
 		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
 		owner->m_NextState = _idol;
 		owner->m_NextActionType = EnemyBase::Action::IdolType;
-		owner->m_flow = EnemyBase::Flow::UpdateType;
+		owner->m_flow = KdGameObject::Flow::UpdateType;
 		return;
 	}
 }
@@ -427,7 +418,7 @@ void EnemyBase::Hit::Update(std::shared_ptr<EnemyBase> owner)
 		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
 		owner->m_NextState = _idol;
 		owner->m_NextActionType = EnemyBase::Action::IdolType;
-		owner->m_flow = EnemyBase::Flow::UpdateType;
+		owner->m_flow = KdGameObject::Flow::UpdateType;
 		return;
 	}
 }				

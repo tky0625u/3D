@@ -7,7 +7,7 @@
 		"ForwardY": 0.0,
 		"ForwardZ": 1.0,
 		"HP": 100,
-		"InviTime": 20,
+		"InviAddTime": 20,
 		"Name": "Player",
 		"PosX": 1.0,
 		"PosY": 0.14414995908737183,

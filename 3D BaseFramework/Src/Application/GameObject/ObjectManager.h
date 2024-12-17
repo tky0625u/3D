@@ -46,9 +46,6 @@ public:
 	// ゲームクリア
 	void GameClear();
 
-	// テレポート演出の準備
-	void NextTeleport();
-
 	// 次のステージを生成
 	void CreateStage(std::shared_ptr<StageManager> _stage);
 

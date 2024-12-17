@@ -14,7 +14,8 @@ public:
 	void Init()      override;
 
 	void AttackChange()override;
-	void HitChange()override { return; }
+	void BumpCheck()   override;
+	void HitChange()   override { return; }
 
 	const Math::Matrix GetBulletPoint()const { return m_model->FindWorkNode("BulletPoint")->m_worldTransform * m_mWorld; }
 	const Math::Matrix GetQuakePoint() const { return m_model->FindWorkNode("QuakePoint")->m_worldTransform * m_mWorld; }
