@@ -19,6 +19,8 @@ void Golem::Action()
 
 void Golem::PostUpdate()
 {
+	if (m_camera.lock()->GetShakeFlg())return;
+
 	EnemyBase::PostUpdate();
 
 	KdShaderManager::Instance().WriteCBColorEnable(m_ColorLightFlg);

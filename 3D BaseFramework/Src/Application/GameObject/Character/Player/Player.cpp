@@ -43,7 +43,7 @@ void Player::PostUpdate()
 	CharacterBase::PostUpdate();
 
 	// スタミナ回復開始時間が経っていたらスタミナ回復
-	if (m_StaminaRecoveryTime > 0)m_StaminaRecoveryTime--;
+	if (m_NowStaminaRecoveryTime > 0)m_NowStaminaRecoveryTime--;
 	else if (m_param.Sm < m_MaxStamina) { StaminaRecovery(); }
 }
 
@@ -65,15 +65,6 @@ void Player::Init()
 	m_pCollider->RegisterCollisionShape("Player", m_model, KdCollider::TypeBump | KdCollider::TypeDamage | KdCollider::TypeEvent);
 
 	m_ObjType = ObjType::oPlayer;
-}
-
-void Player::CrushingAction()
-{
-	CharacterBase::CrushingAction();
-	if (m_dissolve >= 1.0f)
-	{
-		m_dissolve = 1.0f;
-	}
 }
 
 void Player::NextStageCheck()
@@ -138,6 +129,7 @@ void Player::TeleportChange()
 
 void Player::StateBase::StateUpdate(std::shared_ptr<Player> owner)
 {
+	// ステート更新
 	switch (owner->m_flow)
 	{
 	case KdGameObject::Flow::EnterType:
@@ -153,14 +145,22 @@ void Player::StateBase::StateUpdate(std::shared_ptr<Player> owner)
 
 	if (owner->m_camera.lock()->GetCameraType() != GameCamera::CameraType::PlayerType)return;
 
+	// 行動キー確認
 	owner->KeyCheck();
+
+	// 行動キーによってステートの切替
 	ChangeState(owner);
+
+	// 長押し防止のため前フレームの行動キーを記録しておく
 	owner->m_BeforeKeyType = owner->m_keyType;
 }
 
 void Player::StateBase::Damage(std::shared_ptr<Player> owner, int _damage, std::shared_ptr<EnemyBase> _enemy)
 {
+	// HP減少
 	owner->m_param.Hp -= _damage;
+	
+	// 死亡
 	if (owner->m_param.Hp <= 0)
 	{
 		// Crushing
@@ -169,8 +169,8 @@ void Player::StateBase::Damage(std::shared_ptr<Player> owner, int _damage, std::
 		owner->m_NextActionType = Player::Action::CrushingType;
 		owner->m_flow = KdGameObject::Flow::UpdateType;
 		return;
-		return;
 	}
+	
 	// Hit
 	std::shared_ptr<Hit> _hit = std::make_shared<Hit>();
 	owner->m_NextState = _hit;
@@ -181,8 +181,13 @@ void Player::StateBase::Damage(std::shared_ptr<Player> owner, int _damage, std::
 
 void Player::StateBase::Damage(std::shared_ptr<Player> owner, int _damage, std::shared_ptr<BulletBase> _bullet)
 {
+	// 弾はオブジェクトに当たったら破壊
 	_bullet->SetCrush(true);
+
+	// HP減少
 	owner->m_param.Hp -= _damage;
+	
+	// 死亡
 	if (owner->m_param.Hp <= 0)
 	{
 		// Crushing
@@ -191,8 +196,8 @@ void Player::StateBase::Damage(std::shared_ptr<Player> owner, int _damage, std::
 		owner->m_NextActionType = Player::Action::CrushingType;
 		owner->m_flow = KdGameObject::Flow::UpdateType;
 		return;
-		return;
 	}
+
 	// Hit
 	std::shared_ptr<Hit> _hit = std::make_shared<Hit>();
 	owner->m_NextState = _hit;
@@ -203,57 +208,60 @@ void Player::StateBase::Damage(std::shared_ptr<Player> owner, int _damage, std::
 
 void Player::StateBase::AttackHit(std::shared_ptr<Player> owner)
 {
+	// スフィア判定
 	std::vector<KdCollider::SphereInfo> sphereInfoList;
 	KdCollider::SphereInfo sphereInfo;
 
-	if (owner->GetSword().expired() == false)
-	{
-		sphereInfo.m_sphere.Center = owner->GetSword().lock()->GetModelTop().Translation();
-		sphereInfoList.push_back(sphereInfo);
+	// 座標
+	// 剣先
+	sphereInfo.m_sphere.Center = owner->GetSword().lock()->GetModelTop().Translation();
+	sphereInfoList.push_back(sphereInfo);
 
-		sphereInfo.m_sphere.Center = owner->GetSword().lock()->GetModelCenter().Translation();
-		sphereInfoList.push_back(sphereInfo);
+	// 剣の中心
+	sphereInfo.m_sphere.Center = owner->GetSword().lock()->GetModelCenter().Translation();
+	sphereInfoList.push_back(sphereInfo);
 
-		sphereInfo.m_sphere.Center = owner->GetSword().lock()->GetModelBottom().Translation();
-		sphereInfoList.push_back(sphereInfo);
-	}
-	else
-	{
-		sphereInfo.m_sphere.Center = owner->GetSwordMat().Translation();
-		sphereInfoList.push_back(sphereInfo);
-	}
+	// 剣の鍔（つば）
+	sphereInfo.m_sphere.Center = owner->GetSword().lock()->GetModelBottom().Translation();
+	sphereInfoList.push_back(sphereInfo);
 
 	for (int i = 0; i < sphereInfoList.size(); ++i)
 	{
-		sphereInfoList[i].m_sphere.Radius = 0.8f;
+		// 半径
+		sphereInfoList[i].m_sphere.Radius = owner->m_sword.lock()->GetAttackSphereSize();
+		
+		// 対象
 		sphereInfoList[i].m_type = KdCollider::TypeDamage;
 	}
 
-	std::list<KdCollider::CollisionResult> retSphereList;
-	std::shared_ptr<EnemyBase> hitEnemy;
+	std::list<KdCollider::CollisionResult> retSphereList; //当たり判定リスト
+	std::shared_ptr<EnemyBase> hitEnemy; // 当たった敵
 
-	for (auto& sphere : SceneManager::Instance().GetEnemyList())
+	// 剣全体
+	for (auto& sword:sphereInfoList)
 	{
-		if (owner->m_ParryID != -1 && sphere->GetID() != owner->m_ParryID)continue;
-
-		for (int i = 0; i < sphereInfoList.size(); ++i)
+		// 敵
+		for (auto& enemy : SceneManager::Instance().GetEnemyList())
 		{
-			if (sphere->Intersects(sphereInfoList[i], &retSphereList))
-			{
-				hitEnemy = sphere;
-			}
-		}
-	}
-
-	for (auto& ret : retSphereList)
-	{
-		if (hitEnemy->GetParam().Hp > 0 && hitEnemy->GetActionType() != EnemyBase::Action::AppealType && hitEnemy->GetinviTime() == 0)
-		{
+			if (owner->m_ParryID != -1 && enemy->GetID() != owner->m_ParryID)continue; // パリィした場合IDがパリィした敵と一致しなかった場合
+			if (enemy->GetParam().Hp <= 0 || enemy->GetActionType() == EnemyBase::Action::AppealType || enemy->GetinviTime() > 0)continue; // 敵が攻撃を受けない状態の場合
+			if (!enemy->Intersects(sword, &retSphereList))continue; // 当たらなかった場合
+			
+			// ヒット処理
+			
+			hitEnemy = enemy;
+			// カメラ振動
 			owner->m_camera.lock()->SetShakeFlg(true);
+			// ダメージ
 			hitEnemy->Damage(owner->m_param.Atk);
+			// 無敵時間付与
 			hitEnemy->SetInviTime(owner->m_inviAddTime);
-			KdEffekseerManager::GetInstance().Play("Enemy/Hit/hit_eff.efkefc", ret.m_hitPos, 1.0f, 0.8f, false);
+			// エフェクト
+			KdEffekseerManager::GetInstance().Play("Enemy/Hit/hit_eff.efkefc", retSphereList.begin()->m_hitPos, 1.0f, 0.8f, false);
+			// 効果音
 			KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/刀で斬る2.WAV", 0.05f, false);
+			// 処理が終わったら削除
+			retSphereList.erase(retSphereList.begin());
 		}
 	}
 }
@@ -265,7 +273,7 @@ void Player::KeyCheck()
 	{
 		m_keyType |= Player::KeyType::MoveKey;
 	}
-	else if (m_keyType & Player::KeyType::MoveKey)
+	else if (m_keyType & Player::KeyType::MoveKey) // キーから離したら
 	{
 		m_keyType ^= Player::KeyType::MoveKey;
 	}
@@ -275,7 +283,7 @@ void Player::KeyCheck()
 	{
 		m_keyType |= Player::KeyType::AttackKey;
 	}
-	else if (m_keyType & Player::KeyType::AttackKey)
+	else if (m_keyType & Player::KeyType::AttackKey) // キーから離したら
 	{
 		m_keyType ^= Player::KeyType::AttackKey;
 	}
@@ -285,7 +293,7 @@ void Player::KeyCheck()
 	{
 		m_keyType |= Player::KeyType::GuardKey;
 	}
-	else if (m_keyType & Player::KeyType::GuardKey)
+	else if (m_keyType & Player::KeyType::GuardKey) // キーから離したら
 	{
 		m_keyType ^= Player::KeyType::GuardKey;
 	}
@@ -295,7 +303,7 @@ void Player::KeyCheck()
 	{
 		m_keyType |= Player::KeyType::RollKey;
 	}
-	else if (m_keyType & Player::KeyType::RollKey)
+	else if (m_keyType & Player::KeyType::RollKey) // キーから離したら
 	{
 		m_keyType ^= Player::KeyType::RollKey;
 	}
@@ -308,6 +316,7 @@ void Player::Idol::Enter(std::shared_ptr<Player> owner)
 
 void Player::Idol::Update(std::shared_ptr<Player> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("Idol"))
 	{
 		owner->SetAnime("Idol", true, 1.0f);
@@ -320,8 +329,10 @@ void Player::Idol::Exit(std::shared_ptr<Player> owner)
 
 void Player::Idol::ChangeState(std::shared_ptr<Player> owner)
 {
+	// 回避
 	if (owner->m_keyType & Player::KeyType::RollKey && !(owner->m_BeforeKeyType & Player::KeyType::RollKey))
 	{
+		// スタミナが無かったらリターン
 		if (owner->m_param.Sm <= 0)return;
 
 		std::shared_ptr<Roll> _roll = std::make_shared<Roll>();
@@ -330,6 +341,7 @@ void Player::Idol::ChangeState(std::shared_ptr<Player> owner)
 		owner->m_flow = KdGameObject::Flow::EnterType;
 		return;
 	}
+	// 移動
 	else if (owner->m_keyType & Player::KeyType::MoveKey)
 	{
 		std::shared_ptr<Run> _run = std::make_shared<Run>();
@@ -338,6 +350,7 @@ void Player::Idol::ChangeState(std::shared_ptr<Player> owner)
 		owner->m_flow = KdGameObject::Flow::EnterType;
 		return;
 	}
+	// 攻撃
 	else if (owner->m_keyType & Player::KeyType::AttackKey && !(owner->m_BeforeKeyType & Player::KeyType::AttackKey))
 	{
 		std::shared_ptr<Attack> _attack = std::make_shared<Attack>();
@@ -346,6 +359,7 @@ void Player::Idol::ChangeState(std::shared_ptr<Player> owner)
 		owner->m_flow = KdGameObject::Flow::EnterType;
 		return;
 	}
+	// 防御
 	else if (owner->m_keyType & Player::KeyType::GuardKey)
 	{
 		std::shared_ptr<Guard> _guard = std::make_shared<Guard>();
@@ -362,62 +376,69 @@ void Player::Idol::ChangeState(std::shared_ptr<Player> owner)
 // Run=============================================================================================
 void Player::Run::Enter(std::shared_ptr<Player> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("IdolToRun"))
 	{
 		owner->SetAnime("IdolToRun", false, 3.0f);
 		return;
 	}
 
+	// アニメーションが終わったら次のフローへ
 	if (owner->GetIsAnimator())
 	{
 		owner->m_flow = Player::Flow::UpdateType;
 		return;
 	}
 
+	// 移動キーから離したら終了処理に移る
 	if (!(owner->m_keyType & Player::KeyType::MoveKey))
 	{
 		owner->m_flow = Flow::ExitType;
 		return;
 	}
 
+	// 移動処理
 	Move(owner);
 }
 
 void Player::Run::Update(std::shared_ptr<Player> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("Run"))
 	{
 		owner->SetAnime("Run", true, 1.5f);
 		return;
 	}
 
+	// 移動キーから離したら終了処理に移る
 	if (!(owner->m_keyType & Player::KeyType::MoveKey))
 	{
 		owner->m_flow = Player::Flow::ExitType;
 		return;
 	}
 
+	// 移動処理
 	Move(owner);
 }
 
 void Player::Run::Exit(std::shared_ptr<Player> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("RunToIdol"))
 	{
 		owner->SetAnime("RunToIdol", false, 3.0f);
 		return;
 	}
 
+	// アニメーションが終了したら待機状態へ
 	if (owner->GetIsAnimator())
 	{
 		// Idol
-		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
-		owner->m_NextState = _idol;
-		owner->m_NextActionType = Player::Action::IdolType;
-		owner->m_flow = KdGameObject::Flow::UpdateType;
+		owner->IdolChange();
 		return;
 	}
 
+	// 移動キーを押したら最初のフローへ
 	if (owner->m_keyType & Player::MoveKey)
 	{
 		owner->m_flow = Player::Flow::EnterType;
@@ -427,32 +448,33 @@ void Player::Run::Exit(std::shared_ptr<Player> owner)
 
 void Player::Run::Move(std::shared_ptr<Player> owner)
 {
+	// 方向
 	Math::Vector3 dir = Math::Vector3::Zero;
-	if (GetAsyncKeyState('W') & 0x8000)
+	if (GetAsyncKeyState('W') & 0x8000) // 前
 	{
 		dir.z = 1.0f;
 	}
-	if (GetAsyncKeyState('S') & 0x8000)
+	if (GetAsyncKeyState('S') & 0x8000) // 後
 	{
 		dir.z = -1.0f;
 	}
-	if (GetAsyncKeyState('A') & 0x8000)
+	if (GetAsyncKeyState('A') & 0x8000) // 左
 	{
 		dir.x = -1.0f;
 	}
-	if (GetAsyncKeyState('D') & 0x8000)
+	if (GetAsyncKeyState('D') & 0x8000) // 右
 	{
 		dir.x = 1.0f;
 	}
 	if (dir == Math::Vector3::Zero)return;
-	owner->CameraTransform(dir);
-	owner->Rotate(dir);
-	owner->SetMove(dir);
-	if (owner->m_flow == Player::Flow::ExitType)owner->m_flow = Player::Flow::UpdateType;
+	owner->CameraTransform(dir); // カメラの方向によって方向修正
+	owner->Rotate(dir);          // 回転
+	owner->SetMove(dir);         // 移動
 }
 
 void Player::Run::ChangeState(std::shared_ptr<Player> owner)
 {
+	// 攻撃
 	if (owner->m_keyType & Player::KeyType::AttackKey && !(owner->m_BeforeKeyType & Player::KeyType::AttackKey))
 	{
 		std::shared_ptr<Attack> _attack = std::make_shared<Attack>();
@@ -461,6 +483,7 @@ void Player::Run::ChangeState(std::shared_ptr<Player> owner)
 		owner->m_flow = KdGameObject::Flow::EnterType;
 		return;
 	}
+	// 防御
 	else if (owner->m_keyType & Player::KeyType::GuardKey)
 	{
 		std::shared_ptr<Guard> _guard = std::make_shared<Guard>();
@@ -469,8 +492,10 @@ void Player::Run::ChangeState(std::shared_ptr<Player> owner)
 		owner->m_flow = KdGameObject::Flow::EnterType;
 		return;
 	}
+	// 回避
 	else if (owner->m_keyType & Player::KeyType::RollKey && !(owner->m_BeforeKeyType & Player::KeyType::RollKey))
 	{
+		// スタミナが無かったらリターン
 		if (owner->m_param.Sm <= 0)return;
 
 		std::shared_ptr<Roll> _roll = std::make_shared<Roll>();
@@ -486,14 +511,15 @@ void Player::Run::ChangeState(std::shared_ptr<Player> owner)
 // Attack==========================================================================================
 void Player::Attack::Enter(std::shared_ptr<Player> owner)
 {
+	// 攻撃方向確認
 	AttackDirCheck(owner);
+	
 	if (owner->GetSword().expired())return;
+	
+	// 回転
+	owner->Rotate(m_AttackDir, 360.0f);
 
-	if (m_atkNum == 1 || m_atkNum == 2)
-	{
-		owner->Rotate(m_AttackDir, 360.0f);
-	}
-
+	// 攻撃フレーム切り替え
 	switch (m_atkNum)
 	{
 	case 1:
@@ -510,12 +536,13 @@ void Player::Attack::Enter(std::shared_ptr<Player> owner)
 		break;
 	}
 
-	owner->GetSword().lock()->MakeTraject();
+	owner->GetSword().lock()->MakeTraject(); // 剣線作成
 	owner->m_flow = Player::Flow::UpdateType;
 }
 
 void Player::Attack::Update(std::shared_ptr<Player> owner)
 {
+	// アニメーション変更
 	switch (m_atkNum)
 	{
 	case 1:
@@ -543,6 +570,7 @@ void Player::Attack::Update(std::shared_ptr<Player> owner)
 		break;
 	}
 
+	// 各攻撃の処理
 	switch (m_atkNum)
 	{
 	case 1:
@@ -558,16 +586,15 @@ void Player::Attack::Update(std::shared_ptr<Player> owner)
 		break;
 	}
 
+	// アニメーションが終了したら待機状態
 	if (owner->GetIsAnimator())
 	{
 		// Idol
-		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
-		owner->m_NextState = _idol;
-		owner->m_NextActionType = Player::Action::IdolType;
-		owner->m_flow = KdGameObject::Flow::UpdateType;
+		owner->IdolChange();
 		return;
 	}
 
+	// FPS加算
 	m_ActionFPS++;
 }
 
@@ -578,8 +605,10 @@ void Player::Attack::Exit(std::shared_ptr<Player> owner)
 
 void Player::Attack::Attack1(std::shared_ptr<Player> owner)
 {
+	// 移動
 	owner->SetMove(m_AttackDir, 0.5f);
 
+	// 剣線削除
 	if (m_ActionFPS > 30 && owner->GetSword().lock()->GetTrajectPolygon())
 	{
 		owner->GetSword().lock()->ClearTraject();
@@ -587,23 +616,20 @@ void Player::Attack::Attack1(std::shared_ptr<Player> owner)
 	}
 
 	if (m_ActionFPS < 15 || m_ActionFPS > 30)return;
-	if (m_ActionFPS == 15)
-	{
-		//m_handle = KdEffekseerManager::GetInstance().Play("Player/Sword/Slash.efkefc", owner->GetSword().lock()->GetModelTop().Translation(), 1.0f, 1.0f, false).lock()->GetHandle();
-
-		//KdEffekseerManager::GetInstance().SetWorldMatrix(m_handle, owner->GetSword().lock()->GetMatrix());
-		////KdEffekseerManager::GetInstance().SetRotation(m_handle, Math::Vector3{ 0.0f,1.0f,0.0f }, DirectX::XMConvertToRadians(owner->GetAngle().y));
-	}
+	// 攻撃判定
 	AttackHit(owner);
 
 	if (owner->GetSword().expired())return;
+	// 剣線追加
 	owner->GetSword().lock()->SetTrajectMat();
 }
 
 void Player::Attack::Attack2(std::shared_ptr<Player> owner)
 {
+	// 移動
 	owner->SetMove(m_AttackDir, 1.0f);
 
+	// 剣線削除
 	if (m_ActionFPS > 25 && owner->GetSword().lock()->GetTrajectPolygon())
 	{
 		owner->GetSword().lock()->ClearTraject();
@@ -611,17 +637,20 @@ void Player::Attack::Attack2(std::shared_ptr<Player> owner)
 	}
 
 	if (m_ActionFPS < 10 || m_ActionFPS > 25)return;
+	// 攻撃判定
 	AttackHit(owner);
 
 	if (owner->GetSword().expired())return;
+	// 剣線追加
 	owner->GetSword().lock()->SetTrajectMat();
 }
 
 void Player::Attack::Attack3(std::shared_ptr<Player> owner)
 {
-	owner->Rotate(m_AttackDir);
+	// 移動
 	owner->SetMove(m_AttackDir, 1.2f);
 
+	// 剣線削除
 	if (m_ActionFPS > 36 && owner->GetSword().lock()->GetTrajectPolygon())
 	{
 		owner->GetSword().lock()->ClearTraject();
@@ -629,67 +658,55 @@ void Player::Attack::Attack3(std::shared_ptr<Player> owner)
 	}
 
 	if (m_ActionFPS < 12 || m_ActionFPS > 36)return;
+	// 攻撃判定
 	AttackHit(owner);
 
 	if (owner->GetSword().expired())return;
+	// 剣線追加
 	owner->GetSword().lock()->SetTrajectMat();
 }
 
 void Player::Attack::AttackDirCheck(std::shared_ptr<Player> owner)
 {
+	// 方向
 	m_AttackDir = Math::Vector3::Zero;
 
-	if (GetAsyncKeyState('W') & 0x8000)
+	if (GetAsyncKeyState('W') & 0x8000) //前
 	{
 		m_AttackDir.z = 1.0f;
 	}
-	if (GetAsyncKeyState('S') & 0x8000)
+	if (GetAsyncKeyState('S') & 0x8000) //後
 	{
 		m_AttackDir.z = -1.0f;
 	}
-	if (GetAsyncKeyState('A') & 0x8000)
+	if (GetAsyncKeyState('A') & 0x8000) //左
 	{
 		m_AttackDir.x = -1.0f;
 	}
-	if (GetAsyncKeyState('D') & 0x8000)
+	if (GetAsyncKeyState('D') & 0x8000) //右
 	{
 		m_AttackDir.x = 1.0f;
 	}
 
+	// どのキーも押していなかったら現在向いている方向or近くの敵の方向を向く
 	if (m_AttackDir == Math::Vector3::Zero)
 	{
-		KdCollider::SphereInfo sphereInfo;
-		sphereInfo.m_sphere.Center = owner->m_pos;
-		sphereInfo.m_sphere.Radius = 5.0f;
-		sphereInfo.m_type = KdCollider::Type::TypeBump;
-
-		std::list<KdCollider::CollisionResult> retSphereList;
-		for (auto& ret : SceneManager::Instance().GetEnemyList())
+		if (SceneManager::Instance().GetEnemyList().size() > 0)
 		{
-			if (ret->GetParam().Hp <= 0)continue;
-			ret->Intersects(sphereInfo, &retSphereList);
-		}
-
-		float _maxOverLap = 0.0f;
-		Math::Vector3 _hitDir = Math::Vector3::Zero;
-		bool _hitFlg = false;
-
-		for (auto& sphere : retSphereList)
-		{
-			if (_maxOverLap < sphere.m_overlapDistance)
+			float _enemyDist = 0.0f; // 敵の距離
+			for (auto& enemy : SceneManager::Instance().GetEnemyList())
 			{
-				_maxOverLap = sphere.m_overlapDistance;
-				_hitDir = sphere.m_hitDir;
-				_hitFlg = true;
+				float _dist = (enemy->GetPos() - owner->GetPos()).Length(); // 距離計算
+				if (m_AttackDir != Math::Vector3::Zero && _dist > _enemyDist)continue; 
+				// 攻撃方向が決まっていないor距離が前の敵よりも近かったら
+				
+				// 距離更新
+				_enemyDist = _dist;
+				// 方向更新
+				m_AttackDir = enemy->GetPos() - owner->GetPos();
+				m_AttackDir.y = 0.0f;
+				m_AttackDir.Normalize();
 			}
-		}
-
-		if (_hitFlg)
-		{
-			_hitDir.y = 0.0f;
-			_hitDir *= -1.0f;
-			_hitDir.Normalize();
-			m_AttackDir = _hitDir;
 		}
 		else
 		{
@@ -704,9 +721,9 @@ void Player::Attack::AttackDirCheck(std::shared_ptr<Player> owner)
 		Math::Matrix cameraRotYMat = Math::Matrix::Identity;
 		if (owner->m_camera.expired() == false)
 		{
-			cameraRotYMat = owner->m_camera.lock()->GetRotationYMatrix();
+			cameraRotYMat = owner->m_camera.lock()->GetRotationYMatrix(); // カメラの回転行列
 		}
-		m_AttackDir = m_AttackDir.TransformNormal(m_AttackDir, cameraRotYMat);
+		m_AttackDir = m_AttackDir.TransformNormal(m_AttackDir, cameraRotYMat); // カメラ方向によって攻撃方向を修正
 	}
 
 	m_AttackDir.Normalize(); //正規化
@@ -714,19 +731,28 @@ void Player::Attack::AttackDirCheck(std::shared_ptr<Player> owner)
 
 void Player::Attack::ChangeState(std::shared_ptr<Player> owner)
 {
+	// 切り替え可能ではなかったらリターン
 	if (m_ActionFPS < m_ChangeTime)return;
 
+	// 攻撃
 	if (owner->m_keyType & Player::KeyType::AttackKey && !(owner->m_BeforeKeyType & Player::KeyType::AttackKey))
 	{
+		// 剣線削除
 		owner->GetSword().lock()->ClearTraject();
 
+		// 攻撃段階加算
 		m_atkNum++;
+		// 最初に戻る
 		owner->m_flow = Player::Flow::EnterType;
+		// 最大段階まできたら最初の段階に戻る
 		if (m_atkNum > AttackNUM)m_atkNum = 1;
+		// FPSリセット
 		m_ActionFPS = 0;
 	}
+	// 防御
 	else if (owner->m_keyType & Player::KeyType::GuardKey)
 	{
+		// 剣線削除
 		owner->GetSword().lock()->ClearTraject();
 
 		std::shared_ptr<Guard> _guard = std::make_shared<Guard>();
@@ -735,9 +761,12 @@ void Player::Attack::ChangeState(std::shared_ptr<Player> owner)
 		owner->m_flow = KdGameObject::Flow::EnterType;
 		return;
 	}
+	// 回避
 	else if (owner->m_keyType & Player::KeyType::RollKey && !(owner->m_BeforeKeyType & Player::KeyType::RollKey))
 	{
+		// スタミナが無かったらリターン
 		if (owner->m_param.Sm <= 0)return;
+		// 剣線削除
 		owner->GetSword().lock()->ClearTraject();
 
 		std::shared_ptr<Roll> _roll = std::make_shared<Roll>();
@@ -750,12 +779,14 @@ void Player::Attack::ChangeState(std::shared_ptr<Player> owner)
 
 void Player::Attack::Damage(std::shared_ptr<Player> owner, int _damage, std::shared_ptr<EnemyBase> _enemy)
 {
+	// 剣線削除
 	owner->GetSword().lock()->ClearTraject();
 	StateBase::Damage(owner, _damage, _enemy);
 }
 
 void Player::Attack::Damage(std::shared_ptr<Player> owner, int _damage, std::shared_ptr<BulletBase> _bullet)
 {
+	// 剣線削除
 	owner->GetSword().lock()->ClearTraject();
 	StateBase::Damage(owner, _damage, _bullet);
 }
@@ -765,69 +796,64 @@ void Player::Attack::Damage(std::shared_ptr<Player> owner, int _damage, std::sha
 // Counter==========================================================================================
 void Player::Counter::Enter(std::shared_ptr<Player> owner)
 {
-	if (!owner->IsAnimCheck("ParryingToCounter"))
+	// カウンターの対象を検知
+	for (auto& enemy : SceneManager::Instance().GetEnemyList())
 	{
-		owner->SetAnime("ParryingToCounter", false, 1.5f);
-		return;
+		if (enemy->GetID() != owner->m_ParryID)continue; // 対象のIDと違うなら次へ
+		m_CounterEnemy = enemy;
 	}
 
-	if (owner->GetIsAnimator())
+	if (owner->GetSword().expired() == false)
 	{
-
-		for (auto& enemy : SceneManager::Instance().GetEnemyList())
-		{
-			if (enemy->GetID() != owner->m_ParryID)continue;
-			m_CounterEnemy = enemy;
-		}
-
-		owner->m_flow = Player::Flow::UpdateType;
-		if (owner->GetSword().expired() == false)
-		{
-			owner->GetSword().lock()->MakeTraject();
-		}
-		return;
+		owner->GetSword().lock()->MakeTraject(); // 剣線作成
 	}
+	owner->m_flow = Player::Flow::UpdateType; // 次のフローへ
+	return;
 }
 
 void Player::Counter::Update(std::shared_ptr<Player> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("Counter"))
 	{
 		owner->SetAnime("Counter", false, 1.5f);
 		return;
 	}
 
+	// アニメーションが終了したら
 	if (owner->GetIsAnimator())
 	{
-		owner->m_ParryID = -1;
-		owner->GetSword().lock()->ClearTraject();
+		owner->m_ParryID = -1; // 対象IDをリセット
 
 		// Idol
-		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
-		owner->m_NextState = _idol;
-		owner->m_NextActionType = Player::Action::IdolType;
-		owner->m_flow = KdGameObject::Flow::UpdateType;
+		owner->IdolChange();
 		return;
 	}
 
-	if (m_ActionFPS > 66 && owner->GetSword().lock()->GetTrajectPolygon())
+	// 剣線削除
+	if (m_ActionFPS > 70 && owner->GetSword().lock()->GetTrajectPolygon())
 	{
 		owner->GetSword().lock()->ClearTraject();
 	}
 
-	if (m_ActionFPS == 40)
+	// エフェクト
+	if (m_ActionFPS == 44)
 	{
 		KdEffekseerManager::GetInstance().Play("Player/Counter/CounterImpact/CounterImpact.efkefc", owner->m_pos, 2.0f, 1.0f, false);
 	}
 
-	if (40 <= m_ActionFPS && m_ActionFPS <= 66)
+	if (44 <= m_ActionFPS && m_ActionFPS <= 70)
 	{
+		// 攻撃判定
 		AttackHit(owner);
+		// 剣線追加
 		owner->GetSword().lock()->SetTrajectMat();
 	}
 
+	// 敵の近くに移動
 	CounterMove(owner);
 
+	// FPS加算
 	m_ActionFPS++;
 }
 
@@ -842,31 +868,29 @@ void Player::Counter::ChangeState(std::shared_ptr<Player> owner)
 }
 void Player::Counter::AttackHit(std::shared_ptr<Player> owner)
 {
+	// 敵が攻撃を受けない状態ならリターン
 	if (m_CounterEnemy.lock()->GetParam().Hp <= 0 || m_CounterEnemy.lock()->GetinviTime() > 0)return;
 
+	// スフィア判定
 	std::vector<KdCollider::SphereInfo> sphereInfoList;
 	KdCollider::SphereInfo sphereInfo;
 
-	if (owner->GetSword().expired() == false)
-	{
-		sphereInfo.m_sphere.Center = owner->GetSword().lock()->GetModelTop().Translation();
-		sphereInfoList.push_back(sphereInfo);
-
-		sphereInfo.m_sphere.Center = owner->GetSword().lock()->GetModelCenter().Translation();
-		sphereInfoList.push_back(sphereInfo);
-
-		sphereInfo.m_sphere.Center = owner->GetSword().lock()->GetModelBottom().Translation();
-		sphereInfoList.push_back(sphereInfo);
-	}
-	else
-	{
-		sphereInfo.m_sphere.Center = owner->GetSwordMat().Translation();
-		sphereInfoList.push_back(sphereInfo);
-	}
+	// 座標
+	// 剣先
+	sphereInfo.m_sphere.Center = owner->GetSword().lock()->GetModelTop().Translation();
+	sphereInfoList.push_back(sphereInfo);
+	// 剣の中心
+	sphereInfo.m_sphere.Center = owner->GetSword().lock()->GetModelCenter().Translation();
+	sphereInfoList.push_back(sphereInfo);
+	// 剣の鍔（つば）
+	sphereInfo.m_sphere.Center = owner->GetSword().lock()->GetModelBottom().Translation();
+	sphereInfoList.push_back(sphereInfo);
 
 	for (int i = 0; i < sphereInfoList.size(); ++i)
 	{
-		sphereInfoList[i].m_sphere.Radius = 1.0f;
+		// 半径
+		sphereInfoList[i].m_sphere.Radius = owner->GetSword().lock()->GetAttackSphereSize();
+		// 対象
 		sphereInfoList[i].m_type = KdCollider::TypeDamage;
 	}
 
@@ -874,34 +898,46 @@ void Player::Counter::AttackHit(std::shared_ptr<Player> owner)
 
 	for (int i = 0; i < sphereInfoList.size(); ++i)
 	{
-		if (m_CounterEnemy.lock()->Intersects(sphereInfoList[i], &retSphereList))break;
-	}
-
-	for (auto& ret : retSphereList)
-	{
+		// 攻撃判定
+		if (!m_CounterEnemy.lock()->Intersects(sphereInfoList[i], &retSphereList))continue;
+		
+		// カメラ振動
 		owner->m_camera.lock()->SetShakeMove(0.5f);
 		owner->m_camera.lock()->SetShakeFlg(true);
+		// ダメージ
 		m_CounterEnemy.lock()->Damage(owner->m_param.Atk * 5);
+		// 無敵時間付与
 		m_CounterEnemy.lock()->SetInviTime(owner->m_inviAddTime);
-		m_handle = KdEffekseerManager::GetInstance().Play("Player/Counter/CounterHit/CounterHit.efkefc", ret.m_hitPos, 5.0f, 0.8f, false).lock()->GetHandle();
+		// エフェクト
+		m_handle = KdEffekseerManager::GetInstance().Play("Player/Counter/CounterHit/CounterHit.efkefc", retSphereList.begin()->m_hitPos, 5.0f, 0.8f, false).lock()->GetHandle();
+		// エフェクトのプレイヤーの正面に向ける
 		KdEffekseerManager::GetInstance().SetRotation(m_handle, Math::Vector3{ 0.0f,1.0f,0.0f }, DirectX::XMConvertToRadians(owner->GetAngle().y));
+		// 効果音
 		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/刀で斬る2.WAV", 0.05f, false);
+		return;;
 	}
 }
 
 void Player::Counter::CounterMove(std::shared_ptr<Player> owner)
 {
+	// 対象の郷公
 	Math::Vector3 _dir = m_CounterEnemy.lock()->GetPos() - owner->m_pos;
-	_dir.Normalize();
-	owner->Rotate(_dir);
+	_dir.Normalize(); // 正規化
+	owner->Rotate(_dir); // 回転
 
+	// スフィア判定
 	KdCollider::SphereInfo sphereInfo;
+	// 座標
 	sphereInfo.m_sphere.Center = owner->m_pos;
-	sphereInfo.m_sphere.Radius = 6.0f;
+	// 半径
+	sphereInfo.m_sphere.Radius = owner->m_CounterRadius;
+	// 対象
 	sphereInfo.m_type = KdCollider::TypeBump;
 
+	// 判定
 	if (m_CounterEnemy.lock()->Intersects(sphereInfo, nullptr))return;
 
+	// 近くに居なかったら移動
 	owner->SetMove(_dir,10.0f);
 }
 //=================================================================================================
@@ -910,56 +946,61 @@ void Player::Counter::CounterMove(std::shared_ptr<Player> owner)
 // Roll============================================================================================
 void Player::Roll::Enter(std::shared_ptr<Player> owner)
 {
+	// 方向
 	Math::Vector3 dir = Math::Vector3::Zero;
-	if (GetAsyncKeyState('W') & 0x8000)
+	if (GetAsyncKeyState('W') & 0x8000) // 前
 	{
 		dir.z = 1.0f;
 	}
-	if (GetAsyncKeyState('S') & 0x8000)
+	if (GetAsyncKeyState('S') & 0x8000) // 後
 	{
 		dir.z = -1.0f;
 	}
-	if (GetAsyncKeyState('A') & 0x8000)
+	if (GetAsyncKeyState('A') & 0x8000) // 左
 	{
 		dir.x = -1.0f;
 	}
-	if (GetAsyncKeyState('D') & 0x8000)
+	if (GetAsyncKeyState('D') & 0x8000) // 右
 	{
 		dir.x = 1.0f;
 	}
 	if (dir != Math::Vector3::Zero)
 	{
-		owner->CameraTransform(dir);
-		owner->Rotate(dir, 360.0f);
+		owner->CameraTransform(dir); // カメラの方向によって方向を修正
+		owner->Rotate(dir, 360.0f);  // 回転
 	}
 
-	owner->m_param.Sm -= 5 * 10;
-	owner->m_StaminaRecoveryTime = 60 * 3;
+	// スタミナ減少
+	owner->m_param.Sm -= owner->m_RollStamina;
 	if (owner->m_param.Sm <= 0)owner->m_param.Sm = 0;
+	// スタミナ回復可能時間増加
+	owner->m_NowStaminaRecoveryTime = owner->m_StaminaRecoveryTime;
+	// 次のフローへ
 	owner->m_flow = Player::Flow::UpdateType;
 }
 
 void Player::Roll::Update(std::shared_ptr<Player> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("Roll"))
 	{
 		owner->SetAnime("Roll", false, 1.0f);
+		// エフェクト
 		KdEffekseerManager::GetInstance().Play("Player/Smoke/Smoke.efkefc", owner->m_pos, 0.5f, 1.0f, false);
 		return;
 	}
 
+	// アニメーションが終了したら待機状態
 	if (owner->GetIsAnimator())
 	{
 		// Idol
-		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
-		owner->m_NextState = _idol;
-		owner->m_NextActionType = Player::Action::IdolType;
-		owner->m_flow = KdGameObject::Flow::UpdateType;
+		owner->IdolChange();
 		return;
 	}
 
-	if (m_ActionFPS < 32)RollMove(owner);
+	if (m_ActionFPS < 32)RollMove(owner); // 移動
 
+	// FPS加算
 	m_ActionFPS++;
 }
 
@@ -970,14 +1011,16 @@ void Player::Roll::Exit(std::shared_ptr<Player> owner)
 
 void Player::Roll::RollMove(std::shared_ptr<Player> owner)
 {
+	// 方向
 	Math::Vector3 dir = Math::Vector3::Zero;
 
 	//今の方向
 	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(owner->m_angle.y));
 	Math::Vector3 nowVec = Math::Vector3::TransformNormal(owner->m_forward, nowRot);
 	dir = nowVec;
-	dir.Normalize();
+	dir.Normalize(); // 正規化
 
+	// 移動
 	owner->SetMove(dir, 2.0f);
 }
 
@@ -990,46 +1033,54 @@ void Player::Roll::ChangeState(std::shared_ptr<Player> owner)
 // Guard===========================================================================================
 void Player::Guard::Enter(std::shared_ptr<Player> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("IdolToGuard"))
 	{
 		owner->SetAnime("IdolToGuard", false, 1.0f);
 		return;
 	}
 
+	// アニメーションが終了したら次のフローへ
 	if (owner->GetIsAnimator())
 	{
 		owner->m_flow = Player::Flow::UpdateType;
 		return;
 	}
 
+	// 防御キーを離したら終了処理へ
 	if (!(owner->m_keyType & Player::KeyType::GuardKey))
 	{
 		owner->m_flow = Player::Flow::ExitType;
 		return;
 	}
 
+	// 経過時間加算
 	m_guardTime++;
 }
 
 void Player::Guard::Update(std::shared_ptr<Player> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("Guard"))
 	{
 		owner->SetAnime("Guard", true, 1.0f);
 		return;
 	}
 
+	// 防御キーを離したら終了処理へ
 	if (!(owner->m_keyType & Player::KeyType::GuardKey))
 	{
 		owner->m_flow = Player::Flow::ExitType;
 		return;
 	}
 
+	// 経過時間加算
 	m_guardTime++;
 }
 
 void Player::Guard::Exit(std::shared_ptr<Player> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("GuardToIdol"))
 	{
 		owner->SetAnime("GuardToIdol", false, 1.0f);
@@ -1039,13 +1090,11 @@ void Player::Guard::Exit(std::shared_ptr<Player> owner)
 	if (owner->GetIsAnimator())
 	{
 		// Idol
-		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
-		owner->m_NextState = _idol;
-		owner->m_NextActionType = Player::Action::IdolType;
-		owner->m_flow = KdGameObject::Flow::UpdateType;
+		owner->IdolChange();
 		return;
 	}
 
+	// 防御キーを押したら最初へ戻る
 	if (owner->m_keyType & Player::KeyType::GuardKey)
 	{
 		owner->m_flow = Player::Flow::EnterType;
@@ -1094,36 +1143,41 @@ void Player::Guard::GuardRotate(std::shared_ptr<Player> owner, Math::Vector3 _di
 }
 void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shared_ptr<EnemyBase> _enemy)
 {
+	// 攻撃してきた敵の方向
 	Math::Vector3 toVec = _enemy->GetPos() - owner->m_pos;
-	toVec.y = 0.0f;
-	toVec.Normalize();
-	GuardRotate(owner, toVec);
+	toVec.y = 0.0f;    // Y軸は考慮しない
+	toVec.Normalize(); // 正規化
+	GuardRotate(owner, toVec); // 回転
 
-	if (m_guardTime <= 10)
+	if (m_guardTime <= owner->m_ParryTime)
 	{
-		if (owner->m_ObjectManager.lock()->GetSlowFlg())return;
-
-		owner->m_ObjectManager.lock()->SlowChange();
+		// スローにする
+		if(!owner->m_ObjectManager.lock()->GetSlowFlg())owner->m_ObjectManager.lock()->SlowChange();
+		
 		// Parry
 		std::shared_ptr<Parry> _parry = std::make_shared<Parry>();
 		owner->m_NextState = _parry;
 		owner->m_NextActionType = Player::Action::ParryType;
 		owner->m_flow = KdGameObject::Flow::UpdateType;
-
+		// IDを記録
 		owner->m_ParryID = _enemy->GetID();
+		// 敵はよろめく
 		_enemy->StumbleChange();
 	}
 	else
 	{
+		// スタミナが無かったらダメージを受ける
 		if (owner->m_param.Sm <= 0)
 		{
 			StateBase::Damage(owner, _damage, _enemy);
 		}
 		else
 		{
-			owner->m_param.Sm -= _damage * 10;
+			// スタミナ減少
+			owner->m_param.Sm -= _damage * owner->m_GuardStaminaCorrection;
 			if (owner->m_param.Sm < 0)owner->m_param.Sm = 0;
-			owner->m_StaminaRecoveryTime = 60 * 3;
+			// スタミナ可能時間加算
+			owner->m_NowStaminaRecoveryTime = owner->m_StaminaRecoveryTime;
 
 			// GuardReaction
 			std::shared_ptr<GuardReaction> _reaction = std::make_shared<GuardReaction>();
@@ -1136,44 +1190,50 @@ void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shar
 
 void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shared_ptr<BulletBase> _bullet)
 {
-	if (m_guardTime <= 10)
+	if (m_guardTime <= owner->m_ParryTime)
 	{
-		if (owner->m_ObjectManager.lock()->GetSlowFlg())return;
-
+		// 攻撃してきた敵の方向
 		Math::Vector3 toVec = _bullet->GetOwner().lock()->GetPos() - owner->m_pos;
-		toVec.y = 0.0f;
-		toVec.Normalize();
-		GuardRotate(owner, toVec);
+		toVec.y = 0.0f; // Y軸は考慮しない
+		toVec.Normalize(); // 正規化
+		GuardRotate(owner, toVec); // 回転
 
-		owner->m_ObjectManager.lock()->SlowChange();
+		// スローにする
+		if (!owner->m_ObjectManager.lock()->GetSlowFlg())owner->m_ObjectManager.lock()->SlowChange();
+
 		// Parry
 		std::shared_ptr<Parry> _parry = std::make_shared<Parry>();
 		owner->m_NextState = _parry;
 		owner->m_NextActionType = Player::Action::ParryType;
 		owner->m_flow = KdGameObject::Flow::UpdateType;
 
+		// 跳ね返し
+		// 飛ばしてきた敵の方向
 		Math::Matrix RotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(owner->m_angle.y));
 		Math::Vector3 _dir = Math::Vector3::TransformNormal(owner->m_forward, RotY);
-		_bullet->SetDir(_dir);
-		_bullet->SetOwner(owner);
+		_bullet->SetDir(_dir); // 方向
+		_bullet->SetOwner(owner); // 弾の持ち主をプレイヤーに
 	}
 	else
 	{
+		// 弾が飛んできた方向を向く
 		Math::Vector3 _bulletDir = _bullet->GetDir();
-		_bulletDir.y = 0.0f;
-		_bulletDir *= -1.0f;
-		_bulletDir.Normalize();
-		GuardRotate(owner, _bulletDir);
+		_bulletDir *= -1.0f; // 弾の移動方向の逆の方向
+		_bulletDir.Normalize(); // 正規化
+		GuardRotate(owner, _bulletDir); // 回転
 
+		// スタミナが無かったらダメージを受ける
 		if (owner->m_param.Sm <= 0)
 		{
 			StateBase::Damage(owner, _damage, _bullet);
 		}
 		else
 		{
-			owner->m_param.Sm -= _damage * 10;
+			// スタミナ減少
+			owner->m_param.Sm -= _damage * owner->m_GuardStaminaCorrection;
 			if (owner->m_param.Sm < 0)owner->m_param.Sm = 0;
-			owner->m_StaminaRecoveryTime = 60 * 3;
+			// スタミナ可能時間加算
+			owner->m_NowStaminaRecoveryTime = owner->m_StaminaRecoveryTime;
 
 			// GuardReaction
 			std::shared_ptr<GuardReaction> _reaction = std::make_shared<GuardReaction>();
@@ -1181,6 +1241,7 @@ void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shar
 			owner->m_NextActionType = Player::Action::GuardReactionType;
 			owner->m_flow = KdGameObject::Flow::UpdateType;
 
+			// 弾破壊
 			_bullet->SetCrush(true);
 		}
 	}
@@ -1195,19 +1256,24 @@ void Player::GuardReaction::Enter(std::shared_ptr<Player> owner)
 
 void Player::GuardReaction::Update(std::shared_ptr<Player> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("GuardReaction"))
 	{
 		owner->SetAnime("GuardReaction", false, 1.0f);
-		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/ロボットを殴る1.WAV", 0.05f, false);
+		// エフェクト
 		m_handle=KdEffekseerManager::GetInstance().Play("Player/Guard/Spark.efkefc",owner->GetShieldMat().Translation(), 1.0f, 1.0f, false).lock()->GetHandle();
+		// プレイヤーが向いている方向へ回転
 		KdEffekseerManager::GetInstance().SetRotation(m_handle, Math::Vector3{ 0.0f,1.0f,0.0f }, DirectX::XMConvertToRadians((owner->GetAngle().y) + 180.0f));
+		// 効果音
+		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/ロボットを殴る1.WAV", 0.05f, false);
 		return;
 	}
 
+	// アニメーションが終了したら防御へ
 	if (owner->GetIsAnimator())
 	{
 		std::shared_ptr<Guard> _guard = std::make_shared<Guard>();
-		_guard->SetGuardTime(11);
+		_guard->SetGuardTime(owner->GetParryTime() + 1); // パリィ可能時間の１フレーム先に設定　※パリィ防止
 		owner->m_NextState = _guard;
 		owner->m_NextActionType = Player::Action::GuardType;
 		owner->m_flow = KdGameObject::Flow::UpdateType;
@@ -1232,28 +1298,31 @@ void Player::Parry::Enter(std::shared_ptr<Player> owner)
 
 void Player::Parry::Update(std::shared_ptr<Player> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("Parrying"))
 	{
 		owner->SetAnime("Parrying", false, 1.0f);
+		// エフェクト
 		KdEffekseerManager::GetInstance().Play("Player/Parry/hit_hanmado_0409.efkefc", owner->GetShield().lock()->GetParryPoint().Translation(), 1.0f, 0.5f, false);
+		// 効果音
 		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/maou_se_magic_ice05.WAV", 0.1f, false);
 		return;
 	}
 
 	if (owner->GetIsAnimator())
 	{
+		// IDをリセット
 		owner->m_ParryID = -1;
 
 		// Idol
-		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
-		owner->m_NextState = _idol;
-		owner->m_NextActionType = Player::Action::IdolType;
-		owner->m_flow = KdGameObject::Flow::UpdateType;
+		owner->IdolChange();
 
-		owner->m_ObjectManager.lock()->SlowChange();
+		// スローを解除
+		if (owner->m_ObjectManager.lock()->GetSlowFlg())owner->m_ObjectManager.lock()->SlowChange();
 		return;
 	}
 
+	// FPS加算
 	m_ActionFPS++;
 }
 
@@ -1266,10 +1335,13 @@ void Player::Parry::ChangeState(std::shared_ptr<Player> owner)
 {
 	if (m_ActionFPS < 30)return;
 
+	// 攻撃orカウンター
 	if (owner->m_keyType & Player::KeyType::AttackKey && !(owner->m_BeforeKeyType & Player::KeyType::AttackKey))
 	{
+		// IDが記録されていたらカウンター
 		if (owner->m_ParryID != -1)
 		{
+			// カウンター
 			std::shared_ptr<Counter> _counter = std::make_shared<Counter>();
 			owner->m_NextState = _counter;
 			owner->m_NextActionType = Player::Action::CounterType;
@@ -1277,47 +1349,57 @@ void Player::Parry::ChangeState(std::shared_ptr<Player> owner)
 		}
 		else 
 		{
+			// 攻撃
 			std::shared_ptr<Attack> _attack = std::make_shared<Attack>();
 			owner->m_NextState = _attack;
 			owner->m_NextActionType = Player::Action::AttackType;
 			owner->m_flow = KdGameObject::Flow::EnterType;
 		}
-		owner->m_ObjectManager.lock()->SlowChange();
+
+		// スロー解除
+		if(owner->m_ObjectManager.lock()->GetSlowFlg())owner->m_ObjectManager.lock()->SlowChange();
 		return;
 	}
 
+	// 移動
 	if (owner->m_keyType & Player::KeyType::MoveKey)
 	{
+		// IDリセット
 		owner->m_ParryID = -1;
 
 		std::shared_ptr<Run> _run = std::make_shared<Run>();
 		owner->m_NextState = _run;
 		owner->m_NextActionType = Player::Action::RunType;
 		owner->m_flow = KdGameObject::Flow::EnterType;
-		owner->m_ObjectManager.lock()->SlowChange();
+		// スロー解除
+		if (owner->m_ObjectManager.lock()->GetSlowFlg())owner->m_ObjectManager.lock()->SlowChange();
 		return;
 	}
 	else if (owner->m_keyType & Player::KeyType::GuardKey)
 	{
+		// IDリセット
 		owner->m_ParryID = -1;
 
 		std::shared_ptr<Guard> _guard = std::make_shared<Guard>();
 		owner->m_NextState = _guard;
 		owner->m_NextActionType = Player::Action::GuardType;
 		owner->m_flow = KdGameObject::Flow::EnterType;
-		owner->m_ObjectManager.lock()->SlowChange();
+		// スロー解除
+		if (owner->m_ObjectManager.lock()->GetSlowFlg())owner->m_ObjectManager.lock()->SlowChange();
 		return;
 	}
 	else if (owner->m_keyType & Player::KeyType::RollKey && !(owner->m_BeforeKeyType & Player::KeyType::RollKey))
 	{
 		if (owner->m_param.Sm <= 0)return;
+		// IDリセット
 		owner->m_ParryID = -1;
 
 		std::shared_ptr<Roll> _roll = std::make_shared<Roll>();
 		owner->m_NextState = _roll;
 		owner->m_NextActionType = Player::Action::RollType;
 		owner->m_flow = KdGameObject::Flow::EnterType;
-		owner->m_ObjectManager.lock()->SlowChange();
+		// スロー解除
+		if (owner->m_ObjectManager.lock()->GetSlowFlg())owner->m_ObjectManager.lock()->SlowChange();
 		return;
 	}
 }
@@ -1331,19 +1413,18 @@ void Player::Hit::Enter(std::shared_ptr<Player> owner)
 
 void Player::Hit::Update(std::shared_ptr<Player> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("Hit"))
 	{
 		owner->SetAnime("Hit", false, 1.5f);
 		return;
 	}
 
+	// アニメーションが終了したら待機状態へ
 	if (owner->GetIsAnimator())
 	{
 		// Idol
-		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
-		owner->m_NextState = _idol;
-		owner->m_NextActionType = Player::Action::IdolType;
-		owner->m_flow = KdGameObject::Flow::UpdateType;
+		owner->IdolChange();
 		return;
 	}
 }
@@ -1365,12 +1446,14 @@ void Player::Crushing::Enter(std::shared_ptr<Player> owner)
 
 void Player::Crushing::Update(std::shared_ptr<Player> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("Death"))
 	{
 		owner->SetAnime("Death", false, 1.0f);
 		return;
 	}
 
+	// ディゾルブが最大になったら消滅
 	if (owner->GetDissolve() == 1.0f)
 	{
 		owner->Expired();
@@ -1393,64 +1476,83 @@ void Player::Crushing::ChangeState(std::shared_ptr<Player> owner)
 // Teleport========================================================================================
 void Player::Teleport::Enter(std::shared_ptr<Player> owner)
 {
+	// 魔法陣の中心へ移動
+	// プレイヤー位置
 	Math::Vector3 _playerPos = owner->GetPos();
 	_playerPos.y = 0.0f;
+	// 魔法陣位置
 	Math::Vector3 _magicPolygonPos = owner->m_ObjectManager.lock()->GetMagicPolygon().lock()->GetPos();
 	_magicPolygonPos.y = 0.0f;
+	
+	// 中心へ来たら次のフローへ
 	if (_playerPos.x >= _magicPolygonPos.x - 0.5f && _playerPos.x <= _magicPolygonPos.x + 0.5f && 
 		_playerPos.z >= _magicPolygonPos.z - 0.5f && _playerPos.z <= _magicPolygonPos.z + 0.5f)
 	{
 		owner->m_flow = Player::Flow::UpdateType;
 	}
 
+	// 移動アニメーション
 	if (!owner->IsAnimCheck("Run"))owner->SetAnime("Run", true, 1.0f);
 
+	// 方向
 	Math::Vector3 _dir = _magicPolygonPos - _playerPos;
 	_dir.y = 0.0f;
 	float _dist = _dir.Length();
-	_dir.Normalize();
+	_dir.Normalize(); // 正規化
 
 	float _speed = owner->GetParam().Sp;
-	if (_dist < _speed)_speed = _dist;
-	owner->SetMove(_dir, _speed);
-	owner->Rotate(_dir);
+	if (_dist < _speed)_speed = _dist; // 距離が素早さより小さければ距離を素早さにする
+	owner->SetMove(_dir, _speed); // 移動
+	owner->Rotate(_dir); // 回転
 }
 
 void Player::Teleport::Update(std::shared_ptr<Player> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("Teleport"))
 	{
 		owner->SetAnime("Teleport", true, 1.0f);
 		return;
 	}
 
+	// テレポートしたかのようにプレイヤーの姿を消す
 	if (m_ActionFPS == 38)
 	{
+		// ディゾルブを最大値へ
 		owner->m_dissolve = 1.0f;
+		// エフェクト
 		m_handle = KdEffekseerManager::GetInstance().Play("Player/Teleport/LightEnd.efkefc", owner->m_pos, owner->m_size, 1.0f, false).lock()->GetHandle();
 	}
 
+	// テレポートのエフェクトが終了したらフェードアウト
 	if (m_ActionFPS >= 38 && !KdEffekseerManager::GetInstance().IsPlaying(m_handle))
 	{
 		SceneManager::Instance().BlackAlphaChange(0.01f, true);
+		// 次のフローへ
 		owner->m_flow = Player::Flow::ExitType;
 	}
 
+	// FPS加算
 	m_ActionFPS++;
 }
 
 void Player::Teleport::Exit(std::shared_ptr<Player> owner)
 {
 	if (owner->m_ObjectManager.lock()->GetTeleportFlg())return;
+	// テレポートが終わったら
 
+	// アニメーション変更
 	if (!owner->IsAnimCheck("TeleportToIdol"))
 	{
 		owner->SetAnime("TeleportToIdol", false, 1.0f);
+		// ディゾルブを戻す
 		owner->m_dissolve = 0.0f;
+		// エフェクト
 		KdEffekseerManager::GetInstance().Play("Player/Teleport/LightEnd.efkefc", owner->m_pos, owner->m_size, 1.0f, false);
 		return;
 	}
 
+	// アニメーションが終了したら待機状態へ
 	if (owner->GetIsAnimator())
 	{
 		// Idol

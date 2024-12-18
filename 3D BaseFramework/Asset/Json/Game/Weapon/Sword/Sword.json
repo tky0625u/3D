@@ -9,6 +9,7 @@
 		"PosY": 0.0,
 		"PosZ": 0.0,
 		"Size": 1.0,
+		"AttackSphereSize": 0.8,
 		"Traject": 100
 	},
 	"1Sword": {
@@ -21,6 +22,7 @@
 		"PosY": 0.0,
 		"PosZ": 0.0,
 		"Size": 1.0,
+		"AttackSphereSize": 0.8,
 		"Traject": 10
 	}
 }

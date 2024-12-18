@@ -6,6 +6,8 @@
 
 void EnemyBase::PostUpdate()
 {
+	if (m_camera.lock()->GetShakeFlg())return;
+
 	CharacterBase::PostUpdate();
 
 	if (m_inviTime>0)

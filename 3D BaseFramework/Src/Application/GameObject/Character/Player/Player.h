@@ -36,12 +36,11 @@ public:
 	void PostUpdate()override;
 	void Init()      override;
 
-	void CrushingAction()override;
 	// テレポート位置判定
 	void NextStageCheck();
 	// スタミナ回復
 	void StaminaRecovery() { 
-		if (m_StaminaRecoveryTime > 0)return;
+		if (m_NowStaminaRecoveryTime > 0)return;
 		m_param.Sm++;
 		if (m_param.Sm >= m_MaxStamina)m_param.Sm = m_MaxStamina;
 	}
@@ -55,9 +54,13 @@ public:
 	void Damage(int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr) { m_state->Damage(shared_from_this(), _damage, _bullet); } // 遠距離攻撃による被弾
 
 	// セッター====================================================================================
-	void SetStageManager(std::shared_ptr<StageManager> _stage) { m_StageManager = _stage; } // ステージマネジャ
-	void SetShield      (std::shared_ptr<Shield> _shield)      { m_shield = _shield; }      // 盾
-	void SetParryID     (UINT _id)                             { m_ParryID = _id; }         // パリィした敵のID
+	void SetStageManager       (std::shared_ptr<StageManager> _stage) { m_StageManager = _stage; }       // ステージマネジャ
+	void SetShield             (std::shared_ptr<Shield> _shield)      { m_shield = _shield; }            // 盾
+	void SetCounterRadius      (float _radius)                        { m_CounterRadius = _radius; }     // カウンターの攻撃範囲
+	void SetParryID            (UINT _id)                             { m_ParryID = _id; }               // パリィした敵のID
+	void SetParryTime          (int _time)                            { m_ParryTime = _time; }           // パリィ可能時間
+	void SetStaminaRecoveryTime(int _time)                            { m_StaminaRecoveryTime = _time; } // スタミナ回復可能時間 
+	void SetRollStamina        (int _rollStamina)                     { m_RollStamina = _rollStamina; }  // 回避した時のスタミナの減少量
 	//=============================================================================================
 
 	// ゲッター====================================================================================
@@ -65,10 +68,13 @@ public:
 	const std::weak_ptr<ObjectManager>& GetObjectManager      () const { return m_ObjectManager; }
 	const Math::Matrix&                 GetEnemyAttackPointMat() const { return (m_model->FindWorkNode("EnemyAttackPoint")->m_worldTransform) * m_mWorld; }
 	const Math::Matrix&                 GetCameraPointMat     () const { return (m_model->FindWorkNode("CameraPoint")->m_worldTransform) * m_mWorld; }
+	const float&                        GetCounterRadius      () const { return m_CounterRadius; }
 	const UINT&                         GetParryID            () const { return m_ParryID; }
 	const UINT&                         GetActionType         () const { return m_actionType; }
+	const int&                          GetParryTime          () const { return m_ParryTime; }
 	const int&                          GetMaxStamina         () const { return m_MaxStamina; }
 	const int&                          GetStaminaRecoveryTime() const { return m_StaminaRecoveryTime; }
+	const int&                          GetRollStamina        () const { return m_RollStamina; }
 	//=============================================================================================
 
 private:
@@ -78,14 +84,29 @@ private:
 	// 盾
 	std::weak_ptr<Shield>        m_shield;
 	
-	// パリィした敵のID
-	UINT                         m_ParryID             = -1;
+	// カウンターの攻撃範囲
+	float                        m_CounterRadius          = 0.0f;
+													      
+	// パリィした敵のID								 	  
+	UINT                         m_ParryID                = -1;
 	
-	// スタミナ最大値
-	int                          m_MaxStamina          = 0;
-	
-	// スタミナ回復開始時間
-	int                          m_StaminaRecoveryTime = 0;
+	// パリィ可能時間
+	int                          m_ParryTime              = 0;
+													      
+	// スタミナ最大値									   
+	int                          m_MaxStamina             = 0;
+													      
+	// スタミナ回復可能時間							  	  
+	int                          m_StaminaRecoveryTime    = 0;
+
+	// 現在のスタミナ回復可能時間
+	int                          m_NowStaminaRecoveryTime = 0;
+
+	// 回避した時のスタミナの減少量
+	int                          m_RollStamina            = 0;
+
+	// ガードした時のスタミナ減少量補正
+	int                          m_GuardStaminaCorrection = 10;
 
 private:
 

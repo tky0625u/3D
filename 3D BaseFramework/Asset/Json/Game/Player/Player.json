@@ -3,6 +3,7 @@
 		"ATK": 10,
 		"ATKRange": 30.0,
 		"Angle": 0.0,
+		"CounterRadius": 6.0,
 		"ForwardX": 0.0,
 		"ForwardY": 0.0,
 		"ForwardZ": 1.0,
@@ -12,10 +13,13 @@
 		"PosX": 1.0,
 		"PosY": 0.14414995908737183,
 		"PosZ": 0.0,
+		"ParryTime": 10,
 		"ShieldName": "Shield",
 		"Size": 1.0,
 		"Speed": 1.5,
 		"Stamina": 250,
+		"RollStamina": 50,
+		"StaminaRecoveryTime": 180,
 		"SwordName": "Sword"
 	}
 }

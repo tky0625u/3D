@@ -104,7 +104,11 @@ void CharacterBase::Init()
 
 void CharacterBase::CrushingAction()
 {
-	if (m_dissolve < 1.0f)m_dissolve += 0.01f;
+	if (m_dissolve < 1.0f)m_dissolve += 0.01f; // ディゾルブ加算
+	if (m_dissolve >= 1.0f)
+	{
+		m_dissolve = 1.0f;
+	}
 }
 
 void CharacterBase::GroundCheck()

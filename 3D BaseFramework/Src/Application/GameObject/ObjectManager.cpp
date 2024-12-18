@@ -1,9 +1,9 @@
 ﻿#include "ObjectManager.h"
 #include"../Scene/SceneManager.h"
-#include"../tinygltf/json.hpp"
+#include"StageManager.h"
 #include"Character/CharacterBase.h"
 #include"Character/Enemy/Bone/Bone.h"
-#include"StageManager.h"
+#include"../tinygltf/json.hpp"
 #include<fstream>
 #include<sstream>
 
@@ -713,8 +713,23 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				// 無敵時間
 				ImGui::Text((const char*)u8"　無敵付与時間 InviTime=%d", _player->GetinviAddTime());
 				int _inviTime = _player->GetinviAddTime();
-				ImGui::SliderInt("InviTIme", &_inviTime, 0, 300);
-
+				ImGui::SliderInt("InviTime", &_inviTime, 0, 300);
+				// カウンターの攻撃範囲
+				ImGui::Text((const char*)u8"　カウンター攻撃範囲 CounterRadius=%.2f", _player->GetCounterRadius());
+				float _counterRadius = _player->GetCounterRadius();
+				ImGui::SliderFloat("CounterRadius", &_counterRadius, 0.1f, 10.0f);
+				// スタミナ回復可能時間 
+				ImGui::Text((const char*)u8"　スタミナ回復可能時間 StaminaRecoveryTime=%d", _player->GetStaminaRecoveryTime());
+				int _StaminaRecoveryTime = _player->GetStaminaRecoveryTime();
+				ImGui::SliderInt("StaminaRecoveryTime", &_StaminaRecoveryTime, 0, 600);
+				// 回避した時のスタミナの減少量
+				ImGui::Text((const char*)u8"　回避した時のスタミナの減少量 RollStamina=%d", _player->GetRollStamina());
+				int _rollStamina = _player->GetRollStamina();
+				ImGui::SliderInt("RollStamina", &_rollStamina, 0, _player->GetMaxStamina());
+				// パリィ可能時間
+				ImGui::Text((const char*)u8"　パリィ可能時間 ParryTime=%d", _player->GetParryTime());
+				int _parryTime = _player->GetParryTime();
+				ImGui::SliderInt("parryTime", &_parryTime, 0, 60);
 				// 武器
 				static std::string _swordName = _player->GetSword().lock()->GetName().c_str();
 				static std::string _shieldName = _player->GetShield().lock()->GetName().c_str();
@@ -724,10 +739,6 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					if (_player->GetSword().expired() == false)
 					{
 						std::shared_ptr<Sword> _sword = _player->GetSword().lock();
-						static Math::Vector3 swordPos = _sword->GetPos();
-						static int swordAtk = _sword->GetATK();
-						static float swordSize = _sword->GetSize();
-						static int traje = _sword->GetTraject();
 						if (ImGui::TreeNode("Sword"))
 						{
 							if (ImGui::Button((const char*)u8"Sword保存"))
@@ -746,27 +757,36 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 
 							// 位置
 							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _sword->GetPos().x, _sword->GetPos().y, _sword->GetPos().z);
-							swordPos = _sword->GetPos();
+							Math::Vector3 swordPos = _sword->GetPos();
 							ImGui::SliderFloat("PosX", &swordPos.x, -0.5, 0.5);
 							ImGui::SliderFloat("PosY", &swordPos.y, -0.5, 0.5);
 							ImGui::SliderFloat("PosZ", &swordPos.z, -0.5, 0.5);
+							
 							// 攻撃力
 							ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _sword->GetATK());
-							swordAtk = _sword->GetATK();
+							int swordAtk = _sword->GetATK();
 							ImGui::SliderInt("ATK", &swordAtk, 1, 100);
+							
 							// 大きさ
 							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _sword->GetSize());
-							swordSize = _sword->GetSize();
+							float swordSize = _sword->GetSize();
 							ImGui::SliderFloat("Size", &swordSize, 1, 100);
+							
+							// 攻撃判定のスフィアサイズ
+							ImGui::Text((const char*)u8"　攻撃判定のスフィアサイズ　AttackSphereSize=%.2f", _sword->GetAttackSphereSize());
+							float swordAttackSphereSize = _sword->GetAttackSphereSize();
+							ImGui::SliderFloat("AttackSphereSize", &swordAttackSphereSize, 0.1f, 1.0f);
+
 							// トレイルポリゴン
 							ImGui::Text((const char*)u8"　トレイルポリゴン　Traject=%d", _sword->GetTraject());
-							traje = _sword->GetTraject();
+							int traje = _sword->GetTraject();
 							ImGui::SliderInt("Traject", &traje, 1, 100);
 
 							// セット
 							_sword->SetPos(swordPos);
 							_sword->SetATK(swordAtk);
 							_sword->SetSize(swordSize);
+							_sword->SetAttackSphereSize(swordAttackSphereSize);
 							_sword->SetTrajectPointNUM(traje);
 
 							ImGui::TreePop();
@@ -828,6 +848,10 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				_player->SetSize(size);
 				_player->SetAtkRange(range);
 				_player->SetInviAddTime(_inviTime);
+				_player->SetCounterRadius(_counterRadius);
+				_player->SetStaminaRecoveryTime(_StaminaRecoveryTime);
+				_player->SetRollStamina(_rollStamina);
+				_player->SetParryTime(_parryTime);
 
 				// UI
 				if (ImGui::TreeNode("UI"))
@@ -1920,6 +1944,18 @@ void ObjectManager::PlayerWrite(std::string _fileName)
 	// 無敵付与時間
 	_json["Player"]["InviAddTime"] = m_player.lock()->GetinviAddTime();
 	
+	// カウンターの攻撃範囲
+	_json["Player"]["CounterRadius"] = m_player.lock()->GetCounterRadius();
+
+	// スタミナ回復可能時間 
+	_json["Player"]["StaminaRecoveryTime"] = m_player.lock()->GetStaminaRecoveryTime();
+
+	// 回避した時のスタミナの減少量
+	_json["Player"]["RollStamina"] = m_player.lock()->GetRollStamina();
+
+	// パリィ可能時間
+	_json["Player"]["ParryTime"] = m_player.lock()->GetParryTime();
+
 	// 武器
 	_json["Player"]["SwordName"] = m_player.lock()->GetSword().lock()->GetName();
 	_json["Player"]["ShieldName"] = m_player.lock()->GetShield().lock()->GetName();
@@ -2180,6 +2216,9 @@ void ObjectManager::SwordWrite(std::string _swordName, std::string _fileName)
 		// 大きさ
 		_sword["Size"] = m_player.lock()->GetSword().lock()->GetSize();
 		
+		// 攻撃判定のスフィアサイズ
+		_sword["AttackSphereSize"] = m_player.lock()->GetSword().lock()->GetAttackSphereSize();
+
 		// 軌跡の長さ
 		_sword["Traject"] = m_player.lock()->GetSword().lock()->GetTraject();
 	}
@@ -2857,6 +2896,22 @@ void ObjectManager::SetPlayerParam(std::shared_ptr<StageManager> _stage)
 		int _inviTime = 0;
 		_inviTime = obj["InviAddTime"];
 
+		// カウンターの攻撃範囲
+		float _counterRadius = 0.0f;
+		_counterRadius = obj["CounterRadius"];
+
+		// スタミナ回復可能時間
+		int _staminaRecoveryTime = 0;
+		_staminaRecoveryTime = obj["StaminaRecoveryTime"];
+
+		// 回避したときのスタミナ減少量
+		int _rollStamina = 0;
+		_rollStamina = obj["RollStamina"];
+
+		// パリィ可能時間
+		int _parryTime = 0;
+		_parryTime = obj["ParryTime"];
+
 		std::shared_ptr<Player> player = std::make_shared<Player>();
 		m_player = player;
 
@@ -2876,6 +2931,10 @@ void ObjectManager::SetPlayerParam(std::shared_ptr<StageManager> _stage)
 		player->SetStageManager(_stage);
 		player->Init();
 		player->SetInviAddTime(_inviTime);
+		player->SetCounterRadius(_counterRadius);
+		player->SetStaminaRecoveryTime(_staminaRecoveryTime);
+		player->SetRollStamina(_rollStamina);
+		player->SetParryTime(_parryTime);
 		player->SetName(_name);
 		player->SetID(m_id);
 		m_id++;
@@ -3135,9 +3194,8 @@ void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponNam
 		if (obj["ObjectName"] == "Sword")
 		{
 			std::shared_ptr<Sword> sword = std::make_shared<Sword>();
-			int weaponATK = 0;
-			weaponATK = obj["ATK"];
-			sword->SetATK(weaponATK);
+			sword->SetATK(obj["ATK"]);
+			sword->SetAttackSphereSize(obj["AttackSphereSize"]);
 			sword->SetTrajectPointNUM(obj["Traject"]);
 			m_player.lock()->SetSword(sword);
 			weapon = sword;
@@ -3625,10 +3683,9 @@ void ObjectManager::AddWeapon(std::string _filePath, std::string _weaponName)
 		if (obj["ObjectName"] == "Sword")
 		{
 			std::shared_ptr<Sword> sword = std::make_shared<Sword>();
-			int weaponATK = 0;
-			weaponATK = obj["ATK"];
+			sword->SetATK(obj["ATK"]);
+			sword->SetAttackSphereSize(obj["AttackSphereSize"]);
 			sword->SetTrajectPointNUM(obj["Traject"]);
-			sword->SetATK(weaponATK);
 			m_player.lock()->SetSword(sword);
 			weapon = sword;
 		}
@@ -3652,7 +3709,7 @@ void ObjectManager::AddWeapon(std::string _filePath, std::string _weaponName)
 		weapon->SetID(m_id);
 		m_id++;
 
-		SceneManager::Instance().AddObject(weapon);
+		SceneManager::Instance().AddWeapon(weapon);
 
 		break;
 	}
@@ -3777,13 +3834,13 @@ void ObjectManager::ChangeWeapon(std::string _swordName, std::string _shieldName
 	{
 		m_player.lock()->GetSword().lock()->Expired();
 
-		AddWeapon("Asset/Json/Weapon/Sword/Sword.json", _swordName);
+		AddWeapon("Asset/Json/Game/Weapon/Sword/Sword.json", _swordName);
 	}
 
 	if (m_player.lock()->GetShield().lock()->GetName() != _shieldName)
 	{
 		m_player.lock()->GetShield().lock()->Expired();
 
-		AddWeapon("Asset/Json/Weapon/Shield/Shield", _shieldName);
+		AddWeapon("Asset/Json/Game/Weapon/Shield/Shield", _shieldName);
 	}
 }
