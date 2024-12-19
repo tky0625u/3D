@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+// 敵基底
 class EnemyBase;
 
 class EnemyManager:public KdGameObject
@@ -8,12 +9,15 @@ public:
 	EnemyManager()							{};
 	~EnemyManager()					override{};
 
+	// 敵リスト削除
 	void DeleteEnemyList();
+	// 攻撃命令
 	void EnemyAttack();
+	// 移動命令
 	void EnemyRun();
 
+	// 敵リストに追加
 	void AddEnemy(std::shared_ptr<EnemyBase> _enemy) { m_EnemyList.push_back(_enemy); }
-	void SetEnemyAttack(std::shared_ptr<EnemyBase> _enemy) { m_EnemyAttackList.push_back(_enemy); }
 
 	const std::vector<std::shared_ptr<EnemyBase>>& GetEnemyList()const { return m_EnemyList; }
 

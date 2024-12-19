@@ -35,7 +35,6 @@ public:
 	
 	// 消滅したら配列から削除
 	void DeleteEnemyList();
-	void DeleteObjectList();
 	
 	// スロー状態の切替
 	void SlowChange();
@@ -165,11 +164,6 @@ private:
 	float                                    m_slow = 1.0f;
 	// スローフラグ
 	bool                                     m_slowFlg = false;
-	
-	// 敵配列
-	std::vector<std::weak_ptr<EnemyBase>>    m_EnemyList;
-	// キャラクター以外の配列
-	std::vector<std::weak_ptr<KdGameObject>> m_ObjectList;
 
 	// 武器の名前配列 ImGuiで生成するときに使用
 	std::vector<std::string>                 m_swordNameList;

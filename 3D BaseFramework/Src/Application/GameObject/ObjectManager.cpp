@@ -110,39 +110,6 @@ void ObjectManager::DeleteEnemyList()
 			++alpha;
 		}
 	}
-
-	// 敵
-	auto enemy = m_EnemyList.begin();
-
-	while (enemy != m_EnemyList.end())
-	{
-		if (enemy->expired())
-		{
-			enemy = m_EnemyList.erase(enemy);
-		}
-		else
-		{
-			++enemy;
-		}
-	}
-}
-
-void ObjectManager::DeleteObjectList()
-{
-	// キャラクター以外のオブジェクト
-	auto Obj = m_ObjectList.begin();
-
-	while (Obj != m_ObjectList.end())
-	{
-		if (Obj->lock()->IsExpired())
-		{
-			Obj = m_ObjectList.erase(Obj);
-		}
-		else
-		{
-			++Obj;
-		}
-	}
 }
 
 void ObjectManager::SlowChange()
@@ -1008,22 +975,19 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 			// ゴーレム
 			std::vector<std::weak_ptr<EnemyBase>> _golemList;
 			// リストに格納 オブジェクトの名前で判断
-			for (auto& enemy : m_EnemyList)
+			for (auto& enemy : SceneManager::Instance().GetEnemyList())
 			{
-				if (enemy.expired() == false)
+				if (enemy->GetName() == "Bone") // 骨
 				{
-					if (enemy.lock()->GetName() == "Bone") // 骨
-					{
-						_boneList.push_back(enemy);
-					}
-					if (enemy.lock()->GetName() == "BoneAlpha") // 骨色違い
-					{
-						_alphaList.push_back(enemy);
-					}
-					if (enemy.lock()->GetName() == "Golem") // ゴーレム
-					{
-						_golemList.push_back(enemy);
-					}
+					_boneList.push_back(enemy);
+				}
+				if (enemy->GetName() == "BoneAlpha") // 骨色違い
+				{
+					_alphaList.push_back(enemy);
+				}
+				if (enemy->GetName() == "Golem") // ゴーレム
+				{
+					_golemList.push_back(enemy);
 				}
 			}
 
@@ -1439,30 +1403,27 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 			std::vector<std::weak_ptr<KdGameObject>> skyboxList;
 			
 			// それぞれのリストの格納
-			for (auto& obj : m_ObjectList)
+			for (auto& obj : SceneManager::Instance().GetObjList())
 			{
-				if (obj.expired() == false)
+				if (obj->GetName() == "Ground")      // 地面
 				{
-					if (obj.lock()->GetName() == "Ground")      // 地面
-					{
-						groundList.push_back(obj);
-					}
-					else if (obj.lock()->GetName() == "Circle") // 魔法陣の台
-					{
-						circleList.push_back(obj);
-					}
-					else if (obj.lock()->GetName() == "Magic")  // 魔法陣
-					{
-						magicList.push_back(obj);
-					}
-					else if (obj.lock()->GetName() == "Wall")   // 壁 
-					{
-						wallList.push_back(obj);
-					}
-					else if (obj.lock()->GetName() == "SkyBox") // 空
-					{
-						skyboxList.push_back(obj);
-					}
+					groundList.push_back(obj);
+				}
+				else if (obj->GetName() == "Circle") // 魔法陣の台
+				{
+					circleList.push_back(obj);
+				}
+				else if (obj->GetName() == "Magic")  // 魔法陣
+				{
+					magicList.push_back(obj);
+				}
+				else if (obj->GetName() == "Wall")   // 壁 
+				{
+					wallList.push_back(obj);
+				}
+				else if (obj->GetName() == "SkyBox") // 空
+				{
+					skyboxList.push_back(obj);
 				}
 			}
 
@@ -1510,7 +1471,6 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 							circleList[Goperation].lock()->Expired();
 							magicList[Goperation].lock()->Expired();
 						}
-						DeleteObjectList();
 						Goperation = -1;
 						Coperation = -1;
 					}
@@ -1571,7 +1531,6 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 							{
 								circleList[Coperation].lock()->Expired();
 								magicList[Coperation].lock()->Expired(); // 魔法陣も消滅
-								DeleteObjectList();
 								Coperation = -1;
 							}
 						}
@@ -1645,7 +1604,6 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					if (ImGui::Button((const char*)u8"消滅"))
 					{
 						wallList[Woperation].lock()->Expired();
-						DeleteObjectList();
 						Woperation = -1;
 					}
 
@@ -2118,13 +2076,13 @@ void ObjectManager::EnemyWrite(int _stage, int _wave, std::string _fileName)
 	std::string wave = (std::to_string(_wave).c_str()) + ((std::string)"Wave");
 	_json[wave].clear();
 
-	for (auto& enemy : m_EnemyList)
+	for (auto& enemy :SceneManager::Instance().GetEnemyList())
 	{
 		std::string _category; // 種類
 		std::string _num;      // 番号
 
 		// 骨
-		if (enemy.lock()->GetName() == "Bone")
+		if (enemy->GetName() == "Bone")
 		{
 			static int b = 0;
 			_category = "Bone";
@@ -2132,7 +2090,7 @@ void ObjectManager::EnemyWrite(int _stage, int _wave, std::string _fileName)
 			b++;
 		}
 		// 骨色違い
-		else if (enemy.lock()->GetName() == "BoneAlpha")
+		else if (enemy->GetName() == "BoneAlpha")
 		{
 			static int b = 0;
 			_category = "BoneAlpha";
@@ -2140,7 +2098,7 @@ void ObjectManager::EnemyWrite(int _stage, int _wave, std::string _fileName)
 			b++;
 		}
 		// ゴーレム
-		else if (enemy.lock()->GetName() == "Golem")
+		else if (enemy->GetName() == "Golem")
 		{
 			static int g = 0;
 			_category = "Golem";
@@ -2149,44 +2107,44 @@ void ObjectManager::EnemyWrite(int _stage, int _wave, std::string _fileName)
 		}
 
 		// 名前
-		_json[wave][_category][_num]["Name"] = enemy.lock()->GetName();
+		_json[wave][_category][_num]["Name"] = enemy->GetName();
 
 		// 座標　
-		_json[wave][_category][_num]["PosX"] = enemy.lock()->GetPos().x;
-		_json[wave][_category][_num]["PosY"] = enemy.lock()->GetPos().y;
-		_json[wave][_category][_num]["PosZ"] = enemy.lock()->GetPos().z;
+		_json[wave][_category][_num]["PosX"] = enemy->GetPos().x;
+		_json[wave][_category][_num]["PosY"] = enemy->GetPos().y;
+		_json[wave][_category][_num]["PosZ"] = enemy->GetPos().z;
 		
 		// 大きさ
-		_json[wave][_category][_num]["Size"] = enemy.lock()->GetSize();
+		_json[wave][_category][_num]["Size"] = enemy->GetSize();
 		
 		// 角度
-		_json[wave][_category][_num]["Angle"] = enemy.lock()->GetAngle().y;
+		_json[wave][_category][_num]["Angle"] = enemy->GetAngle().y;
 		
 		// HP
-		_json[wave][_category][_num]["HP"] = enemy.lock()->GetParam().Hp;
+		_json[wave][_category][_num]["HP"] = enemy->GetParam().Hp;
 		
 		// 攻撃力
-		_json[wave][_category][_num]["ATK"] = enemy.lock()->GetParam().Atk;
+		_json[wave][_category][_num]["ATK"] = enemy->GetParam().Atk;
 		
 		// 素早さ
-		_json[wave][_category][_num]["Speed"] = enemy.lock()->GetParam().Sp;
+		_json[wave][_category][_num]["Speed"] = enemy->GetParam().Sp;
 		
 		// スタミナ
-		_json[wave][_category][_num]["Stamina"] = enemy.lock()->GetParam().Sm;
+		_json[wave][_category][_num]["Stamina"] = enemy->GetParam().Sm;
 		
 		// 攻撃範囲
-		_json[wave][_category][_num]["ATKRange"] = enemy.lock()->GetParam().AtkRange;
+		_json[wave][_category][_num]["ATKRange"] = enemy->GetParam().AtkRange;
 		
 		// 他の敵との距離判定時のスフィアの半径
-		_json[wave][_category][_num]["EnemyCheckRadius"] = enemy.lock()->GetEnemyCheckRadius();
+		_json[wave][_category][_num]["EnemyCheckRadius"] = enemy->GetEnemyCheckRadius();
 
 		// 避ける距離
-		_json[wave][_category][_num]["LeaveDist"] = enemy.lock()->GetLeaveDist();
+		_json[wave][_category][_num]["LeaveDist"] = enemy->GetLeaveDist();
 
 		// 前方方向
-		_json[wave][_category][_num]["ForwardX"] = enemy.lock()->GetForward().x;
-		_json[wave][_category][_num]["ForwardY"] = enemy.lock()->GetForward().y;
-		_json[wave][_category][_num]["ForwardZ"] = enemy.lock()->GetForward().z;
+		_json[wave][_category][_num]["ForwardX"] = enemy->GetForward().x;
+		_json[wave][_category][_num]["ForwardY"] = enemy->GetForward().y;
+		_json[wave][_category][_num]["ForwardZ"] = enemy->GetForward().z;
 	}
 
 	// ファイルに保存
@@ -2305,39 +2263,39 @@ void ObjectManager::ObjectWrite(std::string _fileName)
 {
 	nlohmann::json _json;
 
-	for (auto& obj : m_ObjectList)
+	for (auto& obj : SceneManager::Instance().GetObjList())
 	{
 		std::string _category; // 種類
 		std::string _num;      // 番号
-		if (obj.lock()->GetName() == "Ground") // 地面
+		if (obj->GetName() == "Ground") // 地面
 		{
 			static int g = 0;
 			_category = "Ground";
 			_num = (std::to_string(g).c_str()) + ((std::string)"Ground");
 			g++;
 		}
-		else if (obj.lock()->GetName() == "Circle") // 魔法陣の台
+		else if (obj->GetName() == "Circle") // 魔法陣の台
 		{
 			static int c = 0;
 			_category = "Circle";
 			_num = (std::to_string(c).c_str()) + ((std::string)"Circle");
 			c++;
 		}
-		else if (obj.lock()->GetName() == "Magic") // 魔法陣
+		else if (obj->GetName() == "Magic") // 魔法陣
 		{
 			static int m = 0;
 			_category = "Magic";
 			_num = (std::to_string(m).c_str()) + ((std::string)"Magic");
 			m++;
 		}
-		else if (obj.lock()->GetName() == "Wall") // 壁
+		else if (obj->GetName() == "Wall") // 壁
 		{
 			static int w = 0;
 			_category = "Wall";
 			_num = (std::to_string(w).c_str()) + ((std::string)"Wall");
 			w++;
 		}
-		else if (obj.lock()->GetName() == "SkyBox") // 空
+		else if (obj->GetName() == "SkyBox") // 空
 		{
 			static int s = 0;
 			_category = "SkyBox";
@@ -2346,18 +2304,18 @@ void ObjectManager::ObjectWrite(std::string _fileName)
 		}
 
 		// 名前
-		_json[_category][_num]["Name"] = obj.lock()->GetName();
+		_json[_category][_num]["Name"] = obj->GetName();
 		
 		// 座標
-		_json[_category][_num]["PosX"] = obj.lock()->GetPos().x;
-		_json[_category][_num]["PosY"] = obj.lock()->GetPos().y;
-		_json[_category][_num]["PosZ"] = obj.lock()->GetPos().z;
+		_json[_category][_num]["PosX"] = obj->GetPos().x;
+		_json[_category][_num]["PosY"] = obj->GetPos().y;
+		_json[_category][_num]["PosZ"] = obj->GetPos().z;
 		
 		// 大きさ
-		_json[_category][_num]["Size"] = obj.lock()->GetSize();
+		_json[_category][_num]["Size"] = obj->GetSize();
 		
 		// 角度
-		_json[_category][_num]["Angle"] = obj.lock()->GetAngle().y;
+		_json[_category][_num]["Angle"] = obj->GetAngle().y;
 	}
 
 	// ファイルに保存
@@ -2856,7 +2814,6 @@ void ObjectManager::SetObjectParam(std::shared_ptr<StageManager> _stage)
 			obj->Init();
 			m_id++;
 
-			m_ObjectList.push_back(obj);
 			SceneManager::Instance().AddObject(obj);
 		}
 	}
@@ -3371,7 +3328,6 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 					m_id++;
 
 					SceneManager::Instance().AddEnemy(enemy);
-					m_EnemyList.push_back(enemy);
 
 					SetEnemyHPParam(enemy);
 				}
@@ -3608,7 +3564,6 @@ void ObjectManager::AddBone()
 	m_id++;
 
 	SceneManager::Instance().AddEnemy(enemy);
-	m_EnemyList.push_back(enemy);
 
 	SetEnemyHPParam(enemy);
 }
@@ -3652,7 +3607,6 @@ void ObjectManager::AddBoneAlpha()
 	m_id++;
 
 	SceneManager::Instance().AddEnemy(enemy);
-	m_EnemyList.push_back(enemy);
 
 	SetEnemyHPParam(enemy);
 }
@@ -3699,7 +3653,6 @@ void ObjectManager::AddGolem()
 	m_id++;
 
 	SceneManager::Instance().AddEnemy(enemy);
-	m_EnemyList.push_back(enemy);
 
 	SetEnemyHPParam(enemy);
 
@@ -3790,7 +3743,6 @@ void ObjectManager::AddGround()
 
 	m_id++;
 
-	m_ObjectList.push_back(obj);
 	SceneManager::Instance().AddObject(obj);
 }
 
@@ -3838,7 +3790,6 @@ void ObjectManager::AddCircle()
 
 		m_id++;
 
-		m_ObjectList.push_back(obj);
 		SceneManager::Instance().AddObject(obj);
 	}
 }
@@ -3860,7 +3811,6 @@ void ObjectManager::AddWall()
 
 	m_id++;
 
-	m_ObjectList.push_back(obj);
 	SceneManager::Instance().AddObject(obj);
 }
 
@@ -3880,7 +3830,6 @@ void ObjectManager::AddSkyBox()
 
 	m_id++;
 
-	m_ObjectList.push_back(obj);
 	SceneManager::Instance().AddObject(obj);
 }
 
