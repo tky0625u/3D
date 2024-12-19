@@ -1142,6 +1142,14 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _boneList[operation].lock()->GetParam().AtkRange);
 					float range = _boneList[operation].lock()->GetParam().AtkRange;
 					ImGui::SliderFloat("ATKRange", &range, 1, 100);
+					// 他の敵との距離判定時のスフィアの半径
+					ImGui::Text((const char*)u8"　他の敵との距離判定時のスフィアの半径 EnemyCheckRadius=%.2f", _boneList[operation].lock()->GetEnemyCheckRadius());
+					float radius = _boneList[operation].lock()->GetEnemyCheckRadius();
+					ImGui::SliderFloat("EnemyCheckRadius", &radius, 0.1f, 10.0f);
+					// 避ける距離
+					ImGui::Text((const char*)u8"　避ける距離 LeaveDist=%.2f", _boneList[operation].lock()->GetLeaveDist());
+					float leaveDist = _boneList[operation].lock()->GetLeaveDist();
+					ImGui::SliderFloat("LeaveDist", &leaveDist, 0.1f, 20.0f);
 					// 前方方向
 					ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetForward().x, _boneList[operation].lock()->GetForward().y, _boneList[operation].lock()->GetForward().z);
 
@@ -1151,6 +1159,8 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					_boneList[operation].lock()->SetAngle(angle);
 					_boneList[operation].lock()->SetSize(size);
 					_boneList[operation].lock()->SetAtkRange(range);
+					_boneList[operation].lock()->SetEnemyCheckRadius(radius);
+					_boneList[operation].lock()->SetLeaveDist(leaveDist);
 
 					//消滅
 					if (ImGui::Button((const char*)u8"消滅"))
@@ -1227,6 +1237,14 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _alphaList[operation].lock()->GetParam().AtkRange);
 					float range = _alphaList[operation].lock()->GetParam().AtkRange;
 					ImGui::SliderFloat("ATKRange", &range, 1, 100);
+					// 他の敵との距離判定時のスフィアの半径
+					ImGui::Text((const char*)u8"　他の敵との距離判定時のスフィアの半径 EnemyCheckRadius=%.2f", _alphaList[operation].lock()->GetEnemyCheckRadius());
+					float radius = _alphaList[operation].lock()->GetEnemyCheckRadius();
+					ImGui::SliderFloat("EnemyCheckRadius", &radius, 0.1f, 10.0f);
+					// 避ける距離
+					ImGui::Text((const char*)u8"　避ける距離 LeaveDist=%.2f", _alphaList[operation].lock()->GetLeaveDist());
+					float leaveDist = _alphaList[operation].lock()->GetLeaveDist();
+					ImGui::SliderFloat("LeaveDist", &leaveDist, 0.1f, 20.0f);
 					// 前方方向
 					ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _alphaList[operation].lock()->GetForward().x, _alphaList[operation].lock()->GetForward().y, _alphaList[operation].lock()->GetForward().z);
 
@@ -1236,6 +1254,8 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					_alphaList[operation].lock()->SetAngle(angle);
 					_alphaList[operation].lock()->SetSize(size);
 					_alphaList[operation].lock()->SetAtkRange(range);
+					_alphaList[operation].lock()->SetEnemyCheckRadius(radius);
+					_alphaList[operation].lock()->SetLeaveDist(leaveDist);
 
 					// 消滅
 					if (ImGui::Button((const char*)u8"消滅"))
@@ -1312,6 +1332,14 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _golemList[operation].lock()->GetParam().AtkRange);
 					float range = _golemList[operation].lock()->GetParam().AtkRange;
 					ImGui::SliderFloat("ATKRange", &range, 1, 100);
+					// 他の敵との距離判定時のスフィアの半径
+					ImGui::Text((const char*)u8"　他の敵との距離判定時のスフィアの半径 EnemyCheckRadius=%.2f", _golemList[operation].lock()->GetEnemyCheckRadius());
+					float radius = _golemList[operation].lock()->GetEnemyCheckRadius();
+					ImGui::SliderFloat("EnemyCheckRadius", &radius, 0.1f, 10.0f);
+					// 避ける距離
+					ImGui::Text((const char*)u8"　避ける距離 LeaveDist=%.2f", _golemList[operation].lock()->GetLeaveDist());
+					float leaveDist = _golemList[operation].lock()->GetLeaveDist();
+					ImGui::SliderFloat("LeaveDist", &leaveDist, 0.1f, 20.0f);
 					// 前方方向
 					ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _golemList[operation].lock()->GetForward().x, _golemList[operation].lock()->GetForward().y, _golemList[operation].lock()->GetForward().z);
 
@@ -1321,6 +1349,8 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					_golemList[operation].lock()->SetAngle(angle);
 					_golemList[operation].lock()->SetSize(size);
 					_golemList[operation].lock()->SetAtkRange(range);
+					_golemList[operation].lock()->SetEnemyCheckRadius(radius);
+					_golemList[operation].lock()->SetLeaveDist(leaveDist);
 
 					// 消滅
 					if (ImGui::Button((const char*)u8"消滅"))
@@ -2147,6 +2177,12 @@ void ObjectManager::EnemyWrite(int _stage, int _wave, std::string _fileName)
 		// 攻撃範囲
 		_json[wave][_category][_num]["ATKRange"] = enemy.lock()->GetParam().AtkRange;
 		
+		// 他の敵との距離判定時のスフィアの半径
+		_json[wave][_category][_num]["EnemyCheckRadius"] = enemy.lock()->GetEnemyCheckRadius();
+
+		// 避ける距離
+		_json[wave][_category][_num]["LeaveDist"] = enemy.lock()->GetLeaveDist();
+
 		// 前方方向
 		_json[wave][_category][_num]["ForwardX"] = enemy.lock()->GetForward().x;
 		_json[wave][_category][_num]["ForwardY"] = enemy.lock()->GetForward().y;
@@ -3289,6 +3325,12 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 					float _atkRange = 0.0f;
 					_atkRange = obj["ATKRange"];
 
+					float _radius = 0.0f;
+					_radius = obj["EnemyCheckRadius"];
+
+					float _leaveDist = 0.0f;
+					_leaveDist = obj["LeaveDist"];
+
 					Math::Vector3 _forward = Math::Vector3::Zero;
 					_forward.x = obj["ForwardX"];
 					_forward.y = obj["ForwardY"];
@@ -3318,6 +3360,8 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 					enemy->SetSize(_size);
 					enemy->SetAngle(_angle);
 					enemy->SetAtkRange(_atkRange);
+					enemy->SetEnemyCheckRadius(_radius);
+					enemy->SetLeaveDist(_leaveDist);
 					enemy->SetForward(_forward);
 					enemy->SetTarget(m_player.lock());
 					enemy->SetName(_name);
@@ -3538,6 +3582,8 @@ void ObjectManager::AddBone()
 	float _speed = 1.0f;
 	int _stamina = 50;
 	float _atkRange = 3.0f;
+	float _radius = 3.0f;
+	float _leaveDist = 6.0f;
 	Math::Vector3 _forward = Math::Vector3::Zero;
 	_forward.z = 1.0f;
 	float _chaseRange = 1000.0f;
@@ -3550,6 +3596,8 @@ void ObjectManager::AddBone()
 	enemy->SetDir(_dir);
 	enemy->SetAngle(_angle);
 	enemy->SetAtkRange(_atkRange);
+	enemy->SetEnemyCheckRadius(_radius);
+	enemy->SetLeaveDist(_leaveDist);
 	enemy->SetForward(_forward);
 	enemy->SetName(_name);
 	enemy->SetCamera(m_camera.lock());
@@ -3578,6 +3626,8 @@ void ObjectManager::AddBoneAlpha()
 	float _speed = 1.0f;
 	int _stamina = 50;
 	float _atkRange = 50.0f;
+	float _radius = 3.0f;
+	float _leaveDist = 6.0f;
 	Math::Vector3 _forward = Math::Vector3::Zero;
 	_forward.z = 1.0f;
 	float _chaseRange = 1000.0f;
@@ -3590,6 +3640,8 @@ void ObjectManager::AddBoneAlpha()
 	enemy->SetDir(_dir);
 	enemy->SetAngle(_angle);
 	enemy->SetAtkRange(_atkRange);
+	enemy->SetEnemyCheckRadius(_radius);
+	enemy->SetLeaveDist(_leaveDist);
 	enemy->SetForward(_forward);
 	enemy->SetName(_name);
 	enemy->SetCamera(m_camera.lock());
@@ -3621,6 +3673,8 @@ void ObjectManager::AddGolem()
 	float _speed = 1.0f;
 	int _stamina = 50;
 	float _atkRange = 50.0f;
+	float _radius = 3.0f;
+	float _leaveDist = 6.0f;
 	Math::Vector3 _forward = Math::Vector3::Zero;
 	_forward.z = -1.0f;
 	float _chaseRange = 1000.0f;
@@ -3633,6 +3687,8 @@ void ObjectManager::AddGolem()
 	enemy->SetDir(_dir);
 	enemy->SetAngle(_angle);
 	enemy->SetAtkRange(_atkRange);
+	enemy->SetEnemyCheckRadius(_radius);
+	enemy->SetLeaveDist(_leaveDist);
 	enemy->SetForward(_forward);
 	enemy->SetName(_name);
 	enemy->SetCamera(m_camera.lock());
