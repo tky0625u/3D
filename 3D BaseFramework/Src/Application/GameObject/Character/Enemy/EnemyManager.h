@@ -19,6 +19,7 @@ public:
 	// 敵リストに追加
 	void AddEnemy(std::shared_ptr<EnemyBase> _enemy) { m_EnemyList.push_back(_enemy); }
 
+	// 敵リスト
 	const std::vector<std::shared_ptr<EnemyBase>>& GetEnemyList()const { return m_EnemyList; }
 
 	void PreUpdate()				override;
@@ -36,6 +37,8 @@ public:
 	void Init()                     override;
 
 private:
+	// 敵リスト
 	std::vector<std::shared_ptr<EnemyBase>> m_EnemyList;
+	// 攻撃予定リスト
 	std::vector<std::weak_ptr<EnemyBase>>   m_EnemyAttackList;
 };
