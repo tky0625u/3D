@@ -3509,7 +3509,7 @@ void ObjectManager::SetBoneAlphaBulletParam(int id)
 
 	std::shared_ptr<BoneAlpha_Bullet> _bullet = std::make_shared<BoneAlpha_Bullet>();
 	_bullet->Init();
-	_bullet->SetPos(_alpha->GetBulletPoint().Translation());
+	_bullet->SetPos(_alpha->GetBulletPoint());
 	Math::Matrix _nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(_alpha->GetAngle().y));
 	Math::Vector3 _nowVec = Math::Vector3::TransformNormal(_alpha->GetForward(), _nowRot);
 	_bullet->SetDir(_nowVec);

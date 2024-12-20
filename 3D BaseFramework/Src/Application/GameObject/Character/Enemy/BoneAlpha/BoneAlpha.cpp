@@ -1,10 +1,12 @@
 ﻿#include "BoneAlpha.h"
-#include"../../../../Scene/SceneManager.h"
-#include"../../../ObjectManager.h"
-#include"../../Player/Player.h"
-#include"../../../Weapon/Sword/Sword.h"
 
-#include"../../../../main.h"
+// シーンマネジャ
+#include"../../../../Scene/SceneManager.h"
+// オブジェクトマネジャ
+#include"../../../ObjectManager.h"
+// プレイヤー
+#include"../../Player/Player.h"
+
 
 void BoneAlpha::Init()
 {
@@ -25,9 +27,9 @@ void BoneAlpha::Init()
 
 const Math::Vector3& BoneAlpha::GetFrontDir()
 {
+	// 現在の方向
 	Math::Matrix _nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle.y));
 	Math::Vector3 _nowVec = Math::Vector3::TransformNormal(m_forward, _nowRot);
-	Application::Instance().m_log.AddLog("_nowVec:x=%.2f,y=%.2f,z=%.2f\n", _nowVec.x, _nowVec.y, _nowVec.z);
 	return _nowVec;
 }
 
@@ -35,17 +37,19 @@ const Math::Vector3& BoneAlpha::GetFrontDir()
 // Attack==========================================================================================
 void BoneAlpha::Attack::Enter(std::shared_ptr<EnemyBase> owner)
 {
-	owner->SetFlow(EnemyBase::Flow::UpdateType);
+
 }
 
 void BoneAlpha::Attack::Update(std::shared_ptr<EnemyBase> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("Attack"))
 	{
 		owner->SetAnime("Attack", false, 1.0f);
 		return;
 	}
 
+	// アニメーションが終了したら待機状態へ
 	if (owner->GetIsAnimator())
 	{
 		owner->IdolChange();
@@ -54,26 +58,29 @@ void BoneAlpha::Attack::Update(std::shared_ptr<EnemyBase> owner)
 
 	if (m_ActionFPS == 35)
 	{
+		// 攻撃前エフェクト
 		KdEffekseerManager::GetInstance().Play("Enemy/AttackSignal/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 0.3f, 2.0f, false);
 	}
 	else 
 	{
-		Math::Vector3 _playerPos = owner->GetTarget().lock()->GetPos();
-		Math::Vector3 _dir = _playerPos - owner->GetPos();
-		_dir.y = 0.0f;
-		_dir.Normalize();
-		owner->Rotate(_dir);
+		// プレイヤーの方向に回転
+		Math::Vector3 _playerPos = owner->GetTarget().lock()->GetPos(); // プレイヤー座標
+		Math::Vector3 _dir = _playerPos - owner->GetPos(); // プレイヤーの方向
+		_dir.y = 0.0f; // Y軸は考慮しない
+		_dir.Normalize(); // 正規化
+		owner->Rotate(_dir); // 回転
 	}
 	if (50 <= m_ActionFPS && 67 >= m_ActionFPS)
 	{
-		HitCheck(owner);
-		MoveForward(owner);
+		HitCheck(owner); // 攻撃判定
+		MoveForward(owner); // 攻撃移動
 	}
 	if (58 == m_ActionFPS)
 	{
-		owner->GetObjManager().lock()->SetBoneAlphaBulletParam(owner->GetID());
+		owner->GetObjManager().lock()->SetBoneAlphaBulletParam(owner->GetID()); // 弾生成
 	}
 
+	// FPS加算
 	m_ActionFPS++;
 }
 

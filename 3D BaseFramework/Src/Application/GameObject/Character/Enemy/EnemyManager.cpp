@@ -71,6 +71,9 @@ void EnemyManager::EnemyRun()
 		if (enemy->GetActionType() != EnemyBase::Action::RunType &&
 			enemy->GetActionType() != EnemyBase::Action::IdolType )continue;
 
+		// 次の行動が被弾なら次へ飛ばす
+		if (enemy->GetNextActionType() == EnemyBase::Action::HitType)continue;
+
 		// HPがなかったら飛ばす
 		if (enemy->GetParam().Hp <= 0)continue;
 
@@ -168,13 +171,13 @@ void EnemyManager::EnemyRun()
 
 void EnemyManager::PreUpdate()
 {
+	EnemyRun();
+	EnemyAttack();
 	for (auto& enemy : m_EnemyList) enemy->PreUpdate();
 }
 
 void EnemyManager::Update()
 {
-	EnemyRun();
-	EnemyAttack();
 	for (auto& enemy : m_EnemyList) enemy->Update();
 }
 
