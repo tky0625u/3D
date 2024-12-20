@@ -1,8 +1,11 @@
 ﻿#include "Bone.h"
-#include"../EnemyBase.h"
-#include"../../Player/Player.h"
+
+// シーンマネジャ
 #include"../../../../Scene/SceneManager.h"
-#include"../../../Weapon/Sword/Sword.h"
+// 敵基底
+#include"../EnemyBase.h"
+// プレイヤー
+#include"../../Player/Player.h"
 
 void Bone::Init()
 {
@@ -15,8 +18,6 @@ void Bone::Init()
 	m_actionType = EnemyBase::Action::AppealType;
 	m_flow = EnemyBase::Flow::UpdateType;
 
-	m_AppealEffectSize = 3.0f;
-
 	m_animator->SetAnimation(m_model->GetData()->GetAnimation(m_anime), m_animeFlg);
 
 	m_pCollider = std::make_unique<KdCollider>();
@@ -27,17 +28,19 @@ void Bone::Init()
 // Attack==========================================================================================
 void Bone::Attack::Enter(std::shared_ptr<EnemyBase> owner)
 {
-	owner->SetFlow(EnemyBase::Flow::UpdateType);
+
 }
 
 void Bone::Attack::Update(std::shared_ptr<EnemyBase> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("Attack"))
 	{
 		owner->SetAnime("Attack", false, 1.0f);
 		return;
 	}
 
+	// アニメーションが終了したら待機状態へ
 	if (owner->GetIsAnimator())
 	{
 		// Idol
@@ -47,13 +50,17 @@ void Bone::Attack::Update(std::shared_ptr<EnemyBase> owner)
 
 	if (m_ActionFPS == 35)
 	{
+		// 攻撃前エフェクト
 		KdEffekseerManager::GetInstance().Play("Enemy/AttackSignal/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 0.3f, 2.0f, false);
 	}
 	if (50 <= m_ActionFPS && 67 >= m_ActionFPS)
 	{
+		// 攻撃判定
 		HitCheck(owner);
+		// 攻撃移動
 		MoveForward(owner);
 	}
+	// FPS加算
 	m_ActionFPS++;
 }
 
@@ -64,61 +71,52 @@ void Bone::Attack::Exit(std::shared_ptr<EnemyBase> owner)
 
 void Bone::Attack::HitCheck(std::shared_ptr<EnemyBase> owner)
 {
-	if (SceneManager::Instance().GetPlayer()->IsExpired() ||
-		SceneManager::Instance().GetPlayer()->GetParam().Hp <= 0 ||
-		SceneManager::Instance().GetPlayer()->GetActionType() == Player::Action::HitType ||
-		SceneManager::Instance().GetPlayer()->GetActionType() == Player::Action::GuardReactionType ||
-		SceneManager::Instance().GetPlayer()->GetActionType() == Player::Action::ParryType ||
-		SceneManager::Instance().GetPlayer()->GetActionType() == Player::Action::CounterType ||
-		SceneManager::Instance().GetPlayer()->GetActionType() == Player::Action::RollType)return;
+	// プレイヤーが攻撃を受けない状態ならリターン
+	if (SceneManager::Instance().GetPlayer()->IsExpired() ||                                          // 消滅フラグがON
+		SceneManager::Instance().GetPlayer()->GetParam().Hp <= 0 ||                                   // HPがない
+		SceneManager::Instance().GetPlayer()->GetActionType() == Player::Action::HitType ||           // 被弾状態
+		SceneManager::Instance().GetPlayer()->GetActionType() == Player::Action::GuardReactionType || // 防御反応状態
+		SceneManager::Instance().GetPlayer()->GetActionType() == Player::Action::ParryType ||         // パリィ状態
+		SceneManager::Instance().GetPlayer()->GetActionType() == Player::Action::CounterType ||       // カウンター状態
+		SceneManager::Instance().GetPlayer()->GetActionType() == Player::Action::RollType)return;     // 回避状態
 
-	std::vector<KdCollider::SphereInfo> sphereInfoList;
+	// スフィア判定
 	KdCollider::SphereInfo sphereInfo;
-	if (owner->GetSword().expired() == false)
-	{
-		sphereInfo.m_sphere.Center = owner->GetSword().lock()->GetModelTop().Translation();
-		sphereInfoList.push_back(sphereInfo);
-
-		sphereInfo.m_sphere.Center =owner->GetSword().lock()->GetModelCenter().Translation();
-		sphereInfoList.push_back(sphereInfo);
-
-		sphereInfo.m_sphere.Center = owner->GetSword().lock()->GetModelBottom().Translation();
-		sphereInfoList.push_back(sphereInfo);
-	}
-	else
-	{
-		sphereInfo.m_sphere.Center = owner->GetSwordMat().Translation();
-		sphereInfoList.push_back(sphereInfo);
-	}
-	sphereInfo.m_sphere.Radius = 1.5f;
+	// 中心
+	sphereInfo.m_sphere.Center = owner->GetSwordMat().Translation();
+	// 半径
+	sphereInfo.m_sphere.Radius = owner->GetAttackSphereSize();
+	// 対象
 	sphereInfo.m_type = KdCollider::TypeDamage;
-	std::list<KdCollider::CollisionResult> _List;
 
+	// デバッグ
 	//owner->GetDebugWire()->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 1,0,0,1 });
 
-	for (int i = 0; i < sphereInfoList.size(); ++i)
-	{
-		SceneManager::Instance().GetPlayer()->Intersects(sphereInfo, &_List);
-	}
+	std::list<KdCollider::CollisionResult> _List; // 当たり判定リスト
+	SceneManager::Instance().GetPlayer()->Intersects(sphereInfo, &_List); // 当たり判定
 
 	if (_List.size() != 0)
 	{
 		for (auto& ret : _List)
 		{
-			if (SceneManager::Instance().GetPlayer()->GetActionType() != Player::Action::GuardType)
+			if (SceneManager::Instance().GetPlayer()->GetActionType() != Player::Action::GuardType) // プレイヤーが防御していなかったらヒットエフェクトを出す
 			{
+				// ヒットエフェクト
 				KdEffekseerManager::GetInstance().Play("Player/Hit/hit_effe.efkefc", ret.m_hitPos, 1.0f, 0.8f, false);
 			}
+			// ダメージ
 			SceneManager::Instance().GetPlayer()->Damage(owner->GetParam().Atk, owner->shared_from_this());
 		}
 	}
 }
 void Bone::Attack::MoveForward(std::shared_ptr<EnemyBase> owner)
 {
+	// 現在の方向
 	Math::Matrix  nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(owner->GetAngle().y));
 	Math::Vector3 nowVec = Math::Vector3::TransformNormal(owner->GetForward(), nowRot);
-	nowVec.Normalize();
+	nowVec.Normalize(); // 正規化
 
+	// 移動
 	owner->SetMove(nowVec);
 }
 //=================================================================================================
@@ -131,21 +129,22 @@ void Bone::Stumble::Enter(std::shared_ptr<EnemyBase> owner)
 
 void Bone::Stumble::Update(std::shared_ptr<EnemyBase> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("Stumble"))
 	{
 		owner->SetAnime("Stumble", false, 1.5f);
 		return;
 	}
 
+	// アニメーションが終了したら待機状態へ
 	if (owner->GetIsAnimator())
 	{
 		// Idol
-		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
-		owner->SetNextAction(_idol, EnemyBase::Action::IdolType);
-		owner->SetFlow(EnemyBase::Flow::UpdateType);
+		owner->IdolChange();
 		return;
 	}
 
+	// よろけ演出
 	StumbleAction(owner);
 }
 
@@ -156,11 +155,12 @@ void Bone::Stumble::Exit(std::shared_ptr<EnemyBase> owner)
 
 void Bone::Stumble::StumbleAction(std::shared_ptr<EnemyBase> owner)
 {
+	// 現在の方向
 	Math::Matrix _nowRot = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(owner->GetAngle().y));
 	Math::Vector3 _nowVec = Math::Vector3::TransformNormal(owner->GetForward(), _nowRot);
-	_nowVec.y = 0.0f;
-	_nowVec *= -1.0f;
-	_nowVec.Normalize();
-	owner->SetMove(_nowVec, 0.1f);
+	_nowVec.y = 0.0f; // Y軸は考慮しない
+	_nowVec *= -1.0f; // 現在の方向とは逆の方向
+	_nowVec.Normalize(); // 正規化
+	owner->SetMove(_nowVec, owner->GetStumbleMove()); // 移動
 }
 //=================================================================================================

@@ -37,8 +37,6 @@ void Golem::Init()
 	m_actionType = EnemyBase::Action::AppealType;
 	m_flow = EnemyBase::Flow::UpdateType;
 
-	m_AppealEffectSize = 5.0f;
-
 	m_animator->SetAnimation(m_model->GetData()->GetAnimation(m_anime), m_animeFlg);
 
 	m_pCollider = std::make_unique<KdCollider>();

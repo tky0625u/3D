@@ -1102,6 +1102,10 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _boneList[operation].lock()->GetSize());
 					float size = _boneList[operation].lock()->GetSize();
 					ImGui::SliderFloat("Size", &size, 1, 100);
+					// 出現演出時のエフェクトサイズ
+					ImGui::Text((const char*)u8"　出現演出時のエフェクトサイズ 　AppealSize=%.2f", _boneList[operation].lock()->GetAppealEffectSize());
+					float appealSize = _boneList[operation].lock()->GetAppealEffectSize();
+					ImGui::SliderFloat("AppealSize", &appealSize, 0.1f, 10.0f);
 					// 攻撃範囲
 					ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _boneList[operation].lock()->GetParam().AtkRange);
 					float range = _boneList[operation].lock()->GetParam().AtkRange;
@@ -1114,6 +1118,14 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					ImGui::Text((const char*)u8"　避ける距離 LeaveDist=%.2f", _boneList[operation].lock()->GetLeaveDist());
 					float leaveDist = _boneList[operation].lock()->GetLeaveDist();
 					ImGui::SliderFloat("LeaveDist", &leaveDist, 0.1f, 20.0f);
+					// 攻撃判定のスフィアサイズ
+					ImGui::Text((const char*)u8"　攻撃判定のスフィアサイズ AttackSphereSize=%.2f", _boneList[operation].lock()->GetAttackSphereSize());
+					float attackSphere = _boneList[operation].lock()->GetAttackSphereSize();
+					ImGui::SliderFloat("AttackSphereSize", &attackSphere, 0.1f, 5.0f);
+					// よろける時の移動スピード
+					ImGui::Text((const char*)u8"　よろける時の移動スピード StumbleMove=%.2f", _boneList[operation].lock()->GetStumbleMove());
+					float stumbleMove = _boneList[operation].lock()->GetStumbleMove();
+					ImGui::SliderFloat("StumbleMove", &stumbleMove, 0.1f, 1.0f);
 					// 前方方向
 					ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetForward().x, _boneList[operation].lock()->GetForward().y, _boneList[operation].lock()->GetForward().z);
 
@@ -1122,9 +1134,12 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					_boneList[operation].lock()->SetPos(pos);
 					_boneList[operation].lock()->SetAngle(angle);
 					_boneList[operation].lock()->SetSize(size);
+					_boneList[operation].lock()->SetAppealEffectSize(appealSize);
 					_boneList[operation].lock()->SetAtkRange(range);
 					_boneList[operation].lock()->SetEnemyCheckRadius(radius);
 					_boneList[operation].lock()->SetLeaveDist(leaveDist);
+					_boneList[operation].lock()->SetAttackSphereSize(attackSphere);
+					_boneList[operation].lock()->SetStumbleMove(stumbleMove);
 
 					//消滅
 					if (ImGui::Button((const char*)u8"消滅"))
@@ -1197,6 +1212,10 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _alphaList[operation].lock()->GetSize());
 					float size = _alphaList[operation].lock()->GetSize();
 					ImGui::SliderFloat("Size", &size, 1, 100);
+					// 出現演出時のエフェクトサイズ
+					ImGui::Text((const char*)u8"　出現演出時のエフェクトサイズ 　AppealSize=%.2f", _alphaList[operation].lock()->GetAppealEffectSize());
+					float appealSize = _alphaList[operation].lock()->GetAppealEffectSize();
+					ImGui::SliderFloat("AppealSize", &appealSize, 0.1f, 10.0f);
 					// 攻撃範囲
 					ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _alphaList[operation].lock()->GetParam().AtkRange);
 					float range = _alphaList[operation].lock()->GetParam().AtkRange;
@@ -1209,6 +1228,14 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					ImGui::Text((const char*)u8"　避ける距離 LeaveDist=%.2f", _alphaList[operation].lock()->GetLeaveDist());
 					float leaveDist = _alphaList[operation].lock()->GetLeaveDist();
 					ImGui::SliderFloat("LeaveDist", &leaveDist, 0.1f, 20.0f);
+					// 攻撃判定のスフィアサイズ
+					ImGui::Text((const char*)u8"　攻撃判定のスフィアサイズ AttackSphereSize=%.2f", _boneList[operation].lock()->GetAttackSphereSize());
+					float attackSphere = _boneList[operation].lock()->GetAttackSphereSize();
+					ImGui::SliderFloat("AttackSphereSize", &attackSphere, 0.1f, 5.0f);
+					// よろける時の移動スピード
+					ImGui::Text((const char*)u8"　よろける時の移動スピード StumbleMove=%.2f", _boneList[operation].lock()->GetStumbleMove());
+					float stumbleMove = _boneList[operation].lock()->GetStumbleMove();
+					ImGui::SliderFloat("StumbleMove", &stumbleMove, 0.1f, 1.0f);
 					// 前方方向
 					ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _alphaList[operation].lock()->GetForward().x, _alphaList[operation].lock()->GetForward().y, _alphaList[operation].lock()->GetForward().z);
 
@@ -1217,9 +1244,12 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					_alphaList[operation].lock()->SetPos(pos);
 					_alphaList[operation].lock()->SetAngle(angle);
 					_alphaList[operation].lock()->SetSize(size);
+					_alphaList[operation].lock()->SetAppealEffectSize(appealSize);
 					_alphaList[operation].lock()->SetAtkRange(range);
 					_alphaList[operation].lock()->SetEnemyCheckRadius(radius);
 					_alphaList[operation].lock()->SetLeaveDist(leaveDist);
+					_alphaList[operation].lock()->SetAttackSphereSize(attackSphere);
+					_alphaList[operation].lock()->SetStumbleMove(stumbleMove);
 
 					// 消滅
 					if (ImGui::Button((const char*)u8"消滅"))
@@ -1292,6 +1322,10 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _golemList[operation].lock()->GetSize());
 					float size = _golemList[operation].lock()->GetSize();
 					ImGui::SliderFloat("Size", &size, 0.01, 1.5);
+					// 出現演出時のエフェクトサイズ
+					ImGui::Text((const char*)u8"　出現演出時のエフェクトサイズ 　AppealSize=%.2f", _golemList[operation].lock()->GetAppealEffectSize());
+					float appealSize = _golemList[operation].lock()->GetAppealEffectSize();
+					ImGui::SliderFloat("AppealSize", &appealSize, 0.1f, 10.0f);
 					// 攻撃範囲
 					ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _golemList[operation].lock()->GetParam().AtkRange);
 					float range = _golemList[operation].lock()->GetParam().AtkRange;
@@ -1304,6 +1338,14 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					ImGui::Text((const char*)u8"　避ける距離 LeaveDist=%.2f", _golemList[operation].lock()->GetLeaveDist());
 					float leaveDist = _golemList[operation].lock()->GetLeaveDist();
 					ImGui::SliderFloat("LeaveDist", &leaveDist, 0.1f, 20.0f);
+					// 攻撃判定のスフィアサイズ
+					ImGui::Text((const char*)u8"　攻撃判定のスフィアサイズ AttackSphereSize=%.2f", _boneList[operation].lock()->GetAttackSphereSize());
+					float attackSphere = _boneList[operation].lock()->GetAttackSphereSize();
+					ImGui::SliderFloat("AttackSphereSize", &attackSphere, 0.1f, 5.0f);
+					// よろける時の移動スピード
+					ImGui::Text((const char*)u8"　よろける時の移動スピード StumbleMove=%.2f", _boneList[operation].lock()->GetStumbleMove());
+					float stumbleMove = _boneList[operation].lock()->GetStumbleMove();
+					ImGui::SliderFloat("StumbleMove", &stumbleMove, 0.1f, 1.0f);
 					// 前方方向
 					ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _golemList[operation].lock()->GetForward().x, _golemList[operation].lock()->GetForward().y, _golemList[operation].lock()->GetForward().z);
 
@@ -1312,9 +1354,12 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					_golemList[operation].lock()->SetPos(pos);
 					_golemList[operation].lock()->SetAngle(angle);
 					_golemList[operation].lock()->SetSize(size);
+					_golemList[operation].lock()->SetAppealEffectSize(appealSize);
 					_golemList[operation].lock()->SetAtkRange(range);
 					_golemList[operation].lock()->SetEnemyCheckRadius(radius);
 					_golemList[operation].lock()->SetLeaveDist(leaveDist);
+					_golemList[operation].lock()->SetAttackSphereSize(attackSphere);
+					_golemList[operation].lock()->SetStumbleMove(stumbleMove);
 
 					// 消滅
 					if (ImGui::Button((const char*)u8"消滅"))
@@ -2132,6 +2177,9 @@ void ObjectManager::EnemyWrite(int _stage, int _wave, std::string _fileName)
 		// スタミナ
 		_json[wave][_category][_num]["Stamina"] = enemy->GetParam().Sm;
 		
+		// 出現演出時のエフェクトサイズ
+		_json[wave][_category][_num]["AppealEffectSize"] = enemy->GetAppealEffectSize();
+
 		// 攻撃範囲
 		_json[wave][_category][_num]["ATKRange"] = enemy->GetParam().AtkRange;
 		
@@ -2140,6 +2188,12 @@ void ObjectManager::EnemyWrite(int _stage, int _wave, std::string _fileName)
 
 		// 避ける距離
 		_json[wave][_category][_num]["LeaveDist"] = enemy->GetLeaveDist();
+
+		// 攻撃判定のスフィアサイズ
+		_json[wave][_category][_num]["AttackSphereSize"] = enemy->GetAttackSphereSize();
+		
+		// よろける時の移動スピード
+		_json[wave][_category][_num]["StumbleMove"] = enemy->GetStumbleMove();
 
 		// 前方方向
 		_json[wave][_category][_num]["ForwardX"] = enemy->GetForward().x;
@@ -3227,6 +3281,7 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 	//jsonファイル
 	std::string fileName = _filePath;
 
+	// ファイル読み込み
 	std::ifstream ifs(fileName.c_str());
 	nlohmann::json _json;
 	if (ifs.is_open())
@@ -3235,59 +3290,87 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 		ifs.close();
 	}
 
-	int _wave = 0;
-	int _nowWave = 1;
+	int _MaxWave = 0; // 最大ウェーブ数
+	int _nowWave = 1; // 現在のウェーブ数
 
 	for (auto& wave : _json)
 	{
-		_wave++;
+		// 最大ウェーブ加算
+		_MaxWave++;
+		// 現在のウェーブまで飛ばす
 		if (_nowWave != _stage->GetnowWave())
 		{
-			_nowWave++;
+			_nowWave++; 
 			continue;
 		}
 
 		if (SceneManager::Instance().GetEnemyList().size() == 0)
 		{
+			// 種類
 			for (auto& category : wave)
 			{
+				// 個体
 				for (auto& obj : category)
 				{
+					// 名前
 					std::string _name;
 					_name = obj["Name"];
 
+					// 座標
 					Math::Vector3 _pos = Math::Vector3::Zero;
 					_pos.x = obj["PosX"];
 					_pos.y = m_ground.lock()->GetPos().y;
 					_pos.z = obj["PosZ"];
 
+					// 大きさ
 					float _size = 0.0f;
 					_size = obj["Size"];
 
+					// 角度
 					Math::Vector3 _angle = Math::Vector3::Zero;
 					_angle.y = obj["Angle"];
 
+					// HP
 					int _hp = 0;
 					_hp = obj["HP"];
 
+					// 攻撃力
 					int _atk = 0;
 					_atk = obj["ATK"];
 
+					// 素早さ
 					float _speed = 0.0f;
 					_speed = obj["Speed"];
 
+					// スタミナ
 					int _stamina = 0;
 					_stamina = obj["Stamina"];
 
+					// 出現演出時のエフェクトサイズ
+					float _appealSize = 0.0f;
+					_appealSize = obj["AppealEffectSize"];
+
+					// 攻撃範囲
 					float _atkRange = 0.0f;
 					_atkRange = obj["ATKRange"];
 
+					// 他の敵との距離判定時のスフィアの半径
 					float _radius = 0.0f;
 					_radius = obj["EnemyCheckRadius"];
 
+					// 避ける時の距離
 					float _leaveDist = 0.0f;
 					_leaveDist = obj["LeaveDist"];
 
+					// 攻撃判定のスフィアサイズ
+					float _atkSphereSize = 0.0f;
+					_atkSphereSize = obj["AttackSphereSize"];
+
+					// よろける時の移動スピード
+					float _stumbleMove = 0.0f;
+					_stumbleMove = obj["StumbleMove"];
+
+					// 前方方向
 					Math::Vector3 _forward = Math::Vector3::Zero;
 					_forward.x = obj["ForwardX"];
 					_forward.y = obj["ForwardY"];
@@ -3311,14 +3394,19 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 						m_golem = golem;
 						enemy = golem;
 					}
+
+					// セット
 					enemy->SetCamera(m_camera.lock());
 					enemy->SetParam(_hp, _atk, _speed, _stamina);
 					enemy->SetPos(_pos);
 					enemy->SetSize(_size);
 					enemy->SetAngle(_angle);
+					enemy->SetAppealEffectSize(_appealSize);
 					enemy->SetAtkRange(_atkRange);
 					enemy->SetEnemyCheckRadius(_radius);
 					enemy->SetLeaveDist(_leaveDist);
+					enemy->SetAttackSphereSize(_atkSphereSize);
+					enemy->SetStumbleMove(_stumbleMove);
 					enemy->SetForward(_forward);
 					enemy->SetTarget(m_player.lock());
 					enemy->SetName(_name);
@@ -3329,13 +3417,14 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 
 					SceneManager::Instance().AddEnemy(enemy);
 
+					// HPUI
 					SetEnemyHPParam(enemy);
 				}
 			}
 		}
 	}
 
-	if (_stage->GetMaxWave() == 0)_stage->SetMaxWave(_wave);
+	if (_stage->GetMaxWave() == 0)_stage->SetMaxWave(_MaxWave); // 最大ウェーブが決まっていなかったら更新
 }
 
 void ObjectManager::SetEnemyHPParam(std::shared_ptr<EnemyBase> _enemy)
@@ -3538,8 +3627,11 @@ void ObjectManager::AddBone()
 	float _speed = 1.0f;
 	int _stamina = 50;
 	float _atkRange = 3.0f;
-	float _radius = 3.0f;
+	float _appealSize = 3.0f;
+	float _enemyRadius = 3.0f;
 	float _leaveDist = 6.0f;
+	float _atkSphere = 1.5f;
+	float _stumbleMove = 0.1f;
 	Math::Vector3 _forward = Math::Vector3::Zero;
 	_forward.z = 1.0f;
 	float _chaseRange = 1000.0f;
@@ -3552,8 +3644,11 @@ void ObjectManager::AddBone()
 	enemy->SetDir(_dir);
 	enemy->SetAngle(_angle);
 	enemy->SetAtkRange(_atkRange);
-	enemy->SetEnemyCheckRadius(_radius);
+	enemy->SetAppealEffectSize(_appealSize);
+	enemy->SetEnemyCheckRadius(_enemyRadius);
 	enemy->SetLeaveDist(_leaveDist);
+	enemy->SetAttackSphereSize(_atkSphere);
+	enemy->SetStumbleMove(_stumbleMove);
 	enemy->SetForward(_forward);
 	enemy->SetName(_name);
 	enemy->SetCamera(m_camera.lock());
@@ -3580,9 +3675,12 @@ void ObjectManager::AddBoneAlpha()
 	int _atk = 2;
 	float _speed = 1.0f;
 	int _stamina = 50;
+	float _appealSize = 3.0f;
 	float _atkRange = 50.0f;
-	float _radius = 3.0f;
+	float _enemyRadius = 3.0f;
 	float _leaveDist = 6.0f;
+	float _atkSphere = 1.5f;
+	float _stumbleMove = 0.1f;
 	Math::Vector3 _forward = Math::Vector3::Zero;
 	_forward.z = 1.0f;
 	float _chaseRange = 1000.0f;
@@ -3594,9 +3692,12 @@ void ObjectManager::AddBoneAlpha()
 	enemy->SetSize(_size);
 	enemy->SetDir(_dir);
 	enemy->SetAngle(_angle);
+	enemy->SetAppealEffectSize(_appealSize);
 	enemy->SetAtkRange(_atkRange);
-	enemy->SetEnemyCheckRadius(_radius);
+	enemy->SetEnemyCheckRadius(_enemyRadius);
 	enemy->SetLeaveDist(_leaveDist);
+	enemy->SetAttackSphereSize(_atkSphere);
+	enemy->SetStumbleMove(_stumbleMove);
 	enemy->SetForward(_forward);
 	enemy->SetName(_name);
 	enemy->SetCamera(m_camera.lock());
@@ -3626,9 +3727,12 @@ void ObjectManager::AddGolem()
 	int _atk = 2;
 	float _speed = 1.0f;
 	int _stamina = 50;
+	float _appealSize = 5.0f;
 	float _atkRange = 50.0f;
-	float _radius = 3.0f;
+	float _enemyRadius = 3.0f;
 	float _leaveDist = 6.0f;
+	float _atkSphere = 3.0f;
+	float _stumbleMove = 0.1f;
 	Math::Vector3 _forward = Math::Vector3::Zero;
 	_forward.z = -1.0f;
 	float _chaseRange = 1000.0f;
@@ -3640,9 +3744,12 @@ void ObjectManager::AddGolem()
 	enemy->SetSize(_size);
 	enemy->SetDir(_dir);
 	enemy->SetAngle(_angle);
+	enemy->SetAppealEffectSize(_appealSize);
 	enemy->SetAtkRange(_atkRange);
-	enemy->SetEnemyCheckRadius(_radius);
+	enemy->SetEnemyCheckRadius(_enemyRadius);
 	enemy->SetLeaveDist(_leaveDist);
+	enemy->SetAttackSphereSize(_atkSphere);
+	enemy->SetStumbleMove(_stumbleMove);
 	enemy->SetForward(_forward);
 	enemy->SetName(_name);
 	enemy->SetCamera(m_camera.lock());
@@ -3835,15 +3942,19 @@ void ObjectManager::AddSkyBox()
 
 void ObjectManager::ChangeWeapon(std::string _swordName, std::string _shieldName)
 {
+	// 現在の剣の名前と一致しなかったら変更
 	if (m_player.lock()->GetSword().lock()->GetName() != _swordName)
 	{
+		// 現在の剣は消滅
 		m_player.lock()->GetSword().lock()->Expired();
 
 		AddWeapon("Asset/Json/Game/Weapon/Sword/Sword.json", _swordName);
 	}
 
+	// 現在の盾の名前と一致しなかったら変更
 	if (m_player.lock()->GetShield().lock()->GetName() != _shieldName)
 	{
+		// 現在の盾は消滅
 		m_player.lock()->GetShield().lock()->Expired();
 
 		AddWeapon("Asset/Json/Game/Weapon/Shield/Shield", _shieldName);

@@ -2,8 +2,11 @@
 	"1Wave": {
 		"Golem": {
 			"0Golem": {
+				"AppealEffectSize": 5.0,
 				"ATK": 30,
 				"ATKRange": 100.0,
+				"AttackSphereSize": 3.0,
+				"StumbleMove": 0.1,
 				"Angle": 0.0,
 				"EnemyCheckRadius": 3.0,
 				"ForwardX": 0.0,

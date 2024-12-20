@@ -62,6 +62,9 @@ public:
 	void SetTarget(std::shared_ptr<Player> _target) { m_Target = _target; }           // 攻撃目標
 	void SetEnemyCheckRadius(float _radius)         { m_EnemyCheckRadius = _radius; } // 他の敵との距離判定時のスフィアの半径
 	void SetLeaveDist(float _dist)                  { m_LeaveDist = _dist; }          // 避ける距離
+	void SetAppealEffectSize(float _size)           { m_AppealEffectSize = _size; }   // 出現演出時のエフェクトサイズ
+	void SetAttackSphereSize(float _size)           { m_AttackSphereSize = _size; }   // 攻撃判定のスフィアサイズ
+	void SetStumbleMove(float _move)                { m_StumbleMove = _move; }        // よろける時の移動スピード
 	void SetFlow(UINT _flow)                        { m_flow = _flow; }               // 現在のステートの実行関数タイプ
 	void SetColorLightFlg(bool _flg)                { m_ColorLightFlg = _flg; }       // 攻撃範囲フラグ
 	//=========================================================================
@@ -79,6 +82,12 @@ public:
 	const float&                 GetEnemyCheckRadius()   const { return m_EnemyCheckRadius; }
 	// 避ける距離
 	const float&                 GetLeaveDist()          const { return m_LeaveDist; }
+	// 出現演出時のエフェクトサイズ
+	const float&                 GetAppealEffectSize()   const { return m_AppealEffectSize; }
+	// 攻撃判定のスフィアサイズ
+	const float&                 GetAttackSphereSize()   const { return m_AttackSphereSize; }
+	// よろける時の移動スピード
+	const float&                 GetStumbleMove()        const { return m_StumbleMove; }
 	// 行動
 	const UINT&                  GetActionType()         const { return m_actionType; }
 	// 地面フラグ
@@ -97,7 +106,13 @@ protected:
 	// 他の敵との距離判定時のスフィアの半径
 	float                              m_EnemyCheckRadius = 0.0f;
 	// 避ける距離
-	float                              m_LeaveDist = 0.0f;
+	float                              m_LeaveDist        = 0.0f;
+	// 出現演出時のエフェクトサイズ
+	float                              m_AppealEffectSize = 1.0f;
+	// 攻撃判定のスフィアサイズ
+	float                              m_AttackSphereSize = 0.0f;
+	// よろける時の移動スピード
+	float                              m_StumbleMove      = 0.0f;
 	// 攻撃範囲フラグ
 	bool                               m_ColorLightFlg    = false;
 	// 地面フラグ
@@ -246,8 +261,6 @@ protected:
 	UINT                       m_actionType       = Action::IdolType;
 	// 次の行動
 	UINT                       m_NextActionType   = m_actionType;
-	// 出現演出時のエフェクトサイズ
-	float                      m_AppealEffectSize = 1.0f;
 
 public:
 	// セッター=====================================================================
@@ -256,13 +269,5 @@ public:
 		m_NextState = _action;
 		m_actionType = _actionType;
 	}
-
-	// 出現演出時のエフェクトサイズ
-	void SetAppealEffectSize(float _size) { m_AppealEffectSize = _size; }
-	//==============================================================================
-
-	// ゲッター=====================================================================
-	// 出現演出時のエフェクトサイズ
-	const float& GetAppealEffectSize()   const { return m_AppealEffectSize; }
 	//==============================================================================
 };

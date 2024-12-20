@@ -48,7 +48,6 @@ public:
 	// 次のステージを生成
 	void CreateStage(std::shared_ptr<StageManager> _stage);
 
-
 	// ImGuiで動的にオブジェクトの設定をする
 	void DebugObject(std::shared_ptr<StageManager> _stage = nullptr);
 

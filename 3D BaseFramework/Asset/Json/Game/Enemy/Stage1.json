@@ -2,8 +2,11 @@
 	"1Wave": {
 		"Bone": {
 			"1Bone": {
+				"AppealEffectSize": 3.0,
 				"ATK": 10,
 				"ATKRange": 5.0,
+				"AttackSphereSize": 1.5,
+				"StumbleMove": 0.1,
 				"Angle": 180.0,
 				"EnemyCheckRadius": 3.0,
 				"ForwardX": 0.0,
@@ -24,8 +27,11 @@
 	"2Wave": {
 		"Bone": {
 			"2Bone": {
+				"AppealEffectSize": 3.0,
 				"ATK": 10,
 				"ATKRange": 5.0,
+				"AttackSphereSize": 1.5,
+				"StumbleMove": 0.1,
 				"Angle": 180.0,
 				"EnemyCheckRadius": 3.0,
 				"ForwardX": 0.0,
@@ -42,8 +48,11 @@
 				"Stamina": 50
 			},
 			"3Bone": {
+				"AppealEffectSize": 3.0,
 				"ATK": 10,
 				"ATKRange": 5.0,
+				"AttackSphereSize": 1.5,
+				"StumbleMove": 0.1,
 				"Angle": 130.31700134277344,
 				"EnemyCheckRadius": 3.0,
 				"ForwardX": 0.0,
@@ -60,8 +69,11 @@
 				"Stamina": 50
 			},
 			"4Bone": {
+				"AppealEffectSize": 3.0,
 				"ATK": 10,
 				"ATKRange": 5.0,
+				"AttackSphereSize": 1.5,
+				"StumbleMove": 0.1,
 				"Angle": 237.8280029296875,
 				"EnemyCheckRadius": 3.0,
 				"ForwardX": 0.0,
