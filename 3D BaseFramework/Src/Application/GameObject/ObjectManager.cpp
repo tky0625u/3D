@@ -1229,12 +1229,12 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					float leaveDist = _alphaList[operation].lock()->GetLeaveDist();
 					ImGui::SliderFloat("LeaveDist", &leaveDist, 0.1f, 20.0f);
 					// 攻撃判定のスフィアサイズ
-					ImGui::Text((const char*)u8"　攻撃判定のスフィアサイズ AttackSphereSize=%.2f", _boneList[operation].lock()->GetAttackSphereSize());
-					float attackSphere = _boneList[operation].lock()->GetAttackSphereSize();
+					ImGui::Text((const char*)u8"　攻撃判定のスフィアサイズ AttackSphereSize=%.2f", _alphaList[operation].lock()->GetAttackSphereSize());
+					float attackSphere = _alphaList[operation].lock()->GetAttackSphereSize();
 					ImGui::SliderFloat("AttackSphereSize", &attackSphere, 0.1f, 5.0f);
 					// よろける時の移動スピード
-					ImGui::Text((const char*)u8"　よろける時の移動スピード StumbleMove=%.2f", _boneList[operation].lock()->GetStumbleMove());
-					float stumbleMove = _boneList[operation].lock()->GetStumbleMove();
+					ImGui::Text((const char*)u8"　よろける時の移動スピード StumbleMove=%.2f", _alphaList[operation].lock()->GetStumbleMove());
+					float stumbleMove = _alphaList[operation].lock()->GetStumbleMove();
 					ImGui::SliderFloat("StumbleMove", &stumbleMove, 0.1f, 1.0f);
 					// 前方方向
 					ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _alphaList[operation].lock()->GetForward().x, _alphaList[operation].lock()->GetForward().y, _alphaList[operation].lock()->GetForward().z);
@@ -1339,12 +1339,12 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					float leaveDist = _golemList[operation].lock()->GetLeaveDist();
 					ImGui::SliderFloat("LeaveDist", &leaveDist, 0.1f, 20.0f);
 					// 攻撃判定のスフィアサイズ
-					ImGui::Text((const char*)u8"　攻撃判定のスフィアサイズ AttackSphereSize=%.2f", _boneList[operation].lock()->GetAttackSphereSize());
-					float attackSphere = _boneList[operation].lock()->GetAttackSphereSize();
+					ImGui::Text((const char*)u8"　攻撃判定のスフィアサイズ AttackSphereSize=%.2f", _golemList[operation].lock()->GetAttackSphereSize());
+					float attackSphere = _golemList[operation].lock()->GetAttackSphereSize();
 					ImGui::SliderFloat("AttackSphereSize", &attackSphere, 0.1f, 5.0f);
 					// よろける時の移動スピード
-					ImGui::Text((const char*)u8"　よろける時の移動スピード StumbleMove=%.2f", _boneList[operation].lock()->GetStumbleMove());
-					float stumbleMove = _boneList[operation].lock()->GetStumbleMove();
+					ImGui::Text((const char*)u8"　よろける時の移動スピード StumbleMove=%.2f", _golemList[operation].lock()->GetStumbleMove());
+					float stumbleMove = _golemList[operation].lock()->GetStumbleMove();
 					ImGui::SliderFloat("StumbleMove", &stumbleMove, 0.1f, 1.0f);
 					// 前方方向
 					ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _golemList[operation].lock()->GetForward().x, _golemList[operation].lock()->GetForward().y, _golemList[operation].lock()->GetForward().z);
@@ -3481,7 +3481,7 @@ std::shared_ptr<Bullet> ObjectManager::SetBulletParam()
 {
 	std::shared_ptr<Bullet> _bullet = std::make_shared<Bullet>();
 	_bullet->Init();
-	_bullet->SetPos(m_golem.lock()->GetBulletPoint().Translation());
+	_bullet->SetPos(m_golem.lock()->GetBulletPoint());
 	_bullet->SetGolem(m_golem.lock());
 	_bullet->SetOwner(m_golem.lock());
 	_bullet->SetObjManager(shared_from_this());

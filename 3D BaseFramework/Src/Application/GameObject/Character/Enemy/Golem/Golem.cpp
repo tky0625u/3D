@@ -1,19 +1,31 @@
 ﻿#include "Golem.h"
+
+// シーンマネジャ
 #include"../../../../Scene/SceneManager.h"
-#include"../EnemyBase.h"
-#include"../../Player/Player.h"
-#include"../../../Camera/GameCamera/GameCamera.h"
+// オブジェクトマネジャ
 #include"../../../ObjectManager.h"
+// 敵基底
+#include"../EnemyBase.h"
+// 弾
 #include"Bullet/Bullet.h"
+// プレイヤー
+#include"../../Player/Player.h"
+// ゲームカメラ
+#include"../../../Camera/GameCamera/GameCamera.h"
 
 void Golem::Action()
 {
+	// 次の行動が決まっていたら
 	if (m_NextState != nullptr)
 	{
+		// 行動
 		m_state = m_NextState;
+		// 行動タイプ
 		m_actionType = m_NextActionType;
+		// 切り替えが終わったらリセット
 		m_NextState.reset();
 	}
+	// 行動更新
 	m_state->StateUpdate(shared_from_this());
 }
 
@@ -23,6 +35,7 @@ void Golem::PostUpdate()
 
 	EnemyBase::PostUpdate();
 
+	// 攻撃範囲表示
 	KdShaderManager::Instance().WriteCBColorEnable(m_ColorLightFlg);
 }
 
@@ -203,7 +216,7 @@ void Golem::Attack1::Update(std::shared_ptr<EnemyBase> owner)
 
 	if (!m_bullet.expired() && m_bullet.lock()->GetSize() < m_bullet.lock()->GetMaxSize())
 	{
-		m_bullet.lock()->SetPos(owner->GetObjManager().lock()->GetGolem().lock()->GetBulletPoint().Translation());
+		m_bullet.lock()->SetPos(owner->GetObjManager().lock()->GetGolem().lock()->GetBulletPoint());
 
 		Math::Vector3 _dir = owner->GetTarget().lock()->GetPos() - owner->GetPos();
 		_dir.y = 0.0f;
@@ -227,9 +240,7 @@ void Golem::Attack1::Exit(std::shared_ptr<EnemyBase> owner)
 	if (owner->GetIsAnimator())
 	{
 		// Idol
-		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
-		owner->SetNextAction(_idol, EnemyBase::Action::IdolType);
-		owner->SetFlow(EnemyBase::Flow::UpdateType);
+		owner->IdolChange();
 		return;
 	}
 }
@@ -309,9 +320,7 @@ void Golem::Attack2::Exit(std::shared_ptr<EnemyBase> owner)
 		owner->SetHitSphereSize(2.0f);
 
 		// Idol
-		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
-		owner->SetNextAction(_idol, EnemyBase::Action::IdolType);
-		owner->SetFlow(EnemyBase::Flow::UpdateType);
+		owner->IdolChange();
 		return;
 	}
 }
@@ -366,9 +375,7 @@ void Golem::Attack3::Update(std::shared_ptr<EnemyBase> owner)
 	if (owner->GetIsAnimator())
 	{
 		// Idol
-		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
-		owner->SetNextAction(_idol, EnemyBase::Action::IdolType);
-		owner->SetFlow(EnemyBase::Flow::UpdateType);
+		owner->IdolChange();
 		return;
 	}
 
@@ -409,7 +416,7 @@ void Golem::Attack3::Exit(std::shared_ptr<EnemyBase> owner)
 void Golem::Attack3::AttackHit(std::shared_ptr<EnemyBase> owner)
 {
 	KdCollider::SphereInfo sphereInfo;
-	sphereInfo.m_sphere.Center = owner->GetObjManager().lock()->GetGolem().lock()->GetQuakePoint().Translation();
+	sphereInfo.m_sphere.Center = owner->GetObjManager().lock()->GetGolem().lock()->GetQuakePoint();
 	sphereInfo.m_sphere.Radius = 50.0f;
 	sphereInfo.m_type = KdCollider::Type::TypeDamage;
 
