@@ -179,7 +179,6 @@
     <ClInclude Include="Src\Application\GameObject\Stage\Wall\Wall.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Enemy\HP\Enemy_HP.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Player\Floor\Floor.h" />
-    <ClInclude Include="Src\Application\GameObject\UI\Player\GameOver\GameOver.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Player\GameStateUI\GameStateUI.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Player\HP\Player_HP.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Player\Stamina\Player_Stamina.h" />
@@ -187,7 +186,6 @@
     <ClInclude Include="Src\Application\GameObject\UI\Title\Cursor\Particle\Particle.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Title\Exit\Exit.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Title\Game\Game.h" />
-    <ClInclude Include="Src\Application\GameObject\UI\Title\Guide\Guide.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Title\Select\Select.h" />
     <ClInclude Include="Src\Application\GameObject\UI\Title\Title\TItle.h" />
     <ClInclude Include="Src\Application\GameObject\UI\UIBase.h" />
@@ -267,7 +265,6 @@
     <ClCompile Include="Src\Application\GameObject\Stage\Wall\Wall.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Enemy\HP\Enemy_HP.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\Floor\Floor.cpp" />
-    <ClCompile Include="Src\Application\GameObject\UI\Player\GameOver\GameOver.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\GameStateUI\GameStateUI.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\HP\Player_HP.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Player\Stamina\Player_Stamina.cpp" />
@@ -275,7 +272,6 @@
     <ClCompile Include="Src\Application\GameObject\UI\Title\Cursor\Particle\Particle.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Title\Exit\Exit.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Title\Game\Game.cpp" />
-    <ClCompile Include="Src\Application\GameObject\UI\Title\Guide\Guide.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Title\Select\Select.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\Title\Title\Title.cpp" />
     <ClCompile Include="Src\Application\GameObject\UI\UIBase.cpp" />

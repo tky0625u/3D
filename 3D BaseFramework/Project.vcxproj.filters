@@ -157,14 +157,8 @@
     <Filter Include="Src\Application\GameObject\UI\Title\Cursor">
       <UniqueIdentifier>{641d724f-e0a8-4858-8b6d-87cf5b85f721}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\GameObject\UI\Title\Guide">
-      <UniqueIdentifier>{ccd76859-06f0-4ff8-8792-2f43d3ac9cfa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Src\Application\GameObject\Camera\GameCamera">
       <UniqueIdentifier>{a70532aa-9b5e-4308-8f79-0a6d219a0072}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\GameObject\UI\Player\GameOver">
-      <UniqueIdentifier>{52949f5a-c768-4fdb-ad67-a8892628cc71}</UniqueIdentifier>
     </Filter>
     <Filter Include="Src\Application\GameObject\Character\Enemy\Golem\Bullet">
       <UniqueIdentifier>{79e66a0c-b4e7-4e25-a100-e5e3c192cae6}</UniqueIdentifier>
@@ -432,9 +426,6 @@
     <ClInclude Include="Src\Application\GameObject\UI\Title\Cursor\Cursor.h">
       <Filter>Src\Application\GameObject\UI\Title\Cursor</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\UI\Title\Guide\Guide.h">
-      <Filter>Src\Application\GameObject\UI\Title\Guide</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Camera\GameCamera\GameCamera.h">
       <Filter>Src\Application\GameObject\Camera\GameCamera</Filter>
     </ClInclude>
@@ -443,9 +434,6 @@
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\StageManager.h">
       <Filter>Src\Application\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameObject\UI\Player\GameOver\GameOver.h">
-      <Filter>Src\Application\GameObject\UI\Player\GameOver</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Character\Enemy\Golem\Bullet\Bullet.h">
       <Filter>Src\Application\GameObject\Character\Enemy\Golem\Bullet</Filter>
@@ -686,9 +674,6 @@
     <ClCompile Include="Src\Application\GameObject\UI\Title\Cursor\Cursor.cpp">
       <Filter>Src\Application\GameObject\UI\Title\Cursor</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\UI\Title\Guide\Guide.cpp">
-      <Filter>Src\Application\GameObject\UI\Title\Guide</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Camera\GameCamera\GameCamera.cpp">
       <Filter>Src\Application\GameObject\Camera\GameCamera</Filter>
     </ClCompile>
@@ -697,9 +682,6 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\StageManager.cpp">
       <Filter>Src\Application\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameObject\UI\Player\GameOver\GameOver.cpp">
-      <Filter>Src\Application\GameObject\UI\Player\GameOver</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Character\Enemy\Golem\Bullet\Bullet.cpp">
       <Filter>Src\Application\GameObject\Character\Enemy\Golem\Bullet</Filter>

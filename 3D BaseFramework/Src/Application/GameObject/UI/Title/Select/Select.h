@@ -1,4 +1,6 @@
 ﻿#pragma once
+
+// UI基底
 #include"../../UIBase.h"
 
 class Select :public UIBase
@@ -11,23 +13,21 @@ public:
 	void DrawSprite()override;
 	void Init()      override;
 
-	void SetMaxSize(float _MaxSize) { m_MaxSize = _MaxSize; }
-	void SetChangeSizeNum(float _ChangeSizeNum) { m_ChangeSizeNum = _ChangeSizeNum; }
-	void SetMaxAlpha(float _MaxAlpha) { m_MaxAlpha = _MaxAlpha; }
-	void SetChangeAlphaNum(float _ChangeAlphaNum) { m_ChangeAlphaNum = _ChangeAlphaNum; }
+	// セッター==============================================================================================
+	void SetAlphaCorrection(float _correction) { m_AlphaCorrection = _correction; } // アルファ値補正値
+	void SetChangeAngle    (float _change)     { m_ChangeAngle = _change; }         // 角度変化量
+	//=======================================================================================================
 
-	const float GetMaxSize()const { return m_MaxSize; }
-	const float GetChangeSizeNum()const { return m_ChangeSizeNum; }
-	const float GetMaxAlpha()const { return m_MaxAlpha; }
-	const float GetChangeAlphaNum()const { return m_ChangeAlphaNum; }
-
+	// ゲッター==============================================================================================
+	const float& GetAlphaCorrection()const { return m_AlphaCorrection; } // アルファ値補正値
+	const float& GetChangeAngle()    const { return m_ChangeAngle; }     // 角度変化量
+	//=======================================================================================================
 
 private:
-	float                      m_MaxSize = 0.0f;
-	float                      m_ChangeSizeNum = 1.0f;
-	float                      m_MaxAlpha = 1.0f;
-	float                      m_ChangeAlphaNum = 1.0f;
-	float                      m_alpha = 1.0f;
-	float                      m_SingleAngle = 0.0f;
+	float m_alpha           = 1.0f;  // アルファ値
+	float m_AlphaCorrection = 0.0f;  // アルファ値補正値
+	float m_SingleAngle     = 0.0f;  // sinカーブ用角度
+	float m_ChangeAngle     = 0.0f;  // 角度変化量
+	bool  m_SelectFlg       = false; // 選択中フラグ
 
 };

@@ -2,14 +2,14 @@
 
 void Particle::Update()
 {
-	if (m_size <= 0)
+	if (m_size <= 0) // サイズが0以下になったら消滅
 	{
 		Expired();
 		return;
 	}
 
-	m_pos += m_move;
-	m_size -= 0.01f;
+	m_pos += m_move; // 移動
+	m_size -= m_SizeChange; // サイズ減少
 }
 
 void Particle::DrawSprite()

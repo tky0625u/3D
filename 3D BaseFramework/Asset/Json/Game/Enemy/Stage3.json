@@ -5,6 +5,8 @@
 				"AppealEffectSize": 5.0,
 				"ATK": 30,
 				"ATKRange": 100.0,
+				"Attack1Angle": 50.0,
+				"Attack2Dist": 50.0,
 				"AttackSphereSize": 3.0,
 				"StumbleMove": 0.1,
 				"Angle": 0.0,

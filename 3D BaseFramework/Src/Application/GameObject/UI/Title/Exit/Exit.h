@@ -1,4 +1,6 @@
 ﻿#pragma once
+
+// UI基底
 #include"../../UIBase.h"
 
 class Exit :public UIBase
@@ -10,8 +12,10 @@ public:
 	void DrawSprite()override;
 	void Init()override;
 
-	const float& GetHeight()const { return m_rect.height * m_size; }
-	const float& GetWidth() const { return m_rect.width * m_size; }
+	// ゲッター================================================================
+	const float& GetHeight()const { return m_rect.height * m_size; } // 縦幅
+	const float& GetWidth() const { return m_rect.width * m_size; }  // 横幅
+	//=========================================================================
 
 private:
 

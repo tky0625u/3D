@@ -10,8 +10,11 @@ public:
 	void DrawLit()override;
 	void Init()override;
 
-	void SetMatrix(Math::Matrix _mat) { m_mWorld = _mat; }
+	// セッター======================================================
+	void SetMatrix(Math::Matrix _mat) { m_mWorld = _mat; } // 行列
+	//===============================================================
 
 private:
+	// モデル
 	std::shared_ptr<KdModelWork> m_model = nullptr;
 };

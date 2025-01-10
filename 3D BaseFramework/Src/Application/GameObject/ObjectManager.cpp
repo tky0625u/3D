@@ -37,8 +37,6 @@
 #include"UI/Title/Game/Game.h"
 //終了文字
 #include"UI/Title/Exit/Exit.h"
-//タイトルガイド
-#include"UI/Title/Guide/Guide.h"
 //カーソル
 #include"UI/Title/Cursor/Cursor.h"
 //セレクト
@@ -49,8 +47,6 @@
 #include"UI/Player/HP/Player_HP.h"
 //プレイヤースタミナ
 #include"UI/Player/Stamina/Player_Stamina.h"
-//ロックオン
-#include"UI/Player/LockON/LockON.h"
 //階数
 #include"UI/Player/Floor/Floor.h"
 //テレポート
@@ -464,31 +460,25 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				{
 					std::shared_ptr<Select> _select = m_select.lock();
 
-					// 最大サイズ
-					ImGui::Text((const char*)u8"　最大サイズ 　MaxSize=%.2f", _select->GetMaxSize());
-					float _SelectMaxSize = _select->GetMaxSize();
-					ImGui::SliderFloat("MaxSize", &_SelectMaxSize, 0.01, 1);
+					// サイズ
+					ImGui::Text((const char*)u8"　サイズ 　Size=%.2f", _select->GetSize());
+					float _SelectSize = _select->GetSize();
+					ImGui::SliderFloat("Size", &_SelectSize, 0.01f, 1.0f);
 
-					// 大きさ変化量
-					ImGui::Text((const char*)u8"　大きさ変化量 　ChangeSizeNum=%.2f", _select->GetChangeSizeNum());
-					float _SelectChangeSize = _select->GetChangeSizeNum();
-					ImGui::SliderFloat("ChangeSize", &_SelectChangeSize, 0.01, 1);
+					// アルファ値補正値
+					ImGui::Text((const char*)u8"　アルファ値補正値 　AlphaCorrection=%.2f", _select->GetAlphaCorrection());
+					float _SelectAlphaCorrection = _select->GetAlphaCorrection();
+					ImGui::SliderFloat("AlphaCorrection", &_SelectAlphaCorrection, 0.01f, 2.0f);
 
-					// 最大アルファ値
-					ImGui::Text((const char*)u8"　最大アルファ値 　MaxAlpha=%.2f", _select->GetMaxAlpha());
-					float _SelectMaxAlpha = _select->GetMaxAlpha();
-					ImGui::SliderFloat("MaxAlpha", &_SelectMaxAlpha, 0.01, 1);
-
-					// アルファ値変化量
-					ImGui::Text((const char*)u8"　アルファ値変化量 　ChangeAlphaNum=%.2f", _select->GetChangeAlphaNum());
-					float _SelectChangeAlpha = _select->GetChangeAlphaNum();
-					ImGui::SliderFloat("ChangeAlpha", &_SelectChangeAlpha, 0.01, 1);
+					// 角度変化量
+					ImGui::Text((const char*)u8"　角度変化量 　ChangeAngle=%.2f", _select->GetChangeAngle());
+					float _SelectChangeAngle = _select->GetChangeAngle();
+					ImGui::SliderFloat("ChangeAngle", &_SelectChangeAngle, 0.01f, 360.0f);
 
 					// セット
-					_select->SetMaxSize(_SelectMaxSize);
-					_select->SetChangeSizeNum(_SelectChangeSize);
-					_select->SetMaxAlpha(_SelectMaxAlpha);
-					_select->SetChangeAlphaNum(_SelectChangeAlpha);
+					_select->SetSize(_SelectSize);
+					_select->SetAlphaCorrection(_SelectAlphaCorrection);
+					_select->SetChangeAngle(_SelectChangeAngle);
 				}
 
 				ImGui::TreePop();
@@ -514,6 +504,76 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 
 					// セット
 					_cursor->SetSize(_size);
+
+					// パーティクル
+					if (ImGui::TreeNode("Particle"))
+					{
+						// 保存
+						if (ImGui::Button((const char*)u8"Particle保存"))
+						{
+							CursorParticleWrite();
+						}
+
+						// 最大数
+						ImGui::Text((const char*)u8"　最大数 　Num=%d", _cursor->GetParticleParam().ParticleNum);
+						int _num=_cursor->GetParticleParam().ParticleNum;
+						ImGui::SliderInt("Num", &_num, 1, 100);
+
+						// X軸のランダムの数
+						ImGui::Text((const char*)u8"　 X軸のランダムの数　XNum=%d", _cursor->GetParticleParam().MoveXNum);
+						int _xNum = _cursor->GetParticleParam().MoveXNum;
+						ImGui::SliderInt("XNum", &_xNum, 1, 1000);
+
+						// Y軸のランダムの数
+						ImGui::Text((const char*)u8"　Y軸のランダムの数 　YNum=%d", _cursor->GetParticleParam().MoveYNum);
+						int _yNum = _cursor->GetParticleParam().MoveYNum;
+						ImGui::SliderInt("YNum", &_yNum, 1, 1000);
+
+						// 移動量X軸の最低値
+						ImGui::Text((const char*)u8"　移動量X軸の最低値 　MoveMinX=%.2f", _cursor->GetParticleParam().MinMove.x);
+						float _minMoveX = _cursor->GetParticleParam().MinMove.x;
+						ImGui::SliderFloat("MoveMinX", &_minMoveX, 1, 1000);
+
+						// 移動量Y軸の最低値
+						ImGui::Text((const char*)u8"　移動量Y軸の最低値 　MoveMinY=%.2f", _cursor->GetParticleParam().MinMove.y);
+						float _minMoveY = _cursor->GetParticleParam().MinMove.y;
+						ImGui::SliderFloat("MoveMinY", &_minMoveY, 1, 1000);
+
+						// 移動量X軸の補正値
+						ImGui::Text((const char*)u8"　移動量X軸の補正値 　MoveCorrectionX=%.2f", _cursor->GetParticleParam().MoveCorrection.x);
+						float _moveCorrectionX = _cursor->GetParticleParam().MoveCorrection.x;
+						ImGui::SliderFloat("MoveCorrectionX", &_moveCorrectionX, 0.001f, 1.0f);
+
+						// 移動量Y軸の補正値
+						ImGui::Text((const char*)u8"　移動量Y軸の補正値 　MoveCorrectionY=%.2f", _cursor->GetParticleParam().MoveCorrection.y);
+						float _moveCorrectionY = _cursor->GetParticleParam().MoveCorrection.y;
+						ImGui::SliderFloat("MoveCorrectionY", &_moveCorrectionY, 0.001f, 1.0f);
+
+						// サイズのランダムの数
+						ImGui::Text((const char*)u8"　サイズのランダムの数 　SizeNum=%d", _cursor->GetParticleParam().SizeNum);
+						int _sizeNum = _cursor->GetParticleParam().SizeNum;
+						ImGui::SliderInt("SizeNum", &_sizeNum, 1, 100);
+
+						// サイズ最低値
+						ImGui::Text((const char*)u8"　サイズ最低値 　MinSize=%.2f", _cursor->GetParticleParam().MinSize);
+						float _sizeMin = _cursor->GetParticleParam().MinSize;
+						ImGui::SliderFloat("MinSize", &_sizeMin, 0.001f, 10.0f);
+
+						// サイズ補正値
+						ImGui::Text((const char*)u8"　サイズ補正値　SizeCorrection=%.2f", _cursor->GetParticleParam().SizeCorrection);
+						float _sizeCorrection = _cursor->GetParticleParam().SizeCorrection;
+						ImGui::SliderFloat("SizeCorrection", &_sizeCorrection, 0.001f, 10.0f);
+
+						// サイズ変化量
+						ImGui::Text((const char*)u8"　サイズ変化量 　SizeChange=%.2f", _cursor->GetParticleParam().SizeChange);
+						float _sizeChange = _cursor->GetParticleParam().SizeChange;
+						ImGui::SliderFloat("SizeChange", &_sizeChange, 0.001f, 10.0f);
+
+						// セット
+						_cursor->SetParticleParam(_num, _xNum, _yNum, Math::Vector2{ _minMoveX,_minMoveY }, Math::Vector2{ _moveCorrectionX,_moveCorrectionY }, _sizeNum, _sizeMin, _sizeCorrection, _sizeChange);
+
+						ImGui::TreePop();
+					}
 				}
 
 				ImGui::TreePop();
@@ -847,9 +907,21 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 							float _HPSize = _hp->GetSize();
 							ImGui::SliderFloat("Size", &_HPSize, 0.01f, 1.0f);
 
+							// 減少ゲージ減少開始時間
+							ImGui::Text((const char*)u8"　減少ゲージ減少開始時間　DownTime=%d", _hp->GetDownTime());
+							int _DownTime = _hp->GetDownTime();
+							ImGui::SliderInt("DownTime", &_DownTime, 1, 300);
+
+							// 減少ゲージ変化量
+							ImGui::Text((const char*)u8"　減少ゲージ変化量　DownChange=%.2f", _hp->GetDownChange());
+							float _DownChange = _hp->GetDownChange();
+							ImGui::SliderFloat("DownChange", &_DownChange, 0.01f, 100.0f);
+
 							// セット
 							_hp->SetPos(_HPPos);
 							_hp->SetSize(_HPSize);
+							_hp->SetDownTime(_DownTime);
+							_hp->SetDownChange(_DownChange);
 						}
 
 						ImGui::TreePop();
@@ -972,8 +1044,6 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 			std::vector<std::weak_ptr<EnemyBase>> _boneList;
 			// 骨色違い
 			std::vector<std::weak_ptr<EnemyBase>> _alphaList;
-			// ゴーレム
-			std::vector<std::weak_ptr<EnemyBase>> _golemList;
 			// リストに格納 オブジェクトの名前で判断
 			for (auto& enemy : SceneManager::Instance().GetEnemyList())
 			{
@@ -984,10 +1054,6 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				if (enemy->GetName() == "BoneAlpha") // 骨色違い
 				{
 					_alphaList.push_back(enemy);
-				}
-				if (enemy->GetName() == "Golem") // ゴーレム
-				{
-					_golemList.push_back(enemy);
 				}
 			}
 
@@ -1273,99 +1339,93 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					AddGolem();
 				}
 
-				// 設定したい敵
-				static int operation = -1;
-				if (!SceneManager::Instance().m_stop)operation = -1;
-
-				// ゴーレムの数
-				ImGui::Text((const char*)u8"Golem:%d体", _golemList.size());
-				for (int golem = 0; golem < _golemList.size(); ++golem)
+				if (!m_golem.expired())
 				{
-					if (ImGui::Button(std::to_string(golem + 1).c_str()))
-					{
-						operation = golem;
-					}
-				}
-
-				if (operation != -1)
-				{
-					ImGui::Text((const char*)u8"%d体目", operation + 1);
 					// 体力
-					ImGui::Text((const char*)u8"　体力 　　HP=%d", _golemList[operation].lock()->GetParam().Hp);
-					int hp = _golemList[operation].lock()->GetParam().Hp;
+					ImGui::Text((const char*)u8"　体力 　　HP=%d", m_golem.lock()->GetParam().Hp);
+					int hp = m_golem.lock()->GetParam().Hp;
 					ImGui::SliderInt("HP", &hp, 1, 100);
 					// 攻撃力
-					ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", _golemList[operation].lock()->GetParam().Atk);
-					int atk = _golemList[operation].lock()->GetParam().Atk;
+					ImGui::Text((const char*)u8"　攻撃力 　ATK=%d", m_golem.lock()->GetParam().Atk);
+					int atk = m_golem.lock()->GetParam().Atk;
 					ImGui::SliderInt("ATK", &atk, 1, 100);
 					// 素早さ
-					ImGui::Text((const char*)u8"　素早さ 　SP=%.2f", _golemList[operation].lock()->GetParam().Sp);
-					float speed = _golemList[operation].lock()->GetParam().Sp;
+					ImGui::Text((const char*)u8"　素早さ 　SP=%.2f", m_golem.lock()->GetParam().Sp);
+					float speed = m_golem.lock()->GetParam().Sp;
 					ImGui::SliderFloat("Speed", &speed, 1, 100);
 					// スタミナ
-					ImGui::Text((const char*)u8"　スタミナ SM=%d", _golemList[operation].lock()->GetParam().Sm);
-					int stamina = _golemList[operation].lock()->GetParam().Sm;
+					ImGui::Text((const char*)u8"　スタミナ SM=%d", m_golem.lock()->GetParam().Sm);
+					int stamina = m_golem.lock()->GetParam().Sm;
 					ImGui::SliderInt("Stamina", &stamina, 1, 100);
 					// 位置
-					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", _golemList[operation].lock()->GetPos().x, _golemList[operation].lock()->GetPos().y, _golemList[operation].lock()->GetPos().z);
-					Math::Vector3 pos = _golemList[operation].lock()->GetPos();
+					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", m_golem.lock()->GetPos().x, m_golem.lock()->GetPos().y, m_golem.lock()->GetPos().z);
+					Math::Vector3 pos = m_golem.lock()->GetPos();
 					ImGui::SliderFloat("PosX", &pos.x, -100, 100);
 					ImGui::SliderFloat("PosY", &pos.y, 0, 400);
 					ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
 					// 方向
-					ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", _golemList[operation].lock()->GetDir().x, _golemList[operation].lock()->GetDir().y, _golemList[operation].lock()->GetDir().z);
+					ImGui::Text((const char*)u8"　方向 　　x=%.2f,y=%.2f,z=%.2f", m_golem.lock()->GetDir().x, m_golem.lock()->GetDir().y, m_golem.lock()->GetDir().z);
 					// 角度
-					ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", _golemList[operation].lock()->GetAngle());
-					Math::Vector3 angle = _golemList[operation].lock()->GetAngle();
+					ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", m_golem.lock()->GetAngle());
+					Math::Vector3 angle = m_golem.lock()->GetAngle();
 					ImGui::SliderFloat("Angle", &angle.y, 0, 360);
 					// 大きさ
-					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _golemList[operation].lock()->GetSize());
-					float size = _golemList[operation].lock()->GetSize();
+					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", m_golem.lock()->GetSize());
+					float size = m_golem.lock()->GetSize();
 					ImGui::SliderFloat("Size", &size, 0.01, 1.5);
 					// 出現演出時のエフェクトサイズ
-					ImGui::Text((const char*)u8"　出現演出時のエフェクトサイズ 　AppealSize=%.2f", _golemList[operation].lock()->GetAppealEffectSize());
-					float appealSize = _golemList[operation].lock()->GetAppealEffectSize();
+					ImGui::Text((const char*)u8"　出現演出時のエフェクトサイズ 　AppealSize=%.2f", m_golem.lock()->GetAppealEffectSize());
+					float appealSize = m_golem.lock()->GetAppealEffectSize();
 					ImGui::SliderFloat("AppealSize", &appealSize, 0.1f, 10.0f);
 					// 攻撃範囲
-					ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", _golemList[operation].lock()->GetParam().AtkRange);
-					float range = _golemList[operation].lock()->GetParam().AtkRange;
+					ImGui::Text((const char*)u8"　攻撃範囲 ATKRange=%.2f", m_golem.lock()->GetParam().AtkRange);
+					float range = m_golem.lock()->GetParam().AtkRange;
 					ImGui::SliderFloat("ATKRange", &range, 1, 100);
+					// 弾攻撃の射程角度
+					ImGui::Text((const char*)u8"　弾攻撃の射程角度 Attack1Angle=%.2f", m_golem.lock()->GetAttack1Angle());
+					float attack1Ang = m_golem.lock()->GetAttack1Angle();
+					ImGui::SliderFloat("Attack1Angle", &attack1Ang, 0.1f, 360);
+					// ジャンプ攻撃の最短距離
+					ImGui::Text((const char*)u8"　ジャンプ攻撃の最短距離 Attack2Dist=%.2f", m_golem.lock()->GetAttack2Dist());
+					float attack2Dist = m_golem.lock()->GetAttack2Dist();
+					ImGui::SliderFloat("Attack2Dist", &attack2Dist, 0.1f, 100);
 					// 他の敵との距離判定時のスフィアの半径
-					ImGui::Text((const char*)u8"　他の敵との距離判定時のスフィアの半径 EnemyCheckRadius=%.2f", _golemList[operation].lock()->GetEnemyCheckRadius());
-					float radius = _golemList[operation].lock()->GetEnemyCheckRadius();
+					ImGui::Text((const char*)u8"　他の敵との距離判定時のスフィアの半径 EnemyCheckRadius=%.2f", m_golem.lock()->GetEnemyCheckRadius());
+					float radius = m_golem.lock()->GetEnemyCheckRadius();
 					ImGui::SliderFloat("EnemyCheckRadius", &radius, 0.1f, 10.0f);
 					// 避ける距離
-					ImGui::Text((const char*)u8"　避ける距離 LeaveDist=%.2f", _golemList[operation].lock()->GetLeaveDist());
-					float leaveDist = _golemList[operation].lock()->GetLeaveDist();
+					ImGui::Text((const char*)u8"　避ける距離 LeaveDist=%.2f", m_golem.lock()->GetLeaveDist());
+					float leaveDist = m_golem.lock()->GetLeaveDist();
 					ImGui::SliderFloat("LeaveDist", &leaveDist, 0.1f, 20.0f);
 					// 攻撃判定のスフィアサイズ
-					ImGui::Text((const char*)u8"　攻撃判定のスフィアサイズ AttackSphereSize=%.2f", _golemList[operation].lock()->GetAttackSphereSize());
-					float attackSphere = _golemList[operation].lock()->GetAttackSphereSize();
+					ImGui::Text((const char*)u8"　攻撃判定のスフィアサイズ AttackSphereSize=%.2f", m_golem.lock()->GetAttackSphereSize());
+					float attackSphere = m_golem.lock()->GetAttackSphereSize();
 					ImGui::SliderFloat("AttackSphereSize", &attackSphere, 0.1f, 5.0f);
 					// よろける時の移動スピード
-					ImGui::Text((const char*)u8"　よろける時の移動スピード StumbleMove=%.2f", _golemList[operation].lock()->GetStumbleMove());
-					float stumbleMove = _golemList[operation].lock()->GetStumbleMove();
+					ImGui::Text((const char*)u8"　よろける時の移動スピード StumbleMove=%.2f", m_golem.lock()->GetStumbleMove());
+					float stumbleMove = m_golem.lock()->GetStumbleMove();
 					ImGui::SliderFloat("StumbleMove", &stumbleMove, 0.1f, 1.0f);
 					// 前方方向
-					ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _golemList[operation].lock()->GetForward().x, _golemList[operation].lock()->GetForward().y, _golemList[operation].lock()->GetForward().z);
+					ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", m_golem.lock()->GetForward().x, m_golem.lock()->GetForward().y, m_golem.lock()->GetForward().z);
 
 					// セット
-					_golemList[operation].lock()->SetParam(hp, atk, speed, stamina);
-					_golemList[operation].lock()->SetPos(pos);
-					_golemList[operation].lock()->SetAngle(angle);
-					_golemList[operation].lock()->SetSize(size);
-					_golemList[operation].lock()->SetAppealEffectSize(appealSize);
-					_golemList[operation].lock()->SetAtkRange(range);
-					_golemList[operation].lock()->SetEnemyCheckRadius(radius);
-					_golemList[operation].lock()->SetLeaveDist(leaveDist);
-					_golemList[operation].lock()->SetAttackSphereSize(attackSphere);
-					_golemList[operation].lock()->SetStumbleMove(stumbleMove);
+					m_golem.lock()->SetParam(hp, atk, speed, stamina);
+					m_golem.lock()->SetPos(pos);
+					m_golem.lock()->SetAngle(angle);
+					m_golem.lock()->SetSize(size);
+					m_golem.lock()->SetAppealEffectSize(appealSize);
+					m_golem.lock()->SetAtkRange(range);
+					m_golem.lock()->SetAttack1Angle(attack1Ang);
+					m_golem.lock()->SetAttack2Dist(attack2Dist);
+					m_golem.lock()->SetEnemyCheckRadius(radius);
+					m_golem.lock()->SetLeaveDist(leaveDist);
+					m_golem.lock()->SetAttackSphereSize(attackSphere);
+					m_golem.lock()->SetStumbleMove(stumbleMove);
 
 					// 消滅
 					if (ImGui::Button((const char*)u8"消滅"))
 					{
-						_golemList[operation].lock()->Expired();
-						operation = -1;
+						m_golem.lock()->Expired();
 					}
 
 					ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
@@ -1408,10 +1468,22 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 							float _HPSize = _hp->GetSize();
 							ImGui::SliderFloat("Size", &_HPSize, 0.01f, 1.0f);
 
+							// 減少ゲージ減少開始時間
+							ImGui::Text((const char*)u8"　減少ゲージ減少開始時間　DownTime=%d", _hp->GetDownTime());
+							int _DownTime = _hp->GetDownTime();
+							ImGui::SliderInt("DownTime", &_DownTime, 1, 300);
+
+							// 減少ゲージ変化量
+							ImGui::Text((const char*)u8"　減少ゲージ変化量　DownChange=%.2f", _hp->GetDownChange());
+							float _DownChange = _hp->GetDownChange();
+							ImGui::SliderFloat("DownChange", &_DownChange, 0.01f, 100.0f);
+
 							// セット
 							_hp->SetPos(_HPPos);
 							_hp->SetPosXCorrection(_HPPosCorrection);
 							_hp->SetSize(_HPSize);
+							_hp->SetDownTime(_DownTime);
+							_hp->SetDownChange(_DownChange);
 						}
 					}
 
@@ -1430,98 +1502,34 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 			// 保存
 			if (ImGui::Button((const char*)u8"Object保存")) ObjectWrite(("Asset/Json/") + _filePath + ("/Object/Object.json"));
 			
-			// 設定したいオブジェクト
-			static int Goperation = -1;
-			static int Coperation = -1;
-			static int Woperation = -1;
-
-			// オブジェクトリスト
-			// 地面
-			std::vector<std::weak_ptr<KdGameObject>> groundList;
-			// 魔法陣の台
-			std::vector<std::weak_ptr<KdGameObject>> circleList;
-			// 魔法陣
-			std::vector<std::weak_ptr<KdGameObject>> magicList;
-			// 壁
-			std::vector<std::weak_ptr<KdGameObject>> wallList;
-			// 空
-			std::vector<std::weak_ptr<KdGameObject>> skyboxList;
-			
-			// それぞれのリストの格納
-			for (auto& obj : SceneManager::Instance().GetObjList())
-			{
-				if (obj->GetName() == "Ground")      // 地面
-				{
-					groundList.push_back(obj);
-				}
-				else if (obj->GetName() == "Circle") // 魔法陣の台
-				{
-					circleList.push_back(obj);
-				}
-				else if (obj->GetName() == "Magic")  // 魔法陣
-				{
-					magicList.push_back(obj);
-				}
-				else if (obj->GetName() == "Wall")   // 壁 
-				{
-					wallList.push_back(obj);
-				}
-				else if (obj->GetName() == "SkyBox") // 空
-				{
-					skyboxList.push_back(obj);
-				}
-			}
-
 			// 地面
 			if (ImGui::TreeNode("Ground"))
 			{
 				// 生成
 				if (ImGui::Button((const char*)u8"Ground追加")) AddGround();
+
+				// 位置
+				ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", m_ground.lock()->GetPos().x, m_ground.lock()->GetPos().y, m_ground.lock()->GetPos().z);
+				Math::Vector3 pos = m_ground.lock()->GetPos();
+				ImGui::SliderFloat("PosX", &pos.x, -100, 100);
+				ImGui::SliderFloat("PosY", &pos.y, 0, 500);
+				ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
+				// 角度
+				ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", m_ground.lock()->GetAngle());
+				Math::Vector3 angle = m_ground.lock()->GetAngle();
+				ImGui::SliderFloat("Angle", &angle.y, 0, 360);
+				// 大きさ
+				ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", m_ground.lock()->GetSize());
+				float size = m_ground.lock()->GetSize();
+				ImGui::SliderFloat("Size", &size, 1, 100);
+
+				// セット
+				m_ground.lock()->SetPos(pos);
+				m_ground.lock()->SetSize(size);
+				m_ground.lock()->SetAngle(angle);
 				
-				// 設定したいオブジェクト
-				for (int g = 0; g < groundList.size(); ++g)
-				{
-					if (ImGui::Button(std::to_string(g + 1).c_str()))Goperation = g;
-				}
+				ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
-				if (Goperation != -1)
-				{
-					ImGui::Text((const char*)u8"%d個目", Goperation + 1);
-					// 位置
-					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", groundList[Goperation].lock()->GetPos().x, groundList[Goperation].lock()->GetPos().y, groundList[Goperation].lock()->GetPos().z);
-					Math::Vector3 pos = groundList[Goperation].lock()->GetPos();
-					ImGui::SliderFloat("PosX", &pos.x, -100, 100);
-					ImGui::SliderFloat("PosY", &pos.y, 0, 500);
-					ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
-					// 角度
-					ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", groundList[Goperation].lock()->GetAngle());
-					Math::Vector3 angle = groundList[Goperation].lock()->GetAngle();
-					ImGui::SliderFloat("Angle", &angle.y, 0, 360);
-					// 大きさ
-					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", groundList[Goperation].lock()->GetSize());
-					float size = groundList[Goperation].lock()->GetSize();
-					ImGui::SliderFloat("Size", &size, 1, 100);
-
-					// セット
-					groundList[Goperation].lock()->SetPos(pos);
-					groundList[Goperation].lock()->SetSize(size);
-					groundList[Goperation].lock()->SetAngle(angle);
-
-					// 消滅
-					if (ImGui::Button((const char*)u8"消滅"))
-					{
-						groundList[Goperation].lock()->Expired();
-						if (circleList.size() == groundList.size())
-						{
-							circleList[Goperation].lock()->Expired();
-							magicList[Goperation].lock()->Expired();
-						}
-						Goperation = -1;
-						Coperation = -1;
-					}
-
-					ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-				}
 				ImGui::TreePop();
 			}
 
@@ -1529,83 +1537,61 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 			if (ImGui::TreeNode("Circle"))
 			{
 				// 生成
-				if (ImGui::Button((const char*)u8"Circle追加"))
+				if (ImGui::Button((const char*)u8"Circle追加")) AddCircle();
+
+				// 角度
+				ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", m_circle.lock()->GetAngle());
+				Math::Vector3 angle = m_circle.lock()->GetAngle();
+				ImGui::SliderFloat("Angle", &angle.y, 0, 360);
+				// 大きさ
+				ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", m_circle.lock()->GetSize());
+				float size = m_circle.lock()->GetSize();
+				ImGui::SliderFloat("Size", &size, 1, 100);
+				// 位置
+				Math::Vector3 pos;
+				ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", m_circle.lock()->GetPos().x, m_circle.lock()->GetPos().y, m_circle.lock()->GetPos().z);
+				pos = m_circle.lock()->GetPos();
+				if (m_ground.expired() == false)pos.y = m_ground.lock()->GetPos().y;
+				ImGui::SliderFloat("PosX", &pos.x, -100, 100);
+				ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
+
+				// セット
+				m_circle.lock()->SetSize(size);
+				m_circle.lock()->SetAngle(angle);
+				m_circle.lock()->SetPos(pos);
+
+
+				ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+				// 魔法陣
+				if (ImGui::TreeNode("Magic"))
 				{
-					if (groundList.size() > circleList.size()) AddCircle();
-				}
-
-				if (circleList.size() != 0)
-				{
-					// 角度
-					ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", circleList[0].lock()->GetAngle());
-					Math::Vector3 angle = circleList[0].lock()->GetAngle();
-					ImGui::SliderFloat("Angle", &angle.y, 0, 360);
-					// 大きさ
-					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", circleList[0].lock()->GetSize());
-					float size = circleList[0].lock()->GetSize();
-					ImGui::SliderFloat("Size", &size, 1, 100);
-
-					for (int c = 0; c < circleList.size(); ++c)
+					if (m_magic.expired() == false)
 					{
-						// 角度と大きさは全て共通
-						circleList[c].lock()->SetSize(size);
-						circleList[c].lock()->SetAngle(angle);
+						// 大きさ
+						ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", m_magic.lock()->GetSize());
+						float size = m_magic.lock()->GetSize();
+						ImGui::SliderFloat("Size", &size, 1, 100);
 
-						// 設定したいオブジェクト
-						if (ImGui::Button(std::to_string(c + 1).c_str()))Coperation = c;
+						// RGB変化量
+						ImGui::Text((const char*)u8"　RGB変化量 　RGBChange=%.2f", m_magic.lock()->GetRGBChange());
+						float rgb = m_magic.lock()->GetRGBChange();
+						ImGui::SliderFloat("RGB", &rgb, 0.001f, 100.0f);
+
+						// 角度変化量
+						ImGui::Text((const char*)u8"　角度変化量 　ChangeAngle=%.2f", m_magic.lock()->GetChangeAngle());
+						float angle = m_magic.lock()->GetChangeAngle();
+						ImGui::SliderFloat("ChangeAngle", &angle, 0.001f, 360.0f);
+
+
+						// セット
+						m_magic.lock()->SetSize(size);
+						m_magic.lock()->SetRGBChange(rgb);
+						m_magic.lock()->SetChangeAngle(angle);
+
 					}
 
-					if (Coperation != -1)
-					{
-						if (circleList[Coperation].expired() == false)
-						{
-							ImGui::Text((const char*)u8"%d個目", Coperation + 1);
-							// 位置
-							Math::Vector3 pos;
-							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", circleList[Coperation].lock()->GetPos().x, circleList[Coperation].lock()->GetPos().y, circleList[Coperation].lock()->GetPos().z);
-							pos = circleList[Coperation].lock()->GetPos();
-							if (groundList[Coperation].expired() == false)pos.y = groundList[Coperation].lock()->GetPos().y;
-							ImGui::SliderFloat("PosX", &pos.x, -100, 100);
-							ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
-
-							// セット
-							circleList[Coperation].lock()->SetPos(pos);
-
-							// 消滅
-							if (ImGui::Button((const char*)u8"消滅"))
-							{
-								circleList[Coperation].lock()->Expired();
-								magicList[Coperation].lock()->Expired(); // 魔法陣も消滅
-								Coperation = -1;
-							}
-						}
-					}
-
-
-					ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-
-					// 魔法陣
-					if (ImGui::TreeNode("Magic"))
-					{
-						float size = 0.0f;
-						if (magicList[0].expired() == false)
-						{
-							// 大きさ
-							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", magicList[0].lock()->GetSize());
-							size = magicList[0].lock()->GetSize();
-							ImGui::SliderFloat("Size", &size, 1, 100);
-						}
-
-						for (int m = 0; m < magicList.size(); ++m)
-						{
-							// セット
-							if (circleList[m].expired() == false)
-							{
-								magicList[m].lock()->SetSize(size);
-							}
-						}
-						ImGui::TreePop();
-					}
+					ImGui::TreePop();
 				}
 
 				ImGui::TreePop();
@@ -1616,44 +1602,29 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 			{
 				// 生成
 				if (ImGui::Button((const char*)u8"Wall追加")) AddWall();
-				// 設定したいオブジェクト
-				for (int w = 0; w < wallList.size(); ++w)
-				{
-					if (ImGui::Button(std::to_string(w + 1).c_str()))Woperation = w;
-				}
 
-				if (Woperation != -1)
-				{
-					ImGui::Text((const char*)u8"%d個目", Woperation + 1);
-					// 位置
-					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", wallList[Woperation].lock()->GetPos().x, wallList[Woperation].lock()->GetPos().y, wallList[Woperation].lock()->GetPos().z);
-					Math::Vector3 pos = wallList[Woperation].lock()->GetPos();
-					ImGui::SliderFloat("PosX", &pos.x, -100, 100);
-					ImGui::SliderFloat("PosY", &pos.y, 0, 500);
-					ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
-					// 角度
-					ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", wallList[Woperation].lock()->GetAngle());
-					Math::Vector3 angle = wallList[Woperation].lock()->GetAngle();
-					ImGui::SliderFloat("Angle", &angle.y, 0, 360);
-					// 大きさ
-					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", wallList[Woperation].lock()->GetSize());
-					float size = wallList[Woperation].lock()->GetSize();
-					ImGui::SliderFloat("Size", &size, 1, 100);
+				// 位置
+				ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", m_wall.lock()->GetPos().x, m_wall.lock()->GetPos().y, m_wall.lock()->GetPos().z);
+				Math::Vector3 pos = m_wall.lock()->GetPos();
+				ImGui::SliderFloat("PosX", &pos.x, -100, 100);
+				ImGui::SliderFloat("PosY", &pos.y, 0, 500);
+				ImGui::SliderFloat("PosZ", &pos.z, -100, 100);
+				// 角度
+				ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", m_wall.lock()->GetAngle());
+				Math::Vector3 angle = m_wall.lock()->GetAngle();
+				ImGui::SliderFloat("Angle", &angle.y, 0, 360);
+				// 大きさ
+				ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", m_wall.lock()->GetSize());
+				float size = m_wall.lock()->GetSize();
+				ImGui::SliderFloat("Size", &size, 1, 100);
 
-					// セット
-					wallList[Woperation].lock()->SetPos(pos);
-					wallList[Woperation].lock()->SetSize(size);
-					wallList[Woperation].lock()->SetAngle(angle);
-
-					// 消滅
-					if (ImGui::Button((const char*)u8"消滅"))
-					{
-						wallList[Woperation].lock()->Expired();
-						Woperation = -1;
-					}
-
-					ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-				}
+				// セット
+				m_wall.lock()->SetPos(pos);
+				m_wall.lock()->SetSize(size);
+				m_wall.lock()->SetAngle(angle);
+				
+				ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+				
 				ImGui::TreePop();
 			}
 
@@ -1663,30 +1634,28 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				// 生成
 				if (ImGui::Button((const char*)u8"SkyBox追加")) AddSkyBox();
 
-				if (skyboxList.size() > 0)
-				{
-					// 位置
-					ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", skyboxList[0].lock()->GetPos().x, skyboxList[0].lock()->GetPos().y, skyboxList[0].lock()->GetPos().z);
-					Math::Vector3 pos = skyboxList[0].lock()->GetPos();
-					ImGui::SliderFloat("PosX", &pos.x, -500, 500);
-					ImGui::SliderFloat("PosY", &pos.y, 0, 500);
-					ImGui::SliderFloat("PosZ", &pos.z, -500, 500);
-					// 角度
-					ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", skyboxList[0].lock()->GetAngle());
-					Math::Vector3 angle = skyboxList[0].lock()->GetAngle();
-					ImGui::SliderFloat("Angle", &angle.y, 0, 360);
-					// 大きさ
-					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", skyboxList[0].lock()->GetSize());
-					float size = skyboxList[0].lock()->GetSize();
-					ImGui::SliderFloat("Size", &size, 1, 100);
+				// 位置
+				ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f,z=%.2f", m_skybox.lock()->GetPos().x, m_skybox.lock()->GetPos().y, m_skybox.lock()->GetPos().z);
+				Math::Vector3 pos = m_skybox.lock()->GetPos();
+				ImGui::SliderFloat("PosX", &pos.x, -500, 500);
+				ImGui::SliderFloat("PosY", &pos.y, 0, 500);
+				ImGui::SliderFloat("PosZ", &pos.z, -500, 500);
+				// 角度
+				ImGui::Text((const char*)u8"　角度 　　Angle=%.2f", m_skybox.lock()->GetAngle());
+				Math::Vector3 angle = m_skybox.lock()->GetAngle();
+				ImGui::SliderFloat("Angle", &angle.y, 0, 360);
+				// 大きさ
+				ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", m_skybox.lock()->GetSize());
+				float size = m_skybox.lock()->GetSize();
+				ImGui::SliderFloat("Size", &size, 1, 100);
 
-					// セット
-					skyboxList[0].lock()->SetPos(pos);
-					skyboxList[0].lock()->SetSize(size);
-					skyboxList[0].lock()->SetAngle(angle);
+				// セット
+				m_skybox.lock()->SetPos(pos);
+				m_skybox.lock()->SetSize(size);
+				m_skybox.lock()->SetAngle(angle);
 
-					ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-				}
+				ImGui::Text((const char*)u8"------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+
 				ImGui::TreePop();
 			}
 
@@ -1833,15 +1802,14 @@ void ObjectManager::SelectWrite()
 	// 名前
 	_json["Select"]["Name"] = "Select";
 
-	// 最大サイズ
-	_json["Select"]["MaxSize"] = m_select.lock()->GetMaxSize();
-	// 大きさ変化量
-	_json["Select"]["ChangeSize"] = m_select.lock()->GetChangeSizeNum();
+	// サイズ
+	_json["Select"]["Size"] = m_select.lock()->GetSize();
 
-	// 最大アルファ値
-	_json["Select"]["MaxAlpha"] = m_select.lock()->GetMaxAlpha();
-	// アルファ値変化量
-	_json["Select"]["ChangeAlpha"] = m_select.lock()->GetChangeAlphaNum();
+	// アルファ値補正値
+	_json["Select"]["AlphaCorrection"] = m_select.lock()->GetAlphaCorrection();
+
+	// 角度変化量
+	_json["Select"]["ChangeAngle"] = m_select.lock()->GetChangeAngle();
 
 	// ファイルに保存
 	std::ofstream _file("Asset/Json/Title/Select/Select.json");
@@ -1854,7 +1822,7 @@ void ObjectManager::SelectWrite()
 
 void ObjectManager::CursorWrite()
 {
-	if (m_select.expired())return;
+	if (m_cursor.expired())return;
 
 	nlohmann::json _json;
 
@@ -1862,10 +1830,52 @@ void ObjectManager::CursorWrite()
 	_json["Cursor"]["Name"] = "Cursor";
 
 	// サイズ
-	_json["Cursor"]["Size"] = m_select.lock()->GetSize();
+	_json["Cursor"]["Size"] = m_cursor.lock()->GetSize();
 
 	// ファイルに保存
 	std::ofstream _file("Asset/Json/Title/Cursor/Cursor.json");
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
+	}
+}
+
+void ObjectManager::CursorParticleWrite()
+{
+	nlohmann::json _json;
+
+	// 最大数
+	_json["Particle"]["Num"] = m_cursor.lock()->GetParticleParam().ParticleNum;
+
+	// 移動量X軸のランダムの数
+	_json["Particle"]["moveXNum"] = m_cursor.lock()->GetParticleParam().MoveXNum;
+
+	// 移動量Y軸のランダムの数
+	_json["Particle"]["moveYNum"] = m_cursor.lock()->GetParticleParam().MoveYNum;
+
+	// 移動量の最低値
+	_json["Particle"]["moveMinX"] = m_cursor.lock()->GetParticleParam().MinMove.x;
+	_json["Particle"]["moveMinY"] = m_cursor.lock()->GetParticleParam().MinMove.y;
+
+	// 移動量の補正値
+	_json["Particle"]["moveCorrectionX"] = m_cursor.lock()->GetParticleParam().MoveCorrection.x;
+	_json["Particle"]["moveCorrectionY"] = m_cursor.lock()->GetParticleParam().MoveCorrection.y;
+
+	// サイズのランダムの数
+	_json["Particle"]["SizeNum"] = m_cursor.lock()->GetParticleParam().SizeNum;
+
+	// サイズ最低値
+	_json["Particle"]["SizeMin"] = m_cursor.lock()->GetParticleParam().MinSize;
+
+	// サイズ補正値
+	_json["Particle"]["SizeCorrection"] = m_cursor.lock()->GetParticleParam().SizeCorrection;
+
+	// サイズ変化量
+	_json["Particle"]["SizeChange"] = m_cursor.lock()->GetParticleParam().SizeChange;
+
+	// ファイルに保存
+	std::ofstream _file("Asset/Json/Title/Cursor/Particle/Particle.json");
 	if (_file.is_open())
 	{
 		_file << _json.dump();
@@ -2018,6 +2028,12 @@ void ObjectManager::PlayerHPWrite()
 	// 大きさ
 	_json["HP"]["Size"] = m_PlayerHP.lock()->GetSize();
 
+	// 減少ゲージ減少開始時間
+	_json["HP"]["DownTime"] = m_PlayerHP.lock()->GetDownTime();
+
+	// 減少ゲージ変化量
+	_json["HP"]["DownChange"] = m_PlayerHP.lock()->GetDownChange();
+
 	// ファイルに保存
 	std::ofstream _file("Asset/Json/Game/UI/Player/HP/HP.json");
 	if (_file.is_open())
@@ -2148,6 +2164,13 @@ void ObjectManager::EnemyWrite(int _stage, int _wave, std::string _fileName)
 			static int g = 0;
 			_category = "Golem";
 			_num = (std::to_string(g).c_str()) + ((std::string)"Golem");
+			
+			// 弾攻撃の射程角度
+			_json[wave][_category][_num]["Attack1Angle"] = m_golem.lock()->GetAttack1Angle();
+			
+			// ジャンプ攻撃の最短距離
+			_json[wave][_category][_num]["Attack2Dist"] = m_golem.lock()->GetAttack2Dist();
+			
 			g++;
 		}
 
@@ -2228,6 +2251,12 @@ void ObjectManager::EnemyHPWrite()
 
 	// 大きさ
 	_json["HP"]["Size"] = m_EnemyHPList[0].lock()->GetSize();
+
+	// 減少ゲージ減少開始時間
+	_json["HP"]["DownTime"] = m_EnemyHPList[0].lock()->GetDownTime();
+
+	// 減少ゲージ変化量
+	_json["HP"]["DownChange"] = m_EnemyHPList[0].lock()->GetDownChange();
 
 	// ファイルに保存
 	std::ofstream _file("Asset/Json/Game/UI/Enemy/HP/HP.json");
@@ -2340,6 +2369,13 @@ void ObjectManager::ObjectWrite(std::string _fileName)
 			static int m = 0;
 			_category = "Magic";
 			_num = (std::to_string(m).c_str()) + ((std::string)"Magic");
+
+			// RGB変化量
+			_json[_category][_num]["RGBChange"] = m_magic.lock()->GetRGBChange();
+
+			// 角度変化量
+			_json[_category][_num]["ChangeAngle"] = m_magic.lock()->GetChangeAngle();
+
 			m++;
 		}
 		else if (obj->GetName() == "Wall") // 壁
@@ -2601,21 +2637,17 @@ void ObjectManager::SetSelectParam()
 
 	for (auto& obj : _json)
 	{
-		// 最大サイズ
-		float _MaxSize = 1.0f;
-		_MaxSize = obj["MaxSize"];
+		// サイズ
+		float _size = 1.0f;
+		_size = obj["Size"];
 
-		// 大きさ変化量
-		float _ChangeSize = 0.01f;
-		_ChangeSize = obj["ChangeSize"];
+		// アルファ値補正値
+		float _alphaCorrection = 1.0f;
+		_alphaCorrection = obj["AlphaCorrection"];
 
-		// 最大アルファ値
-		float _MaxAlpha = 1.0f;
-		_MaxAlpha = obj["MaxAlpha"];
-
-		// アルファ値変化量
-		float _ChangeAlpha = 0.01f;
-		_ChangeAlpha = obj["ChangeAlpha"];
+		// 角度変化量
+		float _changeAngle = 1.0f;
+		_changeAngle = obj["ChangeAngle"];
 
 		// 名前
 		std::string _name;
@@ -2623,10 +2655,9 @@ void ObjectManager::SetSelectParam()
 
 		// セット
 		std::shared_ptr<Select> select = std::make_shared<Select>();
-		select->SetMaxSize(_MaxSize);
-		select->SetChangeSizeNum(_ChangeSize);
-		select->SetMaxAlpha(_MaxAlpha);
-		select->SetChangeAlphaNum(_ChangeAlpha);
+		select->SetSize(_size);
+		select->SetAlphaCorrection(_alphaCorrection);
+		select->SetChangeAngle(_changeAngle);
 		select->SetName(_name);
 		select->SetID(m_id);
 		select->SetObjManager(shared_from_this());
@@ -2674,6 +2705,66 @@ void ObjectManager::SetCursorParam()
 
 		m_cursor = cursor;
 		SceneManager::Instance().AddUI(cursor);
+
+		SetCursorParticleParam();
+	}
+
+	ifs.close();
+}
+
+void ObjectManager::SetCursorParticleParam()
+{
+	//jsonファイル
+	std::string fileName = "Asset/Json/Title/Cursor/Particle/Particle.json";
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& obj : _json)
+	{
+		// 最大数
+		int _num = 0;
+		_num = obj["Num"];
+
+		// 移動量X軸のランダムの数
+		int _XNum = 0;
+		_XNum = obj["moveXNum"];
+
+		// 移動量Y軸のランダムの数
+		int _YNum = 0;
+		_YNum = obj["moveYNum"];
+
+		// 移動量の最低値
+		Math::Vector2 _moveMin = Math::Vector2::Zero;
+		_moveMin = { obj["moveMinX"],obj["moveMinY"] };
+
+		// 移動量の補正値
+		Math::Vector2 _moveCorrection = Math::Vector2::Zero;
+		_moveCorrection = { obj["moveCorrectionX"],obj["moveCorrectionY"] };
+
+		// サイズのランダムの数
+		int _SizeNum = 0;
+		_SizeNum = obj["SizeNum"];
+
+		// サイズ最低値
+		float _sizeMin = 0.0f;
+		_sizeMin = obj["SizeMin"];
+
+		// サイズ補正値
+		float _sizeCorrection = 0.0f;
+		_sizeCorrection = obj["SizeCorrection"];
+
+		// サイズ変化量
+		float _sizeChange = 0.0f;
+		_sizeChange = obj["SizeChange"];
+
+
+		// セット
+		m_cursor.lock()->SetParticleParam(_num, _XNum, _YNum, _moveMin, _moveCorrection, _SizeNum, _sizeMin, _sizeCorrection, _sizeChange);
 	}
 
 	ifs.close();
@@ -2802,31 +2893,33 @@ void ObjectManager::SetObjectParam(std::shared_ptr<StageManager> _stage)
 	std::shared_ptr<Ground> ground;      // 地面
 	std::shared_ptr<Circle> circle;      // 魔法陣の台
 	std::shared_ptr<MagicPolygon> magic; // 魔法陣
+	std::shared_ptr<Wall> wall;          // 壁
+	std::shared_ptr<SkyBox> skybox;      // 空
 
 	for (auto& category : _json)
 	{
 
 		// 種類ごとに読み込んでいく
 
-		for (auto& obj : category)
+		for (auto& Object : category)
 		{
 			// 座標
 			Math::Vector3 _pos = Math::Vector3::Zero;
-			_pos.x = obj["PosX"];
-			_pos.y = obj["PosY"];
-			_pos.z = obj["PosZ"];
+			_pos.x = Object["PosX"];
+			_pos.y = Object["PosY"];
+			_pos.z = Object["PosZ"];
 
 			// 大きさ
 			float _size = 0.0f;
-			_size = obj["Size"];
+			_size = Object["Size"];
 
 			// 角度
 			Math::Vector3 _angle = Math::Vector3::Zero;
-			_angle.y = obj["Angle"];
+			_angle.y = Object["Angle"];
 
 			// 名前
 			std::string _name;
-			_name = obj["Name"];
+			_name = Object["Name"];
 
 			// セット
 			std::shared_ptr<KdGameObject> obj;
@@ -2846,19 +2939,33 @@ void ObjectManager::SetObjectParam(std::shared_ptr<StageManager> _stage)
 			}
 			if (_name == "Magic") // 魔法陣
 			{
+				// RGB変化量
+				float rgb = 0.0f;
+				rgb = Object["RGBChange"];
+
+				// 角度変化量
+				float angle = 0.0f;
+				angle = Object["ChangeAngle"];
+
 				magic = std::make_shared<MagicPolygon>();
 				magic->SetStageManager(_stage);
+				magic->SetRGBChange(rgb);
+				magic->SetChangeAngle(angle);
 				m_magic = magic;
 				if (m_camera.expired() == false)m_camera.lock()->SetFixedTarget(magic);
 				obj = magic;
 			}
 			if (_name == "Wall") // 壁
 			{
-				obj = std::make_shared<Wall>();
+				wall = std::make_shared<Wall>();
+				m_wall = wall;
+				obj = wall;
 			}
 			if (_name == "SkyBox") // 空
 			{
-				obj = std::make_shared<SkyBox>();
+				skybox = std::make_shared<SkyBox>();
+				m_skybox = skybox;
+				obj = skybox;
 			}
 			obj->SetPos(_pos);
 			obj->SetSize(_size);
@@ -3033,6 +3140,14 @@ void ObjectManager::SetPlayerHPParam()
 		float _size = 1.0f;
 		_size = obj["Size"];
 
+		// 減少ゲージ減少開始時間
+		int _DownTime = 1;
+		_DownTime = obj["DownTime"];
+
+		// 減少ゲージ変化量
+		float _DownChange = 0.0f;
+		_DownChange = obj["DownChange"];
+
 		// 名前
 		std::string _name;
 		_name = obj["Name"];
@@ -3041,6 +3156,8 @@ void ObjectManager::SetPlayerHPParam()
 		std::shared_ptr<Player_HP> hp = std::make_shared<Player_HP>();
 		hp->SetPos(_pos);
 		hp->SetSize(_size);
+		hp->SetDownTime(_DownTime);
+		hp->SetDownChange(_DownChange);
 		hp->SetName(_name);
 		hp->SetTraget(m_player.lock());
 		hp->SetID(m_id);
@@ -3392,6 +3509,18 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 					{
 						std::shared_ptr<Golem> golem = std::make_shared<Golem>();
 						m_golem = golem;
+
+						// 弾攻撃の射程角度
+						float _Attack1Ang = 0.0f;
+						_Attack1Ang = obj["Attack1Angle"];
+						
+						// ジャンプ攻撃の最短距離
+						float _Attack2Dist = 0.0f;
+						_Attack2Dist = obj["Attack2Dist"];
+
+						golem->SetAttack1Angle(_Attack1Ang);
+						golem->SetAttack2Dist(_Attack2Dist);
+
 						enemy = golem;
 					}
 
@@ -3454,6 +3583,14 @@ void ObjectManager::SetEnemyHPParam(std::shared_ptr<EnemyBase> _enemy)
 		float _size = 1.0f;
 		_size = obj["Size"];
 
+		// 減少ゲージ減少開始時間
+		int _DownTime = 1;
+		_DownTime = obj["DownTime"];
+
+		// 減少ゲージ変化量
+		float _DownChange = 0.0f;
+		_DownChange = obj["DownChange"];
+
 		// 名前
 		std::string _name;
 		_name = obj["Name"];
@@ -3463,6 +3600,8 @@ void ObjectManager::SetEnemyHPParam(std::shared_ptr<EnemyBase> _enemy)
 		hp->SetPos(_pos);
 		hp->SetPosXCorrection(_posCorrection);
 		hp->SetSize(_size);
+		hp->SetDownTime(_DownTime);
+		hp->SetDownChange(_DownChange);
 		hp->SetName(_name);
 		hp->SetCamera(m_camera.lock());
 		hp->SetTarget(_enemy);
@@ -3485,6 +3624,7 @@ std::shared_ptr<Bullet> ObjectManager::SetBulletParam()
 	_bullet->SetGolem(m_golem.lock());
 	_bullet->SetOwner(m_golem.lock());
 	_bullet->SetObjManager(shared_from_this());
+	_bullet->SetAtk(m_golem.lock()->GetParam().Atk);
 	_bullet->SetName("Bullet");
 	_bullet->SetID(m_id);
 	m_id++;
@@ -3514,6 +3654,7 @@ void ObjectManager::SetBoneAlphaBulletParam(int id)
 	Math::Vector3 _nowVec = Math::Vector3::TransformNormal(_alpha->GetForward(), _nowRot);
 	_bullet->SetDir(_nowVec);
 	_bullet->SetOwner(_alpha);
+	_bullet->SetAtk(_alpha->GetParam().Atk);
 	_bullet->SetName("AlphaBullet");
 	_bullet->SetID(m_id);
 	m_id++;
@@ -3598,16 +3739,13 @@ void ObjectManager::AddSelect()
 	if (!m_select.expired())return;
 
 	std::string _name = "Cursor";
-	float _MaxSize = 1.0f;
-	float _ChangeSize = 0.01f;
-	float _MaxAlpha = 1.0f;
-	float _ChangeAlpha = 0.01f;
-
+	float _size = 1.0f;
+	float _alphaCorrection = 1.5f;
+	float _changeAngle = 2.0f;
 	std::shared_ptr<Select> _select = std::make_shared<Select>();
-	_select->SetMaxSize(_MaxSize);
-	_select->SetChangeSizeNum(_ChangeSize);
-	_select->SetMaxAlpha(_MaxAlpha);
-	_select->SetChangeAlphaNum(_ChangeAlpha);
+	_select->SetSize(_size);
+	_select->SetAlphaCorrection(_alphaCorrection);
+	_select->SetChangeAngle(_changeAngle);
 	_select->Init();
 
 	m_select = _select;
@@ -3835,6 +3973,8 @@ void ObjectManager::AddWeapon(std::string _filePath, std::string _weaponName)
 
 void ObjectManager::AddGround()
 {
+	if (!m_ground.expired())return;
+
 	std::string _name = "Ground";
 	Math::Vector3 _pos = Math::Vector3::Zero;
 	float _size = 10.0f;
@@ -3850,11 +3990,14 @@ void ObjectManager::AddGround()
 
 	m_id++;
 
+	m_ground = obj;
 	SceneManager::Instance().AddObject(obj);
 }
 
 void ObjectManager::AddCircle()
 {
+	if (!m_circle.expired())return;
+
 	std::string _name;
 	Math::Vector3 _pos;
 	float _size;
@@ -3873,6 +4016,7 @@ void ObjectManager::AddCircle()
 			_pos = Math::Vector3::Zero;
 			_size = 10.0f;
 			_angle.y = 0.0f;
+			m_circle = circle;
 			obj = circle;
 			break;
 		case 1:
@@ -3882,6 +4026,7 @@ void ObjectManager::AddCircle()
 			else { _pos = Math::Vector3::Zero; }
 			_size = 5.0f;
 			_angle.y = 0.0f;
+			m_magic = magic;
 			obj = magic;
 			break;
 		default:
@@ -3897,12 +4042,15 @@ void ObjectManager::AddCircle()
 
 		m_id++;
 
+
 		SceneManager::Instance().AddObject(obj);
 	}
 }
 
 void ObjectManager::AddWall()
 {
+	if (!m_wall.expired())return;
+
 	std::string _name = "Wall";
 	Math::Vector3 _pos = Math::Vector3::Zero;
 	float _size = 10.0f;
@@ -3918,11 +4066,14 @@ void ObjectManager::AddWall()
 
 	m_id++;
 
+	m_wall = obj;
 	SceneManager::Instance().AddObject(obj);
 }
 
 void ObjectManager::AddSkyBox()
 {
+	if (!m_skybox.expired())return;
+
 	std::string _name = "SkyBox";
 	Math::Vector3 _pos = Math::Vector3::Zero;
 	float _size = 10.0f;
@@ -3937,6 +4088,7 @@ void ObjectManager::AddSkyBox()
 
 	m_id++;
 
+	m_skybox = obj;
 	SceneManager::Instance().AddObject(obj);
 }
 

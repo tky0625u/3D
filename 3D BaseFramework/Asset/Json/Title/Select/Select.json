@@ -1,9 +1,8 @@
 {
 	"Select": {
-		"ChangeAlpha": 0.03999999910593033,
-		"ChangeSize": 0.035999998450279236,
-		"MaxAlpha": 1.0,
-		"MaxSize": 0.5009999871253967,
+		"AlphaCorrection": 1.5,
+		"ChangeAngle": 2.0,
+		"Size": 0.5009999871253967,
 		"Name": "Select"
 	}
 }

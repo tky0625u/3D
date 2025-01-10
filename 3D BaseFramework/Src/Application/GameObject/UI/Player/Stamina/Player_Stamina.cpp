@@ -1,18 +1,18 @@
 ﻿#include "Player_Stamina.h"
+
+// プレイヤー
 #include"../../../Character/Player/Player.h"
 
 void Player_Stamina::Update()
 {
-	if (m_target.expired())return;
+	if (m_target.expired())return; // ターゲットが消滅していたら早期リターン
 
-	//スタミナ減少
-	if (m_target.lock()->GetParam().Sm != m_beforeStamina)
-	{
-		int a = 0;
-		a = m_target.lock()->GetParam().Sm;
-		float stamina = (m_MaxWidth / m_MaxStamina) * m_target.lock()->GetParam().Sm;
+	// スタミナ減少
+	if (m_target.lock()->GetParam().Sm != m_beforeStamina) // 前回のスタミナと現在のスタミナが違う場合
+	{//                    最大幅     最大スタミナ            現在のスタミナ
+		float stamina = (m_MaxWidth / m_MaxStamina) * m_target.lock()->GetParam().Sm; // 幅計算
 		m_rect[Stamina::stamina] = { 0,0,long(stamina),64 };
-		m_beforeStamina = m_target.lock()->GetParam().Sm;
+		m_beforeStamina = m_target.lock()->GetParam().Sm; // 前回のスタミナを更新
 	}
 }
 

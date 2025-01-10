@@ -10,11 +10,15 @@ public:
 	void DrawUnLit() override;
 	void Init()      override;
 
-	void SetTarget(std::shared_ptr<KdGameObject> _target) { m_target = _target; }
+	// セッター====================================================================================
+	void SetTarget(std::shared_ptr<KdGameObject> _target) { m_target = _target; } // プレイヤーターゲット
+	//=============================================================================================
 
 private:
 	
+	// プレイヤーターゲット
 	std::weak_ptr<KdGameObject> m_target;
 
+	// モデル
 	std::shared_ptr<KdModelWork> m_model = nullptr;
 };

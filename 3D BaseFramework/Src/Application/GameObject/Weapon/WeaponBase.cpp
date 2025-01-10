@@ -1,8 +1,11 @@
 ﻿#include "WeaponBase.h"
+
+// キャラクター基底
 #include"../Character/CharacterBase.h"
 
 void WeaponBase::Update()
 {
+	// ディゾルブを持ち主と同じにする
 	m_dissolve = m_target.lock()->GetDissolve();
 }
 
@@ -15,6 +18,7 @@ void WeaponBase::GenerateDepthMapFromLight()
 
 void WeaponBase::DrawLit()
 {
+	// ディゾルブ
 	Math::Vector3 _color = { 1,0.5f,0 };
 	KdShaderManager::Instance().m_StandardShader.SetDissolve(m_dissolve, nullptr, &_color);
 

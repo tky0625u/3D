@@ -2,21 +2,6 @@
 
 #include"Scene/SceneManager.h"
 #include"Scene/BaseScene/BaseScene.h"
-#include"GameObject/ObjectManager.h"
-#include"GameObject/Character/Enemy/Bone/Bone.h"
-#include"GameObject/Character/Player/Player.h"
-#include"GameObject/Weapon/Sword/Sword.h"
-#include"GameObject/Weapon/Shield/Shield.h"
-#include"GameObject/Stage/SkyBox/SkyBox.h"
-#include"GameObject/Stage/Ground/Ground.h"
-#include"GameObject/Stage/Wall/Wall.h"
-#include"GameObject/Camera/GameCamera/GameCamera.h"
-#include"GameObject/UI/Title/Title/Title.h"
-#include"GameObject/UI/Title/Game/Game.h"
-#include"GameObject/UI/Title/Exit/Exit.h"
-#include"GameObject/UI/Title/Guide/Guide.h"
-#include"GameObject/UI/Title/Cursor/Cursor.h"
-#include"GameObject/Camera/TitleCamera/TitleCamera.h"
 
 // ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
 // エントリーポイント

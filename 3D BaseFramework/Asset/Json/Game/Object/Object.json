@@ -38,6 +38,8 @@
 	"Magic": {
 		"0Magic": {
 			"Angle": 148.19984436035156,
+			"ChangeAngle": 0.01,
+			"RGBChange": 0.01,
 			"Name": "Magic",
 			"PosX": 0.0,
 			"PosY": 0.0,

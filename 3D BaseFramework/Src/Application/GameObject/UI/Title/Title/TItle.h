@@ -1,4 +1,6 @@
 ﻿#pragma once
+
+// UI基底
 #include"../../UIBase.h"
 
 class Title :public UIBase

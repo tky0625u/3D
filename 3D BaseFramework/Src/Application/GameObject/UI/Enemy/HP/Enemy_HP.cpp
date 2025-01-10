@@ -1,40 +1,48 @@
 ﻿#include "Enemy_HP.h"
+
+// ゲームカメラ
 #include"../../../Camera/GameCamera/GameCamera.h"
+// 敵基底
 #include"../../../Character/Enemy/EnemyBase.h"
-#include"../../../Character/Player/Player.h"
 
 void Enemy_HP::Update()
 {
-	if (m_camera.expired())return;
-	if (m_target.expired())
+	if (m_camera.expired())return; // カメラが無かったら早期リターン
+	if (m_target.expired()) // ターゲットが消滅していたら
 	{
+		// 消滅
 		if (!IsExpired())Expired();
 		return;
 	}
 
-	if (m_rect[HP::hp].width > m_rect[HP::down].width)m_rect[HP::down].width = m_rect[HP::hp].width;
-
-	//HP減少
-	if (m_target.lock()->GetParam().Hp != m_beforeHP)
+	if (m_rect[HP::hp].width > m_rect[HP::down].width) // 幅が減少ゲージよりもHPゲージの方が大きかったら
 	{
-		float hp = (m_MaxWidth / m_MaxHP) * m_target.lock()->GetParam().Hp;
-		m_rect[HP::hp] = { 0,0,long(hp),64 };
-		m_beforeHP = m_target.lock()->GetParam().Hp;
-		m_DownTime = 60;
+		// HPゲージと同じ幅にする
+		m_rect[HP::down].width = m_rect[HP::hp].width;
 	}
 
-	if (m_DownTime > 0)m_DownTime--;
-	else
-	{
-		m_DownTime = 0;
-		if (m_rect[HP::down].width != m_rect[HP::hp].width)m_rect[HP::down].width-=15.0f; //現在のHPまで徐々に減少
+	// HP減少
+	if (m_target.lock()->GetParam().Hp != m_beforeHP) // 前回とHPが変わっていたら
+	{//               最大幅     最大HP               現在のHP
+		float hp = (m_MaxWidth / m_MaxHP) * m_target.lock()->GetParam().Hp; // 幅計算
+		m_rect[HP::hp] = { 0,0,long(hp),64 }; // HPゲージ変更
+		m_beforeHP = m_target.lock()->GetParam().Hp; // 前回のHPを更新
+		m_NowDownTime = m_DownTime;
 	}
 
-	//座標変換
-	Math::Vector3 _pos = { m_pos.x,m_pos.y,0.0f };
-	m_camera.lock()->WorkCamera()->ConvertWorldToScreenDetail(m_target.lock()->GetHPMat().Translation(), _pos);
+	// 減少ゲージ減少
+	if (m_NowDownTime > 0)m_NowDownTime--;
+	else // 減少開始時間が0になったら
+	{
+		m_NowDownTime = 0;
+		if (m_rect[HP::down].width != m_rect[HP::hp].width)m_rect[HP::down].width -= m_DownChange; // 現在のHPまで徐々に減少
+	}
 
-	if (_pos.z >= 0.0f)m_alpha = 1.0f;
+	// 座標変換
+	Math::Vector3 _pos = { m_pos.x,m_pos.y,0.0f }; // 現在の座標
+	m_camera.lock()->WorkCamera()->ConvertWorldToScreenDetail(m_target.lock()->GetHPMat().Translation(), _pos); // 3D座標を2D座標に変換
+
+	if (_pos.z >= 0.0f)m_alpha = 1.0f; // Z軸が0以下=カメラの後ろだったら透明
 	else { m_alpha = -1.0f; }
 
 	m_pos = { _pos.x + m_posXCorrection,_pos.y };

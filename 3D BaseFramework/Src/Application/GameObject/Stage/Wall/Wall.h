@@ -11,5 +11,6 @@ public:
 	void Init()override;
 
 private:
+	// モデル
 	std::shared_ptr<KdModelWork> m_model = nullptr;
 };

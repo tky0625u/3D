@@ -1,4 +1,6 @@
 ﻿#pragma once
+
+// 武器基底
 #include"../WeaponBase.h"
 
 class Shield :public WeaponBase
@@ -9,7 +11,10 @@ public:
 
 	void Update()override;
 
-	Math::Matrix GetParryPoint() { return m_spModel->FindWorkNode("ParryPoint")->m_worldTransform * m_mWorld; }
+	// ゲッター=============================================================================================================
+	// パリィエフェクト位置
+	const Math::Matrix& GetParryPoint() { return m_spModel->FindWorkNode("ParryPoint")->m_worldTransform * m_mWorld; }
+	//======================================================================================================================
 
 private:
 

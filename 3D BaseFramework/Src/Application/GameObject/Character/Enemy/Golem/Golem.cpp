@@ -61,9 +61,9 @@ void Golem::AttackChange()
 	Math::Vector3 _playerPos = m_Target.lock()->GetPos();
 	float _dist = (_playerPos - m_pos).Length();
 
-	if (_dist > 50.0f)
+	if (_dist > m_Attack2Dist)
 	{
-		// Attack2
+		// ジャンプ攻撃
 		std::shared_ptr<Attack2> _attack2 = std::make_shared<Attack2>();
 		m_NextState = _attack2;
 		m_NextActionType = m_NextActionType = EnemyBase::Action::AttackType;
@@ -88,8 +88,9 @@ void Golem::AttackChange()
 	//回転角度を求める
 	float ang = DirectX::XMConvertToDegrees(acos(d));
 
-	if (fabs(ang) <= 50.0f)
+	if (fabs(ang) <= m_Attack1Angle)
 	{
+		// 弾攻撃 
 		std::shared_ptr<Attack1> _attack1 = std::make_shared<Attack1>();
 		m_NextState = _attack1;
 		m_NextActionType = m_NextActionType = EnemyBase::Action::AttackType;
@@ -98,6 +99,7 @@ void Golem::AttackChange()
 	}
 	else
 	{
+		// 叩きつけ攻撃
 		std::shared_ptr<Attack3> _attack3 = std::make_shared<Attack3>();
 		m_NextState = _attack3;
 		m_NextActionType = m_NextActionType = EnemyBase::Action::AttackType;
@@ -109,44 +111,54 @@ void Golem::AttackChange()
 
 void Golem::BumpCheck()
 {
+	// スフィア判定
 	KdCollider::SphereInfo sphereInfo;
 	Math::Matrix _mat = m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(m_mWorld.Translation()));
+	// 中心
 	sphereInfo.m_sphere.Center = _mat.Translation();
+	// 半径
 	sphereInfo.m_sphere.Radius = m_HitSphereSize;
+	// 対象
 	sphereInfo.m_type = KdCollider::TypeBump;
 
 	//デバッグ用
 	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, Math::Color{ 0,1,1,1 });
 
+	// 当たり判定リスト
 	std::list<KdCollider::CollisionResult>retSphereList;
+	// 当たったオブジェクト格納リスト
 	std::vector<std::shared_ptr<KdGameObject>>SphereList;
-	for (auto& ret : SceneManager::Instance().GetObjList())
+	for (auto& ret : SceneManager::Instance().GetObjList()) // キャラクター以外のオブジェクト
 	{
+		// 弾なら当たり判定をしない
 		if (ret->GetName() == "Bullet")continue;
 
 		if (ret->Intersects(sphereInfo, &retSphereList))SphereList.push_back(ret);
 	}
-	for (auto& ret : SceneManager::Instance().GetEnemyList())
+	for (auto& ret : SceneManager::Instance().GetEnemyList()) // 敵
 	{
-		if (ret->IsExpired())return;
-		if (m_id == ret->GetID())continue;
+		if (ret->IsExpired())continue;     // 消滅フラグが立っていたら当たり判定をしない
+		if (m_id == ret->GetID())continue; // 自分自身なら当たり判定をしない
 		if (ret->Intersects(sphereInfo, &retSphereList))SphereList.push_back(ret);
 	}
-	if (m_id != SceneManager::Instance().GetPlayer()->GetID())
+	if (SceneManager::Instance().GetPlayer()->Intersects(sphereInfo, &retSphereList)) // プレイヤー
 	{
-		if (SceneManager::Instance().GetPlayer()->Intersects(sphereInfo, &retSphereList))
-		{
-			SphereList.push_back(SceneManager::Instance().GetPlayer());
-		}
+		SphereList.push_back(SceneManager::Instance().GetPlayer());
 	}
 
+	// 当たった方向
 	Math::Vector3 HitDir = Math::Vector3::Zero;
+	// はみだし距離
 	float maxOverLap = 0.0f;
+	// 当たり判定フラグ
 	bool HitFlg = false;
+	// 当たったオブジェクト
 	std::shared_ptr<KdGameObject> HitObj = nullptr;
+	// リスト番号
 	int listNum = 0;
 	for (auto& sphere : retSphereList)
 	{
+		// はみ出し距離が長かったら更新
 		if (maxOverLap < sphere.m_overlapDistance)
 		{
 			maxOverLap = sphere.m_overlapDistance;
@@ -159,12 +171,16 @@ void Golem::BumpCheck()
 
 	if (HitFlg == true)
 	{
+		// Y軸は考慮しない
 		HitDir.y = 0.0f;
+		// 正規化
 		HitDir.Normalize();
+		// キャラクター以外のオブジェクトなら自身が動く
 		if (HitObj->GetObjType() == KdGameObject::ObjType::oObject)
 		{
 			m_pos += maxOverLap * HitDir;
 		}
+		// キャラクターならそのキャラクターを動かす
 		else
 		{
 			Math::Vector3 _pos = HitObj->GetPos();
@@ -178,12 +194,14 @@ void Golem::BumpCheck()
 // Attack1=========================================================================================
 void Golem::Attack1::Enter(std::shared_ptr<EnemyBase> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("IdolToAttack1"))
 	{
 		owner->SetAnime("IdolToAttack1", false, 1.0f);
 		return;
 	}
 
+	// アニメーションが終了したら次のフローへ
 	if (owner->GetIsAnimator())
 	{
 		owner->SetFlow(EnemyBase::Flow::UpdateType);
@@ -193,19 +211,23 @@ void Golem::Attack1::Enter(std::shared_ptr<EnemyBase> owner)
 
 void Golem::Attack1::Update(std::shared_ptr<EnemyBase> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("Attack1"))
 	{
 		owner->SetAnime("Attack1", false, 1.0f);
+		// 弾生成
 		m_bullet = owner->GetObjManager().lock()->SetBulletParam();
 		return;
 	}
 
+	// 弾が無くなったら次のフローへ
 	if (m_bullet.expired())
 	{
 		owner->SetFlow(EnemyBase::Flow::ExitType);
 		return;
 	}
 
+	// 弾発射
 	if (m_ActionFPS == 10)
 	{
 		KdEffekseerManager::GetInstance().Play("Enemy/AttackSignal/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 2.0f, 2.0f, false);
@@ -214,10 +236,13 @@ void Golem::Attack1::Update(std::shared_ptr<EnemyBase> owner)
 		m_bullet.lock()->SetDir(_dir);
 	}
 
+	// 弾が最大サイズではなかった場合
 	if (!m_bullet.expired() && m_bullet.lock()->GetSize() < m_bullet.lock()->GetMaxSize())
 	{
+		// 発射位置に固定
 		m_bullet.lock()->SetPos(owner->GetObjManager().lock()->GetGolem().lock()->GetBulletPoint());
 
+		// プレイヤーの方向に向く
 		Math::Vector3 _dir = owner->GetTarget().lock()->GetPos() - owner->GetPos();
 		_dir.y = 0.0f;
 		_dir.Normalize();
@@ -225,18 +250,21 @@ void Golem::Attack1::Update(std::shared_ptr<EnemyBase> owner)
 	}
 	else if (!m_bullet.expired() && m_bullet.lock()->GetSize() >= m_bullet.lock()->GetMaxSize())
 	{
+		// FPS加算
 		m_ActionFPS++;
 	}
 }
 
 void Golem::Attack1::Exit(std::shared_ptr<EnemyBase> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("Attack1ToIdol"))
 	{
 		owner->SetAnime("Attack1ToIdol", false, 1.0f);
 		return;
 	}
 
+	// アニメーションが終了したら待機状態へ
 	if (owner->GetIsAnimator())
 	{
 		// Idol
@@ -250,12 +278,14 @@ void Golem::Attack1::Exit(std::shared_ptr<EnemyBase> owner)
 // Attack2=========================================================================================
 void Golem::Attack2::Enter(std::shared_ptr<EnemyBase> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("IdolToAttack2"))
 	{
 		owner->SetAnime("IdolToAttack2", false, 1.0f);
 		return;
 	}
 
+	// アニメーションが終了したら次のフローへ
 	if (owner->GetIsAnimator())
 	{
 		owner->SetFlow(EnemyBase::Flow::UpdateType);
@@ -265,58 +295,76 @@ void Golem::Attack2::Enter(std::shared_ptr<EnemyBase> owner)
 
 void Golem::Attack2::Update(std::shared_ptr<EnemyBase> owner)
 {
+	// 方向
 	static Math::Vector3 _dir = Math::Vector3::Zero;
+	// プレイヤーの距離
 	static float _playerDist = 0.0f;
+
 	if (!owner->IsAnimCheck("Attack2"))
 	{
+		// アニメーション変更
 		owner->SetAnime("Attack2", false, 1.0f);
+		// ジャンプ力追加
 		owner->SetJumpPow(5.0f);
 
+		// プレイヤーの距離と方向計算
 		std::shared_ptr<Player> _player = owner->GetTarget().lock();
 		Math::Vector3 _playerPos = _player->GetPos();
-		m_playerPos = _playerPos;
+		m_playerPos = _playerPos; // プレイヤー座標を記録
 		Math::Vector3 _pos = owner->GetPos();
 		Math::Vector3 _moveDir = _playerPos - _pos;
 		_playerDist = Math::Vector3{ _moveDir.x,0.0f,_moveDir.z }.Length();
 		_moveDir.Normalize();
 		_dir = _moveDir;
+
+		// 攻撃範囲出現
 		owner->SetColorLightFlg(true);
+		// 当たり判定用スフィアサイズ拡大※プレイヤーが埋まるのを防止
 		owner->SetHitSphereSize(10.0f);
 		return;
 	}
 
+	// 地面についたら
 	if (owner->GetGroundFlg())
 	{
+		// 攻撃判定
 		AttackHit(owner);
+		// 攻撃範囲削除
 		owner->SetColorLightFlg(false);
 		KdEffekseerManager::GetInstance().Play("Enemy/Golem/Attack2/smash.efkefc", owner->GetPos(), Math::Vector3{60.0f,15.0f,60.0f}, 1.0f, false);
+		// 次のフローへ
 		owner->SetFlow(EnemyBase::Flow::ExitType);
 		return;
 	}
 
-
+	// プレイヤーの方向計算
 	Math::Vector3 _pos = owner->GetPos();
 	Math::Vector3 _moveDir = m_playerPos - _pos;
 	float dist = Math::Vector3{ _moveDir.x,0.0f,_moveDir.z }.Length();
-	m_AttackSphereRange = 60.0f * ((_playerDist - dist) / _playerDist);
-	_moveDir.Normalize();
+	m_AttackSphereRange = 60.0f * ((_playerDist - dist) / _playerDist); // 近くにつれて攻撃範囲を拡大
+	_moveDir.Normalize(); // 正規化
 	_dir = _moveDir;
 
+	// 移動
 	if (_pos != m_playerPos)owner->SetMove(_dir, 10.0f);
 
+	// 攻撃範囲
 	KdShaderManager::Instance().WriteCBColor(m_playerPos, m_AttackSphereRange,Math::Color{1.0f,0.0f,0.0f,1.0f});
 }
 
 void Golem::Attack2::Exit(std::shared_ptr<EnemyBase> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("Attack2ToIdol"))
 	{
 		owner->SetAnime("Attack2ToIdol", false, 1.0f);
 		return;
 	}
 
+	// アニメーションが終了したら待機状態へ
 	if (owner->GetIsAnimator())
 	{
+		// 当たり判定用スフィアサイズを戻す
 		owner->SetHitSphereSize(2.0f);
 
 		// Idol
@@ -327,17 +375,23 @@ void Golem::Attack2::Exit(std::shared_ptr<EnemyBase> owner)
 
 void Golem::Attack2::AttackHit(std::shared_ptr<EnemyBase> owner)
 {
+	// スフィア判定
 	KdCollider::SphereInfo sphereInfo;
+	// 中心
 	sphereInfo.m_sphere.Center = owner->GetPos();
+	// 半径
 	sphereInfo.m_sphere.Radius = 60.0f;
+	// 対象
 	sphereInfo.m_type = KdCollider::Type::TypeDamage;
 
 	// デバッグ
 	//Math::Color _color = { 1,0,0,1 };
 	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, _color);
 
+	// 攻撃判定
 	if (owner->GetTarget().lock()->Intersects(sphereInfo, nullptr))
 	{
+		// ダメージ
 		owner->GetTarget().lock()->Damage(owner->GetParam().Atk, owner->shared_from_this());
 	}
 }
@@ -347,6 +401,7 @@ void Golem::Attack2::AttackHit(std::shared_ptr<EnemyBase> owner)
 // Attack3=========================================================================================
 void Golem::Attack3::Enter(std::shared_ptr<EnemyBase> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("IdolToAttack3"))
 	{
 		owner->SetAnime("IdolToAttack3", false, 1.0f);
@@ -354,9 +409,9 @@ void Golem::Attack3::Enter(std::shared_ptr<EnemyBase> owner)
 		return;
 	}
 
+	// アニメーションが終了したら次のフローへ
 	if (owner->GetIsAnimator())
 	{
-
 		owner->SetFlow(owner->Flow::UpdateType);
 		return;
 	}
@@ -366,12 +421,14 @@ void Golem::Attack3::Enter(std::shared_ptr<EnemyBase> owner)
 
 void Golem::Attack3::Update(std::shared_ptr<EnemyBase> owner)
 {
+	// アニメーション変更
 	if (!owner->IsAnimCheck("Attack3"))
 	{
 		owner->SetAnime("Attack3", false, 1.0f);
 		return;
 	}
 
+	// アニメーションが終了したら待機状態へ
 	if (owner->GetIsAnimator())
 	{
 		// Idol
@@ -381,6 +438,7 @@ void Golem::Attack3::Update(std::shared_ptr<EnemyBase> owner)
 
 	if (161 >= m_ActionFPS)
 	{
+		// 攻撃範囲
 		owner->SetColorLightFlg(true);
 	}
 	else if (162 == m_ActionFPS)
@@ -389,22 +447,28 @@ void Golem::Attack3::Update(std::shared_ptr<EnemyBase> owner)
 	}
 	else if (180 == m_ActionFPS)
 	{
+		// 攻撃判定
 		AttackHit(owner);
+		// 攻撃範囲OFF
 		owner->SetColorLightFlg(false);
 		KdEffekseerManager::GetInstance().Play("Enemy/Golem/Attack3/smash.efkefc", owner->GetPos(), Math::Vector3{ 57.0f,15.0f,57.0f }, 1.0f, false);
 	}
 	else
 	{
+		// プレイヤーの方向に向く
 		Math::Vector3 dir = owner->GetTarget().lock()->GetPos() - owner->GetPos();
 		dir.y = 0.0f;
+		// 正規化
 		dir.Normalize();
+		// 回転
 		owner->Rotate(dir, 2.5f);
 	}
 
-
+	// 攻撃範囲
 	m_AttackSphereRange = 50.0f * (m_ActionFPS / 180.0f);
 	KdShaderManager::Instance().WriteCBColor(owner->GetPos(), m_AttackSphereRange,Math::Color{1.0f,0.0f,0.0f,1.0f});
 	
+	// FPS加算
 	m_ActionFPS++;
 }
 
@@ -415,17 +479,23 @@ void Golem::Attack3::Exit(std::shared_ptr<EnemyBase> owner)
 
 void Golem::Attack3::AttackHit(std::shared_ptr<EnemyBase> owner)
 {
+	// スフィア判定
 	KdCollider::SphereInfo sphereInfo;
+	// 中心
 	sphereInfo.m_sphere.Center = owner->GetObjManager().lock()->GetGolem().lock()->GetQuakePoint();
+	// 半径
 	sphereInfo.m_sphere.Radius = 50.0f;
+	// 対象
 	sphereInfo.m_type = KdCollider::Type::TypeDamage;
 
 	// デバッグ
 	//Math::Color _color = { 1,0,0,1 };
 	//m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius, _color);
 
+	// 攻撃判定
 	if (owner->GetTarget().lock()->Intersects(sphereInfo, nullptr))
 	{
+		// ダメージ
 		owner->GetTarget().lock()->Damage(owner->GetParam().Atk, owner->shared_from_this());
 	}
 }

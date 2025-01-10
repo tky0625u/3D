@@ -1,24 +1,27 @@
 ﻿#include "Player_HP.h"
+
+// プレイヤー
 #include"../../../Character/Player/Player.h"
 
 void Player_HP::Update()
 {
+	// ターゲットが消滅していたら早期リターン
 	if (m_target.expired())return;
 
-	//HP減少
-	if (m_target.lock()->GetParam().Hp != m_beforeHP)
-	{
-		float hp = (m_MaxWidth / m_MaxHP) * m_target.lock()->GetParam().Hp;
-		m_rect[HP::hp] = { 0,0,long(hp),64 };
-		m_beforeHP = m_target.lock()->GetParam().Hp;
-		m_DownTime = 60;
+	// HP減少
+	if (m_target.lock()->GetParam().Hp != m_beforeHP) // 前回のHPと現在のHPが違う場合
+	{//               最大幅      最大HP               現在のHP
+		float hp = (m_MaxWidth / m_MaxHP) * m_target.lock()->GetParam().Hp; // 幅計算
+		m_rect[HP::hp] = { 0,0,long(hp),64 }; // 切り取り範囲
+		m_beforeHP = m_target.lock()->GetParam().Hp; // 前回のHPを更新
+		m_NowDownTime = m_DownTime;
 	}
 
-	if (m_DownTime > 0)m_DownTime--;
+	if (m_NowDownTime > 0)m_NowDownTime--;
 	else
 	{
-		m_DownTime = 0;
-		if (m_rect[HP::down].width != m_rect[HP::hp].width)m_rect[HP::down].width--; //現在のHPまで徐々に減少
+		m_NowDownTime = 0;
+		if (m_rect[HP::down].width != m_rect[HP::hp].width)m_rect[HP::down].width-=m_DownChange; //現在のHPまで徐々に減少
 	}
 }
 

@@ -1,23 +1,19 @@
 ﻿#pragma once
+
+// UI基底
 #include"../../UIBase.h"
 
 class GameStateUI :public UIBase,public std::enable_shared_from_this<GameStateUI>
 {
 public:
-	enum Flow
-	{
-		EnterType,
-		UpdateType,
-		ExitType
-	};
-
 	GameStateUI() {};
 	~GameStateUI()override {};
 
 	void Update()override;
 
-	void SetChangeAlpha(float _change) { m_alphaChange = _change; }
-	void SetState(bool _IsClear)
+	// セッター==========================================================================
+	void SetChangeAlpha(float _change) { m_alphaChange = _change; } // アルファ値変化量
+	void SetState(bool _IsClear) // ステート
 	{
 		if (_IsClear)
 		{
@@ -30,19 +26,25 @@ public:
 			m_flow = Flow::EnterType;
 		}
 	}
+	//===================================================================================
 
-	const float& GetAlphaChange()const { return m_alphaChange; }
+	// ゲッター==========================================================================
+	const float& GetAlphaChange()const { return m_alphaChange; } // アルファ値変化量
+	//===================================================================================
 
 private:
-	float m_alphaChange = 0.05f;
+	float m_alphaChange = 0.05f; // アルファ値変化量
 
 private:
+
+	// ステート基底
 	class StateBase
 	{
 	public:
 		StateBase()  {};
 		virtual ~StateBase() {};
 		
+		// ステート更新
 		void StateUpdate(std::shared_ptr<GameStateUI> owner)
 		{
 			switch (owner->m_flow)
@@ -66,9 +68,10 @@ private:
 		virtual void Exit  (std::shared_ptr<GameStateUI> owner) {};
 
 	protected:
-		float m_alpha = 0.0f;
+		float m_alpha = 0.0f; // アルファ値
 	};
 
+	// ゲームオーバー
 	class GameOver :public StateBase
 	{
 	public:
@@ -80,6 +83,7 @@ private:
 		void Exit  (std::shared_ptr<GameStateUI> owner)override;
 	};
 
+	// クリア
 	class Clear :public StateBase
 	{
 	public:
@@ -91,8 +95,7 @@ private:
 		void Exit  (std::shared_ptr<GameStateUI> owner)override;
 	};
 
-	std::shared_ptr<StateBase> m_state     = nullptr;
-	std::shared_ptr<StateBase> m_NextState = nullptr;
-	UINT                       m_flow      = Flow::UpdateType;
+	std::shared_ptr<StateBase> m_state     = nullptr; // ステート
+	std::shared_ptr<StateBase> m_NextState = nullptr; // 次のステート
 
 };
