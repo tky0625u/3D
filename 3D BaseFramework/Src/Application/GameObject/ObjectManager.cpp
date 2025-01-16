@@ -620,6 +620,15 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 						_camera->FixedChange();
 					}
 				}
+				if (_camera->GetCameraType() != GameCamera::CameraType::BossType)
+				{
+					// テレポー開放
+					if (ImGui::Button((const char*)u8"Boss"))
+					{
+						_camera->SetCameraType(GameCamera::CameraType::BossType);
+						_camera->BossChange();
+					}
+				}
 				if (_camera->GetCameraType() != GameCamera::CameraType::ClearType)
 				{
 					// クリア
@@ -1192,6 +1201,13 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					ImGui::Text((const char*)u8"　よろける時の移動スピード StumbleMove=%.2f", _boneList[operation].lock()->GetStumbleMove());
 					float stumbleMove = _boneList[operation].lock()->GetStumbleMove();
 					ImGui::SliderFloat("StumbleMove", &stumbleMove, 0.1f, 1.0f);
+					// ボスフラグ
+					std::string b;
+					if (_boneList[operation].lock()->GetBossFlg())b = "true";
+					else { b = "flase"; }
+					ImGui::Text((const char*)u8"　ボスフラグ BossFlg=%s", b.c_str());
+					int boss = _boneList[operation].lock()->GetBossFlg();
+					ImGui::SliderInt("BossFlg", &boss, 0, 1);
 					// 前方方向
 					ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _boneList[operation].lock()->GetForward().x, _boneList[operation].lock()->GetForward().y, _boneList[operation].lock()->GetForward().z);
 
@@ -1206,6 +1222,11 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					_boneList[operation].lock()->SetLeaveDist(leaveDist);
 					_boneList[operation].lock()->SetAttackSphereSize(attackSphere);
 					_boneList[operation].lock()->SetStumbleMove(stumbleMove);
+					_boneList[operation].lock()->SetBossFlg(boss);
+					if (boss && (m_camera.lock()->GetBossTarget().expired() || _boneList[operation].lock()->GetID() != m_camera.lock()->GetBossTarget().lock()->GetID()))
+					{
+						m_camera.lock()->SetBossTarget(_boneList[operation].lock());
+					}
 
 					//消滅
 					if (ImGui::Button((const char*)u8"消滅"))
@@ -1302,6 +1323,13 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					ImGui::Text((const char*)u8"　よろける時の移動スピード StumbleMove=%.2f", _alphaList[operation].lock()->GetStumbleMove());
 					float stumbleMove = _alphaList[operation].lock()->GetStumbleMove();
 					ImGui::SliderFloat("StumbleMove", &stumbleMove, 0.1f, 1.0f);
+					// ボスフラグ
+					std::string b;
+					if (_alphaList[operation].lock()->GetBossFlg())b = "true";
+					else { b = "flase"; }
+					ImGui::Text((const char*)u8"　ボスフラグ BossFlg=%s", b.c_str());
+					int boss = _alphaList[operation].lock()->GetBossFlg();
+					ImGui::SliderInt("BossFlg", &boss, 0, 1);
 					// 前方方向
 					ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", _alphaList[operation].lock()->GetForward().x, _alphaList[operation].lock()->GetForward().y, _alphaList[operation].lock()->GetForward().z);
 
@@ -1316,6 +1344,11 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					_alphaList[operation].lock()->SetLeaveDist(leaveDist);
 					_alphaList[operation].lock()->SetAttackSphereSize(attackSphere);
 					_alphaList[operation].lock()->SetStumbleMove(stumbleMove);
+					_alphaList[operation].lock()->SetBossFlg(boss);
+					if (boss && (m_camera.lock()->GetBossTarget().expired() || _alphaList[operation].lock()->GetID() != m_camera.lock()->GetBossTarget().lock()->GetID()))
+					{
+						m_camera.lock()->SetBossTarget(_alphaList[operation].lock());
+					}
 
 					// 消滅
 					if (ImGui::Button((const char*)u8"消滅"))
@@ -1405,6 +1438,13 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					ImGui::Text((const char*)u8"　よろける時の移動スピード StumbleMove=%.2f", m_golem.lock()->GetStumbleMove());
 					float stumbleMove = m_golem.lock()->GetStumbleMove();
 					ImGui::SliderFloat("StumbleMove", &stumbleMove, 0.1f, 1.0f);
+					// ボスフラグ
+					std::string b;
+					if (m_golem.lock()->GetBossFlg())b = "true";
+					else { b = "flase"; }
+					ImGui::Text((const char*)u8"　ボスフラグ BossFlg=%s", b.c_str());
+					int boss = m_golem.lock()->GetBossFlg();
+					ImGui::SliderInt("BossFlg", &boss, 0, 1);
 					// 前方方向
 					ImGui::Text((const char*)u8"　前方方向 x=%.2f,y=%.2f,z=%.2f", m_golem.lock()->GetForward().x, m_golem.lock()->GetForward().y, m_golem.lock()->GetForward().z);
 
@@ -1421,6 +1461,11 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					m_golem.lock()->SetLeaveDist(leaveDist);
 					m_golem.lock()->SetAttackSphereSize(attackSphere);
 					m_golem.lock()->SetStumbleMove(stumbleMove);
+					m_golem.lock()->SetBossFlg(boss);
+					if (boss && (m_camera.lock()->GetBossTarget().expired() || m_golem.lock()->GetID() != m_camera.lock()->GetBossTarget().lock()->GetID()))
+					{
+						m_camera.lock()->SetBossTarget(m_golem.lock());
+					}
 
 					// 消滅
 					if (ImGui::Button((const char*)u8"消滅"))
@@ -1903,6 +1948,9 @@ void ObjectManager::GameCameraWrite()
 	case GameCamera::CameraType::FixedType:
 		_cameraType = "Fixed";
 		break;
+	case GameCamera::CameraType::BossType:
+		_cameraType = "Boss";
+		break;
 	case GameCamera::CameraType::ClearType:
 		_cameraType = "Clear";
 		break;
@@ -2217,6 +2265,9 @@ void ObjectManager::EnemyWrite(int _stage, int _wave, std::string _fileName)
 		
 		// よろける時の移動スピード
 		_json[wave][_category][_num]["StumbleMove"] = enemy->GetStumbleMove();
+
+		// ボスフラグ
+		_json[wave][_category][_num]["Boss"] = enemy->GetBossFlg();
 
 		// 前方方向
 		_json[wave][_category][_num]["ForwardX"] = enemy->GetForward().x;
@@ -2837,6 +2888,22 @@ void ObjectManager::SetGameCameraParam(std::shared_ptr<StageManager> _stage)
 		float _FixedViewAngle = 0.0f;
 		_FixedViewAngle = obj["FixedViewAngle"];
 
+		// ボス登場ステート
+		// 座標
+		Math::Vector3 _BossPos = Math::Vector3::Zero;
+		_BossPos.x = obj["BossPosX"];
+		_BossPos.y = obj["BossPosY"];
+		_BossPos.z = obj["BossPosZ"];
+
+		// 角度
+		Math::Vector3 _BossAngle = Math::Vector3::Zero;
+		_BossAngle.x = obj["BossAngleX"];
+		_BossAngle.y = obj["BossAngleY"];
+
+		// 視野角
+		float _BossViewAngle = 0.0f;
+		_BossViewAngle = obj["BossViewAngle"];
+
 
 		// クリアステート
 		// 座標
@@ -2857,13 +2924,13 @@ void ObjectManager::SetGameCameraParam(std::shared_ptr<StageManager> _stage)
 
 		// セット
 		std::shared_ptr<GameCamera> camera = std::make_shared<GameCamera>();
-		camera->SetPosList(_PlayerPos, _FixedPos, _ClearPos);
+		camera->SetPosList(_PlayerPos, _FixedPos, _BossPos, _ClearPos);
 		camera->SetChangeClearAngle(_ChangeClearAngle);
 		camera->SetChangeShakeAngle(_shakeAngle);
 		camera->SetDefaultShakeMove(_move);
 		camera->SetDefaultShakeTime(_shakeTime);
-		camera->SetDegAngList(_PlayerAngle, _FixedAngle, _ClearAngle);
-		camera->SetViewAngList(_PlayerViewAngle, _FixedViewAngle, _ClearViewAngle);
+		camera->SetDegAngList(_PlayerAngle, _FixedAngle, _BossAngle, _ClearAngle);
+		camera->SetViewAngList(_PlayerViewAngle, _FixedViewAngle, _BossViewAngle, _ClearViewAngle);
 		camera->SetName(_name);
 		camera->SetObjManager(shared_from_this());
 		camera->SetStageManager(_stage);
@@ -3487,6 +3554,10 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 					float _stumbleMove = 0.0f;
 					_stumbleMove = obj["StumbleMove"];
 
+					// ボスフラグ
+					bool _boss = false;
+					_boss = obj["Boss"];
+
 					// 前方方向
 					Math::Vector3 _forward = Math::Vector3::Zero;
 					_forward.x = obj["ForwardX"];
@@ -3536,6 +3607,7 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 					enemy->SetLeaveDist(_leaveDist);
 					enemy->SetAttackSphereSize(_atkSphereSize);
 					enemy->SetStumbleMove(_stumbleMove);
+					enemy->SetBossFlg(_boss);
 					enemy->SetForward(_forward);
 					enemy->SetTarget(m_player.lock());
 					enemy->SetName(_name);
@@ -3545,6 +3617,9 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 					m_id++;
 
 					SceneManager::Instance().AddEnemy(enemy);
+
+					// ボスセット
+					if (_boss)m_camera.lock()->SetBossTarget(enemy);
 
 					// HPUI
 					SetEnemyHPParam(enemy);

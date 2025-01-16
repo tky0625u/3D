@@ -20,7 +20,8 @@
 				"PosZ": 27.101999282836914,
 				"Size": 1.5,
 				"Speed": 1.0,
-				"Stamina": 50
+				"Stamina": 50,
+				"Boss": false
 			}
 		}
 	},
@@ -45,7 +46,8 @@
 				"PosZ": 27.101999282836914,
 				"Size": 1.5,
 				"Speed": 1.0,
-				"Stamina": 50
+				"Stamina": 50,
+				"Boss": false
 			},
 			"3Bone": {
 				"AppealEffectSize": 3.0,
@@ -66,7 +68,8 @@
 				"PosZ": 22.624000549316406,
 				"Size": 1.5,
 				"Speed": 1.0,
-				"Stamina": 50
+				"Stamina": 50,
+				"Boss": false
 			},
 			"4Bone": {
 				"AppealEffectSize": 3.0,
@@ -87,7 +90,8 @@
 				"PosZ": 22.624000549316406,
 				"Size": 1.5,
 				"Speed": 1.0,
-				"Stamina": 50
+				"Stamina": 50,
+				"Boss": false
 			}
 		}
 	}

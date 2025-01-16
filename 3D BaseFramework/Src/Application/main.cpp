@@ -365,12 +365,20 @@ void Application::ImGuiProcess()
 	static bool _RFlg = true;
 	static bool _keyFlg = false;
 
-	if (GetAsyncKeyState('1') & 0x8000)
+	if (GetAsyncKeyState('L') & 0x8000)
 	{
 		if (!_keyFlg)
 		{
-			if (_RFlg)_RFlg = false;
-			else if (!_RFlg)_RFlg = true;
+			if (_RFlg)
+			{
+				_RFlg = false;
+				ShowCursor(true);
+			}
+			else if (!_RFlg)
+			{
+				_RFlg = true;
+				ShowCursor(false);
+			}
 			_keyFlg = true;
 		}
 	}

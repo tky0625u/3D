@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+// シーン基底
 #include"../BaseScene/BaseScene.h"
 
 class TitleScene : public BaseScene
@@ -9,7 +10,7 @@ public :
 	TitleScene() {}
 	~TitleScene() {}
 
-	void Update()override;
+	// デバッグウィンドウ
 	void DebugObject()override;
 
 private :

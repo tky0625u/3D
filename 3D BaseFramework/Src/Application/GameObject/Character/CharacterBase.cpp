@@ -56,6 +56,8 @@ void CharacterBase::PostUpdate()
 	// 横方向当たり判定
 	BumpCheck();
 
+	if (SceneManager::Instance().m_stop)return;
+
 	//アニメーションの更新
 	if (m_anime != m_beforeAnime)
 	{

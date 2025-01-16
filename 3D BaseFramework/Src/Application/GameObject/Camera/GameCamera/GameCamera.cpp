@@ -8,6 +8,8 @@
 #include"../../StageManager.h"
 // プレイヤー
 #include"../../Character/Player/Player.h"
+// 敵基底
+#include"../../Character/Enemy/EnemyBase.h"
 // 魔法陣
 #include"../../Stage/MagicPolygon/MagicPolygon.h"
 
@@ -19,13 +21,13 @@ void GameCamera::Update()
 	{
 		if (!key)
 		{
-			if (showFlg)
+			if (cursorMoveFlg)
 			{
-				showFlg = false;
+				cursorMoveFlg = false;
 			}
 			else
 			{
-				showFlg = true;
+				cursorMoveFlg = true;
 			}
 			key = true;
 		}
@@ -51,23 +53,13 @@ void GameCamera::Update()
 
 		m_PosList[m_CameraType] += dir * 1.0f;
 
-		if (!(GetAsyncKeyState(VK_LSHIFT) & 0x8000))
-		{
-			//UpdateRotateByMouse();
-			m_spCamera->SetProjectionMatrix(m_ViewAngList[m_CameraType]);
-		}
-
 	}
 
-
-	ShowCursor(showFlg);
 	//=============================================================================================
 }
 
 void GameCamera::PostUpdate()
 {
-	// デバッグ
-	if (showFlg)return;
 	if (!m_spCamera) { return; }
 
 	// ステート切替
@@ -114,6 +106,9 @@ void GameCamera::PostUpdate()
 
 	m_spCamera->SetCameraMatrix(m_mWorld);
 	m_spCamera->SetProjectionMatrix(m_ViewAngList[m_CameraType]);
+	
+	if (cursorMoveFlg)return;
+
 	SetCursorPos(m_FixMousePos.x, m_FixMousePos.y);
 }
 
@@ -131,6 +126,9 @@ void GameCamera::Init()
 
 void GameCamera::UpdateRotateByMouse()
 {
+	// デバッグ
+	if (cursorMoveFlg)return;
+
 	// マウスでカメラを回転させる処理
 	POINT _nowPos;
 	GetCursorPos(&_nowPos);
@@ -190,24 +188,27 @@ void GameCamera::HitCheck()
 	}
 }
 
-void GameCamera::SetDegAngList(Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _clear)
+void GameCamera::SetDegAngList(Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _boss, Math::Vector3 _clear)
 {
 	m_DegAngList.push_back(_player);
 	m_DegAngList.push_back(_fixed);
+	m_DegAngList.push_back(_boss);
 	m_DegAngList.push_back(_clear);
 }
 
-void GameCamera::SetPosList(Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _clear)
+void GameCamera::SetPosList(Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _boss, Math::Vector3 _clear)
 {
 	m_PosList.push_back(_player);
 	m_PosList.push_back(_fixed);
+	m_PosList.push_back(_boss);
 	m_PosList.push_back(_clear);
 }
 
-void GameCamera::SetViewAngList(float _player, float _fixed, float _clear)
+void GameCamera::SetViewAngList(float _player, float _fixed, float _boss, float _clear)
 {
 	m_ViewAngList.push_back(_player);
 	m_ViewAngList.push_back(_fixed);
+	m_ViewAngList.push_back(_boss);
 	m_ViewAngList.push_back(_clear);
 }
 
@@ -216,6 +217,8 @@ void GameCamera::PlayerCamera::Enter(std::shared_ptr<GameCamera> owner)
 {
 	owner->m_CameraType = GameCamera::CameraType::PlayerType;
 	owner->m_flow       = GameCamera::Flow::UpdateType;
+
+	ChangeState(owner);
 }
 
 void GameCamera::PlayerCamera::Update(std::shared_ptr<GameCamera> owner)
@@ -239,6 +242,8 @@ void GameCamera::PlayerCamera::Update(std::shared_ptr<GameCamera> owner)
 	
 	// 行列合成
 	owner->m_mWorld = _trans * _rot * _targetMat;
+
+	ChangeState(owner);
 }
 
 void GameCamera::PlayerCamera::Exit(std::shared_ptr<GameCamera> owner)
@@ -247,7 +252,7 @@ void GameCamera::PlayerCamera::Exit(std::shared_ptr<GameCamera> owner)
 
 void GameCamera::PlayerCamera::ChangeState(std::shared_ptr<GameCamera> owner)
 {
-
+	if (!owner->m_BossTarget.expired() && owner->m_BossTarget.lock()->GetActionType() == EnemyBase::Action::AppealType)owner->BossChange();
 }
 
 void GameCamera::PlayerCamera::Shake(std::shared_ptr<GameCamera> owner,Math::Matrix& _trans)
@@ -313,6 +318,45 @@ void GameCamera::FixedCamera::ChangeState(std::shared_ptr<GameCamera> owner)
 		owner->m_flow = GameCamera::Flow::EnterType;
 		return;
 	}
+}
+//=================================================================================================
+
+
+// Boss============================================================================================
+void GameCamera::BossCamera::Enter(std::shared_ptr<GameCamera> owner)
+{
+	owner->m_CameraType = GameCamera::CameraType::BossType;
+	owner->m_flow = GameCamera::Flow::UpdateType;
+}
+
+void GameCamera::BossCamera::Update(std::shared_ptr<GameCamera> owner)
+{
+	// ボス
+	Math::Matrix _bossMat = Math::Matrix::Identity;
+	if (!owner->m_BossTarget.expired())
+	{
+		// ボス行列
+		_bossMat = owner->m_BossTarget.lock()->GetMatrix();
+	}
+
+	// 回転
+	Math::Matrix _rot = owner->GetRotationMatrix();
+	// 座標
+	Math::Matrix _trans = Math::Matrix::CreateTranslation(owner->GetNowPos());
+
+	// 行列合成
+	owner->m_mWorld = _trans * _rot * _bossMat;
+
+	ChangeState(owner);
+}
+
+void GameCamera::BossCamera::Exit(std::shared_ptr<GameCamera> owner)
+{
+}
+
+void GameCamera::BossCamera::ChangeState(std::shared_ptr<GameCamera> owner)
+{
+	if (owner->m_BossTarget.lock()->GetActionType() != EnemyBase::Action::AppealType)owner->PlayerChange();
 }
 //=================================================================================================
 

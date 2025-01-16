@@ -1,31 +1,48 @@
 ﻿#include "Sword.h"
+
+// キャラクター基底
 #include"../../Character/CharacterBase.h"
 
 void Sword::Update()
 {	
-	if (m_traject.m_trajectPolyGon != nullptr)
+	// 軌跡行列追加
+	if (m_traject.m_trajectPolyGon != nullptr && m_traject.m_trajectMatList.size() == TrajectType::Num) // ポリゴンが無い&リストの数が少ない場合は追加しない
 	{
-		for (auto& _mat : m_traject.m_trajectMatList)
+		// ２個目から始める　※１個目は既に追加されているため
+		for (int i = TrajectType::TransFormType; i < m_traject.m_trajectMatList.size(); ++i)
 		{
-			if (_mat == Math::Matrix::Identity)break;
-
-			m_traject.m_trajectPolyGon->AddPoint(_mat);
+			m_traject.m_trajectPolyGon->AddPoint(m_traject.m_trajectMatList[i]);
 		}
 	}
 
 	WeaponBase::Update();
 
+	// 持ち主
 	std::shared_ptr<CharacterBase> _target = nullptr;
 	if (m_target.expired() == false)_target = m_target.lock();
+	// 行列
+	// 拡縮
 	Math::Matrix _scale = Math::Matrix::CreateScale(m_size);
+	// 座標
 	Math::Matrix _trans = Math::Matrix::CreateTranslation(m_pos);
+	// 持ち主行列
 	Math::Matrix _targetMat = _target->GetSwordMat();
+	// 行列合成
 	m_mWorld = _scale * _trans * _targetMat;
 }
 
 void Sword::PostUpdate()
 {
+	if (m_traject.m_trajectMatList.size() < TrajectType::Num)return;
 
+	// リスト削除
+	auto _traject = m_traject.m_trajectMatList.begin();
+
+	// リストの数が１になるまで削除
+	while (m_traject.m_trajectMatList.size() > TrajectType::StartType)
+	{
+		_traject = m_traject.m_trajectMatList.erase(_traject);
+	}
 }
 
 void Sword::DrawUnLit()
@@ -42,55 +59,47 @@ void Sword::Init()
 
 	m_trajeTex = std::make_shared<KdTexture>();
 	m_trajeTex->Load("Asset/Textures/Weapon/Trajectory/SwordLine01.png");
-
-	for (auto& _mat : m_traject.m_trajectMatList)_mat = Math::Matrix::Identity;
 }
 
 void Sword::MakeTraject()
 {
-	Traject _traject;
-
-	std::shared_ptr<KdTrailPolygon> _trajePoly = std::make_shared<KdTrailPolygon>();
-	_trajePoly->SetMaterial(m_trajeTex);
-	_trajePoly->SetLength(m_trajePointNUM);
-	_traject.m_trajectPolyGon = _trajePoly;
-	m_traject = _traject;
-	m_beforeModelTopPos = GetModelTop().Translation();
+	// ポリゴン生成
+	m_traject.m_trajectPolyGon = std::make_shared<KdTrailPolygon>();
+	// テクスチャセット
+	m_traject.m_trajectPolyGon->SetMaterial(m_trajeTex);
+	// 軌跡の長さセット
+	m_traject.m_trajectPolyGon->SetLength(m_trajePointNUM);
+	// リスト追加
+	m_traject.m_trajectMatList.push_back(GetModelTop());
+	// 軌跡行列追加
+	m_traject.m_trajectPolyGon->AddPoint(GetModelTop());
 }
 
 void Sword::ClearTraject()
 {
+	// ポリゴンとリストのリセット
 	m_traject.m_trajectPolyGon = nullptr;
-	for (auto& _mat : m_traject.m_trajectMatList)_mat = Math::Matrix::Identity;
+	m_traject.m_trajectMatList.clear();
 }
 
 void Sword::SetTrajectMat()
 {
-	if (m_beforeModelTopPos == GetModelTop().Translation())return;
-	
-	Math::Vector3 _ModelTopPos = GetModelTop().Translation();
-	Math::Vector3 _BM = (1.0f - 0.5f) * m_beforeModelTopPos + 0.5f * _ModelTopPos;
-	Math::Vector3 _targetDir = m_target.lock()->GetPos() - _BM;
-	_targetDir *= -1.0f;
-	_targetDir.Normalize();
-	Math::Vector3 _CenterPos = _BM + (0.25f * _targetDir);
-	Math::Vector3 _BC = (1.0f - 0.5f) * m_beforeModelTopPos + 0.5f * _CenterPos;
-	Math::Vector3 _CM = (1.0f - 0.5f) * _CenterPos + 0.5f * _ModelTopPos;
-	Math::Vector3 _pos = (1.0f - 0.5f) * _BC + 0.5f * _CM;
+	// リスト追加
+	m_traject.m_trajectMatList.push_back(GetModelTop());
 
-	Math::Vector3 _t = DirectX::XMVectorCatmullRom(m_beforeModelTopPos, _BC, _CM, _ModelTopPos, 0.5f);
+	// リストの数が少なかったら早期リターン
+	if (m_traject.m_trajectMatList.size() < TrajectType::Num)return;
 
-	for (int i=0;i<5;++i)
-	{
-		Math::Matrix _trans;
-		if (i == 0)_trans = Math::Matrix::CreateTranslation(m_beforeModelTopPos);
-		else if (i == 1)_trans = Math::Matrix::CreateTranslation(_BC);
-		else if (i == 2)_trans = Math::Matrix::CreateTranslation(_t);
-		else if (i == 3)_trans = Math::Matrix::CreateTranslation(_CM);
-		else { _trans = Math::Matrix::CreateTranslation(_ModelTopPos); }
+	// １個目と２個目の中間点
+	Math::Vector3 _ST = Math::Vector3::Zero;
+	_ST = ((1.0f - 0.5f) * m_traject.m_trajectMatList[TrajectType::StartType].Translation()) + (0.5f * m_traject.m_trajectMatList[TrajectType::TransFormType].Translation());
+	// ２個目と３個目の中間点
+	Math::Vector3 _TE = Math::Vector3::Zero;
+	_TE = ((1.0f - 0.5f) * m_traject.m_trajectMatList[TrajectType::TransFormType].Translation()) + (0.5f * m_traject.m_trajectMatList[TrajectType::EndType].Translation());
+	// ２個目の補完後の座標
+	Math::Vector3 _transform = Math::Vector3::Zero;
+	_transform = ((1.0f - 0.5f) * _ST) + (0.5f * _TE);
 
-		m_traject.m_trajectMatList[i] = _trans;
-	}
-
-	m_beforeModelTopPos = _ModelTopPos;
+	// ２個目を補完した座標に置き換える
+	m_traject.m_trajectMatList[TrajectType::TransFormType].Translation(_transform);
 }

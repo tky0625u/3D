@@ -20,7 +20,8 @@
 				"PosZ": 40.0,
 				"Size": 1.5,
 				"Speed": 1.0,
-				"Stamina": 50
+				"Stamina": 50,
+				"Boss": false
 			}
 		},
 		"Bone": {
@@ -43,7 +44,8 @@
 				"PosZ": 25.0,
 				"Size": 1.5,
 				"Speed": 1.0,
-				"Stamina": 50
+				"Stamina": 50,
+				"Boss": false
 			},
 			"1Bone": {
 				"AppealEffectSize": 3.0,
@@ -64,7 +66,8 @@
 				"PosZ": 25.0,
 				"Size": 1.5,
 				"Speed": 1.0,
-				"Stamina": 50
+				"Stamina": 50,
+				"Boss": false
 			}
 		}
 	},
@@ -89,7 +92,8 @@
 				"PosZ": 40.04347610473633,
 				"Size": 1.5,
 				"Speed": 1.0,
-				"Stamina": 50
+				"Stamina": 50,
+				"Boss": false
 			},
 			"1BoneAlpha": {
 				"AppealEffectSize": 3.0,
@@ -110,7 +114,8 @@
 				"PosZ": 40.04347610473633,
 				"Size": 1.5,
 				"Speed": 1.0,
-				"Stamina": 50
+				"Stamina": 50,
+				"Boss": false
 			}
 		},
 		"Bone": {
@@ -133,7 +138,8 @@
 				"PosZ": 25.0,
 				"Size": 1.5,
 				"Speed": 1.0,
-				"Stamina": 50
+				"Stamina": 50,
+				"Boss": false
 			},
 			"3Bone": {
 				"AppealEffectSize": 3.0,
@@ -154,7 +160,8 @@
 				"PosZ": 25.0,
 				"Size": 1.5,
 				"Speed": 1.0,
-				"Stamina": 50
+				"Stamina": 50,
+				"Boss": false
 			}
 		}
 	}

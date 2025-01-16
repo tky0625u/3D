@@ -67,6 +67,7 @@ public:
 	void SetStumbleMove(float _move)                { m_StumbleMove = _move; }        // よろける時の移動スピード
 	void SetFlow(UINT _flow)                        { m_flow = _flow; }               // 現在のステートの実行関数タイプ
 	void SetColorLightFlg(bool _flg)                { m_ColorLightFlg = _flg; }       // 攻撃範囲フラグ
+	void SetBossFlg(bool _bossFlg)                  { m_bossFlg = _bossFlg; }         // ボスフラグ
 	//=========================================================================
 
 	// ゲッター================================================================
@@ -94,6 +95,8 @@ public:
 	const bool                   GetGroundFlg()          const { return m_groundFlg; }
 	// 避けて移動する対象
 	const bool                   GetLeave()              const { return m_leaveEnemy.expired(); }
+	// ボスフラグ
+	const bool                   GetBossFlg()            const { return m_bossFlg; }
 	//=========================================================================
 
 protected:
@@ -117,6 +120,8 @@ protected:
 	bool                               m_ColorLightFlg    = false;
 	// 地面フラグ
 	bool                               m_groundFlg        = true;
+	// ボスフラグ
+	bool                               m_bossFlg          = false;
 
 protected:
 

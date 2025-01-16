@@ -1,10 +1,12 @@
 ﻿#pragma once
 #include"../CameraBase.h"
 
-// 魔法陣
-class MagicPolygon;
 // ステージマネージャ
 class StageManager;
+// 敵基底
+class EnemyBase;
+// 魔法陣
+class MagicPolygon;
 
 class GameCamera :public CameraBase,public std::enable_shared_from_this<GameCamera>
 {
@@ -17,6 +19,7 @@ public:
 	{
 		PlayerType, // プレイヤー
 		FixedType,  // テレポート解放
+		BossType,   // ボス登場
 		ClearType   // ゲームクリア 
 	};
 
@@ -32,10 +35,11 @@ public:
 	void SetDegAng           (Math::Vector3 _deg)                          { m_DegAngList[m_CameraType] = _deg; }
 	void SetPos              (Math::Vector3 _pos)                          { m_PosList[m_CameraType] = _pos; }
 	void SetViewAng          (float _viewAng)                              { m_ViewAngList[m_CameraType] = _viewAng; }
-	void SetDegAngList       (Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _clear);
-	void SetPosList          (Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _clear);
-	void SetViewAngList      (float _player, float _fixed, float _clear);
+	void SetDegAngList       (Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _boss, Math::Vector3 _clear);
+	void SetPosList          (Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _boss, Math::Vector3 _clear);
+	void SetViewAngList      (float _player, float _fixed, float _boss, float _clear);
 	void SetFixedTarget      (std::shared_ptr<MagicPolygon> _Obj)          { m_FixedTarget = _Obj; }
+	void SetBossTarget       (std::shared_ptr<EnemyBase> _boss)            { m_BossTarget = _boss; }
 	void SetCameraType       (UINT _cameraType)                            { m_CameraType = _cameraType; }
 	void SetStageManager     (std::shared_ptr<StageManager> _stageManager) { m_stageManager = _stageManager; }
 	void SetShakeFlg         (bool _shakeFlg)                              { m_shakeFlg = _shakeFlg; }
@@ -58,6 +62,7 @@ public:
 	const Math::Vector3&                 GetNowPos()           const { return m_PosList[m_CameraType]; }
 	const Math::Vector3&                 GetNowDegAng()        const { return m_DegAngList[m_CameraType]; }
 	const std::weak_ptr<MagicPolygon>&   GetFixedTarget()      const { return m_FixedTarget; }
+	const std::weak_ptr<EnemyBase>&      GetBossTarget()       const { return m_BossTarget; }
 	const std::weak_ptr<Player>&         GetwpTarget()         const { return m_wpTarget; }
 	const float&                         GetNowViewAng()       const { return m_ViewAngList[m_CameraType]; }
 	const float&                         GetChangeClearAngle() const { return m_ChangeClearAngle; }
@@ -101,6 +106,13 @@ public:
 		m_flow = GameCamera::Flow::EnterType;
 		return;
 	}
+	void BossChange()
+	{
+		std::shared_ptr<BossCamera> _boss = std::make_shared<BossCamera>();
+		m_NextState = _boss;
+		m_flow = GameCamera::Flow::EnterType;
+		return;
+	}
 	void ClearChange() // クリア
 	{
 		std::shared_ptr<ClearCamera> _clear = std::make_shared<ClearCamera>();
@@ -114,6 +126,7 @@ private:
 	std::vector<Math::Vector3>     m_DegAngList;                            // それぞれのステートの角度
 	std::vector<float>             m_ViewAngList;                           // それぞれのステートの視野角
 	std::weak_ptr<MagicPolygon>    m_FixedTarget;                           // テレポート解放時のターゲット
+	std::weak_ptr<EnemyBase>       m_BossTarget;                            // ボス
 	std::weak_ptr<StageManager>    m_stageManager;                          // ステージマネージャ
 	float                          m_ChangeClearAngle = 0.0f;               // クリア時の回転角度変化量
 	float                          m_ChangeShakeAngle = 0.0f;               // 振動時のsinカーブ変化量
@@ -124,7 +137,7 @@ private:
 	bool                           m_shakeFlg         = false;              // カメラ振動フラグ
 
 	// デバッグ
-	bool showFlg = false; // マウスカーソル可視化フラグ
+	bool cursorMoveFlg = false; // マウスカーソル可視化フラグ
 
 private:
 
@@ -168,7 +181,7 @@ private:
 	{
 	public:
 		PlayerCamera()          {};
-		virtual ~PlayerCamera() {};
+		~PlayerCamera()override {};
 
 		void Enter (std::shared_ptr<GameCamera> owner)override;
 		void Update(std::shared_ptr<GameCamera> owner)override;
@@ -182,12 +195,13 @@ private:
 
 	};		  
 
+
 	// テレポート解放
 	class FixedCamera :public StateBase
 	{
 	public:
 		FixedCamera()          {};
-		virtual ~FixedCamera() {};
+		~FixedCamera()override {};
 
 		void Enter(std::shared_ptr<GameCamera> owner)override;
 		void Update(std::shared_ptr<GameCamera> owner)override;
@@ -199,12 +213,27 @@ private:
 
 	};
 
+	// ボス登場
+	class BossCamera :public StateBase
+	{
+	public:
+		BossCamera()          {};
+		~BossCamera()override {};
+
+		void Enter (std::shared_ptr<GameCamera> owner)override;
+		void Update(std::shared_ptr<GameCamera> owner)override;
+		void Exit  (std::shared_ptr<GameCamera> owner)override;
+
+		void ChangeState(std::shared_ptr<GameCamera> owner)override;
+	private:
+	};
+
 	// ゲームクリア
 	class ClearCamera :public StateBase
 	{
 	public:
 		ClearCamera()          {};
-		virtual ~ClearCamera() {};
+		~ClearCamera()override {};
 
 		void Enter(std::shared_ptr<GameCamera> owner)override;
 		void Update(std::shared_ptr<GameCamera> owner)override;
