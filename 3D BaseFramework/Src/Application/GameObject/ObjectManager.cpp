@@ -1512,6 +1512,8 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					{
 						for (auto& _normal : m_EnemyHPList[EnemyHPType::Normal])
 						{
+							if (_normal.expired())continue;
+
 							std::shared_ptr<Enemy_HP> _hp = _normal.lock();
 
 							// 位置
@@ -1543,6 +1545,8 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					{
 						for (auto& _boss : m_EnemyHPList[EnemyHPType::Boss])
 						{
+							if (_boss.expired())continue;
+
 							std::shared_ptr<Enemy_HP> _hp = _boss.lock();
 
 							// 位置
@@ -1567,6 +1571,8 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					{
 						for (auto& hp : category)
 						{
+							if (hp.expired())continue;
+
 							std::shared_ptr<Enemy_HP> _hp = hp.lock();
 
 							// 減少ゲージ減少開始時間
@@ -2339,38 +2345,57 @@ void ObjectManager::EnemyWrite(int _stage, int _wave, std::string _fileName)
 
 void ObjectManager::EnemyHPWrite()
 {
-	if (m_EnemyHPList[EnemyHPType::Normal][0].expired() && m_EnemyHPList[EnemyHPType::Boss][0].expired())return;
+	if (m_EnemyHPList[EnemyHPType::Normal].size() == 0 && m_EnemyHPList[EnemyHPType::Boss].size() == 0)return;
 
 	nlohmann::json _json;
+	// 前の状態のファイル
+	std::ifstream _oldFile("Asset/Json/Game/UI/Enemy/HP/HP.json");
+	if (_oldFile.is_open())
+	{
+		_oldFile >> _json;
+		_oldFile.close();
+	}
 
 	// 名前
 	_json["HP"]["Name"] = "HP";
-	
-	// 減少ゲージ減少開始時間
-	_json["HP"]["DownTime"] = m_EnemyHPList[0][0].lock()->GetDownTime();
-
-	// 減少ゲージ変化量
-	_json["HP"]["DownChange"] = m_EnemyHPList[0][0].lock()->GetDownChange();
 
 	// 通常==============================================================================
-	// 座標
-	_json["HP"]["NormalPosX"] = m_EnemyHPList[EnemyHPType::Normal][0].lock()->GetVector2Pos().x;
-	_json["HP"]["NormalPosY"] = m_EnemyHPList[EnemyHPType::Normal][0].lock()->GetVector2Pos().y;
-	
-	// 座標補正
-	_json["HP"]["Correction"] = m_EnemyHPList[EnemyHPType::Normal][0].lock()->GetPosXCorrection();
+	if (m_EnemyHPList[EnemyHPType::Normal].size() > 0)
+	{
+		// 座標
+		_json["HP"]["NormalPosX"] = m_EnemyHPList[EnemyHPType::Normal][0].lock()->GetVector2Pos().x;
+		_json["HP"]["NormalPosY"] = m_EnemyHPList[EnemyHPType::Normal][0].lock()->GetVector2Pos().y;
 
-	// 大きさ
-	_json["HP"]["NormalSize"] = m_EnemyHPList[EnemyHPType::Normal][0].lock()->GetSize();
+		// 座標補正
+		_json["HP"]["Correction"] = m_EnemyHPList[EnemyHPType::Normal][0].lock()->GetPosXCorrection();
+
+		// 大きさ
+		_json["HP"]["NormalSize"] = m_EnemyHPList[EnemyHPType::Normal][0].lock()->GetSize();
+
+		// 減少ゲージ減少開始時間
+		_json["HP"]["DownTime"] = m_EnemyHPList[EnemyHPType::Normal][0].lock()->GetDownTime();
+
+		// 減少ゲージ変化量
+		_json["HP"]["DownChange"] = m_EnemyHPList[EnemyHPType::Normal][0].lock()->GetDownChange();
+	}
 	//===================================================================================
 
-	// 通常==============================================================================
-	// 座標
-	_json["HP"]["BossPosX"] = m_EnemyHPList[EnemyHPType::Boss][0].lock()->GetVector2Pos().x;
-	_json["HP"]["BossPosY"] = m_EnemyHPList[EnemyHPType::Boss][0].lock()->GetVector2Pos().y;
+	// ボス==============================================================================
+	if (m_EnemyHPList[EnemyHPType::Boss].size() > 0)
+	{
+		// 座標
+		_json["HP"]["BossPosX"] = m_EnemyHPList[EnemyHPType::Boss][0].lock()->GetVector2Pos().x;
+		_json["HP"]["BossPosY"] = m_EnemyHPList[EnemyHPType::Boss][0].lock()->GetVector2Pos().y;
 
-	// 大きさ
-	_json["HP"]["BossSize"] = m_EnemyHPList[EnemyHPType::Boss][0].lock()->GetSize();
+		// 大きさ
+		_json["HP"]["BossSize"] = m_EnemyHPList[EnemyHPType::Boss][0].lock()->GetSize();
+
+		// 減少ゲージ減少開始時間
+		_json["HP"]["DownTime"] = m_EnemyHPList[EnemyHPType::Boss][0].lock()->GetDownTime();
+
+		// 減少ゲージ変化量
+		_json["HP"]["DownChange"] = m_EnemyHPList[EnemyHPType::Boss][0].lock()->GetDownChange();
+	}
 	//===================================================================================
 
 	// ファイルに保存
