@@ -254,8 +254,16 @@ private:
 	std::weak_ptr<Golem>                     m_golem;
 	// 骨色違い用弾リスト
 	std::vector<std::weak_ptr<BoneAlpha>>    m_BoneAlphaList;
+	
+	enum EnemyHPType
+	{
+		Normal,
+		Boss,
+		Num
+	};
+
 	// 敵HPリスト
-	std::vector<std::weak_ptr<Enemy_HP>>     m_EnemyHPList;
+	std::vector<std::weak_ptr<Enemy_HP>>     m_EnemyHPList[EnemyHPType::Num];
 	//=========================================================================
 
 	// オブジェクトのID

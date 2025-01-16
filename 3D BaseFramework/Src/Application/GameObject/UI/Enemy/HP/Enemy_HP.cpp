@@ -7,7 +7,6 @@
 
 void Enemy_HP::Update()
 {
-	if (m_camera.expired())return; // カメラが無かったら早期リターン
 	if (m_target.expired()) // ターゲットが消滅していたら
 	{
 		// 消滅
@@ -38,19 +37,14 @@ void Enemy_HP::Update()
 		if (m_rect[HP::down].width != m_rect[HP::hp].width)m_rect[HP::down].width -= m_DownChange; // 現在のHPまで徐々に減少
 	}
 
-	// 座標変換
-	Math::Vector3 _pos = { m_pos.x,m_pos.y,0.0f }; // 現在の座標
-	m_camera.lock()->WorkCamera()->ConvertWorldToScreenDetail(m_target.lock()->GetHPMat().Translation(), _pos); // 3D座標を2D座標に変換
-
-	if (_pos.z >= 0.0f)m_alpha = 1.0f; // Z軸が0以下=カメラの後ろだったら透明
-	else { m_alpha = -1.0f; }
-
-	m_pos = { _pos.x + m_posXCorrection,_pos.y };
-	m_color = { 1,1,1,m_alpha };
+	// ステート更新
+	m_state->Update(shared_from_this());
 }
 
 void Enemy_HP::DrawSprite()
 {
+	if (m_camera.lock()->GetCameraType() == GameCamera::CameraType::BossType)return;
+
 	for (int h = 0; h < HP::num; ++h)
 	{
 		KdShaderManager::Instance().m_spriteShader.DrawTex(m_pTex[h], (int)(m_pos.x - (m_MaxWidth / 2)), (int)m_pos.y, (int)m_rect[h].width * m_size, (int)m_rect[h].height * m_size, &m_rect[h], &m_color, m_pivot);
@@ -81,4 +75,41 @@ void Enemy_HP::Init()
 	m_rect[HP::down] = { 0,0,(long)m_MaxWidth,64 };
 	m_pTex[HP::down] = std::make_shared<KdTexture>();
 	m_pTex[HP::down]->Load("Asset/Textures/UI/Enemy/Enemy_HP_Downline.png");
+
+	if (m_target.lock()->GetBossFlg())
+	{
+		m_state = std::make_shared<Boss>();
+		m_flow = Flow::UpdateType;
+	}
+	else
+	{
+		m_state = std::make_shared<Normal>();
+		m_flow = Flow::UpdateType;
+	}
 }
+
+// Normal==============================================================================================================
+void Enemy_HP::Normal::Update(std::shared_ptr<Enemy_HP> owner)
+{
+	if (owner->m_camera.expired())return; // カメラが無かったら早期リターン
+
+	// 座標変換
+	Math::Vector3 _pos = { owner->m_pos.x,owner->m_pos.y,0.0f }; // 現在の座標
+	owner->m_camera.lock()->WorkCamera()->ConvertWorldToScreenDetail(owner->m_target.lock()->GetHPMat().Translation(), _pos); // 3D座標を2D座標に変換
+
+	if (_pos.z >= 0.0f)owner->m_alpha = 1.0f; // Z軸が0以下=カメラの後ろだったら透明
+	else { owner->m_alpha = -1.0f; }
+
+	owner->m_pos = { _pos.x + owner->m_posXCorrection,_pos.y };
+	owner->m_color = { 1,1,1,owner->m_alpha };
+}
+//=====================================================================================================================
+
+
+// Boss================================================================================================================
+void Enemy_HP::Boss::Update(std::shared_ptr<Enemy_HP> owner)
+{
+
+}
+//=====================================================================================================================
+

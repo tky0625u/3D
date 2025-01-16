@@ -78,17 +78,33 @@ void ObjectManager::SceneCheck()
 void ObjectManager::DeleteEnemyList()
 {
 	// HPバー
-	auto hp = m_EnemyHPList.begin();
+	// 通常
+	auto nHp = m_EnemyHPList[EnemyHPType::Normal].begin();
 
-	while (hp != m_EnemyHPList.end())
+	while (nHp != m_EnemyHPList[EnemyHPType::Normal].end())
 	{
-		if (hp->expired())
+		if (nHp->expired())
 		{
-			hp = m_EnemyHPList.erase(hp);
+			nHp = m_EnemyHPList[EnemyHPType::Normal].erase(nHp);
 		}
 		else
 		{
-			++hp;
+			++nHp;
+		}
+	}
+
+	// ボス
+	auto bHp = m_EnemyHPList[EnemyHPType::Boss].begin();
+
+	while (bHp != m_EnemyHPList[EnemyHPType::Boss].end())
+	{
+		if (bHp->expired())
+		{
+			bHp = m_EnemyHPList[EnemyHPType::Boss].erase(bHp);
+		}
+		else
+		{
+			++bHp;
 		}
 	}
 
@@ -1491,11 +1507,12 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 						EnemyHPWrite();
 					}
 
-					for (auto& enemy : m_EnemyHPList)
+					// 通常
+					if (ImGui::TreeNode((const char*)u8"通常"))
 					{
-						if (enemy.expired() == false)
+						for (auto& _normal : m_EnemyHPList[EnemyHPType::Normal])
 						{
-							std::shared_ptr<Enemy_HP> _hp = enemy.lock();
+							std::shared_ptr<Enemy_HP> _hp = _normal.lock();
 
 							// 位置
 							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f", _hp->GetVector2Pos().x, _hp->GetVector2Pos().y);
@@ -1513,6 +1530,45 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 							float _HPSize = _hp->GetSize();
 							ImGui::SliderFloat("Size", &_HPSize, 0.01f, 1.0f);
 
+							// セット
+							_hp->SetPos(_HPPos);
+							_hp->SetPosXCorrection(_HPPosCorrection);
+							_hp->SetSize(_HPSize);
+						}
+						ImGui::TreePop();
+					}
+
+					// ボス
+					if (ImGui::TreeNode((const char*)u8"ボス"))
+					{
+						for (auto& _boss : m_EnemyHPList[EnemyHPType::Boss])
+						{
+							std::shared_ptr<Enemy_HP> _hp = _boss.lock();
+
+							// 位置
+							ImGui::Text((const char*)u8"　位置 　　x=%.2f,y=%.2f", _hp->GetVector2Pos().x, _hp->GetVector2Pos().y);
+							Math::Vector2 _HPPos = _hp->GetVector2Pos();
+							ImGui::SliderFloat("PosX", &_HPPos.x, -640, 640);
+							ImGui::SliderFloat("PosY", &_HPPos.y, -360, 360);
+
+							// 大きさ
+							ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _hp->GetSize());
+							float _HPSize = _hp->GetSize();
+							ImGui::SliderFloat("Size", &_HPSize, 0.01f, 1.0f);
+
+							// セット
+							_hp->SetPos(_HPPos);
+							_hp->SetSize(_HPSize);
+						}
+						ImGui::TreePop();
+					}
+
+					for (auto& category : m_EnemyHPList)
+					{
+						for (auto& hp : category)
+						{
+							std::shared_ptr<Enemy_HP> _hp = hp.lock();
+
 							// 減少ゲージ減少開始時間
 							ImGui::Text((const char*)u8"　減少ゲージ減少開始時間　DownTime=%d", _hp->GetDownTime());
 							int _DownTime = _hp->GetDownTime();
@@ -1524,9 +1580,6 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 							ImGui::SliderFloat("DownChange", &_DownChange, 0.01f, 100.0f);
 
 							// セット
-							_hp->SetPos(_HPPos);
-							_hp->SetPosXCorrection(_HPPosCorrection);
-							_hp->SetSize(_HPSize);
 							_hp->SetDownTime(_DownTime);
 							_hp->SetDownChange(_DownChange);
 						}
@@ -2286,28 +2339,39 @@ void ObjectManager::EnemyWrite(int _stage, int _wave, std::string _fileName)
 
 void ObjectManager::EnemyHPWrite()
 {
-	if (m_EnemyHPList[0].expired())return;
+	if (m_EnemyHPList[EnemyHPType::Normal][0].expired() && m_EnemyHPList[EnemyHPType::Boss][0].expired())return;
 
 	nlohmann::json _json;
 
 	// 名前
 	_json["HP"]["Name"] = "HP";
 	
-	// 座標
-	_json["HP"]["PosX"] = m_EnemyHPList[0].lock()->GetVector2Pos().x;
-	_json["HP"]["PosY"] = m_EnemyHPList[0].lock()->GetVector2Pos().y;
-	
-	// 座標補正
-	_json["HP"]["Correction"] = m_EnemyHPList[0].lock()->GetPosXCorrection();
-
-	// 大きさ
-	_json["HP"]["Size"] = m_EnemyHPList[0].lock()->GetSize();
-
 	// 減少ゲージ減少開始時間
-	_json["HP"]["DownTime"] = m_EnemyHPList[0].lock()->GetDownTime();
+	_json["HP"]["DownTime"] = m_EnemyHPList[0][0].lock()->GetDownTime();
 
 	// 減少ゲージ変化量
-	_json["HP"]["DownChange"] = m_EnemyHPList[0].lock()->GetDownChange();
+	_json["HP"]["DownChange"] = m_EnemyHPList[0][0].lock()->GetDownChange();
+
+	// 通常==============================================================================
+	// 座標
+	_json["HP"]["NormalPosX"] = m_EnemyHPList[EnemyHPType::Normal][0].lock()->GetVector2Pos().x;
+	_json["HP"]["NormalPosY"] = m_EnemyHPList[EnemyHPType::Normal][0].lock()->GetVector2Pos().y;
+	
+	// 座標補正
+	_json["HP"]["Correction"] = m_EnemyHPList[EnemyHPType::Normal][0].lock()->GetPosXCorrection();
+
+	// 大きさ
+	_json["HP"]["NormalSize"] = m_EnemyHPList[EnemyHPType::Normal][0].lock()->GetSize();
+	//===================================================================================
+
+	// 通常==============================================================================
+	// 座標
+	_json["HP"]["BossPosX"] = m_EnemyHPList[EnemyHPType::Boss][0].lock()->GetVector2Pos().x;
+	_json["HP"]["BossPosY"] = m_EnemyHPList[EnemyHPType::Boss][0].lock()->GetVector2Pos().y;
+
+	// 大きさ
+	_json["HP"]["BossSize"] = m_EnemyHPList[EnemyHPType::Boss][0].lock()->GetSize();
+	//===================================================================================
 
 	// ファイルに保存
 	std::ofstream _file("Asset/Json/Game/UI/Enemy/HP/HP.json");
@@ -3643,20 +3707,35 @@ void ObjectManager::SetEnemyHPParam(std::shared_ptr<EnemyBase> _enemy)
 		ifs >> _json;
 	}
 
+	std::vector<std::weak_ptr<Enemy_HP>> _normal;
+	std::vector<std::weak_ptr<Enemy_HP>> _boss;
+
 	for (auto& obj : _json)
 	{
-		// 座標
 		Math::Vector2 _pos = Math::Vector2::Zero;
-		_pos.x = obj["PosX"];
-		_pos.y = obj["PosY"];
-
-		// 位置補正
 		float _posCorrection = 0.0f;
-		_posCorrection = obj["Correction"];
-
-		// 大きさ
 		float _size = 1.0f;
-		_size = obj["Size"];
+		if (_enemy->GetBossFlg())
+		{
+			// 座標
+			_pos.x = obj["BossPosX"];
+			_pos.y = obj["BossPosY"];
+
+			// 大きさ
+			_size = obj["BossSize"];
+		}
+		else
+		{
+			// 座標
+			_pos.x = obj["NormalPosX"];
+			_pos.y = obj["NormalPosY"];
+
+			// 大きさ
+			_size = obj["NormalSize"];
+
+			// 位置補正
+			_posCorrection = obj["Correction"];
+		}
 
 		// 減少ゲージ減少開始時間
 		int _DownTime = 1;
@@ -3684,9 +3763,18 @@ void ObjectManager::SetEnemyHPParam(std::shared_ptr<EnemyBase> _enemy)
 		hp->Init();
 		m_id++;
 
-		m_EnemyHPList.push_back(hp);
+		if (_enemy->GetBossFlg())
+		{
+			_boss.push_back(hp);
+		}
+		else
+		{
+			_normal.push_back(hp);
+		}
 		SceneManager::Instance().AddEnemyUI(hp);
 	}
+	m_EnemyHPList[EnemyHPType::Normal] = _normal;
+	m_EnemyHPList[EnemyHPType::Boss] = _boss;
 
 	ifs.close();
 }

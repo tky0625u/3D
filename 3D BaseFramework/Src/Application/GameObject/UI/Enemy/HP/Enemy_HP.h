@@ -8,7 +8,7 @@ class GameCamera;
 // 敵基底
 class EnemyBase;
 
-class Enemy_HP :public UIBase
+class Enemy_HP :public UIBase,public std::enable_shared_from_this<Enemy_HP>
 {
 public:
 	Enemy_HP() {}
@@ -55,4 +55,46 @@ private:
 	float                      m_MaxWidth    = 0.0f;    // 最大幅
 	float                      m_alpha       = 1.0f;    // アルファ値
 	float                      m_posXCorrection = 0.0f; // X軸補正
+
+private:
+
+	//////////////////////
+	///ステートパターン///
+	//////////////////////
+
+	// ステート基底
+	class StateBase
+	{
+	public:
+		StateBase() {};
+		virtual ~StateBase() {};
+
+		virtual void Update(std::shared_ptr<Enemy_HP> owner) {};
+	};
+
+	// 通常
+	class Normal :public StateBase
+	{
+	public:
+		Normal() {};
+		~Normal()override {};
+
+		void Update(std::shared_ptr<Enemy_HP> owner)override;
+
+	private:
+	};
+
+	// ボス
+	class Boss :public StateBase
+	{
+	public:
+		Boss() {};
+		~Boss()override {};
+
+		void Update(std::shared_ptr<Enemy_HP> owner)override;
+
+	private:
+	};
+
+	std::shared_ptr<StateBase> m_state = nullptr;
 };

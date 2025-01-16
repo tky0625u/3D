@@ -4,8 +4,11 @@
 		"DownTime": 60,
 		"DownChange": 15.0,
 		"Name": "HP",
-		"PosX": 395.9914245605469,
-		"PosY": 113.52346801757813,
-		"Size": 0.23399999737739563
+		"NormalPosX": 395.9914245605469,
+		"NormalPosY": 113.52346801757813,
+		"NormalSize": 0.23399999737739563,
+		"BossPosX": 0.0,
+		"BossPosY": -160.0,
+		"BossSize": 1.0
 	}
 }
