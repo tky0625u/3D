@@ -243,7 +243,7 @@ void Player::StateBase::AttackHit(std::shared_ptr<Player> owner)
 		// 敵
 		for (auto& enemy : SceneManager::Instance().GetEnemyList())
 		{
-			if (owner->m_ParryID != -1 && enemy->GetID() != owner->m_ParryID)continue; // パリィした場合IDがパリィした敵と一致しなかった場合
+			if (owner->m_ParryID != 0 && enemy->GetID() != owner->m_ParryID)continue; // パリィした場合IDがパリィした敵と一致しなかった場合
 			if (enemy->GetParam().Hp <= 0 || enemy->GetActionType() == EnemyBase::Action::AppealType || enemy->GetinviTime() > 0)continue; // 敵が攻撃を受けない状態の場合
 			if (!enemy->Intersects(sword, &retSphereList))continue; // 当たらなかった場合
 			
@@ -823,7 +823,7 @@ void Player::Counter::Update(std::shared_ptr<Player> owner)
 	// アニメーションが終了したら
 	if (owner->GetIsAnimator())
 	{
-		owner->m_ParryID = -1; // 対象IDをリセット
+		owner->m_ParryID = 0; // 対象IDをリセット
 
 		// Idol
 		owner->IdolChange();
@@ -886,7 +886,7 @@ void Player::Counter::AttackHit(std::shared_ptr<Player> owner)
 	sphereInfo.m_sphere.Center = owner->GetSword().lock()->GetModelBottom().Translation();
 	sphereInfoList.push_back(sphereInfo);
 
-	for (int i = 0; i < sphereInfoList.size(); ++i)
+	for (unsigned int i = 0; i < sphereInfoList.size(); ++i)
 	{
 		// 半径
 		sphereInfoList[i].m_sphere.Radius = owner->GetSword().lock()->GetAttackSphereSize();
@@ -896,7 +896,7 @@ void Player::Counter::AttackHit(std::shared_ptr<Player> owner)
 
 	std::list<KdCollider::CollisionResult> retSphereList;
 
-	for (int i = 0; i < sphereInfoList.size(); ++i)
+	for (unsigned int i = 0; i < sphereInfoList.size(); ++i)
 	{
 		// 攻撃判定
 		if (!m_CounterEnemy.lock()->Intersects(sphereInfoList[i], &retSphereList))continue;
@@ -1312,7 +1312,7 @@ void Player::Parry::Update(std::shared_ptr<Player> owner)
 	if (owner->GetIsAnimator())
 	{
 		// IDをリセット
-		owner->m_ParryID = -1;
+		owner->m_ParryID = 0;
 
 		// Idol
 		owner->IdolChange();
@@ -1365,7 +1365,7 @@ void Player::Parry::ChangeState(std::shared_ptr<Player> owner)
 	if (owner->m_keyType & Player::KeyType::MoveKey)
 	{
 		// IDリセット
-		owner->m_ParryID = -1;
+		owner->m_ParryID = 0;
 
 		std::shared_ptr<Run> _run = std::make_shared<Run>();
 		owner->m_NextState = _run;
@@ -1378,7 +1378,7 @@ void Player::Parry::ChangeState(std::shared_ptr<Player> owner)
 	else if (owner->m_keyType & Player::KeyType::GuardKey)
 	{
 		// IDリセット
-		owner->m_ParryID = -1;
+		owner->m_ParryID = 0;
 
 		std::shared_ptr<Guard> _guard = std::make_shared<Guard>();
 		owner->m_NextState = _guard;
@@ -1392,7 +1392,7 @@ void Player::Parry::ChangeState(std::shared_ptr<Player> owner)
 	{
 		if (owner->m_param.Sm <= 0)return;
 		// IDリセット
-		owner->m_ParryID = -1;
+		owner->m_ParryID = 0;
 
 		std::shared_ptr<Roll> _roll = std::make_shared<Roll>();
 		owner->m_NextState = _roll;

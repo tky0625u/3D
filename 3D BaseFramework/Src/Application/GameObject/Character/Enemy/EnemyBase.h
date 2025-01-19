@@ -53,6 +53,13 @@ public:
 		m_NextActionType = EnemyBase::Action::HitType;
 		m_flow = EnemyBase::Flow::UpdateType;
 	}
+	virtual void CrushingChange() // 消滅
+	{
+		std::shared_ptr<Crushing> _crush = std::make_shared<Crushing>();
+		m_NextState = _crush;
+		m_NextActionType = EnemyBase::Action::CrushingType;
+		m_flow = KdGameObject::Flow::EnterType;
+	}
 	virtual void AttackChange(){};   // 攻撃
 	virtual void StumbleChange() {}; // よろけ
 	//=========================================================================
@@ -173,11 +180,11 @@ protected:
 	{
 	public:
 		Appeal() {};
-		~Appeal()override {};
+		virtual ~Appeal()override {};
 
-		void Enter (std::shared_ptr<EnemyBase> owner)override;
-		void Update(std::shared_ptr<EnemyBase> owner)override;
-		void Exit  (std::shared_ptr<EnemyBase> owner)override;
+		virtual void Enter (std::shared_ptr<EnemyBase> owner)override;
+		virtual void Update(std::shared_ptr<EnemyBase> owner)override;
+		virtual void Exit  (std::shared_ptr<EnemyBase> owner)override;
 
 		void Damage(std::shared_ptr<EnemyBase> owner, int _damage)override { return; }
 
@@ -248,11 +255,11 @@ protected:
 	{
 	public:
 		Crushing() {};
-		~Crushing()override {};
+		virtual ~Crushing()override {};
 
-		void Enter (std::shared_ptr<EnemyBase> owner)override;
-		void Update(std::shared_ptr<EnemyBase> owner)override;
-		void Exit  (std::shared_ptr<EnemyBase> owner)override;
+		virtual void Enter (std::shared_ptr<EnemyBase> owner)override;
+		virtual void Update(std::shared_ptr<EnemyBase> owner)override;
+		virtual void Exit  (std::shared_ptr<EnemyBase> owner)override;
 
 	protected:
 

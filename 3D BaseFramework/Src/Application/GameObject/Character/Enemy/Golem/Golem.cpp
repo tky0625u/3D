@@ -191,6 +191,33 @@ void Golem::BumpCheck()
 	}
 }
 
+// Appeal==========================================================================================
+void Golem::Appeal::Enter(std::shared_ptr<EnemyBase> owner)
+{
+	EnemyBase::Appeal::Enter(owner);
+}
+
+void Golem::Appeal::Update(std::shared_ptr<EnemyBase> owner)
+{
+	EnemyBase::Appeal::Update(owner);
+
+	if (m_ActionFPS == 80)
+	{
+		// SE
+		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Enemy/Golem/ドラゴンが火を吐く.wav", 0.5f, false);
+	}
+
+	// FPS加算
+	m_ActionFPS++;
+}
+
+void Golem::Appeal::Exit(std::shared_ptr<EnemyBase> owner)
+{
+	EnemyBase::Appeal::Exit(owner);
+}
+//=================================================================================================
+
+
 // Attack1=========================================================================================
 void Golem::Attack1::Enter(std::shared_ptr<EnemyBase> owner)
 {
@@ -332,6 +359,8 @@ void Golem::Attack2::Update(std::shared_ptr<EnemyBase> owner)
 		// 攻撃範囲削除
 		owner->SetColorLightFlg(false);
 		KdEffekseerManager::GetInstance().Play("Enemy/Golem/Attack2/smash.efkefc", owner->GetPos(), Math::Vector3{60.0f,15.0f,60.0f}, 1.0f, false);
+		// SE
+		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Enemy/Golem/全力で踏み込む.wav", 0.1f, false);
 		// 次のフローへ
 		owner->SetFlow(EnemyBase::Flow::ExitType);
 		return;
@@ -452,6 +481,8 @@ void Golem::Attack3::Update(std::shared_ptr<EnemyBase> owner)
 		// 攻撃範囲OFF
 		owner->SetColorLightFlg(false);
 		KdEffekseerManager::GetInstance().Play("Enemy/Golem/Attack3/smash.efkefc", owner->GetPos(), Math::Vector3{ 57.0f,15.0f,57.0f }, 1.0f, false);
+		// SE
+		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Enemy/Golem/全力で踏み込む.wav", 0.1f, false);
 	}
 	else
 	{
@@ -498,5 +529,24 @@ void Golem::Attack3::AttackHit(std::shared_ptr<EnemyBase> owner)
 		// ダメージ
 		owner->GetTarget().lock()->Damage(owner->GetParam().Atk, owner->shared_from_this());
 	}
+}
+//=================================================================================================
+
+
+// Crushing========================================================================================
+void Golem::Crushing::Enter(std::shared_ptr<EnemyBase> owner)
+{
+	KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Enemy/Golem/建物が少し崩れる2.wav", 0.5f, false);
+	EnemyBase::Crushing::Enter(owner);
+}
+
+void Golem::Crushing::Update(std::shared_ptr<EnemyBase> owner)
+{
+	EnemyBase::Crushing::Update(owner);
+}
+
+void Golem::Crushing::Exit(std::shared_ptr<EnemyBase> owner)
+{
+	EnemyBase::Crushing::Exit(owner);
 }
 //=================================================================================================

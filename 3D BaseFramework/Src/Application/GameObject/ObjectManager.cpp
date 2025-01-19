@@ -306,35 +306,35 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 
 				// 位置
 				ImGui::Text((const char*)u8"　カメラ位置 　　x=%.2f,y=%.2f,z=%.2f", _camera->GetPos().x, _camera->GetPos().y, _camera->GetPos().z);
-				Math::Vector3 _TitleCameraPos = _camera->GetPos();
-				ImGui::SliderFloat("TitleCameraPosX", &_TitleCameraPos.x, -500, 500);
-				ImGui::SliderFloat("TitleCameraPosY", &_TitleCameraPos.y, -500, 500);
-				ImGui::SliderFloat("TitleCameraPosZ", &_TitleCameraPos.z, -500, 500);
+				Math::Vector3 _tcPos = _camera->GetPos();
+				ImGui::SliderFloat("TitleCameraPosX", &_tcPos.x, -500, 500);
+				ImGui::SliderFloat("TitleCameraPosY", &_tcPos.y, -500, 500);
+				ImGui::SliderFloat("TitleCameraPosZ", &_tcPos.z, -500, 500);
 
 				// 角度
 				ImGui::Text((const char*)u8"　角度 　　DegAngX=%.2f, DegAngY=%.2f, DegAngZ=%.2f", _camera->GetDegAng().x, _camera->GetDegAng().y, _camera->GetDegAng().z);
-				float _DegAngX = _camera->GetDegAng().x;
-				float _DegAngY = _camera->GetDegAng().y;
-				float _DegAngZ = _camera->GetDegAng().z;
-				ImGui::SliderFloat("AngleX", &_DegAngX, -180, 180);
-				ImGui::SliderFloat("AngleY", &_DegAngY, -180, 180);
-				ImGui::SliderFloat("AngleZ", &_DegAngZ, -180, 180);
+				float _tcDegAngX = _camera->GetDegAng().x;
+				float _tcDegAngY = _camera->GetDegAng().y;
+				float _tcDegAngZ = _camera->GetDegAng().z;
+				ImGui::SliderFloat("AngleX", &_tcDegAngX, -180, 180);
+				ImGui::SliderFloat("AngleY", &_tcDegAngY, -180, 180);
+				ImGui::SliderFloat("AngleZ", &_tcDegAngZ, -180, 180);
 
 				// 視野角
 				ImGui::Text((const char*)u8"　視野角 　　ViewingAngle=%.2f", _camera->GetViewingAngle());
-				float _ViewingAngle = _camera->GetViewingAngle();
-				ImGui::SliderFloat("ViewingAngle", &_ViewingAngle, 1.0f, 100.0f);
+				float _tcViewingAngle = _camera->GetViewingAngle();
+				ImGui::SliderFloat("ViewingAngle", &_tcViewingAngle, 1.0f, 100.0f);
 
 				// 回転角度変化量
 				ImGui::Text((const char*)u8"　回転角度変化量 　　ChangeAngle=%.2f", _camera->GetChangeAngle());
-				float _ChangeAngle=_camera->GetChangeAngle();
-				ImGui::SliderFloat("ChangeAngle", &_ChangeAngle, -10.00f, 10.00f);
+				float _tcChangeAngle=_camera->GetChangeAngle();
+				ImGui::SliderFloat("ChangeAngle", &_tcChangeAngle, -10.00f, 10.00f);
 
 				// セット
-				_camera->SetPos(_TitleCameraPos);
-				_camera->SetDegAng(Math::Vector3{ _DegAngX,_DegAngY,_DegAngZ });
-				_camera->SetViewingAngle(_ViewingAngle);
-				_camera->SetChangeAngle(_ChangeAngle);
+				_camera->SetPos(_tcPos);
+				_camera->SetDegAng(Math::Vector3{ _tcDegAngX,_tcDegAngY,_tcDegAngZ });
+				_camera->SetViewingAngle(_tcViewingAngle);
+				_camera->SetChangeAngle(_tcChangeAngle);
 			}
 
 			ImGui::TreePop();
@@ -409,7 +409,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					// 大きさ
 					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _game->GetSize());
 					float _GameSize = _game->GetSize();
-					ImGui::SliderFloat("Size", &_GameSize, 0.01, 1);
+					ImGui::SliderFloat("Size", &_GameSize, 0.01f, 1.0f);
 
 					// セット
 					_game->SetPos(_GamePos);
@@ -447,7 +447,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					// 大きさ
 					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", _exit->GetSize());
 					float _ExitSize = _exit->GetSize();
-					ImGui::SliderFloat("Size", &_ExitSize, 0.01, 1);
+					ImGui::SliderFloat("Size", &_ExitSize, 0.01f, 1.0f);
 
 					// セット
 					_exit->SetPos(_ExitPos);
@@ -516,7 +516,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					// サイズ
 					ImGui::Text((const char*)u8"　サイズ 　Size=%.2f", _cursor->GetSize());
 					float _size = _cursor->GetSize();
-					ImGui::SliderFloat("Size", &_size, 0.01, 1);
+					ImGui::SliderFloat("Size", &_size, 0.01f, 1.0f);
 
 					// セット
 					_cursor->SetSize(_size);
@@ -693,7 +693,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				if (angleX > 180.0f)angleX -= 180.0f;
 				else if (angleX < -180.0f)angleX += 180.0f;
 				if (angleY > 360.0f)angleY -= 360.0f;
-				if (angleY < 0.0f)angleY += 360.0f;
+				else if (angleY < 0.0f)angleY += 360.0f;
 
 				// 視野角
 				ImGui::Text((const char*)u8"　視野角 　　ViewAngleX=%.2f", _camera->GetNowViewAng());
@@ -1043,7 +1043,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 							// アルファ値変化量
 							ImGui::Text((const char*)u8"　アルファ値変化量 　ChangeAlpha=%.2f",_gameState->GetAlphaChange());
 							float _GameStateAlphaChange =_gameState->GetAlphaChange();
-							ImGui::SliderFloat("AlphaChange", &_GameStateAlphaChange, 0.01, 1.00);
+							ImGui::SliderFloat("AlphaChange", &_GameStateAlphaChange, 0.01f, 1.00f);
 
 							// セット
 							_gameState->SetPos(_GameStatePos);
@@ -1150,7 +1150,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 
 				// 骨の数
 				ImGui::Text((const char*)u8"ボーン:%d体", _boneList.size());
-				for (int bone = 0; bone < _boneList.size(); ++bone)
+				for (unsigned int bone = 0; bone < _boneList.size(); ++bone)
 				{
 					if (ImGui::Button(std::to_string(bone + 1).c_str()))
 					{
@@ -1272,7 +1272,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 
 				// 骨色違いの数
 				ImGui::Text((const char*)u8"ボーンアルファ:%d体", _alphaList.size());
-				for (int alpha = 0; alpha < _alphaList.size(); ++alpha)
+				for (unsigned int alpha = 0; alpha < _alphaList.size(); ++alpha)
 				{
 					if (ImGui::Button(std::to_string(alpha + 1).c_str()))
 					{
@@ -1421,7 +1421,7 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 					// 大きさ
 					ImGui::Text((const char*)u8"　大きさ 　Size=%.2f", m_golem.lock()->GetSize());
 					float size = m_golem.lock()->GetSize();
-					ImGui::SliderFloat("Size", &size, 0.01, 1.5);
+					ImGui::SliderFloat("Size", &size, 0.01f, 1.5f);
 					// 出現演出時のエフェクトサイズ
 					ImGui::Text((const char*)u8"　出現演出時のエフェクトサイズ 　AppealSize=%.2f", m_golem.lock()->GetAppealEffectSize());
 					float appealSize = m_golem.lock()->GetAppealEffectSize();

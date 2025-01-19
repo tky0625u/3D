@@ -24,12 +24,12 @@ void EnemyBase::PostUpdate()
 	// デバッグ 消滅
 	if (GetAsyncKeyState('P') & 0x8000)
 	{
-		m_param.Hp = 0;
-		std::shared_ptr<Crushing> _crush = std::make_shared<Crushing>();
-		m_NextState = _crush;
-		m_NextActionType = EnemyBase::Action::CrushingType;
-		m_flow = Flow::UpdateType;
-		return;
+		if (m_actionType != Action::CrushingType)
+		{
+			m_param.Hp = 0;
+			CrushingChange();
+			return;
+		}
 	}
 }
 
@@ -237,10 +237,7 @@ void EnemyBase::StateBase::Damage(std::shared_ptr<EnemyBase> owner, int _damage)
 		owner->m_param.Hp = 0;
 		owner->m_ColorLightFlg = false;
 		// Crushing
-		std::shared_ptr<Crushing> _crush = std::make_shared<Crushing>();
-		owner->m_NextState = _crush;
-		owner->m_NextActionType = EnemyBase::Action::CrushingType;
-		owner->m_flow = KdGameObject::Flow::UpdateType;
+		owner->CrushingChange();
 		return;
 	}
 
@@ -528,6 +525,8 @@ void EnemyBase::Hit::Exit(std::shared_ptr<EnemyBase> owner)
 // Crushing========================================================================================
 void EnemyBase::Crushing::Enter(std::shared_ptr<EnemyBase> owner)
 {				
+	owner->m_flow = Flow::UpdateType;
+	return;
 }				
 				
 void EnemyBase::Crushing::Update(std::shared_ptr<EnemyBase> owner)

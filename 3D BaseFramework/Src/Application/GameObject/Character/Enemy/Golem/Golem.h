@@ -19,6 +19,12 @@ public:
 	// 行動切り替え============================================================
 	void AttackChange()override; // 攻撃
 	void HitChange()   override { return; } // 被弾
+	void CrushingChange()override
+	{
+		m_NextState = std::make_shared<Crushing>();
+		m_NextActionType = EnemyBase::Action::CrushingType;
+		m_flow = Flow::EnterType;
+	}
 	//=========================================================================
 
 	// 横方向当たり判定
@@ -46,6 +52,21 @@ private:
 	
 	// ジャンプ攻撃の最短距離
 	float m_Attack2Dist  = 0.0f;
+
+	// 出現演出
+	class Appeal :public EnemyBase::Appeal
+	{
+	public:
+		Appeal() {};
+		~Appeal()override {};
+
+		void Enter (std::shared_ptr<EnemyBase> owner)override;
+		void Update(std::shared_ptr<EnemyBase> owner)override;
+		void Exit  (std::shared_ptr<EnemyBase> owner)override;
+
+	private:
+
+	};
 
 	// 弾攻撃
 	class Attack1 :public EnemyBase::StateBase
@@ -104,4 +125,18 @@ private:
 		float         m_AttackSphereRange = 0.0f;
 	};
 
+	// 消滅
+	class Crushing :public EnemyBase::Crushing
+	{
+	public:
+		Crushing() {};
+		~Crushing()override {};
+
+		void Enter (std::shared_ptr<EnemyBase> owner)override;
+		void Update(std::shared_ptr<EnemyBase> owner)override;
+		void Exit  (std::shared_ptr<EnemyBase> owner)override;
+
+	private:
+
+	};
 };

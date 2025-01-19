@@ -88,7 +88,7 @@ private:
 	float                        m_CounterRadius          = 0.0f;
 													      
 	// パリィした敵のID								 	  
-	UINT                         m_ParryID                = -1;
+	UINT                         m_ParryID                = 0;
 	
 	// パリィ可能時間
 	int                          m_ParryTime              = 0;
@@ -213,7 +213,7 @@ private:
 		int               m_ChangeTime = 0;
 		
 		// エフェクト用ハンドル
-		Effekseer::Handle m_handle;
+		Effekseer::Handle m_handle = 0;
 	};
 
 	// カウンター
@@ -241,7 +241,7 @@ private:
 		std::weak_ptr<EnemyBase> m_CounterEnemy;
 		
 		// エフェクト用ハンドル
-		Effekseer::Handle        m_handle;
+		Effekseer::Handle        m_handle = 0;
 	};
 
 	// 回避
@@ -307,7 +307,7 @@ private:
 
 	private:
 		// エフェクト用ハンドル
-		Effekseer::Handle m_handle;
+		Effekseer::Handle m_handle = 0;
 	};
 
 	// パリィ

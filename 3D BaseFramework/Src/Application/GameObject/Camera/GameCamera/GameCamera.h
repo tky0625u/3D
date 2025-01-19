@@ -33,7 +33,7 @@ public:
 	// セッター===================================================================================================
 	void SetMatrix           (Math::Matrix _mWorld)                        { m_mWorld = _mWorld; }
 	void SetDegAng           (Math::Vector3 _deg)                          { m_DegAngList[m_CameraType] = _deg; }
-	void SetPos              (Math::Vector3 _pos)                          { m_PosList[m_CameraType] = _pos; }
+	void SetPos              (Math::Vector3 _pos)override                  { m_PosList[m_CameraType] = _pos; }
 	void SetViewAng          (float _viewAng)                              { m_ViewAngList[m_CameraType] = _viewAng; }
 	void SetDegAngList       (Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _boss, Math::Vector3 _clear);
 	void SetPosList          (Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _boss, Math::Vector3 _clear);

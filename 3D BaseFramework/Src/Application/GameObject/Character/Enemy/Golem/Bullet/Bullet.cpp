@@ -88,7 +88,10 @@ void Bullet::PostUpdate()
 		// 当たっていたらエフェクトを炊いて消滅
 		if (ret->Intersects(sphereInfo, nullptr))
 		{
+			// エフェクト
 			KdEffekseerManager::GetInstance().Play("Enemy/Golem/Bullet/Bom.efkefc", m_pos, m_size * 0.5f, 1.0f, false);
+			// SE
+			KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Enemy/Golem/bullet/怪獣の足音.wav", 0.1f, false);
 			Expired();
 			return;
 		}
@@ -105,7 +108,10 @@ void Bullet::PostUpdate()
 			// エフェクトを炊いて消滅
 			if (m_crush)
 			{
+				// エフェクト
 				KdEffekseerManager::GetInstance().Play("Enemy/Golem/Bullet/Bom.efkefc", m_pos, m_size * 0.5f, 1.0f, false);
+				// SE
+				KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Enemy/Golem/bullet/怪獣の足音.wav", 0.1f, false);
 				Expired();
 			}
 			return;
@@ -120,6 +126,8 @@ void Bullet::PostUpdate()
 				ret->Damage(m_atk);
 				// エフェクトを炊いて消滅
 				KdEffekseerManager::GetInstance().Play("Enemy/Golem/Bullet/Bom.efkefc", m_pos, m_size * 0.5f, 1.0f, false);
+				// SE
+				KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Enemy/Golem/bullet/怪獣の足音.wav", 0.1f, false);
 				Expired();
 			}
 		}

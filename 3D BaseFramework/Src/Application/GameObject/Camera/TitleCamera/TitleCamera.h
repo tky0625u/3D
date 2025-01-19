@@ -12,7 +12,6 @@ public:
 
 	// セッター======================================================
 	void SetDegAng(Math::Vector3 _deg) { m_DegAng = _deg; }
-	void SetPos(Math::Vector3 _pos)    { m_pos = _pos; }
 	void SetViewingAngle(float _angle) { m_ViewingAngle = _angle; }
 	void SetChangeAngle(float _angle)  { m_ChangeAngle = _angle; }
 	//===============================================================
