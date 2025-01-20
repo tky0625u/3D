@@ -25,6 +25,23 @@ void Bone::Init()
 }
 
 
+// Appeal==========================================================================================
+void Bone::Appeal::Update(std::shared_ptr<EnemyBase> owner)
+{
+	EnemyBase::Appeal::Update(owner);
+
+	if (m_ActionFPS == 54)
+	{
+		// SE
+		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Enemy/Bone/翼竜の鳴き声2.wav", 0.1f, false);
+	}
+
+	// FPS加算
+	m_ActionFPS++;
+}
+//=================================================================================================
+
+
 // Attack==========================================================================================
 void Bone::Attack::Enter(std::shared_ptr<EnemyBase> owner)
 {
@@ -52,6 +69,8 @@ void Bone::Attack::Update(std::shared_ptr<EnemyBase> owner)
 	{
 		// 攻撃前エフェクト
 		KdEffekseerManager::GetInstance().Play("Enemy/AttackSignal/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 0.3f, 2.0f, false);
+		// SE
+		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Enemy/maou_se_battle05 (mp3cut.net).wav", 0.1f, false);
 	}
 	if (50 <= m_ActionFPS && 67 >= m_ActionFPS)
 	{
@@ -103,6 +122,8 @@ void Bone::Attack::HitCheck(std::shared_ptr<EnemyBase> owner)
 			{
 				// ヒットエフェクト
 				KdEffekseerManager::GetInstance().Play("Player/Hit/hit_effe.efkefc", ret.m_hitPos, 1.0f, 0.8f, false);
+				// SE
+				KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Enemy/Bone/弓矢が刺さる.wav", 0.1f, false);
 			}
 			// ダメージ
 			SceneManager::Instance().GetPlayer()->Damage(owner->GetParam().Atk, owner->shared_from_this());
@@ -162,5 +183,16 @@ void Bone::Stumble::StumbleAction(std::shared_ptr<EnemyBase> owner)
 	_nowVec *= -1.0f; // 現在の方向とは逆の方向
 	_nowVec.Normalize(); // 正規化
 	owner->SetMove(_nowVec, owner->GetStumbleMove()); // 移動
+}
+//=================================================================================================
+
+
+// 消滅============================================================================================
+void Bone::Crushing::Enter(std::shared_ptr<EnemyBase> owner)
+{
+	// SE
+	KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Enemy/Bone/翼竜の鳴き声2 (mp3cut.net).wav", 0.1f, false);
+
+	EnemyBase::Crushing::Enter(owner);
 }
 //=================================================================================================

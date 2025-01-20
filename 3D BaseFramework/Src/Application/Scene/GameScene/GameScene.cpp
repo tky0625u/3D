@@ -126,7 +126,7 @@ void GameScene::Init()
 	// エフェクト生成
 	KdEffekseerManager::GetInstance().Create(1280, 720);
 	// BGM
-	KdAudioManager::Instance().Play("Asset/Sound/Game/BGM/orchestral_mission.WAV", 0.01f, true);
+	KdAudioManager::Instance().Play("Asset/Sound/Game/BGM/orchestral_mission.WAV", 0.1f, true);
 
 	// 画面を明るく
 	SceneManager::Instance().BlackAlphaChange(0.01f, false);
@@ -230,6 +230,9 @@ void GameScene::Clear::Enter(std::shared_ptr<GameScene> owner)
 {
 	// ゲームクリアUI表示
 	owner->m_ObjManager->SetGameStateParam(true);
+	// BGM
+	KdAudioManager::Instance().StopAllSound();
+	KdAudioManager::Instance().Play("Asset/Sound/Game/BGM/遥かなる大地_The_distant_TERRA_.wav", 0.1f, true);
 	owner->m_flow = GameScene::Flow::UpdateType;
 }
 

@@ -229,7 +229,8 @@ const Math::Matrix EnemyBase::GettoTargetRotateYMatrix(std::weak_ptr<Player> _ta
 
 void EnemyBase::StateBase::Damage(std::shared_ptr<EnemyBase> owner, int _damage)
 {
-	owner->m_param.Hp -= _damage; // ダメージ
+	if (owner->m_param.Hp <= _damage)owner->m_param.Hp = 0;
+	else { owner->m_param.Hp -= _damage; } // ダメージ
 
 	// HPがなくなったら消滅
 	if (owner->m_param.Hp <= 0)

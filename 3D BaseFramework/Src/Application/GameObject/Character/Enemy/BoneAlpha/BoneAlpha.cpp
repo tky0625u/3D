@@ -60,6 +60,8 @@ void BoneAlpha::Attack::Update(std::shared_ptr<EnemyBase> owner)
 	{
 		// 攻撃前エフェクト
 		KdEffekseerManager::GetInstance().Play("Enemy/AttackSignal/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 0.3f, 2.0f, false);
+		// SE
+		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Enemy/maou_se_battle05 (mp3cut.net).wav", 0.1f, false);
 	}
 	else 
 	{

@@ -257,7 +257,11 @@ void Golem::Attack1::Update(std::shared_ptr<EnemyBase> owner)
 	// 弾発射
 	if (m_ActionFPS == 10)
 	{
+		// エフェクト
 		KdEffekseerManager::GetInstance().Play("Enemy/AttackSignal/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 2.0f, 2.0f, false);
+		// SE
+		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Enemy/maou_se_battle05 (mp3cut.net).wav", 0.1f, false);
+		// 方向
 		Math::Matrix RotY = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(owner->GetAngle().y));
 		Math::Vector3 _dir = Math::Vector3::TransformNormal(owner->GetForward(), RotY);
 		m_bullet.lock()->SetDir(_dir);
@@ -472,7 +476,10 @@ void Golem::Attack3::Update(std::shared_ptr<EnemyBase> owner)
 	}
 	else if (162 == m_ActionFPS)
 	{
+		// エフェクト
 		KdEffekseerManager::GetInstance().Play("Enemy/AttackSignal/BloodLance.efkefc", owner->GetAttackStartPointMat().Translation(), 2.0f, 2.0f, false);
+		// SE
+		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Enemy/maou_se_battle05 (mp3cut.net).wav", 0.1f, false);
 	}
 	else if (180 == m_ActionFPS)
 	{

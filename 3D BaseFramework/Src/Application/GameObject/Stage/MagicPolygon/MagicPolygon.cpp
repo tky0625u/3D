@@ -103,6 +103,8 @@ void MagicPolygon::Next::Enter(std::shared_ptr<MagicPolygon> owner)
 {
 	// エフェクト
 	m_handle = KdEffekseerManager::GetInstance().Play("Circle/Circle.efkefc", owner->m_mWorld.Translation(), owner->m_size, 1.0f, false).lock()->GetHandle();
+	// SE
+	KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Object/MagicPolygon/ステータス上昇魔法2.wav", 0.1f, false);
 	// 次のフローへ
 	owner->m_flow = MagicPolygon::Flow::UpdateType;
 }

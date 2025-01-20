@@ -54,8 +54,8 @@ void TitleScene::Init()
 	// ピント
 	SceneManager::Instance().GetCamera()->WorkCamera()->SetFocus(8, 5, 600);
 
-	// BGU
-	KdAudioManager::Instance().Play("Asset/Sound/Title/BGM/Formidable-Enemy.WAV", 0.01f, true);
+	// BGM
+	KdAudioManager::Instance().Play("Asset/Sound/Title/BGM/Formidable-Enemy.WAV", 0.1f, true);
 
 	// カーソル非表示
 	ShowCursor(false);

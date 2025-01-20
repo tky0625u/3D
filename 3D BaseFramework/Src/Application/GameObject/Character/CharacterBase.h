@@ -11,13 +11,13 @@ public:
 	// パラメータ
 	 struct Param
 	{
-		 int   Hp  = 1; //体力
-		 int   Atk = 1; //攻撃力
-		 float Sp  = 1; //素早さ
-		 int   Sm  = 1; //スタミナ
+		unsigned int   Hp  = 1; // 体力
+		unsigned int   Atk = 1; // 攻撃力
+		         float Sp  = 1; // 素早さ
+		unsigned int   Sm  = 1; // スタミナ
 
-		 float JumpPow = 0.0f;
-		 float AtkRange = 0.0f; //攻撃範囲
+		 float JumpPow  = 0.0f; // ジャンプ力
+		 float AtkRange = 0.0f; // 攻撃範囲
 	};
 
 	CharacterBase()                                   { Init(); }

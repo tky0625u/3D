@@ -158,7 +158,8 @@ void Player::StateBase::StateUpdate(std::shared_ptr<Player> owner)
 void Player::StateBase::Damage(std::shared_ptr<Player> owner, int _damage, std::shared_ptr<EnemyBase> _enemy)
 {
 	// HP減少
-	owner->m_param.Hp -= _damage;
+	if (owner->m_param.Hp <= _damage)owner->m_param.Hp = 0;
+	else { owner->m_param.Hp -= _damage; } // ダメージ
 	
 	// 死亡
 	if (owner->m_param.Hp <= 0)
@@ -920,7 +921,7 @@ void Player::Counter::AttackHit(std::shared_ptr<Player> owner)
 
 void Player::Counter::CounterMove(std::shared_ptr<Player> owner)
 {
-	// 対象の郷公
+	// 対象の方向
 	Math::Vector3 _dir = m_CounterEnemy.lock()->GetPos() - owner->m_pos;
 	_dir.Normalize(); // 正規化
 	owner->Rotate(_dir); // 回転
@@ -971,8 +972,9 @@ void Player::Roll::Enter(std::shared_ptr<Player> owner)
 	}
 
 	// スタミナ減少
-	owner->m_param.Sm -= owner->m_RollStamina;
-	if (owner->m_param.Sm <= 0)owner->m_param.Sm = 0;
+	unsigned int _stamina = owner->m_RollStamina;
+	if (owner->m_param.Sm <= _stamina)_stamina = owner->m_param.Sm;
+	owner->m_param.Sm -= _stamina;
 	// スタミナ回復可能時間増加
 	owner->m_NowStaminaRecoveryTime = owner->m_StaminaRecoveryTime;
 	// 次のフローへ
@@ -1174,8 +1176,9 @@ void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shar
 		else
 		{
 			// スタミナ減少
-			owner->m_param.Sm -= _damage * owner->m_GuardStaminaCorrection;
-			if (owner->m_param.Sm < 0)owner->m_param.Sm = 0;
+			unsigned int _stamina = _damage * owner->m_GuardStaminaCorrection;
+			if (owner->m_param.Sm <= _stamina)_stamina = owner->m_param.Sm;
+			owner->m_param.Sm -= _stamina;
 			// スタミナ可能時間加算
 			owner->m_NowStaminaRecoveryTime = owner->m_StaminaRecoveryTime;
 
@@ -1230,8 +1233,9 @@ void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shar
 		else
 		{
 			// スタミナ減少
-			owner->m_param.Sm -= _damage * owner->m_GuardStaminaCorrection;
-			if (owner->m_param.Sm < 0)owner->m_param.Sm = 0;
+			unsigned int _stamina = _damage * owner->m_GuardStaminaCorrection;
+			if (owner->m_param.Sm <= _stamina)_stamina = owner->m_param.Sm;
+			owner->m_param.Sm -= _stamina;
 			// スタミナ可能時間加算
 			owner->m_NowStaminaRecoveryTime = owner->m_StaminaRecoveryTime;
 
@@ -1339,7 +1343,7 @@ void Player::Parry::ChangeState(std::shared_ptr<Player> owner)
 	if (owner->m_keyType & Player::KeyType::AttackKey && !(owner->m_BeforeKeyType & Player::KeyType::AttackKey))
 	{
 		// IDが記録されていたらカウンター
-		if (owner->m_ParryID != -1)
+		if (owner->m_ParryID != 0)
 		{
 			// カウンター
 			std::shared_ptr<Counter> _counter = std::make_shared<Counter>();
@@ -1362,7 +1366,7 @@ void Player::Parry::ChangeState(std::shared_ptr<Player> owner)
 	}
 
 	// 移動
-	if (owner->m_keyType & Player::KeyType::MoveKey)
+	if (owner->m_keyType & Player::KeyType::MoveKey && !(owner->m_BeforeKeyType & Player::KeyType::MoveKey))
 	{
 		// IDリセット
 		owner->m_ParryID = 0;
@@ -1522,6 +1526,8 @@ void Player::Teleport::Update(std::shared_ptr<Player> owner)
 		owner->m_dissolve = 1.0f;
 		// エフェクト
 		m_handle = KdEffekseerManager::GetInstance().Play("Player/Teleport/LightEnd.efkefc", owner->m_pos, owner->m_size, 1.0f, false).lock()->GetHandle();
+		// SE
+		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/ワープ.wav", 0.1f, false);
 	}
 
 	// テレポートのエフェクトが終了したらフェードアウト
@@ -1549,6 +1555,8 @@ void Player::Teleport::Exit(std::shared_ptr<Player> owner)
 		owner->m_dissolve = 0.0f;
 		// エフェクト
 		KdEffekseerManager::GetInstance().Play("Player/Teleport/LightEnd.efkefc", owner->m_pos, owner->m_size, 1.0f, false);
+		// SE
+		KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Player/ワープ.wav", 0.1f, false);
 		return;
 	}
 

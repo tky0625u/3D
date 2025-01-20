@@ -26,9 +26,29 @@ public:
 		m_NextActionType = Action::StumbleType;
 		m_flow = EnemyBase::Flow::UpdateType;
 	}
+	void CrushingChange()override // 消滅
+	{
+		std::shared_ptr<Crushing> _crush = std::make_shared<Crushing>();
+		m_NextState = _crush;
+		m_NextActionType = EnemyBase::Action::CrushingType;
+		m_flow = KdGameObject::Flow::EnterType;
+	}
 	//=========================================================================
 
 protected:
+
+	// 出現演出
+	class Appeal :public EnemyBase::Appeal
+	{
+	public:
+		Appeal() {};
+		~Appeal()override {};
+
+		void Update(std::shared_ptr<EnemyBase> owner)override;
+
+	private:
+
+	};
 
 	// 攻撃
 	class Attack :public StateBase
@@ -64,6 +84,19 @@ protected:
 		void StumbleAction(std::shared_ptr<EnemyBase> owner);
 
 	protected:
+
+	};
+
+	// 消滅
+	class Crushing :public EnemyBase::Crushing
+	{
+	public:
+		Crushing() {};
+		~Crushing()override {};
+
+		void Enter(std::shared_ptr<EnemyBase> owner)override;
+
+	private:
 
 	};
 
