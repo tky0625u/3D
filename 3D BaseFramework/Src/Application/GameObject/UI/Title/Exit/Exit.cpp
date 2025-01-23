@@ -13,17 +13,3 @@ void Exit::Init()
 	m_pTex = std::make_shared<KdTexture>();
 	m_pTex->Load("Asset/Textures/UI/Title/Exit/Cool Text - EXIT 468886042904458.png");
 }
-
-// ゲッター========================================================================================
-// 縦幅
-const float& Exit::GetHeight() const
-{
-	return m_rect.height * m_size;
-}
-
-// 横幅
-const float& Exit::GetWidth() const
-{
-	return m_rect.width * m_size;
-}
-//=================================================================================================

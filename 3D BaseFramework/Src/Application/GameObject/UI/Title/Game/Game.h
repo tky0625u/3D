@@ -13,8 +13,8 @@ public:
 	void Init()override;
 
 	// ゲッター==========================================================================
-	const float& GetHeight()const; // 縦幅
-	const float& GetWidth()const;  // 横幅
+	const float& GetHeight()const { return m_rect.height * m_size; } // 縦幅
+	const float& GetWidth()const  { return m_rect.width * m_size; }  // 横幅
 	//===================================================================================
 
 private:

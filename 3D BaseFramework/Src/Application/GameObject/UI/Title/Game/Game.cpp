@@ -13,17 +13,3 @@ void Game::Init()
 	m_pTex = std::make_shared<KdTexture>();
 	m_pTex->Load("Asset/Textures/UI/Title/Game/Cool Text - GAME 468884988188424.png");
 }
-
-// ゲッター========================================================================================
-// 縦幅
-const float& Game::GetHeight() const
-{
-	return m_rect.height * m_size;
-}
-
-// 横幅
-const float& Game::GetWidth() const
-{
-	return m_rect.width * m_size;
-}
-//=================================================================================================
