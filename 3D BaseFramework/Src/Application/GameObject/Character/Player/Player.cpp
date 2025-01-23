@@ -21,6 +21,20 @@
 
 void Player::Action()
 {
+	// デバッグ====================================================================================
+	// HP回復
+	if (GetAsyncKeyState('H') & 0x8000)
+	{
+		m_param.Hp = 100;
+	}
+	// スタミナ消費
+	if (GetAsyncKeyState('N') & 0x8000)
+	{
+		m_param.Sm = 0;
+		m_NowStaminaRecoveryTime = m_StaminaRecoveryTime;
+	}
+	//=============================================================================================
+
 	// 次の行動が決まっていたら
 	if (m_NextState != nullptr)
 	{

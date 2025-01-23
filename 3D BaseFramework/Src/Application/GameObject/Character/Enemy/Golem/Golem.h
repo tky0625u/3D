@@ -16,6 +16,14 @@ public:
 	void PostUpdate()override;
 	void Init()      override;
 
+	// 攻撃タイプ
+	enum AttackKind
+	{
+		BulletType, // 弾
+		JumpType,   // ジャンプ
+		QuakeType   // 叩きつけ
+	};
+
 	// 行動切り替え============================================================
 	void AttackChange()override;            // 攻撃
 	void HitChange()   override { return; } // 被弾
@@ -47,6 +55,9 @@ private:
 	
 	// ジャンプ攻撃の最短距離
 	float m_Attack2Dist  = 0.0f;
+
+	// 攻撃タイプ
+	UINT  m_AttackType   = AttackKind::QuakeType;
 
 	// 出現演出
 	class Appeal :public EnemyBase::Appeal

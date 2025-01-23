@@ -63,13 +63,14 @@ void Golem::AttackChange()
 	Math::Vector3 _playerPos = m_Target.lock()->GetPos();
 	float _dist = (_playerPos - m_pos).Length();
 
-	if (_dist > m_Attack2Dist)
+	if (_dist > m_Attack2Dist && m_AttackType != AttackKind::JumpType)
 	{
 		// ジャンプ攻撃
 		std::shared_ptr<Attack2> _attack2 = std::make_shared<Attack2>();
 		m_NextState = _attack2;
 		m_NextActionType = m_NextActionType = EnemyBase::Action::AttackType;
 		m_flow = EnemyBase::Flow::EnterType;
+		m_AttackType = AttackKind::JumpType;
 		return;
 	}
 
@@ -90,13 +91,14 @@ void Golem::AttackChange()
 	//回転角度を求める
 	float ang = DirectX::XMConvertToDegrees(acos(d));
 
-	if (fabs(ang) <= m_Attack1Angle)
+	if (fabs(ang) <= m_Attack1Angle && m_AttackType != AttackKind::BulletType)
 	{
 		// 弾攻撃 
 		std::shared_ptr<Attack1> _attack1 = std::make_shared<Attack1>();
 		m_NextState = _attack1;
 		m_NextActionType = m_NextActionType = EnemyBase::Action::AttackType;
 		m_flow = EnemyBase::Flow::EnterType;
+		m_AttackType = AttackKind::BulletType;
 		return;
 	}
 	else
@@ -106,6 +108,7 @@ void Golem::AttackChange()
 		m_NextState = _attack3;
 		m_NextActionType = m_NextActionType = EnemyBase::Action::AttackType;
 		m_flow = EnemyBase::Flow::EnterType;
+		m_AttackType = AttackKind::QuakeType;
 		return;
 	}
 
