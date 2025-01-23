@@ -13,6 +13,9 @@
 
 void Bullet::Update()
 {
+	// プレイヤーがカウンター中なら早期リターン
+	if (SceneManager::Instance().GetPlayer()->GetActionType() == Player::Action::CounterType)return;
+
 	// ゴーレム（持ち主）が消滅していたら弾も消滅
 	if (m_golem.expired())
 	{
@@ -61,6 +64,9 @@ void Bullet::Update()
 
 void Bullet::PostUpdate()
 {
+	// プレイヤーがカウンター中なら早期リターン
+	if (SceneManager::Instance().GetPlayer()->GetActionType() == Player::Action::CounterType)return;
+
 	// ゴーレム（持ち主）が消滅orゴーレム（持ち主）のHPが0なら早期リターン
 	if (m_golem.expired() || m_golem.lock()->GetParam().Hp <= 0)return;
 	// 最大サイズではなかったら早期リターン
@@ -150,3 +156,19 @@ void Bullet::Init()
 
 	m_pDebugWire = std::make_unique<KdDebugWireFrame>();
 }
+
+// セッター========================================================================================
+// ゴーレム
+void Bullet::SetGolem(std::shared_ptr<Golem> _golem)
+{
+	m_golem = _golem;
+}
+//=================================================================================================
+
+// ゲッター========================================================================================
+// 最大サイズ
+const float& Bullet::GetMaxSize() const
+{
+	return m_MaxSize;
+}
+//=================================================================================================

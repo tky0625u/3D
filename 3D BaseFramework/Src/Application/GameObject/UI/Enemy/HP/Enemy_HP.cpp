@@ -88,6 +88,58 @@ void Enemy_HP::Init()
 	}
 }
 
+// セッター========================================================================================
+// ターゲット
+void Enemy_HP::SetTarget(std::shared_ptr<EnemyBase> _target)
+{
+	m_target = _target;
+}
+
+// カメラ
+void Enemy_HP::SetCamera(std::shared_ptr<GameCamera> _camera)
+{
+	m_camera = _camera;
+}
+
+// 減少ゲージ減少開始時間
+void Enemy_HP::SetDownTime(int _downTime)
+{
+	m_DownTime = _downTime;
+}
+
+// 減少ゲージ変化量
+void Enemy_HP::SetDownChange(float _downChange)
+{
+	m_DownChange = _downChange;
+}
+
+// X軸補正
+void Enemy_HP::SetPosXCorrection(float _correction)
+{
+	m_posXCorrection = _correction;
+}
+//=================================================================================================
+
+// ゲッター========================================================================================
+// 減少ゲージ減少開始時間
+const int& Enemy_HP::GetDownTime() const
+{
+	return m_DownTime; 
+}
+
+// 減少ゲージ変化量
+const float& Enemy_HP::GetDownChange() const
+{
+	return m_DownChange;
+}
+
+// X軸補正
+const float& Enemy_HP::GetPosXCorrection() const
+{
+	return m_posXCorrection;
+}
+//=================================================================================================
+
 // Normal==============================================================================================================
 void Enemy_HP::Normal::Update(std::shared_ptr<Enemy_HP> owner)
 {

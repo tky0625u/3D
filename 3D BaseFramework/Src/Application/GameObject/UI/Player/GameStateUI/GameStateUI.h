@@ -12,24 +12,12 @@ public:
 	void Update()override;
 
 	// セッター==========================================================================
-	void SetChangeAlpha(float _change) { m_alphaChange = _change; } // アルファ値変化量
-	void SetState(bool _IsClear) // ステート
-	{
-		if (_IsClear)
-		{
-			m_state = std::make_shared<Clear>();
-			m_flow = Flow::EnterType;
-		}
-		else
-		{
-			m_state = std::make_shared<GameOver>();
-			m_flow = Flow::EnterType;
-		}
-	}
+	void SetChangeAlpha(float _change); // アルファ値変化量
+	void SetState(bool _IsClear);       // ステート
 	//===================================================================================
 
 	// ゲッター==========================================================================
-	const float& GetAlphaChange()const { return m_alphaChange; } // アルファ値変化量
+	const float& GetAlphaChange()const; // アルファ値変化量
 	//===================================================================================
 
 private:
@@ -45,23 +33,7 @@ private:
 		virtual ~StateBase() {};
 		
 		// ステート更新
-		void StateUpdate(std::shared_ptr<GameStateUI> owner)
-		{
-			switch (owner->m_flow)
-			{
-			case Flow::EnterType:
-				Enter(owner);
-				break;
-			case Flow::UpdateType:
-				Update(owner);
-				break;
-			case Flow::ExitType:
-				Exit(owner);
-				break;
-			default:
-				break;
-			}
-		}
+		void StateUpdate(std::shared_ptr<GameStateUI> owner);
 
 		virtual void Enter (std::shared_ptr<GameStateUI> owner) {};
 		virtual void Update(std::shared_ptr<GameStateUI> owner) {};

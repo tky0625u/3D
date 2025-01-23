@@ -17,10 +17,12 @@ public:
 	void EnemyRun();
 
 	// 敵リストに追加
-	void AddEnemy(std::shared_ptr<EnemyBase> _enemy) { m_EnemyList.push_back(_enemy); }
+	void AddEnemy(std::shared_ptr<EnemyBase> _enemy);
 
+	// ゲッター===========================================================
 	// 敵リスト
-	const std::vector<std::shared_ptr<EnemyBase>>& GetEnemyList()const { return m_EnemyList; }
+	const std::vector<std::shared_ptr<EnemyBase>>& GetEnemyList()const;
+	//====================================================================
 
 	void PreUpdate()				override;
 	void Update()					override;

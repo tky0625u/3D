@@ -24,6 +24,35 @@ void Bone::Init()
 	m_pCollider->RegisterCollisionShape("Enemy", m_model, KdCollider::TypeDamage | KdCollider::TypeBump | KdCollider::TypeSight);
 }
 
+// 行動切り替え====================================================================================
+// 攻撃
+void Bone::AttackChange()
+{
+	std::shared_ptr<Attack> _attack = std::make_shared<Attack>();
+	m_NextState = _attack;
+	m_NextActionType = Action::AttackType;
+	m_flow = EnemyBase::Flow::UpdateType;
+}
+
+// よろけ
+void Bone::StumbleChange()
+{
+	std::shared_ptr<Stumble> _stumble = std::make_shared<Stumble>();
+	m_NextState = _stumble;
+	m_NextActionType = Action::StumbleType;
+	m_flow = EnemyBase::Flow::UpdateType;
+}
+
+// 消滅
+void Bone::CrushingChange()
+{
+	std::shared_ptr<Crushing> _crush = std::make_shared<Crushing>();
+	m_NextState = _crush;
+	m_NextActionType = EnemyBase::Action::CrushingType;
+	m_flow = KdGameObject::Flow::EnterType;
+}
+//=================================================================================================
+
 
 // Appeal==========================================================================================
 void Bone::Appeal::Update(std::shared_ptr<EnemyBase> owner)

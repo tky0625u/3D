@@ -19,11 +19,11 @@ public:
 	void Init()       override;
 
 	// セッター=====================================================================
-	void SetGolem(std::shared_ptr<Golem> _golem) { m_golem = _golem; } // ゴーレム
+	void SetGolem(std::shared_ptr<Golem> _golem); // ゴーレム
 	//==============================================================================
 
 	// ゲッター=====================================================================
-	const float& GetMaxSize()const { return m_MaxSize; } // 最大サイズ
+	const float& GetMaxSize()const; // 最大サイズ
 	//==============================================================================
 
 private:

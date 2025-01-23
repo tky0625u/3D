@@ -1,4 +1,6 @@
 ﻿#pragma once
+
+// 弾基底
 #include"../../../BulletBase/BulletBase.h"
 
 class BoneAlpha_Bullet :public BulletBase

@@ -25,6 +25,25 @@ void BoneAlpha::Init()
 	m_pCollider->RegisterCollisionShape("Enemy", m_model, KdCollider::TypeDamage | KdCollider::TypeBump | KdCollider::TypeSight);
 }
 
+// 行動切り替え====================================================================================
+// 攻撃
+void BoneAlpha::AttackChange()
+{
+	std::shared_ptr<Attack> _attack = std::make_shared<Attack>();
+	m_NextState = _attack;
+	m_NextActionType = Action::AttackType;
+	m_flow = EnemyBase::Flow::UpdateType;
+}
+//=================================================================================================
+
+// ゲッター========================================================================================
+// 弾の発射位置
+const Math::Vector3& BoneAlpha::GetBulletPoint() const
+{
+	return (m_model->FindWorkNode("BulletPoint")->m_worldTransform * m_mWorld).Translation();
+}
+
+// 正面方向
 const Math::Vector3& BoneAlpha::GetFrontDir()
 {
 	// 現在の方向
@@ -32,7 +51,7 @@ const Math::Vector3& BoneAlpha::GetFrontDir()
 	Math::Vector3 _nowVec = Math::Vector3::TransformNormal(m_forward, _nowRot);
 	return _nowVec;
 }
-
+//=================================================================================================
 
 // Attack==========================================================================================
 void BoneAlpha::Attack::Enter(std::shared_ptr<EnemyBase> owner)

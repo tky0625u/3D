@@ -47,3 +47,55 @@ void StageManager::WaveCheck()
 		m_ObjectManager.lock()->SetEnemyParam(_filePath, shared_from_this());
 	}
 }
+
+// セッター========================================================================================
+// オブジェクトマネジャ
+void StageManager::SetObjectManager(std::shared_ptr<ObjectManager> _Obj)
+{
+	m_ObjectManager = _Obj;
+}
+
+// 最大ステージ数
+void StageManager::SetMaxStage(int _stage)
+{
+	m_MaxStage = _stage;
+}
+
+// 最大ウェーブ数
+void StageManager::SetMaxWave(int _wave)
+{
+	m_MaxWave = _wave;
+}
+//=================================================================================================
+
+// ゲッター========================================================================================
+// 現在のウェーブ数
+const int& StageManager::GetnowWave() const
+{
+	return m_nowWave;
+}
+
+// 最大ウェーブ数
+const int& StageManager::GetMaxWave() const
+{
+	return m_MaxWave;
+}
+
+// 現在のステージ数
+const int& StageManager::GetnowStage() const
+{
+	return m_nowStage;
+}
+
+// 最大ステージ数
+const int& StageManager::GetMaxStage() const
+{
+	return m_MaxStage;
+}
+
+// 最大ウェーブフラグ
+const bool StageManager::IsWaveMax() const
+{
+	return m_IsWaveMax;
+}
+//=================================================================================================

@@ -107,6 +107,16 @@ void Player::NextStageCheck()
 	}
 }
 
+// スタミナ回復
+void Player::StaminaRecovery()
+{
+	if (m_NowStaminaRecoveryTime > 0)return;
+	m_param.Sm++;
+	if (m_param.Sm >= m_MaxStamina)m_param.Sm = m_MaxStamina;
+}
+
+// 行動切り替え====================================================================================
+// 待機
 void Player::IdolChange()
 {
 	m_sword.lock()->ClearTraject(); // 剣の軌跡を削除
@@ -117,6 +127,7 @@ void Player::IdolChange()
 	m_flow = KdGameObject::Flow::UpdateType;
 }
 
+// テレポート
 void Player::TeleportChange()
 {
 	m_sword.lock()->ClearTraject(); // 剣の軌跡を削除
@@ -126,6 +137,142 @@ void Player::TeleportChange()
 	m_NextActionType = Action::TeleportType;
 	m_flow = KdGameObject::Flow::EnterType;
 }
+//=================================================================================================
+
+// ダメージ========================================================================================
+// 直接攻撃
+void Player::Damage(int _damage, std::shared_ptr<EnemyBase> _enemy)
+{
+	m_state->Damage(shared_from_this(), _damage, _enemy);
+}
+
+// 遠距離攻撃
+void Player::Damage(int _damage, std::shared_ptr<BulletBase> _bullet)
+{
+	m_state->Damage(shared_from_this(), _damage, _bullet);
+}
+//=================================================================================================
+
+// セッター========================================================================================
+// ステージマネジャ
+void Player::SetStageManager(std::shared_ptr<StageManager> _stage)
+{
+	m_StageManager = _stage;
+}
+
+// 盾
+void Player::SetShield(std::shared_ptr<Shield> _shield)
+{
+	m_shield = _shield;
+}
+
+// カウンターの攻撃範囲
+void Player::SetCounterRadius(float _radius)
+{
+	m_CounterRadius = _radius;
+}
+
+// パリィした敵のID
+void Player::SetParryID(UINT _id)
+{
+	m_ParryID = _id;
+}
+
+// パリィ可能時間
+void Player::SetParryTime(int _time)
+{
+	m_ParryTime = _time;
+}
+
+// スタミナ回復開始時間
+void Player::SetStaminaRecoveryTime(int _time)
+{
+	m_StaminaRecoveryTime = _time;
+}
+
+// 回避した時のスタミナの減少量
+void Player::SetRollStamina(int _rollStamina)
+{
+	m_RollStamina = _rollStamina;
+}
+
+// 次のステート
+void Player::SetNextState(std::shared_ptr<StateBase> _next, UINT _action)
+{
+	// ステート
+	m_NextState = _next;
+	// 行動タイプ
+	m_NextActionType = _action;
+}
+//=================================================================================================
+
+// ゲッター========================================================================================
+// 盾
+const std::weak_ptr<Shield>& Player::GetShield() const
+{
+	return m_shield;
+}
+
+// オブジェクトマネジャ
+const std::weak_ptr<ObjectManager>& Player::GetObjectManager() const
+{
+	return m_ObjectManager;
+}
+
+// 敵に対する攻撃の高さノード
+const Math::Matrix& Player::GetEnemyAttackPointMat() const
+{
+	return (m_model->FindWorkNode("EnemyAttackPoint")->m_worldTransform) * m_mWorld;
+}
+
+// カメラ判定用ノード
+const Math::Matrix& Player::GetCameraPointMat() const
+{
+	return (m_model->FindWorkNode("CameraPoint")->m_worldTransform) * m_mWorld;
+}
+
+// カウンターの攻撃範囲
+const float& Player::GetCounterRadius() const
+{
+	return m_CounterRadius;
+}
+
+// パリィした敵のID
+const UINT& Player::GetParryID() const
+{
+	return m_ParryID;
+}
+
+// 行動タイプ
+const UINT& Player::GetActionType() const
+{
+	return m_actionType;
+}
+
+// 最大スタミナ
+const int& Player::GetParryTime() const
+{
+	return m_ParryTime;
+}
+
+// 最大スタミナ
+const int& Player::GetMaxStamina() const
+{
+	return m_MaxStamina;
+}
+
+// スタミナ回復開始時間
+const int& Player::GetStaminaRecoveryTime() const
+{
+	return m_StaminaRecoveryTime;
+}
+
+// 回避した時のスタミナ減少量
+const int& Player::GetRollStamina() const
+{
+	return m_RollStamina;
+}
+//=================================================================================================
 
 void Player::StateBase::StateUpdate(std::shared_ptr<Player> owner)
 {
@@ -1249,6 +1396,12 @@ void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shar
 			_bullet->SetCrush(true);
 		}
 	}
+}
+
+// ガード時間
+void Player::Guard::SetGuardTime(int _time)
+{
+	m_guardTime = _time;
 }
 //=================================================================================================
 

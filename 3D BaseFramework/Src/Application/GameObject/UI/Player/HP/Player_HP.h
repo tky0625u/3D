@@ -17,14 +17,14 @@ public:
 	void Init()       override;
 
 	// セッター===============================================================================
-	void SetTraget    (std::shared_ptr<Player> _target) { m_target = _target; }         // ターゲット（プレイヤー）
-	void SetDownTime  (int _downTime)                   { m_DownTime = _downTime; }     // 減少ゲージ減少開始時間
-	void SetDownChange(float _downChange)               { m_DownChange = _downChange; } // 減少ゲージ変化量
+	void SetTraget    (std::shared_ptr<Player> _target); // ターゲット（プレイヤー）
+	void SetDownTime  (int _downTime);                   // 減少ゲージ減少開始時間
+	void SetDownChange(float _downChange);               // 減少ゲージ変化量
 	//========================================================================================
 
 	// ゲッター===============================================================================
-	const int&   GetDownTime()const   { return m_DownTime; }   // 減少ゲージ減少開始時間
-	const float& GetDownChange()const { return m_DownChange; } // 減少ゲージ変化量
+	const int&   GetDownTime()const;   // 減少ゲージ減少開始時間
+	const float& GetDownChange()const; // 減少ゲージ変化量
 	//========================================================================================
 
 private:

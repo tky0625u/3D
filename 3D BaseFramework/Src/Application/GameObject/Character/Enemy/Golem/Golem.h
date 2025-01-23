@@ -17,33 +17,28 @@ public:
 	void Init()      override;
 
 	// 行動切り替え============================================================
-	void AttackChange()override; // 攻撃
+	void AttackChange()override;            // 攻撃
 	void HitChange()   override { return; } // 被弾
-	void CrushingChange()override
-	{
-		m_NextState = std::make_shared<Crushing>();
-		m_NextActionType = EnemyBase::Action::CrushingType;
-		m_flow = Flow::EnterType;
-	}
+	void CrushingChange()override;          // 消滅
 	//=========================================================================
 
 	// 横方向当たり判定
 	void BumpCheck()   override;
 
 	// セッター================================================================
-	void SetAttack1Angle(float _angle) { m_Attack1Angle = _angle; } // 弾攻撃の射程角度
-	void SetAttack2Dist(float _dist)   { m_Attack2Dist = _dist; }   // ジャンプ攻撃の最短距離
+	void SetAttack1Angle(float _angle); // 弾攻撃の射程角度
+	void SetAttack2Dist(float _dist);   // ジャンプ攻撃の最短距離
 	//=========================================================================
 
 	// ゲッター================================================================
 	// 弾発射位置
-	const Math::Vector3& GetBulletPoint() const { return (m_model->FindWorkNode("BulletPoint")->m_worldTransform * m_mWorld).Translation(); }
+	const Math::Vector3& GetBulletPoint() const;
 	// 地震位置
-	const Math::Vector3& GetQuakePoint()  const { return (m_model->FindWorkNode("QuakePoint")->m_worldTransform * m_mWorld).Translation(); }
+	const Math::Vector3& GetQuakePoint()  const;
 	// 弾攻撃の射程角度
-	const float&         GetAttack1Angle()const { return m_Attack1Angle; }
+	const float&         GetAttack1Angle()const;
 	// ジャンプ攻撃の最短距離
-	const float&         GetAttack2Dist() const { return m_Attack2Dist; }
+	const float&         GetAttack2Dist() const;
 	//=========================================================================
 
 private:

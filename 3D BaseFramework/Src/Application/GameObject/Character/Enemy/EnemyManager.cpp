@@ -1,5 +1,7 @@
 ﻿#include "EnemyManager.h"
 
+// シーンマネジャ
+#include"../../../Scene/SceneManager.h"
 // 敵基底
 #include"EnemyBase.h"
 // プレイヤー
@@ -169,10 +171,28 @@ void EnemyManager::EnemyRun()
 	}
 }
 
+// 敵リスト追加
+void EnemyManager::AddEnemy(std::shared_ptr<EnemyBase> _enemy)
+{
+	m_EnemyList.push_back(_enemy);
+}
+
+// ゲッター========================================================================================
+// 敵リスト
+const std::vector<std::shared_ptr<EnemyBase>>& EnemyManager::GetEnemyList() const
+{
+	return m_EnemyList;
+}
+//=================================================================================================
+
 void EnemyManager::PreUpdate()
 {
-	EnemyRun();
-	EnemyAttack();
+	if (SceneManager::Instance().GetPlayer()->GetActionType() != Player::Action::CounterType)
+	{
+		EnemyRun();
+		EnemyAttack();
+	}
+
 	for (auto& enemy : m_EnemyList) enemy->PreUpdate();
 }
 

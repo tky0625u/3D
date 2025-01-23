@@ -17,8 +17,8 @@ public:
 	void Init()       override;
 
 	// セッター==========================================================================
-	void SetStageManager(std::shared_ptr<StageManager> _stage) { m_StageManager = _stage; } // ステージマネジャ
-	void SetPos         (Math::Vector2 _pos);                                               // 座標
+	void SetStageManager(std::shared_ptr<StageManager> _stage); // ステージマネジャ
+	void SetPos         (Math::Vector2 _pos);                   // 座標
 	//===================================================================================
 
 private:

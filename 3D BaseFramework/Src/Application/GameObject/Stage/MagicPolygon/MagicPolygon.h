@@ -20,34 +20,24 @@ public:
 
 	// 状態変更================================================================
 	// 通常
-	void NormalChange()
-	{
-		std::shared_ptr<Normal> _normal = std::make_shared<Normal>();
-		m_NextState = _normal;
-		m_flow = MagicPolygon::Flow::EnterType;
-	}
+	void NormalChange();
 	// 解放
-	void NextChange()
-	{
-		std::shared_ptr<Next> _next = std::make_shared<Next>();
-		m_NextState = _next;
-		m_flow = MagicPolygon::Flow::EnterType;
-	}
+	void NextChange();
 	//=========================================================================
 
 	// セッター=============================================================================================================
-	void SetStageManager(std::shared_ptr<StageManager> _stageManager) { m_stageManager = _stageManager; } // ステージマネジャ
-	void SetCircle      (std::shared_ptr<Circle> _circle)             { m_circle = _circle; }             // 魔法陣の台
-	void SetMatrix      (Math::Matrix _mat)                           { m_mWorld = _mat; }                // 行列
-	void SetRGBChange   (float _change)                               { m_rgbChange = _change; }          // RGB値変化量
-	void SetChangeAngle (float _change)                               { m_ChangeAngle = _change; }        // 角度変化量
-	void SetTeleportFlg (bool _teleport)                              { m_TeleportFlg = _teleport; }      // テレポート可能フラグ
+	void SetStageManager(std::shared_ptr<StageManager> _stageManager); // ステージマネジャ
+	void SetCircle      (std::shared_ptr<Circle> _circle);             // 魔法陣の台
+	void SetMatrix(Math::Matrix _mat);                                 // 行列
+	void SetRGBChange(float _change);                                  // RGB値変化量
+	void SetChangeAngle(float _change);                                // 角度変化量
+	void SetTeleportFlg(bool _teleport);                               // テレポート可能フラグ
 	//======================================================================================================================
 
 	// ゲッター=============================================================================================================
-	const float& GetRGBChange()  const { return m_rgbChange; }   // RGB値変化量
-	const float& GetChangeAngle()const { return m_ChangeAngle; } // 角度変化量
-	const bool   GetTeleport()   const { return m_TeleportFlg; } // テレポート可能フラグ
+	const float& GetRGBChange()  const; // RGB値変化量
+	const float& GetChangeAngle()const; // 角度変化量
+	const bool   GetTeleport()   const; // テレポート可能フラグ
 	//======================================================================================================================
 
 private:
@@ -77,21 +67,7 @@ private:
 		virtual ~StateBase() {};
 
 		// ステート更新
-		void SatateUpdate(std::shared_ptr<MagicPolygon> owner)
-		{
-			switch (owner->m_flow)
-			{
-			case Flow::EnterType:
-				Enter(owner);
-				break;
-			case Flow::UpdateType:
-				Update(owner);
-				break;
-			case Flow::ExitType:
-				Exit(owner);
-				break;
-			}
-		}
+		void SatateUpdate(std::shared_ptr<MagicPolygon> owner);
 
 		virtual void Enter (std::shared_ptr<MagicPolygon> owner) {};
 		virtual void Update(std::shared_ptr<MagicPolygon> owner) {};

@@ -36,59 +36,42 @@ public:
 	virtual void BumpCheck();                                      // 横方向当たり判定
 	void Rotate(Math::Vector3 _moveDir, float _angChange = 10.0f); // キャラクター回転
 	void CameraTransform(Math::Vector3& _dir);                     // カメラの向きによって方向修正
-	const bool IsAnimCheck(const std::string animName) const { return m_anime._Equal(animName); } // していてほしいアニメーションと現在のアニメーションの確認
+	const bool IsAnimCheck(const std::string animName) const;      // していてほしいアニメーションと現在のアニメーションの確認
 
 	// セッター========================================================================================================
-	void SetCamera       (std::shared_ptr<GameCamera> a_camera)                   { m_camera = a_camera; }
-	void SetModel        (std::shared_ptr<KdModelWork> _model)                    { m_model = _model; }
-	void SetSword        (std::shared_ptr<Sword> _sword)                          { m_sword = _sword; }
-	void SetAnime        (std::string animeName, bool animeFlg, float animeSpeed) 
-	{
-		m_anime = animeName;
-		m_animeFlg = animeFlg;
-		m_animeSpeed = animeSpeed;
-	}
-	void SetForward      (Math::Vector3 _forward)                                 { m_forward = _forward; }
-	void SetDir          (Math::Vector3 _dir)                                     { m_dir = _dir; }
-	void SetMove(Math::Vector3 dir, float _moveSpeed = 0)
-	{
-		m_dir = dir;
-
-		if (_moveSpeed == 0.0f)
-		{
-			m_MoveSpeed = m_param.Sp;
-		}
-		else
-		{
-			m_MoveSpeed = _moveSpeed;
-		}
-	}
-	void SetParam        (int _hp, int _atk, float _speed, int _stamina);
-	void SetStamina      (int _stamina)                                           { m_param.Sm = _stamina; }
-	void SetATK          (int _atk)                                               { m_param.Atk = _atk; }
-	void SetInviAddTime  (int _inviAddTime)                                       { m_inviAddTime = _inviAddTime; }
-	void SetInviTime     (int _inviTime)                                          { m_inviTime = _inviTime; }
-	void SetHitSphereSize(float _size)                                            { m_HitSphereSize = _size; }
-	void SetAtkRange     (float _atkRange)                                        { m_param.AtkRange = _atkRange; }
-	void SetJumpPow      (float _jumpPow)                                         { m_param.JumpPow = _jumpPow; }
+	void SetCamera       (std::shared_ptr<GameCamera> a_camera);           // カメラ
+	void SetModel        (std::shared_ptr<KdModelWork> _model);			   // モデル
+	void SetSword        (std::shared_ptr<Sword> _sword);				   // 剣
+	void SetAnime(std::string animeName, bool animeFlg, float animeSpeed); // アニメーション
+	void SetForward      (Math::Vector3 _forward);						   // 前方方向
+	void SetDir          (Math::Vector3 _dir);							   // 方向
+	void SetMove(Math::Vector3 dir, float _moveSpeed = 0);				   // 移動
+	void SetParam        (int _hp, int _atk, float _speed, int _stamina);  // パラメータ
+	void SetStamina      (int _stamina);								   // スタミナ
+	void SetATK          (int _atk);									   // 攻撃力
+	void SetInviAddTime  (int _inviAddTime);							   // 無敵付与時間
+	void SetInviTime     (int _inviTime);								   // 無敵時間
+	void SetHitSphereSize(float _size);									   // 当たり判定用スフィアサイズ
+	void SetAtkRange     (float _atkRange);								   // 攻撃範囲
+	void SetJumpPow      (float _jumpPow);								   // ジャンプ力
 	//=================================================================================================================
 
 	// ゲッター========================================================================================================
-	const Param&                             GetParam()                              const { return m_param; }
-	const std::weak_ptr<ObjectManager>&      GetObjManager()                         const { return m_ObjectManager; }
-	const std::weak_ptr<GameCamera>&         GetCamera()                             const { return m_camera; }
-	const std::weak_ptr<Sword>&              GetSword()                              const { return m_sword; }
-	const std::unique_ptr<KdDebugWireFrame>& GetDebugWire()                          const { return m_pDebugWire; }
-	const std::string&                       GetAnime()                              const { return m_anime; }
-	const Math::Matrix                       GetSwordMat()                           const { return m_model->FindWorkNode("sword.R")->m_localTransform * m_model->FindWorkNode("hand.R")->m_worldTransform * (Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle.y))*(Math::Matrix::CreateTranslation(m_mWorld.Translation()))); }
-	const Math::Matrix                       GetShieldMat()                          const { return m_model->FindWorkNode("shield.L")->m_localTransform * m_model->FindWorkNode("forearm.L")->m_worldTransform * (Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle.y)) * (Math::Matrix::CreateTranslation(m_mWorld.Translation()))); }
-	const Math::Matrix                       GetHitModelMat()                        const { return m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(m_mWorld.Translation()));}
-	const Math::Vector3&                     GetDir()                                const { return m_dir; }
-	const Math::Vector3&                     GetForward()                            const { return m_forward; }
-	const int&                               GetinviAddTime()                        const { return m_inviAddTime; }
-	const int&                               GetinviTime()                           const { return m_inviTime; }
-	const float&                             GetDissolve()                           const { return m_dissolve; }
-	const bool                               GetIsAnimator()                         const { return m_animator->IsAnimationEnd(); }
+	const Param&                             GetParam()       const; // パラメータ
+	const std::weak_ptr<ObjectManager>&      GetObjManager()  const; // オブジェクトマネジャ
+	const std::weak_ptr<GameCamera>&         GetCamera()      const; // カメラ
+	const std::weak_ptr<Sword>&              GetSword()       const; // 剣
+	const std::unique_ptr<KdDebugWireFrame>& GetDebugWire()   const; // デバッグワイヤー
+	const std::string&                       GetAnime()       const; // アニメーション
+	const Math::Matrix                       GetSwordMat()    const; // 剣位置ノード
+	const Math::Matrix                       GetShieldMat()   const; // 盾位置ノード
+	const Math::Matrix                       GetHitModelMat() const; // 当たり判定用スフィア位置ノード
+	const Math::Vector3&                     GetDir()         const; // 方向
+	const Math::Vector3&                     GetForward()     const; // 前方方向
+	const int&                               GetinviAddTime() const; // 無敵付与時間
+	const int&                               GetinviTime()    const; // 無敵時間
+	const float&                             GetDissolve()    const; // ディゾルブ
+	const bool                               GetIsAnimator()  const; // アニメーション終了フラグ
 	//=================================================================================================================
 	
 

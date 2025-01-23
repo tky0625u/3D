@@ -11,15 +11,15 @@ public:
 	void Init()      override;
 
 	// セッター======================================================
-	void SetDegAng(Math::Vector3 _deg) { m_DegAng = _deg; }
-	void SetViewingAngle(float _angle) { m_ViewingAngle = _angle; }
-	void SetChangeAngle(float _angle)  { m_ChangeAngle = _angle; }
+	void SetDegAng(Math::Vector3 _deg);
+	void SetViewingAngle(float _angle);
+	void SetChangeAngle(float _angle);
 	//===============================================================
 
 	// ゲッター======================================================
-	const Math::Vector3 GetDegAng()      const { return m_DegAng; }
-	const float&        GetViewingAngle()const { return m_ViewingAngle; }
-	const float&        GetChangeAngle() const { return m_ChangeAngle; }
+	const Math::Vector3 GetDegAng()const;
+	const float&        GetViewingAngle()const;
+	const float&        GetChangeAngle()const;
 	//===============================================================
 
 private:

@@ -11,13 +11,7 @@ public:
 	void Init()      override;
 
 	// セッター================================================================
-	void SetParam(Math::Vector2 _pos, Math::Vector2 _move, float _size, float _sizeChange) // パラメーター
-	{
-		m_pos  = _pos;
-		m_move = _move;
-		m_size = _size;
-		m_SizeChange = _sizeChange;
-	}
+	void SetParam(Math::Vector2 _pos, Math::Vector2 _move, float _size, float _sizeChange); // パラメーター
 	//=========================================================================
 
 private:

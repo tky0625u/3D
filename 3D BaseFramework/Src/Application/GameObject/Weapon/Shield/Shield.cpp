@@ -19,3 +19,11 @@ void Shield::Update()
 	// 行列合成
 	m_mWorld = _scale * _trans * _targetMat;
 }
+
+// ゲッター========================================================================================
+// パリィエフェクト位置
+const Math::Matrix& Shield::GetParryPoint()
+{
+	return m_spModel->FindWorkNode("ParryPoint")->m_worldTransform * m_mWorld;
+}
+//=================================================================================================

@@ -9,9 +9,19 @@
 // ゲームカメラ
 #include"../../Camera/GameCamera/GameCamera.h"
 
+void EnemyBase::Update()
+{
+	// プレイヤーがカウンター中なら早期リターン
+	if (SceneManager::Instance().GetPlayer()->GetActionType() == Player::Action::CounterType && SceneManager::Instance().GetPlayer()->GetParryID() != m_id)return;
+
+	CharacterBase::Update();
+}
+
 void EnemyBase::PostUpdate()
 {
 	if (m_camera.lock()->GetShakeFlg())return;
+	// プレイヤーがカウンター中なら早期リターン
+	if (SceneManager::Instance().GetPlayer()->GetActionType() == Player::Action::CounterType && SceneManager::Instance().GetPlayer()->GetParryID() != m_id)return;
 
 	CharacterBase::PostUpdate();
 
@@ -195,6 +205,117 @@ void EnemyBase::BumpCheck()
 	}
 }
 
+// 行動切り替え====================================================================================
+// 待機
+void EnemyBase::IdolChange()
+{
+	std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
+	m_NextState = _idol;
+	m_NextActionType = Action::IdolType;
+	m_flow = EnemyBase::Flow::UpdateType;
+}
+
+// 移動
+void EnemyBase::RunChange()
+{
+	std::shared_ptr<Run> _run = std::make_shared<Run>();
+	m_NextState = _run;
+	m_NextActionType = Action::RunType;
+	m_flow = EnemyBase::Flow::EnterType;
+}
+
+// 被弾
+void EnemyBase::HitChange()
+{
+	std::shared_ptr<Hit> _hit = std::make_shared<Hit>();
+	m_NextState = _hit;
+	m_NextActionType = EnemyBase::Action::HitType;
+	m_flow = EnemyBase::Flow::UpdateType;
+}
+
+// 消滅
+void EnemyBase::CrushingChange()
+{
+	std::shared_ptr<Crushing> _crush = std::make_shared<Crushing>();
+	m_NextState = _crush;
+	m_NextActionType = EnemyBase::Action::CrushingType;
+	m_flow = KdGameObject::Flow::EnterType;
+}
+
+//=================================================================================================
+
+
+// セッター========================================================================================
+// プレイヤー
+void EnemyBase::SetTarget(std::shared_ptr<Player> _target)
+{
+	m_Target = _target;
+}
+
+// 他の敵との距離判定時のスフィアの半径
+void EnemyBase::SetEnemyCheckRadius(float _radius)
+{
+	m_EnemyCheckRadius = _radius;
+}
+
+// 避ける距離
+void EnemyBase::SetLeaveDist(float _dist)
+{
+	m_LeaveDist = _dist;
+}
+
+// 出現演出時のエフェクトサイズ
+void EnemyBase::SetAppealEffectSize(float _size)
+{
+	m_AppealEffectSize = _size;
+}
+
+// 攻撃判定のスフィアサイズ
+void EnemyBase::SetAttackSphereSize(float _size)
+{
+	m_AttackSphereSize = _size;
+}
+
+// よろける時の移動スピード
+void EnemyBase::SetStumbleMove(float _move)
+{
+	m_StumbleMove = _move;
+}
+
+// 現在のステートの実行関数タイプ
+void EnemyBase::SetFlow(UINT _flow)
+{
+	m_flow = _flow;
+}
+
+// 攻撃範囲フラグ
+void EnemyBase::SetColorLightFlg(bool _flg)
+{
+	m_ColorLightFlg = _flg;
+}
+
+// ボスフラグ
+void EnemyBase::SetBossFlg(bool _bossFlg)
+{
+	m_bossFlg = _bossFlg;
+}
+
+// 次の行動
+void EnemyBase::SetNextAction(std::shared_ptr<StateBase> _action, UINT _actionType)
+{
+	m_NextState = _action;
+	m_actionType = _actionType;
+}
+//=================================================================================================
+
+// ゲッター========================================================================================
+// プレイヤー
+const std::weak_ptr<Player>& EnemyBase::GetTarget() const
+{
+	return m_Target;
+}
+
+// プレイヤーに向かうための回転行列
 const Math::Matrix EnemyBase::GettoTargetRotateYMatrix(std::weak_ptr<Player> _target)
 {
 	// 現在の方向
@@ -227,6 +348,86 @@ const Math::Matrix EnemyBase::GettoTargetRotateYMatrix(std::weak_ptr<Player> _ta
 	return Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(_playerToAng)); // プレイヤー方向の回転行列
 }
 
+// HPノード
+const Math::Matrix EnemyBase::GetHPMat() const
+{
+	return m_model->FindWorkNode("HP")->m_worldTransform * m_mWorld;
+}
+
+// 攻撃前エフェクトノード
+const Math::Matrix EnemyBase::GetAttackStartPointMat() const
+{
+	return m_model->FindWorkNode("AttackStartPoint")->m_worldTransform * m_mWorld;
+}
+
+// 他の敵との距離判定時のスフィアの半径
+const float& EnemyBase::GetEnemyCheckRadius() const
+{
+	return m_EnemyCheckRadius;
+}
+
+// 避ける距離
+const float& EnemyBase::GetLeaveDist() const
+{
+	return m_LeaveDist;
+}
+
+// 出現演出時のエフェクトサイズ
+const float& EnemyBase::GetAppealEffectSize() const
+{
+	return m_AppealEffectSize;
+}
+
+// 攻撃判定のスフィアサイズ
+const float& EnemyBase::GetAttackSphereSize() const
+{
+	return m_AttackSphereSize;
+}
+
+// よろける時の移動スピード
+const float& EnemyBase::GetStumbleMove() const
+{
+	return m_StumbleMove;
+}
+
+// 行動
+const UINT& EnemyBase::GetActionType() const
+{
+	return m_actionType;
+}
+
+// 地面フラグ
+const bool EnemyBase::GetGroundFlg() const
+{
+	return m_groundFlg;
+}
+
+// 避けて移動する対象
+const bool EnemyBase::GetLeave() const
+{
+	return m_leaveEnemy.expired();
+}
+
+// ボスフラグ
+const bool EnemyBase::GetBossFlg() const
+{
+	return m_bossFlg;
+}
+
+// 次の行動タイプ
+const UINT& EnemyBase::GetNextActionType() const
+{
+	return m_NextActionType;
+}
+//=================================================================================================
+
+// ダメージ
+void EnemyBase::Damage(int _damage)
+{
+	m_state->Damage(shared_from_this(), _damage);
+}
+
+// ダメージ
 void EnemyBase::StateBase::Damage(std::shared_ptr<EnemyBase> owner, int _damage)
 {
 	if (owner->m_param.Hp <= _damage)owner->m_param.Hp = 0;
@@ -244,6 +445,25 @@ void EnemyBase::StateBase::Damage(std::shared_ptr<EnemyBase> owner, int _damage)
 
 	// Hit
 	owner->HitChange();
+}
+
+// ステート更新
+void EnemyBase::StateBase::StateUpdate(std::shared_ptr<EnemyBase> owner)
+{
+	switch (owner->m_flow)
+	{
+	case EnemyBase::Flow::EnterType:
+		Enter(owner);
+		break;
+	case EnemyBase::Flow::UpdateType:
+		Update(owner);
+		break;
+	case EnemyBase::Flow::ExitType:
+		Exit(owner);
+		break;
+	default:
+		break;
+	}
 }
 
 // Appeal==========================================================================================

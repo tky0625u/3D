@@ -11,11 +11,11 @@ public:
 	virtual void Init()      override {};
 
 	// セッター================================================================
-	virtual void SetPos(Math::Vector2 _pos) { m_pos = _pos; } // 座標
+	virtual void SetPos(Math::Vector2 _pos); // 座標
 	//=========================================================================
 
 	// ゲッター================================================================
-	const Math::Vector2& GetVector2Pos()const { return m_pos; } // 座標
+	const Math::Vector2& GetVector2Pos()const; // 座標
 	//=========================================================================
 
 protected:

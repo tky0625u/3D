@@ -1,8 +1,14 @@
 ﻿#include "CharacterBase.h"
+
+// シーンマネジャ
 #include"../../Scene/SceneManager.h"
+// オブジェクトマネジャ
 #include"../ObjectManager.h"
+// 敵基底
 #include"Enemy/EnemyBase.h"
+// プレイヤー
 #include"Player/Player.h"
+// ゲームカメラ
 #include"../Camera/GameCamera/GameCamera.h"
 
 void CharacterBase::PreUpdate()
@@ -286,6 +292,67 @@ void CharacterBase::CameraTransform(Math::Vector3& _dir)
 	_dir.Normalize(); //正規化
 }
 
+// していてほしいアニメーションと現在のアニメーションの確認
+const bool CharacterBase::IsAnimCheck(const std::string animName) const
+{
+	return m_anime._Equal(animName);
+}
+
+// セッター========================================================================================
+// カメラ
+void CharacterBase::SetCamera(std::shared_ptr<GameCamera> a_camera)
+{
+	m_camera = a_camera;
+}
+
+// モデル
+void CharacterBase::SetModel(std::shared_ptr<KdModelWork> _model)
+{
+	m_model = _model;
+}
+
+// 剣
+void CharacterBase::SetSword(std::shared_ptr<Sword> _sword)
+{
+	m_sword = _sword;
+}
+
+// アニメーション
+void CharacterBase::SetAnime(std::string animeName, bool animeFlg, float animeSpeed)
+{
+	m_anime = animeName;
+	m_animeFlg = animeFlg;
+	m_animeSpeed = animeSpeed;
+}
+
+// 前方方向
+void CharacterBase::SetForward(Math::Vector3 _forward)
+{
+	m_forward = _forward;
+}
+
+// 方向
+void CharacterBase::SetDir(Math::Vector3 _dir)
+{
+	m_dir = _dir;
+}
+
+// 移動
+void CharacterBase::SetMove(Math::Vector3 dir, float _moveSpeed)
+{
+	m_dir = dir;
+
+	if (_moveSpeed == 0.0f)
+	{
+		m_MoveSpeed = m_param.Sp;
+	}
+	else
+	{
+		m_MoveSpeed = _moveSpeed;
+	}
+}
+
+// パラメータ
 void CharacterBase::SetParam(int _hp, int _atk, float _speed, int _stamina)
 {
 	// HP
@@ -300,3 +367,138 @@ void CharacterBase::SetParam(int _hp, int _atk, float _speed, int _stamina)
 	// スタミナ
 	m_param.Sm = _stamina;
 }
+
+// スタミナ
+void CharacterBase::SetStamina(int _stamina)
+{
+	m_param.Sm = _stamina;
+}
+
+// 攻撃力
+void CharacterBase::SetATK(int _atk)
+{
+	m_param.Atk = _atk;
+}
+
+// 無敵付与時間
+void CharacterBase::SetInviAddTime(int _inviAddTime)
+{
+	m_inviAddTime = _inviAddTime;
+}
+
+// 無敵時間
+void CharacterBase::SetInviTime(int _inviTime)
+{
+	m_inviTime = _inviTime;
+}
+
+// 当たり判定用スフィアサイズ
+void CharacterBase::SetHitSphereSize(float _size)
+{
+	m_HitSphereSize = _size;
+}
+
+// 攻撃範囲
+void CharacterBase::SetAtkRange(float _atkRange)
+{
+	m_param.AtkRange = _atkRange;
+}
+
+// ジャンプ力
+void CharacterBase::SetJumpPow(float _jumpPow)
+{
+	m_param.JumpPow = _jumpPow;
+}
+//=================================================================================================
+
+// ゲッター========================================================================================
+// パラメータ
+const CharacterBase::Param& CharacterBase::GetParam() const
+{
+	return m_param;
+}
+
+// オブジェクトマネジャ
+const std::weak_ptr<ObjectManager>& CharacterBase::GetObjManager() const
+{
+	return m_ObjectManager;
+}
+
+// カメラ
+const std::weak_ptr<GameCamera>& CharacterBase::GetCamera() const
+{
+	return m_camera;
+}
+
+// 剣
+const std::weak_ptr<Sword>& CharacterBase::GetSword() const
+{
+	return m_sword;
+}
+
+// デバッグワイヤー
+const std::unique_ptr<KdDebugWireFrame>& CharacterBase::GetDebugWire() const
+{
+	return m_pDebugWire;
+}
+
+// アニメーション
+const std::string& CharacterBase::GetAnime() const
+{
+	return m_anime;
+}
+
+// 剣位置ノード
+const Math::Matrix CharacterBase::GetSwordMat() const
+{
+	return m_model->FindWorkNode("sword.R")->m_localTransform * m_model->FindWorkNode("hand.R")->m_worldTransform * (Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle.y)) * (Math::Matrix::CreateTranslation(m_mWorld.Translation())));
+}
+
+// 盾位置ノード
+const Math::Matrix CharacterBase::GetShieldMat() const
+{
+	return m_model->FindWorkNode("shield.L")->m_localTransform * m_model->FindWorkNode("forearm.L")->m_worldTransform * (Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle.y)) * (Math::Matrix::CreateTranslation(m_mWorld.Translation())));
+}
+
+// 当たり判定用スフィア位置ノード
+const Math::Matrix CharacterBase::GetHitModelMat() const
+{
+	return m_model->FindWorkNode("spine")->m_worldTransform * (Math::Matrix::CreateTranslation(m_mWorld.Translation()));
+}
+
+// 方向
+const Math::Vector3& CharacterBase::GetDir() const
+{
+	return m_dir;
+}
+
+// 前方方向
+const Math::Vector3& CharacterBase::GetForward() const
+{
+	return m_forward;
+}
+
+// 無敵付与時間
+const int& CharacterBase::GetinviAddTime() const
+{
+	return m_inviAddTime;
+}
+
+// 無敵時間
+const int& CharacterBase::GetinviTime() const
+{
+	return m_inviTime;
+}
+
+// ディゾルブ
+const float& CharacterBase::GetDissolve() const
+{
+	return m_dissolve;
+}
+
+// アニメーション終了フラグ
+const bool CharacterBase::GetIsAnimator() const
+{
+	return m_animator->IsAnimationEnd();
+}
+//=================================================================================================

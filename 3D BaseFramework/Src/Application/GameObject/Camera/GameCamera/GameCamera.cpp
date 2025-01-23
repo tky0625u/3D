@@ -188,28 +188,23 @@ void GameCamera::HitCheck()
 	}
 }
 
-void GameCamera::SetDegAngList(Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _boss, Math::Vector3 _clear)
+// ステート更新
+void GameCamera::StateBase::StateUpdate(std::shared_ptr<GameCamera> owner)
 {
-	m_DegAngList.push_back(_player);
-	m_DegAngList.push_back(_fixed);
-	m_DegAngList.push_back(_boss);
-	m_DegAngList.push_back(_clear);
-}
-
-void GameCamera::SetPosList(Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _boss, Math::Vector3 _clear)
-{
-	m_PosList.push_back(_player);
-	m_PosList.push_back(_fixed);
-	m_PosList.push_back(_boss);
-	m_PosList.push_back(_clear);
-}
-
-void GameCamera::SetViewAngList(float _player, float _fixed, float _boss, float _clear)
-{
-	m_ViewAngList.push_back(_player);
-	m_ViewAngList.push_back(_fixed);
-	m_ViewAngList.push_back(_boss);
-	m_ViewAngList.push_back(_clear);
+	switch (owner->m_flow)
+	{
+	case Flow::EnterType:
+		Enter(owner);
+		break;
+	case Flow::UpdateType:
+		Update(owner);
+		break;
+	case Flow::ExitType:
+		Exit(owner);
+		break;
+	default:
+		break;
+	}
 }
 
 // Player==========================================================================================
@@ -403,3 +398,259 @@ void GameCamera::ClearCamera::ChangeState(std::shared_ptr<GameCamera> owner)
 {
 }
 //=================================================================================================
+
+// セッター=================================================================================================================
+// ワールド行列
+void GameCamera::SetMatrix(Math::Matrix _mWorld)
+{
+	m_mWorld = _mWorld;
+}
+
+// 角度
+void GameCamera::SetDegAng(Math::Vector3 _deg)
+{
+	m_DegAngList[m_CameraType] = _deg;
+}
+
+// 座標
+void GameCamera::SetPos(Math::Vector3 _pos)
+{
+	m_PosList[m_CameraType] = _pos;
+}
+
+// 視野角
+void GameCamera::SetViewAng(float _viewAng)
+{
+	m_ViewAngList[m_CameraType] = _viewAng;
+}
+
+// 角度リスト
+void GameCamera::SetDegAngList(Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _boss, Math::Vector3 _clear)
+{
+	m_DegAngList.push_back(_player);
+	m_DegAngList.push_back(_fixed);
+	m_DegAngList.push_back(_boss);
+	m_DegAngList.push_back(_clear);
+}
+
+// 座標リスト
+void GameCamera::SetPosList(Math::Vector3 _player, Math::Vector3 _fixed, Math::Vector3 _boss, Math::Vector3 _clear)
+{
+	m_PosList.push_back(_player);
+	m_PosList.push_back(_fixed);
+	m_PosList.push_back(_boss);
+	m_PosList.push_back(_clear);
+}
+
+// 視野角リスト
+void GameCamera::SetViewAngList(float _player, float _fixed, float _boss, float _clear)
+{
+	m_ViewAngList.push_back(_player);
+	m_ViewAngList.push_back(_fixed);
+	m_ViewAngList.push_back(_boss);
+	m_ViewAngList.push_back(_clear);
+}
+
+// テレポート解放時のターゲット
+void GameCamera::SetFixedTarget(std::shared_ptr<MagicPolygon> _Obj)
+{
+	m_FixedTarget = _Obj;
+}
+
+// ボス
+void GameCamera::SetBossTarget(std::shared_ptr<EnemyBase> _boss)
+{
+	m_BossTarget = _boss;
+}
+
+// カメラタイプ
+void GameCamera::SetCameraType(UINT _cameraType)
+{
+	m_CameraType = _cameraType;
+}
+
+// ステージマネジャ
+void GameCamera::SetStageManager(std::shared_ptr<StageManager> _stageManager)
+{
+	m_stageManager = _stageManager;
+}
+
+// 振動フラグ
+void GameCamera::SetShakeFlg(bool _shakeFlg)
+{
+	m_shakeFlg = _shakeFlg;
+}
+
+// クリア時角度変化量
+void GameCamera::SetChangeClearAngle(float _angle)
+{
+	m_ChangeClearAngle = _angle;
+}
+
+// 振動変化量
+void GameCamera::SetChangeShakeAngle(float _angle)
+{
+	m_ChangeShakeAngle = _angle;
+}
+
+// 初期振動移動量
+void GameCamera::SetDefaultShakeMove(float _move)
+{
+	m_DefaultMove = _move;
+	m_move = m_DefaultMove;
+}
+
+// 振動移動量
+void GameCamera::SetShakeMove(float _move)
+{
+	m_move = _move;
+}
+
+// 初期振動時間
+void GameCamera::SetDefaultShakeTime(int _time)
+{
+	m_DefaultShakeTime = _time;
+	m_shakeTime = m_DefaultShakeTime;
+}
+//==========================================================================================================================
+
+// ゲッター=================================================================================================================
+// 現在のモードの座標
+const Math::Vector3& GameCamera::GetNowPos() const
+{
+	return m_PosList[m_CameraType];
+}
+
+// 現在のモードの角度
+const Math::Vector3& GameCamera::GetNowDegAng() const
+{
+	return m_DegAngList[m_CameraType];
+}
+
+// 現在のモードの視野角
+const float& GameCamera::GetNowViewAng() const
+{
+	return m_ViewAngList[m_CameraType];
+}
+
+// テレポート開放時のターゲット
+const std::weak_ptr<MagicPolygon>& GameCamera::GetFixedTarget() const
+{
+	return m_FixedTarget;
+}
+
+// ボス
+const std::weak_ptr<EnemyBase>& GameCamera::GetBossTarget() const
+{
+	return m_BossTarget;
+}
+
+// カメラターゲット
+const std::weak_ptr<Player>& GameCamera::GetwpTarget() const
+{
+	return m_wpTarget;
+}
+
+// クリア時回転角度
+const float& GameCamera::GetChangeClearAngle() const
+{
+	return m_ChangeClearAngle;
+}
+
+// 振動時変化量
+const float& GameCamera::GetChangeShakeAngle() const
+{
+	return m_ChangeShakeAngle;
+}
+
+// 初期振動移動量
+const float& GameCamera::GetDefaultMove() const
+{
+	return m_DefaultMove;
+}
+
+// 初期振動時間
+const int& GameCamera::GetDefaultShakeTime() const
+{
+	return m_DefaultShakeTime;
+}
+
+// 振動フラグ
+const bool GameCamera::GetShakeFlg() const
+{
+	return m_shakeFlg;
+}
+
+// カメラタイプ
+const UINT& GameCamera::GetCameraType() const
+{
+	return m_CameraType;
+}
+
+// 回転行列
+const Math::Matrix GameCamera::GetRotationMatrix() const
+{
+	return Math::Matrix::CreateFromYawPitchRoll(
+		DirectX::XMConvertToRadians(m_DegAngList[m_CameraType].y),
+		DirectX::XMConvertToRadians(m_DegAngList[m_CameraType].x),
+		DirectX::XMConvertToRadians(m_DegAngList[m_CameraType].z));
+}
+
+// 回転行列X
+const Math::Matrix GameCamera::GetRotationXMatrix() const
+{
+	return Math::Matrix::CreateRotationX(
+		DirectX::XMConvertToRadians(m_DegAngList[m_CameraType].x));
+}
+
+// 回転行列Y
+const Math::Matrix GameCamera::GetRotationYMatrix() const
+{
+	return Math::Matrix::CreateRotationY(
+		DirectX::XMConvertToRadians(m_DegAngList[m_CameraType].y));
+}
+
+// 現在のステート
+const std::shared_ptr<GameCamera::StateBase>& GameCamera::GetState() const
+{
+	return m_state;
+}
+//==========================================================================================================================
+
+// ステート切り替え=========================================================================================================
+// プレイヤー
+void GameCamera::PlayerChange()
+{
+	std::shared_ptr<PlayerCamera> _player = std::make_shared<PlayerCamera>();
+	m_NextState = _player;
+	m_flow = GameCamera::Flow::EnterType;
+	return;
+}
+
+// テレポート開放
+void GameCamera::FixedChange()
+{
+	std::shared_ptr<FixedCamera> _fixed = std::make_shared<FixedCamera>();
+	m_NextState = _fixed;
+	m_flow = GameCamera::Flow::EnterType;
+	return;
+}
+
+// ボス
+void GameCamera::BossChange()
+{
+	std::shared_ptr<BossCamera> _boss = std::make_shared<BossCamera>();
+	m_NextState = _boss;
+	m_flow = GameCamera::Flow::EnterType;
+	return;
+}
+
+// クリア
+void GameCamera::ClearChange()
+{
+	std::shared_ptr<ClearCamera> _clear = std::make_shared<ClearCamera>();
+	m_NextState = _clear;
+	m_flow = GameCamera::Flow::EnterType;
+	return;
+}
+//==========================================================================================================================

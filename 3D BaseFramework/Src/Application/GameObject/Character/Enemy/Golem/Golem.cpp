@@ -56,6 +56,8 @@ void Golem::Init()
 	m_pCollider->RegisterCollisionShape("Enemy", m_model, KdCollider::TypeDamage | KdCollider::TypeBump | KdCollider::TypeSight);
 }
 
+// 行動切り替え==========================================================================================
+// 攻撃
 void Golem::AttackChange()
 {
 	Math::Vector3 _playerPos = m_Target.lock()->GetPos();
@@ -108,6 +110,15 @@ void Golem::AttackChange()
 	}
 
 }
+
+// 消滅
+void Golem::CrushingChange()
+{
+	m_NextState = std::make_shared<Crushing>();
+	m_NextActionType = EnemyBase::Action::CrushingType;
+	m_flow = Flow::EnterType;
+}
+//=================================================================================================
 
 void Golem::BumpCheck()
 {
@@ -190,6 +201,43 @@ void Golem::BumpCheck()
 		}
 	}
 }
+
+// セッター========================================================================================
+// 弾攻撃の射程角度
+void Golem::SetAttack1Angle(float _angle)
+{
+	m_Attack1Angle = _angle;
+}
+
+// ジャンプ攻撃の最短距離
+void Golem::SetAttack2Dist(float _dist)
+{
+	m_Attack2Dist = _dist;
+}
+//=================================================================================================
+
+// ゲッター========================================================================================
+// 弾発射位置
+const Math::Vector3& Golem::GetBulletPoint() const
+{
+	return (m_model->FindWorkNode("BulletPoint")->m_worldTransform * m_mWorld).Translation();
+}
+// 地震位置
+const Math::Vector3& Golem::GetQuakePoint() const
+{
+	return (m_model->FindWorkNode("QuakePoint")->m_worldTransform * m_mWorld).Translation();
+}
+// 弾攻撃の射程角度
+const float& Golem::GetAttack1Angle() const
+{
+	return m_Attack1Angle;
+}
+// ジャンプ攻撃の最短距離
+const float& Golem::GetAttack2Dist() const
+{
+	return m_Attack2Dist;
+}
+//=================================================================================================
 
 // Appeal==========================================================================================
 void Golem::Appeal::Enter(std::shared_ptr<EnemyBase> owner)

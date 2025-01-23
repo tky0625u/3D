@@ -13,20 +13,19 @@ public:
 	void NextStage();
 	// ウェーブ管理
 	void WaveCheck();
-	// 最大ウェーブフラグ
-	bool IsWaveMax() { return m_IsWaveMax; }
 	
 	// セッター====================================================================================
-	void SetObjectManager(std::shared_ptr<ObjectManager> _Obj) { m_ObjectManager = _Obj; } // オブジェクトマネジャ
-	void SetMaxStage     (int _stage)                          { m_MaxStage = _stage; }    // 最大ステージ数
-	void SetMaxWave      (int _wave)                           { m_MaxWave = _wave; }      // 最大ウェーブ数
+	void SetObjectManager(std::shared_ptr<ObjectManager> _Obj); // オブジェクトマネジャ
+	void SetMaxStage(int _stage);                               // 最大ステージ数
+	void SetMaxWave(int _wave);                                 // 最大ウェーブ数
 	//=============================================================================================
 
 	// ゲッター====================================================================================
-	const int& GetnowWave()const  { return m_nowWave; }  // 現在のウェーブ数
-	const int& GetMaxWave()const  { return m_MaxWave; }  // 最大ウェーブ数
-	const int& GetnowStage()const { return m_nowStage; } // 現在のステージ数
-	const int& GetMaxStage()const { return m_MaxStage; } // 最大ステージ数
+	const int& GetnowWave()const;  // 現在のウェーブ数
+	const int& GetMaxWave()const;  // 最大ウェーブ数
+	const int& GetnowStage()const; // 現在のステージ数
+	const int& GetMaxStage()const; // 最大ステージ数
+	const bool IsWaveMax()const;   // 最大ウェーブフラグ
 	//=============================================================================================
 
 private:

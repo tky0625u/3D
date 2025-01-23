@@ -18,9 +18,21 @@ void Cursor::Update()
 	// 暗転フラグがOFFだったらマウスを動かせる
 	if (!SceneManager::Instance().GetBlackAlphaFlg())
 	{
+		// カーソル座標
 		POINT _cursor;
 		GetCursorPos(&_cursor);
-		m_pos = { float(_cursor.x - 640.0f),float(-_cursor.y + 390.0f) };
+
+		// ウィンドウ座標
+		RECT _widRect;
+		GetWindowRect(Application::Instance().GetWindowHandle(), &_widRect);
+		Math::Vector2 _widPos = { float(_widRect.left), float(_widRect.top) };
+		
+		// 座標計算
+		Math::Vector2 _pos = Math::Vector2::Zero;
+		_pos.x = float(_cursor.x - 640.0f) - _widPos.x;
+		_pos.y = float(-_cursor.y + 390.0f) + _widPos.y;
+
+		m_pos = _pos;
 	}
 	// 画面が暗くなったらゲームへ
 	else if (SceneManager::Instance().GetBlackAlpha() >= 1.0f)
@@ -146,3 +158,36 @@ void Cursor::ParticleDelete()
 		}
 	}
 }
+
+// セッター========================================================================================
+// パーティクル
+void Cursor::SetParticleParam(int pNum, int pMoveXNum, int pMoveYNum, Math::Vector2 pMinMove, Math::Vector2 pMoveCorrection, int pSizeNum, float pMinSize, float pSizeCorrection, float pSizeChange)
+{
+	// 最大数
+	m_particle.ParticleNum = pNum;
+	// X軸のランダムの数
+	m_particle.MoveXNum = pMoveXNum;
+	// Y軸のランダムの数
+	m_particle.MoveYNum = pMoveYNum;
+	// 移動量の最低値
+	m_particle.MinMove = pMinMove;
+	// 移動量の補正値
+	m_particle.MoveCorrection = pMoveCorrection;
+	// サイズのランダムの数
+	m_particle.SizeNum = pSizeNum;
+	// サイズ最低値
+	m_particle.MinSize = pMinSize;
+	// サイズ補正値
+	m_particle.SizeCorrection = pSizeCorrection;
+	// サイズ変化量
+	m_particle.SizeChange = pSizeChange;
+}
+//=================================================================================================
+
+// ゲッター========================================================================================
+// パーティクル
+const Cursor::ParticleParam& Cursor::GetParticleParam() const
+{
+	return m_particle;
+}
+//=================================================================================================

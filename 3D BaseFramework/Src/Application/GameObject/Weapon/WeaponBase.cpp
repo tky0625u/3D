@@ -32,3 +32,31 @@ void WeaponBase::Init()
 
 	m_pDebugWire = std::make_unique<KdDebugWireFrame>();
 }
+
+// セッター========================================================================================
+// ターゲット（持ち主）
+void WeaponBase::SetTarget(std::shared_ptr<CharacterBase> _target)
+{
+	m_target = _target;
+}
+
+// モデルパス
+void WeaponBase::SetModelPath(std::string _modelPath)
+{
+	m_modelPath = _modelPath;
+}
+//=================================================================================================
+
+// ゲッター========================================================================================
+// 座標
+const Math::Vector3& WeaponBase::GetPos()
+{
+	return m_pos;
+}
+//=================================================================================================
+
+// 消滅
+void WeaponBase::Expired()
+{
+	m_isExpired = true;
+}

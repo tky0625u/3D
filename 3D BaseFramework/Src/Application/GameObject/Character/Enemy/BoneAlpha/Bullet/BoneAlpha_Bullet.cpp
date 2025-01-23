@@ -9,6 +9,9 @@
 
 void BoneAlpha_Bullet::Update()
 {
+	// プレイヤーがカウンター中なら早期リターン
+	if (SceneManager::Instance().GetPlayer()->GetActionType() == Player::Action::CounterType)return;
+
 	// 破壊フラグがONなら
 	if (m_crush)
 	{
@@ -35,6 +38,9 @@ void BoneAlpha_Bullet::Update()
 
 void BoneAlpha_Bullet::PostUpdate()
 {
+	// プレイヤーがカウンター中なら早期リターン
+	if (SceneManager::Instance().GetPlayer()->GetActionType() == Player::Action::CounterType)return;
+
 	// 当たり判定 スフィア判定
 	KdCollider::SphereInfo sphereInfo;
 	// 中心

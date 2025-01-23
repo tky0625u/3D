@@ -46,3 +46,11 @@ void Ground::Init()
 	// コライダー設定
 	m_pCollider->RegisterCollisionShape("Ground", m_model, KdCollider::TypeGround);
 }
+
+// セッター========================================================================================
+// 行列
+void Ground::SetMatrix(Math::Matrix _mat)
+{
+	m_mWorld = _mat;
+}
+//=================================================================================================

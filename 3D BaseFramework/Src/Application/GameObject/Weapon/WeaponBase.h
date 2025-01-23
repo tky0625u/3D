@@ -16,18 +16,18 @@ public:
 
 	// セッター==============================================================================================
 	// ターゲット（持ち主）
-	void SetTarget   (std::shared_ptr<CharacterBase> _target) { m_target = _target; }
+	void SetTarget(std::shared_ptr<CharacterBase> _target);
 	// モデルパス
-	void SetModelPath(std::string _modelPath)                 { m_modelPath = _modelPath; }
+	void SetModelPath(std::string _modelPath);
 	//=======================================================================================================
 
 	// ゲッター==============================================================================================
 	// 座標
-	const Math::Vector3& GetPos(){ return m_pos; }
+	const Math::Vector3& GetPos();
 	//=======================================================================================================
 
-	// デバッグ
-	void Expired() { m_isExpired = true; }
+	// 消滅
+	void Expired();
 
 protected:
 	std::weak_ptr<CharacterBase> m_target;             // ターゲット(持ち主)

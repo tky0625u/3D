@@ -28,3 +28,14 @@ void Particle::Init()
 	m_size = 0.5f;
 	m_rect = { 0,0,128,128 };
 }
+
+// セッター========================================================================================
+// パラメータ
+void Particle::SetParam(Math::Vector2 _pos, Math::Vector2 _move, float _size, float _sizeChange)
+{
+	m_pos = _pos;
+	m_move = _move;
+	m_size = _size;
+	m_SizeChange = _sizeChange;
+}
+//=================================================================================================

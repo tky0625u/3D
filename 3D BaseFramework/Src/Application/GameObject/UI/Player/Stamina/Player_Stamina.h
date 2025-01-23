@@ -17,7 +17,7 @@ public:
 	void Init()       override;
 
 	// セッター==========================================================================
-	void SetTraget(std::shared_ptr<Player> _target) { m_target = _target; } // ターゲット（プレイヤー）
+	void SetTraget(std::shared_ptr<Player> _target); // ターゲット（プレイヤー）
 	//===================================================================================
 
 private:

@@ -6,6 +6,56 @@ void GameStateUI::Update()
 	m_state->StateUpdate(shared_from_this());
 }
 
+// セッター========================================================================================
+// アルファ値変化量
+void GameStateUI::SetChangeAlpha(float _change)
+{
+	m_alphaChange = _change;
+}
+
+// ステート
+void GameStateUI::SetState(bool _IsClear)
+{
+	if (_IsClear)
+	{
+		m_state = std::make_shared<Clear>();
+		m_flow = Flow::EnterType;
+	}
+	else
+	{
+		m_state = std::make_shared<GameOver>();
+		m_flow = Flow::EnterType;
+	}
+}
+//=================================================================================================
+
+// ゲッター========================================================================================
+// アルファ値変化量
+const float& GameStateUI::GetAlphaChange() const
+{
+	return m_alphaChange;
+}
+//=================================================================================================
+
+// ステート更新
+void GameStateUI::StateBase::StateUpdate(std::shared_ptr<GameStateUI> owner)
+{
+	switch (owner->m_flow)
+	{
+	case Flow::EnterType:
+		Enter(owner);
+		break;
+	case Flow::UpdateType:
+		Update(owner);
+		break;
+	case Flow::ExitType:
+		Exit(owner);
+		break;
+	default:
+		break;
+	}
+}
+
 // ゲームオーバー==================================================================================
 void GameStateUI::GameOver::Enter(std::shared_ptr<GameStateUI> owner)
 {

@@ -15,38 +15,18 @@ public:
 	void SetTarget(const std::shared_ptr<Player>& target);
 
 	// 「絶対変更しません！見るだけ！」な書き方
-	const std::shared_ptr<KdCamera>& GetCamera() const
-	{
-		return m_spCamera;
-	}
+	const std::shared_ptr<KdCamera>& GetCamera() const;
 
 	// 「中身弄るかもね」な書き方
-	std::shared_ptr<KdCamera> WorkCamera() const
-	{
-		return m_spCamera;
-	}
+	std::shared_ptr<KdCamera> WorkCamera() const;
 
-	virtual const Math::Matrix GetRotationMatrix()const
-	{
-		return Math::Matrix::CreateFromYawPitchRoll(
-			DirectX::XMConvertToRadians(m_DegAng.y),
-			DirectX::XMConvertToRadians(m_DegAng.x),
-			DirectX::XMConvertToRadians(m_DegAng.z));
-	}
+	virtual const Math::Matrix GetRotationMatrix()const;
 
-	virtual const Math::Matrix GetRotationXMatrix() const
-	{
-		return Math::Matrix::CreateRotationX(
-			DirectX::XMConvertToRadians(m_DegAng.x));
-	}
+	virtual const Math::Matrix GetRotationXMatrix() const;
 
-	virtual const Math::Matrix GetRotationYMatrix() const
-	{
-		return Math::Matrix::CreateRotationY(
-			DirectX::XMConvertToRadians(m_DegAng.y));
-	}
+	virtual const Math::Matrix GetRotationYMatrix() const;
 
-	virtual const Math::Vector3 GetDegAng()const { return m_DegAng; }
+	virtual const Math::Vector3 GetDegAng()const;
 
 private:
 

@@ -99,3 +99,31 @@ void Select::Init()
 	m_pTex = std::make_shared<KdTexture>();
 	m_pTex->Load("Asset/Textures/UI/Title/Select/Particle_Soft.png");
 }
+
+// セッター========================================================================================
+// アルファ値補正値
+void Select::SetAlphaCorrection(float _correction)
+{
+	m_AlphaCorrection = _correction;
+}
+
+// 角度変化量
+void Select::SetChangeAngle(float _change)
+{
+	m_ChangeAngle = _change;
+}
+//=================================================================================================
+
+// ゲッター========================================================================================
+// アルファ値補正値
+const float& Select::GetAlphaCorrection() const
+{
+	return m_AlphaCorrection;
+}
+
+// 角度変化量
+const float& Select::GetChangeAngle() const
+{
+	return m_ChangeAngle;
+}
+//=================================================================================================

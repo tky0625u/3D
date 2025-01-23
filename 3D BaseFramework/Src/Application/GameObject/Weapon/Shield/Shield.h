@@ -13,7 +13,7 @@ public:
 
 	// ゲッター=============================================================================================================
 	// パリィエフェクト位置
-	const Math::Matrix& GetParryPoint() { return m_spModel->FindWorkNode("ParryPoint")->m_worldTransform * m_mWorld; }
+	const Math::Matrix& GetParryPoint();
 	//======================================================================================================================
 
 private:

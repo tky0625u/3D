@@ -138,6 +138,23 @@ void GameScene::DebugObject()
 	m_ObjManager->DebugObject(m_StageManager);
 }
 
+// ステート更新
+void GameScene::StateBase::StateUpdate(std::shared_ptr<GameScene> owner)
+{
+	switch (owner->m_flow)
+	{
+	case Flow::EnterType:
+		Enter(owner);
+		break;
+	case Flow::UpdateType:
+		Update(owner);
+		break;
+	case Flow::ExitType:
+		Exit(owner);
+		break;
+	}
+}
+
 // Normal==========================================================================================
 void GameScene::Normal::Enter(std::shared_ptr<GameScene> owner)
 {

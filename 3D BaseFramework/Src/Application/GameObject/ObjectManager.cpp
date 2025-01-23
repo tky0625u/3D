@@ -3849,9 +3849,52 @@ void ObjectManager::SetBoneAlphaBulletParam(int id)
 	SceneManager::Instance().AddObject(_bullet);
 }
 
+// スロー値
+const float& ObjectManager::GetSlow() const
+{
+	return m_slow;
+}
+
+// スローフラグ
+const bool ObjectManager::GetSlowFlg() const
+{
+	return m_slowFlg;
+}
+
+// テレポート可能フラグ
 const bool ObjectManager::GetTeleportFlg()
 {
 	return m_magic.lock()->GetTeleport();
+}
+
+// ゴーレム
+const std::weak_ptr<Golem>& ObjectManager::GetGolem() const
+{
+	return m_golem;
+}
+
+// 魔法陣
+const std::weak_ptr<MagicPolygon>& ObjectManager::GetMagicPolygon() const
+{
+	return m_magic;
+}
+
+// GameUI
+const std::weak_ptr<Game>& ObjectManager::GetGame() const
+{
+	return m_game;
+}
+
+// ExitUI
+const std::weak_ptr<Exit>& ObjectManager::GetExit() const
+{
+	return m_exit;
+}
+
+// カーソル
+const std::weak_ptr<Cursor>& ObjectManager::GetCursor() const
+{
+	return m_cursor;
 }
 
 void ObjectManager::AddTitleCamera()

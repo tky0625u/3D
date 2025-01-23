@@ -40,6 +40,41 @@ void CameraBase::SetTarget(const std::shared_ptr<Player>& target)
 	m_wpTarget = target;
 }
 
+const std::shared_ptr<KdCamera>& CameraBase::GetCamera() const
+{
+	return m_spCamera;
+}
+
+std::shared_ptr<KdCamera> CameraBase::WorkCamera() const
+{
+	return m_spCamera;
+}
+
+const Math::Matrix CameraBase::GetRotationMatrix() const
+{
+	return Math::Matrix::CreateFromYawPitchRoll(
+		DirectX::XMConvertToRadians(m_DegAng.y),
+		DirectX::XMConvertToRadians(m_DegAng.x),
+		DirectX::XMConvertToRadians(m_DegAng.z));
+}
+
+const Math::Matrix CameraBase::GetRotationXMatrix() const
+{
+	return Math::Matrix::CreateRotationX(
+		DirectX::XMConvertToRadians(m_DegAng.x));
+}
+
+const Math::Matrix CameraBase::GetRotationYMatrix() const
+{
+	return Math::Matrix::CreateRotationY(
+		DirectX::XMConvertToRadians(m_DegAng.y));
+}
+
+const Math::Vector3 CameraBase::GetDegAng() const
+{
+	return m_DegAng;
+}
+
 void CameraBase::UpdateRotateByMouse()
 {
 	// マウスでカメラを回転させる処理

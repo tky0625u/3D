@@ -47,3 +47,25 @@ void Circle::Init()
 	// コライダー設定
 	m_pCollider->RegisterCollisionShape("Circle", m_spModel, KdCollider::TypeGround | KdCollider::TypeEvent);
 }
+
+// セッター========================================================================================
+// 地面
+void Circle::SetGround(std::shared_ptr<Ground> _target)
+{
+	m_target = _target;
+}
+
+// 行列
+void Circle::SetMatrix(Math::Matrix _mat)
+{
+	m_mWorld = _mat;
+}
+//=================================================================================================
+
+// ゲッター========================================================================================
+// 魔法陣位置ノード
+const Math::Vector3 Circle::GetMagicPolygonPoint() const
+{
+	return (m_spModel->FindWorkNode("MagicPolygonPoint")->m_worldTransform * m_mWorld).Translation();
+}
+//=================================================================================================

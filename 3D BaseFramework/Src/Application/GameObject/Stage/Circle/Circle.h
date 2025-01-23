@@ -14,13 +14,13 @@ public:
 	void Init()   override;
 
 	// セッター====================================================================================
-	void SetGround(std::shared_ptr<Ground> _target) { m_target = _target; } // 地面
-	void SetMatrix(Math::Matrix _mat)               { m_mWorld = _mat; }    // 行列
+	void SetGround(std::shared_ptr<Ground> _target); // 地面
+	void SetMatrix(Math::Matrix _mat);               // 行列
 	//=============================================================================================
 
 	// ゲッター====================================================================================
 	// 魔法陣位置
-	const Math::Vector3 GetMagicPolygonPoint()const { return (m_spModel->FindWorkNode("MagicPolygonPoint")->m_worldTransform * m_mWorld).Translation(); } 
+	const Math::Vector3 GetMagicPolygonPoint()const;
 	//=============================================================================================
 
 private:

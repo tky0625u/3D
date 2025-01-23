@@ -57,3 +57,37 @@ void Player_HP::Init()
 	m_pTex[HP::down] = std::make_shared<KdTexture>();
 	m_pTex[HP::down]->Load("Asset/Textures/UI/Player/HP/Player_Hp_Downline.png");
 }
+
+// セッター========================================================================================
+// ターゲット
+void Player_HP::SetTraget(std::shared_ptr<Player> _target)
+{
+	m_target = _target;
+}
+
+// 減少ゲージ減少開始時間
+void Player_HP::SetDownTime(int _downTime)
+{
+	m_DownTime = _downTime;
+}
+
+// 減少ゲージ変化量
+void Player_HP::SetDownChange(float _downChange)
+{
+	m_DownChange = _downChange;
+}
+//=================================================================================================
+
+// ゲッター========================================================================================
+// 減少ゲージ減少開始時間
+const int& Player_HP::GetDownTime() const
+{
+	return m_DownTime;
+}
+
+// 減少ゲージ変化量
+const float& Player_HP::GetDownChange() const
+{
+	return m_DownChange;
+}
+//=================================================================================================

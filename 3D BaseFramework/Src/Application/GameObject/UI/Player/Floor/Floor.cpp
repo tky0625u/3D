@@ -35,8 +35,17 @@ void Floor::Init()
 	m_FloorPTex->Load("Asset/Textures/UI/Player/Floor/Cool Text - 1234567890 468658586495746.png");
 }
 
+// セッター========================================================================================
+// ステージマネジャ
+void Floor::SetStageManager(std::shared_ptr<StageManager> _stage)
+{
+	m_StageManager = _stage;
+}
+
+// 座標
 void Floor::SetPos(Math::Vector2 _pos)
 {
 	m_pos = _pos;
 	m_FloorPos = { m_pos.x,(m_pos.y - ((m_FloorRect.height * m_FloorPivot.y * m_size) + (m_rect.height * m_pivot.y * m_size))) };
 }
+//=================================================================================================

@@ -82,6 +82,20 @@ void Sword::ClearTraject()
 	m_traject.m_trajectMatList.clear();
 }
 
+// セッター========================================================================================
+// 攻撃力
+void Sword::SetATK(int _atk)
+{
+	m_atk = _atk;
+}
+
+// 攻撃判定用スフィアサイズ
+void Sword::SetAttackSphereSize(float _size)
+{
+	m_AttackSphereSize = _size;
+}
+
+// 軌跡の行列
 void Sword::SetTrajectMat()
 {
 	// リスト追加
@@ -103,3 +117,56 @@ void Sword::SetTrajectMat()
 	// ２個目を補完した座標に置き換える
 	m_traject.m_trajectMatList[TrajectType::TransFormType].Translation(_transform);
 }
+
+// 軌跡の座標数
+void Sword::SetTrajectPointNUM(int _pointNUM)
+{
+	m_trajePointNUM = _pointNUM;
+}
+//=================================================================================================
+
+// ゲッター========================================================================================
+// 剣先
+Math::Matrix Sword::GetModelTop()
+{
+	return m_spModel->FindWorkNode("sword.Top")->m_worldTransform * m_mWorld;
+}
+
+// 中心
+Math::Matrix Sword::GetModelCenter()
+{
+	return m_spModel->FindWorkNode("sword.Center")->m_localTransform * m_spModel->FindWorkNode("sword.Top")->m_worldTransform * m_mWorld;
+}
+
+// 持ち手
+Math::Matrix Sword::GetModelBottom()
+{
+	return m_spModel->FindWorkNode("sword.Bottom")->m_localTransform * m_spModel->FindWorkNode("sword.Center")->m_worldTransform * m_mWorld;
+}
+
+// 攻撃力
+const int& Sword::GetATK() const
+{
+	return m_atk;
+}
+
+// 攻撃判定用スフィアサイズ
+const float& Sword::GetAttackSphereSize() const
+{
+	return m_AttackSphereSize;
+}
+
+// 軌跡
+const bool Sword::GetTrajectPolygon() const
+{
+	if (m_traject.m_trajectPolyGon)return true;
+
+	return false;
+}
+
+// 軌跡の座標の数
+const int& Sword::GetTraject() const
+{
+	return m_trajePointNUM;
+}
+//=================================================================================================

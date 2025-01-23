@@ -11,7 +11,7 @@ public:
 	void Init()override;
 
 	// セッター======================================================
-	void SetMatrix(Math::Matrix _mat) { m_mWorld = _mat; } // 行列
+	void SetMatrix(Math::Matrix _mat); // 行列
 	//===============================================================
 
 private:

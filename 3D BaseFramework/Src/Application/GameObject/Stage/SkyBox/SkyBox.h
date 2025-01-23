@@ -11,7 +11,7 @@ public:
 	void Init()      override;
 
 	// セッター====================================================================================
-	void SetTarget(std::shared_ptr<KdGameObject> _target) { m_target = _target; } // プレイヤーターゲット
+	void SetTarget(std::shared_ptr<KdGameObject> _target); // プレイヤーターゲット
 	//=============================================================================================
 
 private:

@@ -23,6 +23,7 @@ public:
 	EnemyBase()                       {}
 	~EnemyBase()             override {};
 
+	void Update()            override;
 	void PostUpdate()        override;
 	virtual void Action()    override;
 	virtual void Init()      override;
@@ -32,78 +33,55 @@ public:
 	virtual void BumpCheck() override; // 横当たり判定
 
 	// 行動切り替え============================================================
-	void IdolChange() // 待機
-	{
-		std::shared_ptr<Idol> _idol = std::make_shared<Idol>();
-		m_NextState = _idol;
-		m_NextActionType = Action::IdolType;
-		m_flow = EnemyBase::Flow::UpdateType;
-	}
-	void RunChange() // 移動
-	{
-		std::shared_ptr<Run> _run = std::make_shared<Run>();
-		m_NextState = _run;
-		m_NextActionType = Action::RunType;
-		m_flow = EnemyBase::Flow::EnterType;
-	}
-	virtual void HitChange() // 被弾
-	{
-		std::shared_ptr<Hit> _hit = std::make_shared<Hit>();
-		m_NextState = _hit;
-		m_NextActionType = EnemyBase::Action::HitType;
-		m_flow = EnemyBase::Flow::UpdateType;
-	}
-	virtual void CrushingChange() // 消滅
-	{
-		std::shared_ptr<Crushing> _crush = std::make_shared<Crushing>();
-		m_NextState = _crush;
-		m_NextActionType = EnemyBase::Action::CrushingType;
-		m_flow = KdGameObject::Flow::EnterType;
-	}
+	void IdolChange();               // 待機
+	void RunChange();                // 移動
+	virtual void HitChange();        // 被弾
+	virtual void CrushingChange();   // 消滅
 	virtual void AttackChange(){};   // 攻撃
 	virtual void StumbleChange() {}; // よろけ
 	//=========================================================================
-	void Damage(int _damage) { m_state->Damage(shared_from_this(), _damage); } // ダメージ計算
+
+	void Damage(int _damage); // ダメージ計算
 
 	// セッター================================================================
-	void SetTarget(std::shared_ptr<Player> _target) { m_Target = _target; }           // 攻撃目標
-	void SetEnemyCheckRadius(float _radius)         { m_EnemyCheckRadius = _radius; } // 他の敵との距離判定時のスフィアの半径
-	void SetLeaveDist(float _dist)                  { m_LeaveDist = _dist; }          // 避ける距離
-	void SetAppealEffectSize(float _size)           { m_AppealEffectSize = _size; }   // 出現演出時のエフェクトサイズ
-	void SetAttackSphereSize(float _size)           { m_AttackSphereSize = _size; }   // 攻撃判定のスフィアサイズ
-	void SetStumbleMove(float _move)                { m_StumbleMove = _move; }        // よろける時の移動スピード
-	void SetFlow(UINT _flow)                        { m_flow = _flow; }               // 現在のステートの実行関数タイプ
-	void SetColorLightFlg(bool _flg)                { m_ColorLightFlg = _flg; }       // 攻撃範囲フラグ
-	void SetBossFlg(bool _bossFlg)                  { m_bossFlg = _bossFlg; }         // ボスフラグ
+	void SetTarget(std::shared_ptr<Player> _target); // プレイヤー
+	void SetEnemyCheckRadius(float _radius);         // 他の敵との距離判定時のスフィアの半径
+	void SetLeaveDist(float _dist);                  // 避ける距離
+	void SetAppealEffectSize(float _size);           // 出現演出時のエフェクトサイズ
+	void SetAttackSphereSize(float _size);           // 攻撃判定のスフィアサイズ
+	void SetStumbleMove(float _move);                // よろける時の移動スピード
+	void SetFlow(UINT _flow);                        // 現在のステートの実行関数タイプ
+	void SetColorLightFlg(bool _flg);                // 攻撃範囲フラグ
+	void SetBossFlg(bool _bossFlg);                  // ボスフラグ
 	//=========================================================================
 
 	// ゲッター================================================================
 	// プレイヤー
-	const std::weak_ptr<Player>& GetTarget()             const { return m_Target; }
+	const std::weak_ptr<Player>& GetTarget()const;
 	// プレイヤーに向かうための回転行列
 	const Math::Matrix           GettoTargetRotateYMatrix(std::weak_ptr<Player> _target);
 	// HPノード　この位置にHPが置かれる
-	const Math::Matrix           GetHPMat()              const { return m_model->FindWorkNode("HP")->m_worldTransform * m_mWorld; }
+	const Math::Matrix           GetHPMat()const;
 	// 攻撃前エフェクトノード
-	const Math::Matrix           GetAttackStartPointMat()const { return m_model->FindWorkNode("AttackStartPoint")->m_worldTransform * m_mWorld; }
+	const Math::Matrix           GetAttackStartPointMat()const;
 	// 他の敵との距離判定時のスフィアの半径
-	const float&                 GetEnemyCheckRadius()   const { return m_EnemyCheckRadius; }
+	const float&                 GetEnemyCheckRadius()const;
 	// 避ける距離
-	const float&                 GetLeaveDist()          const { return m_LeaveDist; }
+	const float&                 GetLeaveDist()const;
 	// 出現演出時のエフェクトサイズ
-	const float&                 GetAppealEffectSize()   const { return m_AppealEffectSize; }
+	const float&                 GetAppealEffectSize()const;
 	// 攻撃判定のスフィアサイズ
-	const float&                 GetAttackSphereSize()   const { return m_AttackSphereSize; }
+	const float&                 GetAttackSphereSize()const;
 	// よろける時の移動スピード
-	const float&                 GetStumbleMove()        const { return m_StumbleMove; }
+	const float&                 GetStumbleMove()const;
 	// 行動
-	const UINT&                  GetActionType()         const { return m_actionType; }
+	const UINT&                  GetActionType()const;
 	// 地面フラグ
-	const bool                   GetGroundFlg()          const { return m_groundFlg; }
+	const bool                   GetGroundFlg()const;
 	// 避けて移動する対象
-	const bool                   GetLeave()              const { return m_leaveEnemy.expired(); }
+	const bool                   GetLeave()const;
 	// ボスフラグ
-	const bool                   GetBossFlg()            const { return m_bossFlg; }
+	const bool                   GetBossFlg()const;
 	//=========================================================================
 
 protected:
@@ -144,23 +122,7 @@ protected:
 		virtual ~StateBase() {};
 
 		// ステート更新
-		void StateUpdate(std::shared_ptr<EnemyBase> owner)
-		{
-			switch (owner->m_flow)
-			{
-			case EnemyBase::Flow::EnterType:
-				Enter(owner);
-				break;
-			case EnemyBase::Flow::UpdateType:
-				Update(owner);
-				break;
-			case EnemyBase::Flow::ExitType:
-				Exit(owner);
-				break;
-			default:
-				break;
-			}
-		}
+		void StateUpdate(std::shared_ptr<EnemyBase> owner);
 
 		virtual void Enter (std::shared_ptr<EnemyBase> owner) {};
 		virtual void Update(std::shared_ptr<EnemyBase> owner) {};
@@ -277,13 +239,10 @@ protected:
 public:
 	// セッター=====================================================================
 	// 次の行動
-	void SetNextAction(std::shared_ptr<StateBase> _action, UINT _actionType) {
-		m_NextState = _action;
-		m_actionType = _actionType;
-	}
+	void SetNextAction(std::shared_ptr<StateBase> _action, UINT _actionType);
 	//==============================================================================
 
 	// ゲッター=====================================================================
-	const UINT& GetNextActionType()const { return m_NextActionType; } // 次の行動タイプ
+	const UINT& GetNextActionType()const; // 次の行動タイプ
 	//==============================================================================
 };

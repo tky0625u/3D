@@ -43,3 +43,11 @@ void Player_Stamina::Init()
 	m_pTex[Stamina::box] = std::make_shared<KdTexture>();
 	m_pTex[Stamina::box]->Load("Asset/Textures/UI/Player/Stamina/frame.png");
 }
+
+// セッター========================================================================================
+// ターゲット
+void Player_Stamina::SetTraget(std::shared_ptr<Player> _target)
+{
+	m_target = _target;
+}
+//=================================================================================================

@@ -12,27 +12,9 @@ public:
 	virtual void Init()  override;
 
 	// 行動切り替え============================================================
-	void AttackChange()override // 攻撃
-	{
-		std::shared_ptr<Attack> _attack = std::make_shared<Attack>();
-		m_NextState = _attack;
-		m_NextActionType = Action::AttackType;
-		m_flow = EnemyBase::Flow::UpdateType;
-	}
-	void StumbleChange()override // よろけ
-	{
-		std::shared_ptr<Stumble> _stumble = std::make_shared<Stumble>();
-		m_NextState = _stumble;
-		m_NextActionType = Action::StumbleType;
-		m_flow = EnemyBase::Flow::UpdateType;
-	}
-	void CrushingChange()override // 消滅
-	{
-		std::shared_ptr<Crushing> _crush = std::make_shared<Crushing>();
-		m_NextState = _crush;
-		m_NextActionType = EnemyBase::Action::CrushingType;
-		m_flow = KdGameObject::Flow::EnterType;
-	}
+	void AttackChange()override;   // 攻撃
+	void StumbleChange()override;  // よろけ
+	void CrushingChange()override; // 消滅
 	//=========================================================================
 
 protected:

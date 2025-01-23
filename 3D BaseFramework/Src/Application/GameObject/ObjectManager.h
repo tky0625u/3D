@@ -163,18 +163,22 @@ public:
 	void SetBoneAlphaBulletParam(int id);
 	//=========================================================================
 
+	// スロー値
+	const float& GetSlow()const;
+	// スローフラグ　trueならスロー中
+	const bool GetSlowFlg()const;
 	// テレポート位置からのフラグ trueならテレポートが可能
 	const bool GetTeleportFlg();
 	// ゴーレム
-	const std::weak_ptr<Golem>& GetGolem()const { return m_golem; }
+	const std::weak_ptr<Golem>& GetGolem()const;
 	// 魔法陣
-	const std::weak_ptr<MagicPolygon>& GetMagicPolygon()const { return m_magic; }
+	const std::weak_ptr<MagicPolygon>& GetMagicPolygon()const;
 	// ゲームUI
-	const std::weak_ptr<Game>& GetGame()const { return m_game; }
+	const std::weak_ptr<Game>& GetGame()const;
 	// ゲーム終了UI
-	const std::weak_ptr<Exit>& GetExit()const { return m_exit; }
+	const std::weak_ptr<Exit>& GetExit()const;
 	// カーソル
-	const std::weak_ptr<Cursor>& GetCursor()const { return m_cursor; }
+	const std::weak_ptr<Cursor>& GetCursor()const;
 	
 
 	// オブジェクトを動的に生成 ImGuiで使用====================================
@@ -207,11 +211,6 @@ public:
 	// 武器切り替え
 	void ChangeWeapon(std::string _swordName, std::string _shieldName);
 	//============================================================================
-
-	// スロー値
-	const float& GetSlow()const { return m_slow; }
-	// スローフラグ　trueならスロー中
-	const bool GetSlowFlg()const { return m_slowFlg; }
 
 private:
 

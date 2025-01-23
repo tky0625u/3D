@@ -14,13 +14,13 @@ public:
 	void Init()      override;
 
 	// セッター==============================================================================================
-	void SetAlphaCorrection(float _correction) { m_AlphaCorrection = _correction; } // アルファ値補正値
-	void SetChangeAngle    (float _change)     { m_ChangeAngle = _change; }         // 角度変化量
+	void SetAlphaCorrection(float _correction); // アルファ値補正値
+	void SetChangeAngle(float _change);         // 角度変化量
 	//=======================================================================================================
 
 	// ゲッター==============================================================================================
-	const float& GetAlphaCorrection()const { return m_AlphaCorrection; } // アルファ値補正値
-	const float& GetChangeAngle()    const { return m_ChangeAngle; }     // 角度変化量
+	const float& GetAlphaCorrection()const; // アルファ値補正値
+	const float& GetChangeAngle()const;     // 角度変化量
 	//=======================================================================================================
 
 private:

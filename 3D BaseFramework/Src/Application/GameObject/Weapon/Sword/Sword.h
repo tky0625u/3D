@@ -20,32 +20,27 @@ public:
 	void ClearTraject();
 
 	// セッター============================================================================================================================
-	void SetATK             (int _atk)      { m_atk = _atk; }                // 攻撃力
-	void SetAttackSphereSize(float _size)   { m_AttackSphereSize = _size; }  // 攻撃判定用スフィアサイズ
-	void SetTrajectMat      ();                                              // 軌跡の行列
-	void SetTrajectPointNUM (int _pointNUM) { m_trajePointNUM = _pointNUM; } // 軌跡の座標の数
+	void SetATK(int _atk);                  // 攻撃力
+	void SetAttackSphereSize(float _size);  // 攻撃判定用スフィアサイズ
+	void SetTrajectMat();                   // 軌跡の行列
+	void SetTrajectPointNUM(int _pointNUM); // 軌跡の座標の数
 	//=====================================================================================================================================
 
 	// ゲッター============================================================================================================================
 	// 剣先
-	Math::Matrix GetModelTop()    { return m_spModel->FindWorkNode("sword.Top")->m_worldTransform * m_mWorld; }
+	Math::Matrix GetModelTop();
 	// 中心
-	Math::Matrix GetModelCenter() { return m_spModel->FindWorkNode("sword.Center")->m_localTransform * m_spModel->FindWorkNode("sword.Top")->m_worldTransform * m_mWorld; }
+	Math::Matrix GetModelCenter();
 	// 持ち手
-	Math::Matrix GetModelBottom() { return m_spModel->FindWorkNode("sword.Bottom")->m_localTransform * m_spModel->FindWorkNode("sword.Center")->m_worldTransform * m_mWorld; }
+	Math::Matrix GetModelBottom();
 	// 攻撃力
-	const int&   GetATK()const { return m_atk; }
+	const int&   GetATK()const;
 	// 攻撃判定用スフィアサイズ
-	const float& GetAttackSphereSize()const { return m_AttackSphereSize; }
+	const float& GetAttackSphereSize()const;
 	// 軌跡
-	const bool   GetTrajectPolygon()const 
-	{
-		if (m_traject.m_trajectPolyGon)return true;
-
-		return false;
-	}
+	const bool   GetTrajectPolygon()const;
 	// デバッグ　軌跡の座標の数
-	const int& GetTraject()const { return m_trajePointNUM; }
+	const int&   GetTraject()const;
 	//=====================================================================================================================================
 
 private:

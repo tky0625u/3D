@@ -39,42 +39,42 @@ public:
 	// テレポート位置判定
 	void NextStageCheck();
 	// スタミナ回復
-	void StaminaRecovery() { 
-		if (m_NowStaminaRecoveryTime > 0)return;
-		m_param.Sm++;
-		if (m_param.Sm >= m_MaxStamina)m_param.Sm = m_MaxStamina;
-	}
+	void StaminaRecovery();
 
-	// 待機切り替え
+	// 行動切り替え================================================================================
+	// 待機
 	void IdolChange();
-	// テレポート切り替え
+	// テレポート
 	void TeleportChange();
+	//=============================================================================================
 
-	void Damage(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr) { m_state->Damage(shared_from_this(), _damage, _enemy); }    // 直接攻撃による被弾
-	void Damage(int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr) { m_state->Damage(shared_from_this(), _damage, _bullet); } // 遠距離攻撃による被弾
+	// ダメージ===========================================================================================
+	void Damage(int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr);   // 直接攻撃による被弾
+	void Damage(int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr); // 遠距離攻撃による被弾
+	//====================================================================================================
 
 	// セッター====================================================================================
-	void SetStageManager       (std::shared_ptr<StageManager> _stage) { m_StageManager = _stage; }       // ステージマネジャ
-	void SetShield             (std::shared_ptr<Shield> _shield)      { m_shield = _shield; }            // 盾
-	void SetCounterRadius      (float _radius)                        { m_CounterRadius = _radius; }     // カウンターの攻撃範囲
-	void SetParryID            (UINT _id)                             { m_ParryID = _id; }               // パリィした敵のID
-	void SetParryTime          (int _time)                            { m_ParryTime = _time; }           // パリィ可能時間
-	void SetStaminaRecoveryTime(int _time)                            { m_StaminaRecoveryTime = _time; } // スタミナ回復可能時間 
-	void SetRollStamina        (int _rollStamina)                     { m_RollStamina = _rollStamina; }  // 回避した時のスタミナの減少量
+	void SetStageManager       (std::shared_ptr<StageManager> _stage); // ステージマネジャ
+	void SetShield             (std::shared_ptr<Shield> _shield);      // 盾
+	void SetCounterRadius      (float _radius);                        // カウンターの攻撃範囲
+	void SetParryID            (UINT _id);                             // パリィした敵のID
+	void SetParryTime          (int _time);                            // パリィ可能時間
+	void SetStaminaRecoveryTime(int _time);                            // スタミナ回復開始時間 
+	void SetRollStamina        (int _rollStamina);                     // 回避した時のスタミナの減少量
 	//=============================================================================================
 
 	// ゲッター====================================================================================
-	const std::weak_ptr<Shield>&        GetShield             () const { return m_shield; }
-	const std::weak_ptr<ObjectManager>& GetObjectManager      () const { return m_ObjectManager; }
-	const Math::Matrix&                 GetEnemyAttackPointMat() const { return (m_model->FindWorkNode("EnemyAttackPoint")->m_worldTransform) * m_mWorld; }
-	const Math::Matrix&                 GetCameraPointMat     () const { return (m_model->FindWorkNode("CameraPoint")->m_worldTransform) * m_mWorld; }
-	const float&                        GetCounterRadius      () const { return m_CounterRadius; }
-	const UINT&                         GetParryID            () const { return m_ParryID; }
-	const UINT&                         GetActionType         () const { return m_actionType; }
-	const int&                          GetParryTime          () const { return m_ParryTime; }
-	const int&                          GetMaxStamina         () const { return m_MaxStamina; }
-	const int&                          GetStaminaRecoveryTime() const { return m_StaminaRecoveryTime; }
-	const int&                          GetRollStamina        () const { return m_RollStamina; }
+	const std::weak_ptr<Shield>&        GetShield() const;              // 盾
+	const std::weak_ptr<ObjectManager>& GetObjectManager() const;       // オブジェクトマネジャ
+	const Math::Matrix&                 GetEnemyAttackPointMat() const; // 敵に対する攻撃の高さノード
+	const Math::Matrix&                 GetCameraPointMat() const;      // カメラ判定用ノード
+	const float&                        GetCounterRadius() const;       // カウンターの攻撃範囲
+	const UINT&                         GetParryID() const;             // パリィした敵のID
+	const UINT&                         GetActionType() const;          // 行動タイプ
+	const int&                          GetParryTime() const;           // パリィ可能時間
+	const int&                          GetMaxStamina() const;          // 最大スタミナ
+	const int&                          GetStaminaRecoveryTime() const; // スタミナ回復開始時間
+	const int&                          GetRollStamina() const;         // 回避した時のスタミナ減少量
 	//=============================================================================================
 
 private:
@@ -282,7 +282,7 @@ private:
 		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<EnemyBase> _enemy = nullptr)  override; // 直接攻撃による被弾
 		void Damage(std::shared_ptr<Player> owner, int _damage = 0, std::shared_ptr<BulletBase> _bullet = nullptr)override; // 遠距離攻撃による被弾
 
-		void SetGuardTime(int _time) { m_guardTime = _time; } // 防御してからの経過時間
+		void SetGuardTime(int _time); // ガード時間
 
 	private:
 		// 防御してからの経過時間
@@ -414,13 +414,7 @@ private:
 	UINT                       m_BeforeKeyType  = 0;
 
 	// 次の行動
-	void SetNextState(std::shared_ptr<StateBase> _next, UINT _action)
-	{
-		// ステート
-		m_NextState = _next;
-		// 行動タイプ
-		m_NextActionType = _action;
-	}
+	void SetNextState(std::shared_ptr<StateBase> _next, UINT _action);
 
 	// キーチェック
 	void KeyCheck();

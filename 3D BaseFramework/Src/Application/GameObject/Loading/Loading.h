@@ -47,10 +47,10 @@ private:
 	Load m_load[Num];
 
 	// 魔法陣角度変化量
-	float m_CircleChangeAngle  = 0.005f;
+	float m_CircleChangeAngle  = 0.05f;
 
 	// 文字アルファ値変化量
-	float m_StringChangeAlpha  = 0.025f;
+	float m_StringChangeAlpha  = 0.25f;
 	// 文字アルファ値補正値
 	float m_StringCorrectAlpha = 1.5f;
 

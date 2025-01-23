@@ -73,6 +73,100 @@ void MagicPolygon::Init()
 	m_state = _normal;
 }
 
+// 状態切り替え====================================================================================
+// 通常
+void MagicPolygon::NormalChange()
+{
+	std::shared_ptr<Normal> _normal = std::make_shared<Normal>();
+	m_NextState = _normal;
+	m_flow = MagicPolygon::Flow::EnterType;
+}
+
+// 解放
+void MagicPolygon::NextChange()
+{
+	std::shared_ptr<Next> _next = std::make_shared<Next>();
+	m_NextState = _next;
+	m_flow = MagicPolygon::Flow::EnterType;
+}
+//=================================================================================================
+
+// セッター========================================================================================
+// ステージマネジャ
+void MagicPolygon::SetStageManager(std::shared_ptr<StageManager> _stageManager)
+{
+	m_stageManager = _stageManager;
+}
+
+// 魔法陣の台
+void MagicPolygon::SetCircle(std::shared_ptr<Circle> _circle)
+{
+	m_circle = _circle;
+}
+
+// 行列
+void MagicPolygon::SetMatrix(Math::Matrix _mat)
+{
+	m_mWorld = _mat;
+}
+
+// RGB変化量
+void MagicPolygon::SetRGBChange(float _change)
+{
+	m_rgbChange = _change;
+}
+
+// 角度変化量
+void MagicPolygon::SetChangeAngle(float _change)
+{
+	m_ChangeAngle = _change;
+}
+
+// テレポート可能フラグ
+void MagicPolygon::SetTeleportFlg(bool _teleport)
+{
+	m_TeleportFlg = _teleport;
+}
+//=================================================================================================
+
+// ゲッター========================================================================================
+// RGB変化量
+const float& MagicPolygon::GetRGBChange() const
+{
+	return m_rgbChange;
+}
+
+// 角度変化量
+const float& MagicPolygon::GetChangeAngle() const
+{
+	return m_ChangeAngle;
+}
+
+// テレポート可能フラグ
+const bool MagicPolygon::GetTeleport() const
+{
+	return m_TeleportFlg;
+}
+//=================================================================================================
+
+// ステート更新
+void MagicPolygon::StateBase::SatateUpdate(std::shared_ptr<MagicPolygon> owner)
+{
+	switch (owner->m_flow)
+	{
+	case Flow::EnterType:
+		Enter(owner);
+		break;
+	case Flow::UpdateType:
+		Update(owner);
+		break;
+	case Flow::ExitType:
+		Exit(owner);
+		break;
+	}
+}
+
+
 // Normal==========================================================================================
 void MagicPolygon::Normal::Enter(std::shared_ptr<MagicPolygon> owner)
 {

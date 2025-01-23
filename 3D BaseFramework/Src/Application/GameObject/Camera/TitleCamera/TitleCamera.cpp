@@ -23,3 +23,43 @@ void TitleCamera::Init()
 
 	m_spCamera->SetProjectionMatrix(m_ViewingAngle);
 }
+
+// セッター====================================================================
+// 角度
+void TitleCamera::SetDegAng(Math::Vector3 _deg)
+{
+	m_DegAng = _deg;
+}
+
+// 視野角
+void TitleCamera::SetViewingAngle(float _angle)
+{
+	m_ViewingAngle = _angle;
+}
+
+// 角度変化量
+void TitleCamera::SetChangeAngle(float _angle)
+{
+	m_ChangeAngle = _angle;
+}
+//=============================================================================
+
+// ゲッター====================================================================
+// 角度
+const Math::Vector3 TitleCamera::GetDegAng() const
+{
+	return m_DegAng;
+}
+
+// 視野角
+const float& TitleCamera::GetViewingAngle() const
+{
+	return m_ViewingAngle;
+}
+
+// 角度変化量
+const float& TitleCamera::GetChangeAngle() const
+{
+	return m_ChangeAngle;
+}
+//=============================================================================

@@ -40,21 +40,7 @@ private:
 		StateBase()  {};
 		virtual ~StateBase() {};
 
-		void StateUpdate(std::shared_ptr<GameScene> owner)
-		{
-			switch (owner->m_flow)
-			{
-			case Flow::EnterType:
-				Enter(owner);
-				break;
-			case Flow::UpdateType:
-				Update(owner);
-				break;
-			case Flow::ExitType:
-				Exit(owner);
-				break;
-			}
-		}
+		void StateUpdate(std::shared_ptr<GameScene> owner);
 
 		virtual void Enter (std::shared_ptr<GameScene> owner) {};
 		virtual void Update(std::shared_ptr<GameScene> owner) {};

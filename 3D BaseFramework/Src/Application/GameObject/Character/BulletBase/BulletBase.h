@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+// キャラクター基底
 class CharacterBase;
 
 class BulletBase :public KdGameObject,public std::enable_shared_from_this<BulletBase>
@@ -12,20 +13,20 @@ public:
 	virtual void PostUpdate()               override {};
 	virtual void GenerateDepthMapFromLight()override;
 	virtual void DrawLit()                  override;
-	virtual void Init()                     override { m_ObjType = KdGameObject::ObjType::oObject; }
+	virtual void Init()                     override;
 
 	// セッター====================================================================================
-	void SetOwner(std::shared_ptr<CharacterBase> _owner) { m_owner = _owner; } // 発射したキャラクター
-	void SetDir  (Math::Vector3 _dir)                    { m_dir = _dir; }     // 移動方向 
-	void SetAtk  (int _atk)                              { m_atk = _atk; }     // 攻撃力
-	void SetSpeed(float _speed)                          { m_speed = _speed; } // 移動量
-	void SetCrush(bool _crush)                           { m_crush = _crush; } // 破壊フラグ
-	void SetModel(std::shared_ptr<KdModelData> _model)   { m_model = _model; } // モデル
+	void SetOwner(std::shared_ptr<CharacterBase> _owner); // 持ち主
+	void SetDir(Math::Vector3 _dir);                      // 移動方向 
+	void SetAtk(int _atk);                                // 攻撃力
+	void SetSpeed(float _speed);                          // 移動量
+	void SetCrush(bool _crush);                           // 破壊フラグ
+	void SetModel(std::shared_ptr<KdModelData> _model);   // モデル
 	//=============================================================================================
 
 	// ゲッター====================================================================================
-	const Math::Vector3&                GetDir()  const { return m_dir; }   // 方向
-	const std::weak_ptr<CharacterBase>& GetOwner()const { return m_owner; } // 持ち主
+	const Math::Vector3&                GetDir()  const; // 方向
+	const std::weak_ptr<CharacterBase>& GetOwner()const; // 持ち主
 	//=============================================================================================
 
 protected:
