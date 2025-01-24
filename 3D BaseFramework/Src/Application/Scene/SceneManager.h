@@ -30,6 +30,13 @@ public :
 	void DrawSprite();
 	void DrawDebug();
 
+	// スロー状態の切替
+	void SlowChange();
+	// スロー値
+	const float& GetSlow()const;
+	// スローフラグ　trueならスロー中
+	const bool GetSlowFlg()const;
+
 	// 次のシーンをセット (次のフレームから切り替わる)
 	void SetNextScene(SceneType nextScene)
 	{
@@ -99,6 +106,11 @@ private:
 	float m_blackChange = 0.0f;
 	float m_blackAlpha = 0.0f;
 	Math::Color m_black = { 0.0f,0.0f,0.0f,m_blackAlpha };
+
+	// スロー値
+	float                                    m_slow = 1.0f;
+	// スローフラグ
+	bool                                     m_slowFlg = false;
 
 private:
 

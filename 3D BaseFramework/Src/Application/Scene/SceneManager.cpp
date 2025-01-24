@@ -59,6 +59,31 @@ void SceneManager::DrawDebug()
 	m_currentScene->DrawDebug();
 }
 
+void SceneManager::SlowChange()
+{
+	// 呼び出されたらそのときのフラグの反対になる
+	if (m_slowFlg)
+	{
+		m_slowFlg = false;
+		m_slow = 1.0f;
+	}
+	else
+	{
+		m_slowFlg = true;
+		m_slow = 0.25f;
+	}
+}
+
+const float& SceneManager::GetSlow() const
+{
+	return m_slow;
+}
+
+const bool SceneManager::GetSlowFlg() const
+{
+	return m_slowFlg;
+}
+
 const std::shared_ptr<Player>& SceneManager::GetPlayer()
 {
 	return m_currentScene->GetPlayer();

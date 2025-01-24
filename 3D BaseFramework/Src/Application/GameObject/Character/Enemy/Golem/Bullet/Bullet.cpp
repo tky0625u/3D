@@ -32,19 +32,19 @@ void Bullet::Update()
 	}
 
 	// 最大サイズになるまで拡大        変化量                   スロー値
-	if (m_size < m_MaxSize)m_size += m_sizeChange * m_ObjectManager.lock()->GetSlow();
+	if (m_size < m_MaxSize)m_size += m_sizeChange * SceneManager::Instance().GetSlow();
 	// 最大サイズになったら移動
 	else
 	{
 		m_size = m_MaxSize;
 		// 移動    速さ     方向              スロー値
-		m_pos += m_speed * m_dir * m_ObjectManager.lock()->GetSlow();
+		m_pos += m_speed * m_dir * SceneManager::Instance().GetSlow();
 	}
 
 	// 弾の回転
-	m_angle.x += 5.0f * m_ObjectManager.lock()->GetSlow();
-	m_angle.y += 5.0f * m_ObjectManager.lock()->GetSlow();
-	m_angle.z += 5.0f * m_ObjectManager.lock()->GetSlow();
+	m_angle.x += 5.0f * SceneManager::Instance().GetSlow();
+	m_angle.y += 5.0f * SceneManager::Instance().GetSlow();
+	m_angle.z += 5.0f * SceneManager::Instance().GetSlow();
 	if (m_angle.x > 360.0f)m_angle.x -= 360.0f;
 	if (m_angle.y > 360.0f)m_angle.y -= 360.0f;
 	if (m_angle.z > 360.0f)m_angle.z -= 360.0f;

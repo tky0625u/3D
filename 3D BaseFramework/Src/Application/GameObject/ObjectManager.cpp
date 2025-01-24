@@ -1,63 +1,65 @@
 ﻿#include "ObjectManager.h"
-#include"../Scene/SceneManager.h"
-#include"StageManager.h"
-#include"Character/CharacterBase.h"
-#include"Character/Enemy/Bone/Bone.h"
 #include"../tinygltf/json.hpp"
 #include<fstream>
 #include<sstream>
 
-//地面
+// シーンマネジャ
+#include"../Scene/SceneManager.h"
+// ステージマネジャ
+#include"StageManager.h"
+// キャラクター基底
+#include"Character/CharacterBase.h"
+// 地面
 #include"Stage/Ground/Ground.h"
-//魔法陣の台
+// 魔法陣の台
 #include"Stage/Circle/Circle.h"
-//魔法陣
+// 魔法陣
 #include"Stage/MagicPolygon/MagicPolygon.h"
-//壁
+// 壁
 #include"Stage/Wall/Wall.h"
-//スカイボックス
+// スカイボックス
 #include"Stage/SkyBox/SkyBox.h"
-//剣
+// 剣
 #include"Weapon/Sword/Sword.h"
-//盾
+// 盾
 #include"Weapon/Shield/Shield.h"
-//プレイヤー
+// プレイヤー
 #include"Character/Player/Player.h"
-//ゲームカメラ
+// ゲームカメラ
 #include"Camera/GameCamera/GameCamera.h"
-//骨
+// 骨
 #include"Character/Enemy/Bone/Bone.h"
-//骨色違い
+// 骨色違い
 #include"Character/Enemy/BoneAlpha/BoneAlpha.h"
-//ゴーレム
+// ゴーレム
 #include"Character/Enemy/Golem/Golem.h"
-//タイトル
+// タイトル
 #include"UI/Title/Title/Title.h"
-//ゲーム文字
+// ゲーム文字
 #include"UI/Title/Game/Game.h"
-//終了文字
+// 終了文字
 #include"UI/Title/Exit/Exit.h"
-//カーソル
+// カーソル
 #include"UI/Title/Cursor/Cursor.h"
-//セレクト
+// セレクト
 #include"UI/Title/Select/Select.h"
-//タイトルカメラ
+// タイトルカメラ
 #include"Camera/TitleCamera/TitleCamera.h"
-//プレイヤーHP
+// プレイヤーHP
 #include"UI/Player/HP/Player_HP.h"
-//プレイヤースタミナ
+// プレイヤースタミナ
 #include"UI/Player/Stamina/Player_Stamina.h"
-//階数
+// 階数
 #include"UI/Player/Floor/Floor.h"
-//テレポート
+// テレポート
 #include"UI/Player/Teleport/Teleport.h"
-//敵HP
+// 敵HP
 #include"UI/Enemy/HP/Enemy_HP.h"
-//ゲーム状態UI
+// ゲーム状態UI
 #include"UI/Player/GameStateUI/GameStateUI.h"
-//弾
+// 弾
 #include"Character/Enemy/Golem/Bullet/Bullet.h"
-//骨色違い弾
+// 骨色違い弾
 #include"Character/Enemy/BoneAlpha/Bullet/BoneAlpha_Bullet.h"
 
 void ObjectManager::SceneCheck()
@@ -67,7 +69,7 @@ void ObjectManager::SceneCheck()
 	case SceneManager::SceneType::Title: // タイトルシーン
 		m_nowScene = "Title";
 		break;
-	case SceneManager::SceneType::Game: // ゲームシーン
+	case SceneManager::SceneType::Game:  // ゲームシーン
 		m_nowScene = "Game";
 		break;
 	default:
@@ -124,100 +126,9 @@ void ObjectManager::DeleteEnemyList()
 	}
 }
 
-void ObjectManager::SlowChange()
+int ObjectManager::CreateStage(int _nowStage)
 {
-	// 呼び出されたらそのときのフラグの反対になる
-	if (m_slowFlg)
-	{
-		m_slowFlg = false;
-		m_slow = 1.0f;
-	}
-	else
-	{
-		m_slowFlg = true;
-		m_slow = 0.25f;
-	}
-}
-
-void ObjectManager::NextStageLiberation()
-{
-	// テレポート開放演出
-	m_magic.lock()->NextChange();
-
-	// テレポート位置
-	m_camera.lock()->FixedChange();
-	
-	// 待機
-	m_player.lock()->IdolChange();
-	
-	// スロー切り替え
-	if (m_slowFlg)SlowChange();
-}
-
-void ObjectManager::GameClear()
-{
-	// クリア位置
-	m_camera.lock()->ClearChange();
-	
-	// 待機
-	m_player.lock()->IdolChange();
-	
-	// スロー切り替え
-	if (m_slowFlg)SlowChange();
-}
-
-void ObjectManager::CreateStage(std::shared_ptr<StageManager> _stage)
-{
-	//jsonファイル
-	std::string fileName = ("Asset/Json/") + m_nowScene + ("/Object/Object.json");
-
-	std::ifstream ifs(fileName.c_str());
-	nlohmann::json _json;
-	if (ifs.is_open())
-	{
-		ifs >> _json;
-	}
-
-	// ステージ数
-	int _stageNum = 1;
-	
-	for (auto& stage : _json["Ground"])
-	{
-		// 現在のステージになるまで
-		if (_stage->GetnowStage() != _stageNum)
-		{
-			_stageNum++;
-			continue;
-		}
-
-		// 座標
-		Math::Vector3 _pos = Math::Vector3::Zero;
-		_pos.x = stage["PosX"];
-		_pos.y = stage["PosY"];
-		_pos.z = stage["PosZ"];
-
-		// 大きさ
-		float _size = 0.0f;
-		_size = stage["Size"];
-
-		// 角度
-		Math::Vector3 _angle = Math::Vector3::Zero;
-		_angle.y = stage["Angle"];
-
-		// 名前
-		std::string _name;
-		_name = stage["Name"];
-
-		// 読み込んだ値をセット
-		if (!m_ground.expired())
-		{
-			m_ground.lock()->SetPos(_pos);
-			m_ground.lock()->SetSize(_size);
-			m_ground.lock()->SetAngle(_angle);
-		}
-
-		break;
-	}
+	SetGroundParam(_nowStage);
 
 	Math::Matrix _Scale; // 拡縮
 	Math::Matrix _Rot;   // 回転
@@ -245,11 +156,10 @@ void ObjectManager::CreateStage(std::shared_ptr<StageManager> _stage)
 	m_magic.lock()->SetMatrix(_MagicMat);
 	m_magic.lock()->NormalChange();
 
-	ifs.close();
-
 	// 敵生成
-	std::string _filePath = ("Asset/Json/Game/Enemy/Stage") + (std::to_string(_stage->GetnowStage())) + (".json");
-	SetEnemyParam(_filePath, _stage);
+	int _wave = 0;
+	std::string _filePath = ("Asset/Json/Game/Enemy/Stage") + (std::to_string(_nowStage)) + (".json");
+	_wave = SetEnemyParam(_filePath);
 
 	// プレイヤーを次のステージに移動
 	m_player.lock()->SetPos(m_ground.lock()->GetPos());
@@ -258,9 +168,11 @@ void ObjectManager::CreateStage(std::shared_ptr<StageManager> _stage)
 	Math::Vector3 _angle = Math::Vector3::Zero;
 	_angle.x = 10.0f;
 	m_camera.lock()->SetDegAng(_angle);
+
+	return _wave;
 }
 
-void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
+void ObjectManager::DebugObject()
 {
 	// オブジェクトの動きを止める
 	static bool stop = false;
@@ -1085,10 +997,9 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 			// ステージの数
 			static int _stageNum = 1;
 			ImGui::Text((const char*)u8"ステージ数 : %d", _stageNum);
-			
-			// 現在のステージ
-			static int _nowStage = _stage->GetnowStage();
-			
+
+			int _nowStage = 1;
+
 			// 設定したいステージに切り替え
 			ImGui::SliderInt((const char*)u8"ステージ", &_nowStage, 1, _stageNum);
 			// ステージ追加
@@ -1100,11 +1011,11 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 
 
 			// ウェーブ数
-			static int _wave = _stage->GetMaxWave();
+			static int _wave = 1;
 			ImGui::Text((const char*)u8"ウェーブ数 : %d", _wave);
 			
 			// 現在のウェーブ
-			static int _nowWave = _stage->GetnowWave();
+			static int _nowWave = 1;
 			
 			// 設定したいウェーブに切り替え
 			ImGui::SliderInt((const char*)u8"ウェーブ", &_nowWave, 1, _wave);
@@ -1128,11 +1039,6 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 			if (ImGui::Button((const char*)u8"Enemy保存"))
 			{
 				EnemyWrite(_nowStage, _nowWave, (("Asset/Json/") + _filePath + ("/Enemy/Stage")));
-				if (_nowWave == _wave)
-				{
-					_wave++;
-					_nowWave = _wave;
-				}
 			}
 
 			// 骨
@@ -1604,11 +1510,14 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 		if (ImGui::TreeNode("Object"))
 		{
 			// 保存
-			if (ImGui::Button((const char*)u8"Object保存")) ObjectWrite(("Asset/Json/") + _filePath + ("/Object/Object.json"));
+			if (ImGui::Button((const char*)u8"Object保存")) ObjectWrite(("Asset/Json/") + _filePath + ("/Object/"));
 			
 			// 地面
 			if (ImGui::TreeNode("Ground"))
 			{
+				// 保存
+				if (ImGui::Button((const char*)u8"Ground保存")) GroundWrite(("Asset/Json/") + _filePath + ("/Object/"));
+
 				// 生成
 				if (ImGui::Button((const char*)u8"Ground追加")) AddGround();
 
@@ -1640,6 +1549,9 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 			// 魔法陣の台
 			if (ImGui::TreeNode("Circle"))
 			{
+				// 保存
+				if (ImGui::Button((const char*)u8"Circle保存")) CircleWrite(("Asset/Json/") + _filePath + ("/Object/"));
+
 				// 生成
 				if (ImGui::Button((const char*)u8"Circle追加")) AddCircle();
 
@@ -1670,6 +1582,9 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 				// 魔法陣
 				if (ImGui::TreeNode("Magic"))
 				{
+					// 保存
+					if (ImGui::Button((const char*)u8"MagicPolygon保存")) MagicPolygonWrite(("Asset/Json/") + _filePath + ("/Object/"));
+
 					if (m_magic.expired() == false)
 					{
 						// 大きさ
@@ -1704,6 +1619,9 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 			// 壁
 			if (ImGui::TreeNode("Wall"))
 			{
+				// 保存
+				if (ImGui::Button((const char*)u8"Wall保存")) WallWrite(("Asset/Json/") + _filePath + ("/Object/"));
+
 				// 生成
 				if (ImGui::Button((const char*)u8"Wall追加")) AddWall();
 
@@ -1735,6 +1653,9 @@ void ObjectManager::DebugObject(std::shared_ptr<StageManager> _stage)
 			// 空
 			if (ImGui::TreeNode("SkyBox"))
 			{
+				// 保存
+				if (ImGui::Button((const char*)u8"SkyBox保存")) SkyBoxWrite(("Asset/Json/") + _filePath + ("/Object/"));
+
 				// 生成
 				if (ImGui::Button((const char*)u8"SkyBox追加")) AddSkyBox();
 
@@ -2484,72 +2405,197 @@ void ObjectManager::ShieldWrite(std::string _shieldName, std::string _fileName)
 
 void ObjectManager::ObjectWrite(std::string _fileName)
 {
+	GroundWrite(_fileName);
+	CircleWrite(_fileName);
+	MagicPolygonWrite(_fileName);
+	SkyBoxWrite(_fileName);
+	WallWrite(_fileName);
+}
+
+void ObjectManager::GroundWrite(std::string _fileName)
+{
 	nlohmann::json _json;
 
 	for (auto& obj : SceneManager::Instance().GetObjList())
 	{
-		std::string _category; // 種類
-		std::string _num;      // 番号
-		if (obj->GetName() == "Ground") // 地面
-		{
-			static int g = 0;
-			_category = "Ground";
-			_num = (std::to_string(g).c_str()) + ((std::string)"Ground");
-			g++;
-		}
-		else if (obj->GetName() == "Circle") // 魔法陣の台
-		{
-			static int c = 0;
-			_category = "Circle";
-			_num = (std::to_string(c).c_str()) + ((std::string)"Circle");
-			c++;
-		}
-		else if (obj->GetName() == "Magic") // 魔法陣
-		{
-			static int m = 0;
-			_category = "Magic";
-			_num = (std::to_string(m).c_str()) + ((std::string)"Magic");
+		std::string _num; // 番号
+		if (obj->GetName() != "Ground")continue;
 
-			// RGB変化量
-			_json[_category][_num]["RGBChange"] = m_magic.lock()->GetRGBChange();
-
-			// 角度変化量
-			_json[_category][_num]["ChangeAngle"] = m_magic.lock()->GetChangeAngle();
-
-			m++;
-		}
-		else if (obj->GetName() == "Wall") // 壁
-		{
-			static int w = 0;
-			_category = "Wall";
-			_num = (std::to_string(w).c_str()) + ((std::string)"Wall");
-			w++;
-		}
-		else if (obj->GetName() == "SkyBox") // 空
-		{
-			static int s = 0;
-			_category = "SkyBox";
-			_num = (std::to_string(s).c_str()) + ((std::string)"SkyBox");
-			s++;
-		}
+		static int g = 0;
+		_num = (std::to_string(g).c_str()) + ((std::string)"Ground");
+		g++;
 
 		// 名前
-		_json[_category][_num]["Name"] = obj->GetName();
-		
+		_json[_num]["Name"] = obj->GetName();
+
 		// 座標
-		_json[_category][_num]["PosX"] = obj->GetPos().x;
-		_json[_category][_num]["PosY"] = obj->GetPos().y;
-		_json[_category][_num]["PosZ"] = obj->GetPos().z;
-		
+		_json[_num]["PosX"] = obj->GetPos().x;
+		_json[_num]["PosY"] = obj->GetPos().y;
+		_json[_num]["PosZ"] = obj->GetPos().z;
+
 		// 大きさ
-		_json[_category][_num]["Size"] = obj->GetSize();
-		
+		_json[_num]["Size"] = obj->GetSize();
+
 		// 角度
-		_json[_category][_num]["Angle"] = obj->GetAngle().y;
+		_json[_num]["Angle"] = obj->GetAngle().y;
 	}
 
 	// ファイルに保存
-	std::ofstream _file(_fileName);
+	std::ofstream _file(_fileName + ("/Ground/Ground.json"));
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
+	}
+}
+
+void ObjectManager::CircleWrite(std::string _fileName)
+{
+	nlohmann::json _json;
+
+	for (auto& obj : SceneManager::Instance().GetObjList())
+	{
+		std::string _num; // 番号
+		if (obj->GetName() != "Circle")continue;
+
+		 static int c = 0;
+		 _num = (std::to_string(c).c_str()) + ((std::string)"Circle");
+		 c++;
+
+		// 名前
+		_json[_num]["Name"] = obj->GetName();
+
+		// 座標
+		_json[_num]["PosX"] = obj->GetPos().x;
+		_json[_num]["PosY"] = obj->GetPos().y;
+		_json[_num]["PosZ"] = obj->GetPos().z;
+
+		// 大きさ
+		_json[_num]["Size"] = obj->GetSize();
+
+		// 角度
+		_json[_num]["Angle"] = obj->GetAngle().y;
+	}
+
+	// ファイルに保存
+	std::ofstream _file(_fileName+("Circle/Circle.json"));
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
+	}
+}
+
+void ObjectManager::MagicPolygonWrite(std::string _fileName)
+{
+	nlohmann::json _json;
+
+	for (auto& obj : SceneManager::Instance().GetObjList())
+	{
+		std::string _num; // 番号
+		if (obj->GetName() != "Magic")continue;
+
+		static int m = 0;
+		_num = (std::to_string(m).c_str()) + ((std::string)"Magic");
+		m++;
+
+		// 名前
+		_json[_num]["Name"] = obj->GetName();
+
+		// 座標
+		_json[_num]["PosX"] = obj->GetPos().x;
+		_json[_num]["PosY"] = obj->GetPos().y;
+		_json[_num]["PosZ"] = obj->GetPos().z;
+
+		// 大きさ
+		_json[_num]["Size"] = obj->GetSize();
+
+		// 角度
+		_json[_num]["Angle"] = obj->GetAngle().y;
+
+		// RGB変化量
+		_json[_num]["RGBChange"] = m_magic.lock()->GetRGBChange();
+
+		// 角度変化量
+		_json[_num]["ChangeAngle"] = m_magic.lock()->GetChangeAngle();
+	}
+
+	// ファイルに保存
+	std::ofstream _file(_fileName+("MagicPolygon/MagicPolygon.json"));
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
+	}
+}
+
+void ObjectManager::SkyBoxWrite(std::string _fileName)
+{
+	nlohmann::json _json;
+
+	for (auto& obj : SceneManager::Instance().GetObjList())
+	{
+		std::string _num; // 番号
+		if (obj->GetName() != "SkyBox")continue;
+
+		static int s = 0;
+		_num = (std::to_string(s).c_str()) + ((std::string)"SkyBox");
+		s++;
+
+		// 名前
+		_json[_num]["Name"] = obj->GetName();
+
+		// 座標
+		_json[_num]["PosX"] = obj->GetPos().x;
+		_json[_num]["PosY"] = obj->GetPos().y;
+		_json[_num]["PosZ"] = obj->GetPos().z;
+
+		// 大きさ
+		_json[_num]["Size"] = obj->GetSize();
+
+		// 角度
+		_json[_num]["Angle"] = obj->GetAngle().y;
+	}
+
+	// ファイルに保存
+	std::ofstream _file(_fileName+("SkyBox/SkyBox.json"));
+	if (_file.is_open())
+	{
+		_file << _json.dump();
+		_file.close();
+	}
+}
+
+void ObjectManager::WallWrite(std::string _fileName)
+{
+	nlohmann::json _json;
+
+	for (auto& obj : SceneManager::Instance().GetObjList())
+	{
+		std::string _num; // 番号
+		if (obj->GetName() != "Wall")continue;
+
+		static int w = 0;
+		_num = (std::to_string(w).c_str()) + ((std::string)"Wall");
+		w++;
+
+		// 名前
+		_json[_num]["Name"] = obj->GetName();
+
+		// 座標
+		_json[_num]["PosX"] = obj->GetPos().x;
+		_json[_num]["PosY"] = obj->GetPos().y;
+		_json[_num]["PosZ"] = obj->GetPos().z;
+
+		// 大きさ
+		_json[_num]["Size"] = obj->GetSize();
+
+		// 角度
+		_json[_num]["Angle"] = obj->GetAngle().y;
+	}
+
+	// ファイルに保存
+	std::ofstream _file(_fileName + ("Wall/Wall.json"));
 	if (_file.is_open())
 	{
 		_file << _json.dump();
@@ -2910,7 +2956,7 @@ void ObjectManager::SetCursorParticleParam()
 	ifs.close();
 }
 
-void ObjectManager::SetGameCameraParam(std::shared_ptr<StageManager> _stage)
+std::shared_ptr<GameCamera> ObjectManager::SetGameCameraParam()
 {
 	//jsonファイル
 	std::string fileName = "Asset/Json/Game/Camera/Camera.json";
@@ -3022,7 +3068,6 @@ void ObjectManager::SetGameCameraParam(std::shared_ptr<StageManager> _stage)
 		camera->SetViewAngList(_PlayerViewAngle, _FixedViewAngle, _BossViewAngle, _ClearViewAngle);
 		camera->SetName(_name);
 		camera->SetObjManager(shared_from_this());
-		camera->SetStageManager(_stage);
 		camera->SetID(m_id);
 		camera->Init();
 		m_id++;
@@ -3032,12 +3077,23 @@ void ObjectManager::SetGameCameraParam(std::shared_ptr<StageManager> _stage)
 	}
 
 	ifs.close();
+
+	return m_camera.lock();
 }
 
-void ObjectManager::SetObjectParam(std::shared_ptr<StageManager> _stage)
+void ObjectManager::SetObjectParam(int _nowStage)
+{
+	SetGroundParam(_nowStage);
+	SetCircleParam();
+	SetMagicPolygonParam();
+	SetSkyBoxParam();
+	SetWallParam();
+}
+
+void ObjectManager::SetGroundParam(int _nowStage)
 {
 	//jsonファイル
-	std::string fileName = ("Asset/Json/") + m_nowScene + ("/Object/Object.json");
+	std::string fileName = ("Asset/Json/") + m_nowScene + ("/Object/Ground/Ground.json");
 
 	std::ifstream ifs(fileName.c_str());
 	nlohmann::json _json;
@@ -3046,83 +3102,38 @@ void ObjectManager::SetObjectParam(std::shared_ptr<StageManager> _stage)
 		ifs >> _json;
 	}
 
-	std::shared_ptr<Ground> ground;      // 地面
-	std::shared_ptr<Circle> circle;      // 魔法陣の台
-	std::shared_ptr<MagicPolygon> magic; // 魔法陣
-	std::shared_ptr<Wall> wall;          // 壁
-	std::shared_ptr<SkyBox> skybox;      // 空
+	int _stage = 1;
 
-	for (auto& category : _json)
+	for (auto& Object : _json)
 	{
-
-		// 種類ごとに読み込んでいく
-
-		for (auto& Object : category)
+		if (_stage != _nowStage)
 		{
-			// 座標
-			Math::Vector3 _pos = Math::Vector3::Zero;
-			_pos.x = Object["PosX"];
-			_pos.y = Object["PosY"];
-			_pos.z = Object["PosZ"];
+			_stage++;
+			continue;
+		}
 
-			// 大きさ
-			float _size = 0.0f;
-			_size = Object["Size"];
+		// 座標
+		Math::Vector3 _pos = Math::Vector3::Zero;
+		_pos.x = Object["PosX"];
+		_pos.y = Object["PosY"];
+		_pos.z = Object["PosZ"];
 
-			// 角度
-			Math::Vector3 _angle = Math::Vector3::Zero;
-			_angle.y = Object["Angle"];
+		// 大きさ
+		float _size = 0.0f;
+		_size = Object["Size"];
 
-			// 名前
-			std::string _name;
-			_name = Object["Name"];
+		// 角度
+		Math::Vector3 _angle = Math::Vector3::Zero;
+		_angle.y = Object["Angle"];
 
-			// セット
-			std::shared_ptr<KdGameObject> obj;
-			if (_name == "Ground") // 地面
-			{
-				if (!m_ground.expired())break;
+		// 名前
+		std::string _name;
+		_name = Object["Name"];
 
-				ground = std::make_shared<Ground>();
-				m_ground = ground;
-				obj = ground;
-			}
-			if (_name == "Circle") // 魔法陣の台
-			{
-				circle = std::make_shared<Circle>();
-				m_circle = circle;
-				obj = circle;
-			}
-			if (_name == "Magic") // 魔法陣
-			{
-				// RGB変化量
-				float rgb = 0.0f;
-				rgb = Object["RGBChange"];
-
-				// 角度変化量
-				float angle = 0.0f;
-				angle = Object["ChangeAngle"];
-
-				magic = std::make_shared<MagicPolygon>();
-				magic->SetStageManager(_stage);
-				magic->SetRGBChange(rgb);
-				magic->SetChangeAngle(angle);
-				m_magic = magic;
-				if (m_camera.expired() == false)m_camera.lock()->SetFixedTarget(magic);
-				obj = magic;
-			}
-			if (_name == "Wall") // 壁
-			{
-				wall = std::make_shared<Wall>();
-				m_wall = wall;
-				obj = wall;
-			}
-			if (_name == "SkyBox") // 空
-			{
-				skybox = std::make_shared<SkyBox>();
-				m_skybox = skybox;
-				obj = skybox;
-			}
+		// セット
+		if (m_ground.expired())
+		{
+			std::shared_ptr<Ground> obj = std::make_shared<Ground>();
 			obj->SetPos(_pos);
 			obj->SetSize(_size);
 			obj->SetAngle(_angle);
@@ -3131,26 +3142,241 @@ void ObjectManager::SetObjectParam(std::shared_ptr<StageManager> _stage)
 			obj->Init();
 			m_id++;
 
+			m_ground = obj;
 			SceneManager::Instance().AddObject(obj);
 		}
+		else
+		{
+			m_ground.lock()->SetPos(_pos);
+			m_ground.lock()->SetSize(_size);
+			m_ground.lock()->SetAngle(_angle);
+		}
+
+		break;
 	}
 
-	// ステージ数測定
-	int _maxStage = 0;
-	for (auto& stage : _json["Ground"]) // 登録されている地面の数 ＝ ステージ数
+	ifs.close();
+}
+
+void ObjectManager::SetCircleParam()
+{
+	//jsonファイル
+	std::string fileName = ("Asset/Json/") + m_nowScene + ("/Object/Circle/Circle.json");
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
 	{
-		_maxStage++;
+		ifs >> _json;
 	}
 
-	if (m_nowScene == "Game")_stage->SetMaxStage(_maxStage); // ステージマネジャにステージ数をセット
+	for (auto& Object : _json)
+	{
+		// 座標
+		Math::Vector3 _pos = Math::Vector3::Zero;
+		_pos.x = Object["PosX"];
+		_pos.y = Object["PosY"];
+		_pos.z = Object["PosZ"];
+
+		// 大きさ
+		float _size = 0.0f;
+		_size = Object["Size"];
+
+		// 角度
+		Math::Vector3 _angle = Math::Vector3::Zero;
+		_angle.y = Object["Angle"];
+
+		// 名前
+		std::string _name;
+		_name = Object["Name"];
+
+		// セット
+		std::shared_ptr<Circle> obj = std::make_shared<Circle>();
+		if (_name == "Ground") // 地面
+
+		obj->SetPos(_pos);
+		obj->SetSize(_size);
+		obj->SetAngle(_angle);
+		obj->SetName(_name);
+		obj->SetID(m_id);
+		obj->Init();
+		m_id++;
+
+		m_circle = obj;
+		SceneManager::Instance().AddObject(obj);
+	}
 
 	ifs.close();
 
-	if (circle && ground)circle->SetGround(ground); // 地面と同じ位置にするためセット
-	if (magic && circle) magic->SetCircle(circle);  // 台と同じ位置にするためにセット
+	if (!m_ground.expired())m_circle.lock()->SetGround(m_ground.lock());
 }
 
-void ObjectManager::SetPlayerParam(std::shared_ptr<StageManager> _stage)
+std::shared_ptr<MagicPolygon> ObjectManager::SetMagicPolygonParam()
+{
+	//jsonファイル
+	std::string fileName = ("Asset/Json/") + m_nowScene + ("/Object/MagicPolygon/MagicPolygon.json");
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& Object : _json)
+	{
+		// 座標
+		Math::Vector3 _pos = Math::Vector3::Zero;
+		_pos.x = Object["PosX"];
+		_pos.y = Object["PosY"];
+		_pos.z = Object["PosZ"];
+
+		// 大きさ
+		float _size = 0.0f;
+		_size = Object["Size"];
+
+		// 角度
+		Math::Vector3 _angle = Math::Vector3::Zero;
+		_angle.y = Object["Angle"];
+
+		// RGB変化量
+		float rgb = 0.0f;
+		rgb = Object["RGBChange"];
+
+		// 角度変化量
+		float angle = 0.0f;
+		angle = Object["ChangeAngle"];
+
+		// 名前
+		std::string _name;
+		_name = Object["Name"];
+
+		// セット
+		std::shared_ptr<MagicPolygon> obj = std::make_shared<MagicPolygon>();
+
+		obj->SetPos(_pos);
+		obj->SetSize(_size);
+		obj->SetAngle(_angle);
+		obj->SetRGBChange(rgb);
+		obj->SetChangeAngle(angle);
+		obj->SetName(_name);
+		obj->SetID(m_id);
+		obj->Init();
+		m_id++;
+		if (m_camera.expired() == false)m_camera.lock()->SetFixedTarget(obj);
+
+		m_magic = obj;
+		SceneManager::Instance().AddObject(obj);
+	}
+
+	ifs.close();
+
+	if (!m_circle.expired()) m_magic.lock()->SetCircle(m_circle.lock());  // 台と同じ位置にするためにセット
+
+	return m_magic.lock();
+}
+
+void ObjectManager::SetSkyBoxParam()
+{
+	//jsonファイル
+	std::string fileName = ("Asset/Json/") + m_nowScene + ("/Object/SkyBox/SkyBox.json");
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& Object : _json)
+	{
+		// 座標
+		Math::Vector3 _pos = Math::Vector3::Zero;
+		_pos.x = Object["PosX"];
+		_pos.y = Object["PosY"];
+		_pos.z = Object["PosZ"];
+
+		// 大きさ
+		float _size = 0.0f;
+		_size = Object["Size"];
+
+		// 角度
+		Math::Vector3 _angle = Math::Vector3::Zero;
+		_angle.y = Object["Angle"];
+
+		// 名前
+		std::string _name;
+		_name = Object["Name"];
+
+		// セット
+		std::shared_ptr<SkyBox> obj = std::make_shared<SkyBox>();
+		obj->SetPos(_pos);
+		obj->SetSize(_size);
+		obj->SetAngle(_angle);
+		obj->SetName(_name);
+		obj->SetID(m_id);
+		obj->Init();
+		m_id++;
+
+		m_skybox = obj;
+		SceneManager::Instance().AddObject(obj);
+	}
+
+	ifs.close();
+
+}
+
+void ObjectManager::SetWallParam()
+{
+	//jsonファイル
+	std::string fileName = ("Asset/Json/") + m_nowScene + ("/Object/Wall/Wall.json");
+
+	std::ifstream ifs(fileName.c_str());
+	nlohmann::json _json;
+	if (ifs.is_open())
+	{
+		ifs >> _json;
+	}
+
+	for (auto& Object : _json)
+	{
+		// 座標
+		Math::Vector3 _pos = Math::Vector3::Zero;
+		_pos.x = Object["PosX"];
+		_pos.y = Object["PosY"];
+		_pos.z = Object["PosZ"];
+
+		// 大きさ
+		float _size = 0.0f;
+		_size = Object["Size"];
+
+		// 角度
+		Math::Vector3 _angle = Math::Vector3::Zero;
+		_angle.y = Object["Angle"];
+
+		// 名前
+		std::string _name;
+		_name = Object["Name"];
+
+		// セット
+		std::shared_ptr<Wall> obj = std::make_shared<Wall>();
+		obj->SetPos(_pos);
+		obj->SetSize(_size);
+		obj->SetAngle(_angle);
+		obj->SetName(_name);
+		obj->SetID(m_id);
+		obj->Init();
+		m_id++;
+
+		m_wall = obj;
+		SceneManager::Instance().AddObject(obj);
+	}
+
+	ifs.close();
+
+}
+
+std::shared_ptr<Player> ObjectManager::SetPlayerParam(std::shared_ptr<StageManager> _stage)
 {
 	//jsonファイル
 	std::string fileName = ("Asset/Json/") + m_nowScene + ("/Player/Player.json");
@@ -3238,7 +3464,6 @@ void ObjectManager::SetPlayerParam(std::shared_ptr<StageManager> _stage)
 		player->SetAtkRange(_atkRange);
 		player->SetForward(_forward);
 		player->SetObjManager(shared_from_this());
-		player->SetStageManager(_stage);
 		player->Init();
 		player->SetInviAddTime(_inviTime);
 		player->SetCounterRadius(_counterRadius);
@@ -3259,6 +3484,8 @@ void ObjectManager::SetPlayerParam(std::shared_ptr<StageManager> _stage)
 	ifs.close();
 
 	SetPlayerUI(_stage);
+
+	return m_player.lock();
 }
 
 void ObjectManager::SetPlayerUI(std::shared_ptr<StageManager> _stage)
@@ -3549,7 +3776,7 @@ void ObjectManager::SetWeaponParam(std::string _filePath, std::string _weaponNam
 	ifs.close();
 }
 
-void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageManager> _stage)
+int ObjectManager::SetEnemyParam(std::string _filePath, int _nowWave)
 {
 	//jsonファイル
 	std::string fileName = _filePath;
@@ -3564,16 +3791,16 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 	}
 
 	int _MaxWave = 0; // 最大ウェーブ数
-	int _nowWave = 1; // 現在のウェーブ数
+	int _wave = 1;    // 現在のウェーブ数
 
 	for (auto& wave : _json)
 	{
 		// 最大ウェーブ加算
 		_MaxWave++;
 		// 現在のウェーブまで飛ばす
-		if (_nowWave != _stage->GetnowWave())
+		if (_wave != _nowWave)
 		{
-			_nowWave++; 
+			_wave++;
 			continue;
 		}
 
@@ -3717,7 +3944,7 @@ void ObjectManager::SetEnemyParam(std::string _filePath, std::shared_ptr<StageMa
 		}
 	}
 
-	if (_stage->GetMaxWave() == 0)_stage->SetMaxWave(_MaxWave); // 最大ウェーブが決まっていなかったら更新
+	return _MaxWave; // 最大ウェーブを返す
 }
 
 void ObjectManager::SetEnemyHPParam(std::shared_ptr<EnemyBase> _enemy)
@@ -3847,18 +4074,6 @@ void ObjectManager::SetBoneAlphaBulletParam(int id)
 	_bullet->SetID(m_id);
 	m_id++;
 	SceneManager::Instance().AddObject(_bullet);
-}
-
-// スロー値
-const float& ObjectManager::GetSlow() const
-{
-	return m_slow;
-}
-
-// スローフラグ
-const bool ObjectManager::GetSlowFlg() const
-{
-	return m_slowFlg;
 }
 
 // テレポート可能フラグ

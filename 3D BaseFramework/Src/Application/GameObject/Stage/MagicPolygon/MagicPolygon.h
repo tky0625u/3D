@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-// ステージマネジャ
-class StageManager;
 // ゲームカメラ
 class GameCamera;
 // 魔法陣の台
@@ -26,7 +24,6 @@ public:
 	//=========================================================================
 
 	// セッター=============================================================================================================
-	void SetStageManager(std::shared_ptr<StageManager> _stageManager); // ステージマネジャ
 	void SetCircle      (std::shared_ptr<Circle> _circle);             // 魔法陣の台
 	void SetMatrix(Math::Matrix _mat);                                 // 行列
 	void SetRGBChange(float _change);                                  // RGB値変化量
@@ -41,8 +38,6 @@ public:
 	//======================================================================================================================
 
 private:
-	// ステージマネジャ
-	std::weak_ptr<StageManager>      m_stageManager;
 	// 魔法陣の台
 	std::weak_ptr<Circle>            m_circle;
 	// ポリゴン

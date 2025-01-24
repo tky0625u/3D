@@ -26,6 +26,7 @@ public:
 private:
 
 	void Event() override;
+	void NextStage();
 
 private:
 

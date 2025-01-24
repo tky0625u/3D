@@ -2,8 +2,6 @@
 
 // シーンマネジャ
 #include"../../../Scene/SceneManager.h"
-// ステージマネジャ
-#include"../../StageManager.h"
 // ゲームカメラ
 #include"../../Camera/GameCamera/GameCamera.h"
 // 魔法陣の台
@@ -92,12 +90,6 @@ void MagicPolygon::NextChange()
 //=================================================================================================
 
 // セッター========================================================================================
-// ステージマネジャ
-void MagicPolygon::SetStageManager(std::shared_ptr<StageManager> _stageManager)
-{
-	m_stageManager = _stageManager;
-}
-
 // 魔法陣の台
 void MagicPolygon::SetCircle(std::shared_ptr<Circle> _circle)
 {

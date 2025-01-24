@@ -1,8 +1,6 @@
 ﻿#pragma once
 #include"../CameraBase.h"
 
-// ステージマネージャ
-class StageManager;
 // 敵基底
 class EnemyBase;
 // 魔法陣
@@ -41,7 +39,6 @@ public:
 	void SetFixedTarget(std::shared_ptr<MagicPolygon> _Obj);
 	void SetBossTarget(std::shared_ptr<EnemyBase> _boss);
 	void SetCameraType(UINT _cameraType);
-	void SetStageManager(std::shared_ptr<StageManager> _stageManager);
 	void SetShakeFlg(bool _shakeFlg);
 	void SetChangeClearAngle(float _angle);
 	void SetChangeShakeAngle(float _angle);
@@ -80,7 +77,6 @@ private:
 	std::vector<float>             m_ViewAngList;                           // それぞれのステートの視野角
 	std::weak_ptr<MagicPolygon>    m_FixedTarget;                           // テレポート解放時のターゲット
 	std::weak_ptr<EnemyBase>       m_BossTarget;                            // ボス
-	std::weak_ptr<StageManager>    m_stageManager;                          // ステージマネージャ
 	float                          m_ChangeClearAngle = 0.0f;               // クリア時の回転角度変化量
 	float                          m_ChangeShakeAngle = 0.0f;               // 振動時のsinカーブ変化量
 	float                          m_DefaultMove      = 0.1f;               // 初期移動量

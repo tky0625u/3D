@@ -30,7 +30,7 @@ void CharacterBase::Update()
 		// スロー値
 		float _slow = 1.0f;
 
-		_slow = m_ObjectManager.lock()->GetSlow();
+		_slow = SceneManager::Instance().GetSlow();
 
 		// 重力       重力加速度   スロー値
 		m_gravity += m_gravityPow * _slow;
@@ -71,7 +71,7 @@ void CharacterBase::PostUpdate()
 		m_beforeAnime = m_anime;
 	}
 	float _slow = 1.0f;
-	_slow = m_ObjectManager.lock()->GetSlow();
+	_slow = SceneManager::Instance().GetSlow();
 	m_animator->AdvanceTime(m_model->WorkNodes(), m_animeSpeed * _slow);
 	m_model->CalcNodeMatrices();
 }

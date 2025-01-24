@@ -40,7 +40,8 @@ void TitleScene::Init()
 	// カーソル
 	m_ObjManager->SetCursorParam();
 	// オブジェクト
-	m_ObjManager->SetObjectParam();
+	m_ObjManager->SetSkyBoxParam();
+	m_ObjManager->SetWallParam();
 
 	// エフェクト生成
 	KdEffekseerManager::GetInstance().Create(1280, 720);

@@ -1,0 +1,10 @@
+{
+	"0Wall": {
+		"Angle": 0.0,
+		"Name": "Wall",
+		"PosX": 0.0,
+		"PosY": 0.0,
+		"PosZ": 0.0,
+		"Size": 10.0
+	}
+}

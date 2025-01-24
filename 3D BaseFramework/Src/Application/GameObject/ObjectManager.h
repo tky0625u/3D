@@ -61,21 +61,12 @@ public:
 	
 	// 消滅したら配列から削除
 	void DeleteEnemyList();
-	
-	// スロー状態の切替
-	void SlowChange();
-
-	// ワープ解放時の演出の準備
-	void NextStageLiberation();
-
-	// ゲームクリア
-	void GameClear();
 
 	// 次のステージを生成
-	void CreateStage(std::shared_ptr<StageManager> _stage);
+	int CreateStage(int _nowStage);
 
 	// ImGuiで動的にオブジェクトの設定をする
-	void DebugObject(std::shared_ptr<StageManager> _stage = nullptr);
+	void DebugObject();
 
 
 	// Jsonファイルに保存======================================================
@@ -115,6 +106,16 @@ public:
 	void ShieldWrite(std::string _shieldName, std::string _fileName);
 	// オブジェクト
 	void ObjectWrite(std::string _fileName);
+	// 地面
+	void GroundWrite(std::string _fileName);
+	// 魔法陣の台
+	void CircleWrite(std::string _fileName);
+	// 魔法陣
+	void MagicPolygonWrite(std::string _fileName);
+	// 空
+	void SkyBoxWrite(std::string _fileName);
+	// 壁
+	void WallWrite(std::string _fileName);
 	//=========================================================================
 
 	// モデルを事前に読み込む
@@ -136,11 +137,21 @@ public:
 	// カーソルパーティクル
 	void SetCursorParticleParam();
 	// ゲームカメラ
-	void SetGameCameraParam(std::shared_ptr<StageManager> _stage);
+	std::shared_ptr<GameCamera> SetGameCameraParam();
 	// オブジェクト
-	void SetObjectParam(std::shared_ptr<StageManager> _stage = nullptr);
+	void SetObjectParam(int _nowStage);
+	// 地面
+	void SetGroundParam(int _nowStage);
+	// 魔法陣の台
+	void SetCircleParam();
+	// 魔法陣
+	std::shared_ptr<MagicPolygon> SetMagicPolygonParam();
+	// 空
+	void SetSkyBoxParam();
+	// 壁
+	void SetWallParam();
 	// プレイヤー
-	void SetPlayerParam(std::shared_ptr<StageManager> _stage);
+	std::shared_ptr<Player> SetPlayerParam(std::shared_ptr<StageManager> _stage);
 	// プレイヤーUI
 	void SetPlayerUI(std::shared_ptr<StageManager> _stage);
 	// プレイヤーHP
@@ -154,7 +165,7 @@ public:
 	// 武器
 	void SetWeaponParam(std::string _filePath, std::string _weaponName);
 	// 敵
-	void SetEnemyParam(std::string _filePath = "none", std::shared_ptr<StageManager> _stage = nullptr);
+	int  SetEnemyParam(std::string _filePath = "none", int _nowWave = 1);
 	// 敵HP
 	void SetEnemyHPParam(std::shared_ptr<EnemyBase> _enemy);
 	// ゴーレム用弾
@@ -163,10 +174,6 @@ public:
 	void SetBoneAlphaBulletParam(int id);
 	//=========================================================================
 
-	// スロー値
-	const float& GetSlow()const;
-	// スローフラグ　trueならスロー中
-	const bool GetSlowFlg()const;
 	// テレポート位置からのフラグ trueならテレポートが可能
 	const bool GetTeleportFlg();
 	// ゴーレム
@@ -267,11 +274,6 @@ private:
 
 	// オブジェクトのID
 	UINT                                     m_id = 1;
-	
-	// スロー値
-	float                                    m_slow = 1.0f;
-	// スローフラグ
-	bool                                     m_slowFlg = false;
 
 	// 武器の名前配列 ImGuiで生成するときに使用
 	std::vector<std::string>                 m_swordNameList;

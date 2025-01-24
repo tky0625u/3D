@@ -4,8 +4,6 @@
 #include"../../../Scene/SceneManager.h"
 // オブジェクトマネジャ
 #include"../../ObjectManager.h"
-// ステージマネジャ
-#include"../../StageManager.h"
 // プレイヤー
 #include"../../Character/Player/Player.h"
 // 敵基底
@@ -73,7 +71,7 @@ void GameCamera::PostUpdate()
 
 	// パリィ時
 	// 視野角の拡縮
-	if (m_ObjectManager.lock()->GetSlowFlg())
+	if (SceneManager::Instance().GetSlowFlg())
 	{
 		if (m_FocusBackRange != 10.0f)m_FocusBackRange = 10.0f;
 
@@ -467,12 +465,6 @@ void GameCamera::SetBossTarget(std::shared_ptr<EnemyBase> _boss)
 void GameCamera::SetCameraType(UINT _cameraType)
 {
 	m_CameraType = _cameraType;
-}
-
-// ステージマネジャ
-void GameCamera::SetStageManager(std::shared_ptr<StageManager> _stageManager)
-{
-	m_stageManager = _stageManager;
 }
 
 // 振動フラグ

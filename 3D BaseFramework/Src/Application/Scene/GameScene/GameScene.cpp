@@ -34,11 +34,19 @@ void GameScene::Event()
 	for (auto& effect : KdEffekseerManager::GetInstance().GetnowEffectPlayList())
 	{
 		// スピード計算      再生速度                 スロー値
-		float speed = effect->GetSpeed() * m_ObjManager->GetSlow();
+		float speed = effect->GetSpeed() * SceneManager::Instance().GetSlow();
 		// スピード更新
 		KdEffekseerManager::GetInstance().SetSpeed(effect->GetHandle(), speed);
 	}
 	KdEffekseerManager::GetInstance().Update();
+}
+
+void GameScene::NextStage()
+{
+	m_StageManager->NextStage();
+	m_StageManager->SetMaxWave(m_ObjManager->CreateStage(m_StageManager->GetnowStage()));
+	// 画面を明るく
+	SceneManager::Instance().BlackAlphaChange(0.01f, false);
 }
 
 // ローディング====================================================================================
@@ -53,20 +61,30 @@ void StageLoad()
 	_ObjManager = std::make_shared<ObjectManager>();
 	// ステージマネジャ
 	_StageManager = std::make_shared<StageManager>();
-	_StageManager->SetObjectManager(_ObjManager);
 
 	// 現在のシーンの確認
 	_ObjManager->SceneCheck();
 	// 3Dモデル読み込み
 	_ObjManager->ModelLoad();
 	// カメラ
-	_ObjManager->SetGameCameraParam(_StageManager);
+	_StageManager->SetCamera(_ObjManager->SetGameCameraParam());
 	// オブジェクト
-	_ObjManager->SetObjectParam(_StageManager);
+	// 地面
+	_ObjManager->SetGroundParam(_StageManager->GetnowStage());
+	// 魔法陣の台
+	_ObjManager->SetCircleParam();
+	// 魔法陣
+	_StageManager->SetMagicPolygon(_ObjManager->SetMagicPolygonParam());
+	// 空
+	_ObjManager->SetSkyBoxParam();
+	// 壁
+	_ObjManager->SetWallParam();
 	// プレイヤー
-	_ObjManager->SetPlayerParam(_StageManager);
+	_StageManager->SetPlayer(_ObjManager->SetPlayerParam(_StageManager));
 	// 敵
-	_ObjManager->SetEnemyParam("Asset/Json/Game/Enemy/Stage1.json",_StageManager);
+	_StageManager->SetMaxWave(_ObjManager->SetEnemyParam("Asset/Json/Game/Enemy/Stage1.json"));
+	// ステージ数
+	_StageManager->SetMaxStage();
 
 	// ループフラグをOFF
 	loop = false;
@@ -135,7 +153,8 @@ void GameScene::Init()
 // デバッグウィンドウ
 void GameScene::DebugObject()
 {
-	m_ObjManager->DebugObject(m_StageManager);
+	if(m_StageManager)m_StageManager->DebugStage();
+	m_ObjManager->DebugObject();
 }
 
 // ステート更新
@@ -165,7 +184,7 @@ void GameScene::Normal::Update(std::shared_ptr<GameScene> owner)
 	// 次のステージ読み込み
 	if (SceneManager::Instance().GetBlackAlphaFlg() && owner->m_player->GetActionType() == Player::Action::TeleportType && SceneManager::Instance().GetBlackAlpha() >= 1.0f)
 	{
-		owner->m_StageManager->NextStage();
+		owner->NextStage();
 		return;
 	}
 
@@ -173,7 +192,22 @@ void GameScene::Normal::Update(std::shared_ptr<GameScene> owner)
 	owner->m_ObjManager->DeleteEnemyList();
 
 	// ウェーブ確認
-	if (SceneManager::Instance().GetEnemyList().size() == 0)owner->m_StageManager->WaveCheck();
+	if (SceneManager::Instance().GetEnemyList().size() == 0)
+	{
+		bool _waveFlg = owner->m_StageManager->WaveCheck();
+
+		if (_waveFlg)
+		{
+			if (owner->m_StageManager->GetnowStage() != owner->m_StageManager->GetMaxStage())
+			{
+				owner->m_StageManager->NextStageLiberation();
+			}
+		}
+		else
+		{
+			owner->m_ObjManager->SetEnemyParam(("Asset/Json/Game/Enemy/Stage")+(std::to_string(owner->m_StageManager->GetnowStage())) + (".json"), owner->m_StageManager->GetnowWave());
+		}
+	}
 
 	// ステート切り替え
 	ChangeState(owner);
@@ -208,6 +242,8 @@ void GameScene::Normal::ChangeState(std::shared_ptr<GameScene> owner)
 // GameOver========================================================================================
 void GameScene::GameOver::Enter(std::shared_ptr<GameScene> owner)
 {
+	// スロー切り替え
+	if (SceneManager::Instance().GetSlowFlg())SceneManager::Instance().SlowChange();
 	// ゲームオーバーUI表示
 	owner->m_ObjManager->SetGameStateParam(false);
 	owner->m_flow = GameScene::Flow::UpdateType;
@@ -245,6 +281,10 @@ void GameScene::GameOver::Update(std::shared_ptr<GameScene> owner)
 // Clear===========================================================================================
 void GameScene::Clear::Enter(std::shared_ptr<GameScene> owner)
 {
+	// スロー切り替え
+	if (SceneManager::Instance().GetSlowFlg())SceneManager::Instance().SlowChange();
+	// ゲームクリア準備
+	owner->m_StageManager->GameClear();
 	// ゲームクリアUI表示
 	owner->m_ObjManager->SetGameStateParam(true);
 	// BGM

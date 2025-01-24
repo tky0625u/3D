@@ -1,7 +1,11 @@
 ﻿#pragma once
 
-// オブジェクトマネジャ
-class ObjectManager;
+// ゲームカメラ
+class GameCamera;
+// プレイヤー
+class Player;
+// 魔法陣
+class MagicPolygon;
 
 class StageManager :public std::enable_shared_from_this<StageManager>
 {
@@ -12,12 +16,21 @@ public:
 	// 次のステージ生成
 	void NextStage();
 	// ウェーブ管理
-	void WaveCheck();
-	
+	bool WaveCheck();
+	// ワープ解放時の演出の準備
+	void NextStageLiberation();
+	// ゲームクリア
+	void GameClear();
+
+	// ステージ数を動的に変更
+	void DebugStage();
+
 	// セッター====================================================================================
-	void SetObjectManager(std::shared_ptr<ObjectManager> _Obj); // オブジェクトマネジャ
-	void SetMaxStage(int _stage);                               // 最大ステージ数
+	void SetMaxStage();                                         // 最大ステージ数
 	void SetMaxWave(int _wave);                                 // 最大ウェーブ数
+	void SetCamera(std::shared_ptr<GameCamera> _camera);        // ゲームカメラ
+	void SetPlayer(std::shared_ptr<Player> _player);            // プレイヤー
+	void SetMagicPolygon(std::shared_ptr<MagicPolygon> _magic); // 魔法陣
 	//=============================================================================================
 
 	// ゲッター====================================================================================
@@ -29,8 +42,10 @@ public:
 	//=============================================================================================
 
 private:
-	std::weak_ptr<ObjectManager> m_ObjectManager;     // オブジェクトマネジャ
-	int                          m_nowWave   = 0;     // 現在のウェーブ数
+	std::weak_ptr<GameCamera>    m_camera;            // ゲームカメラ
+	std::weak_ptr<Player>        m_player;            // プレイヤー
+	std::weak_ptr<MagicPolygon>  m_magic;             // 魔法陣
+	int                          m_nowWave   = 1;     // 現在のウェーブ数
 	int                          m_MaxWave   = 0;     // 最大ウェーブ数
 	int                          m_nowStage  = 1;     // 現在のステージ数
 	int                          m_MaxStage  = 0;     // 最大ステージ数

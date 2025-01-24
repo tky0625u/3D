@@ -4,7 +4,6 @@
 #include"../CharacterBase.h"
 
 class ObjectManager; // オブジェクトマネジャ
-class StageManager;  // ステージマネジャ
 class EnemyBase;     // 敵基底クラス
 class BulletBase;    // 弾基底クラス
 class Shield;        // 盾
@@ -54,7 +53,6 @@ public:
 	//====================================================================================================
 
 	// セッター====================================================================================
-	void SetStageManager       (std::shared_ptr<StageManager> _stage); // ステージマネジャ
 	void SetShield             (std::shared_ptr<Shield> _shield);      // 盾
 	void SetCounterRadius      (float _radius);                        // カウンターの攻撃範囲
 	void SetParryID            (UINT _id);                             // パリィした敵のID
@@ -78,9 +76,6 @@ public:
 	//=============================================================================================
 
 private:
-	// ステージマネジャ
-	std::weak_ptr<StageManager>  m_StageManager;
-	
 	// 盾
 	std::weak_ptr<Shield>        m_shield;
 	

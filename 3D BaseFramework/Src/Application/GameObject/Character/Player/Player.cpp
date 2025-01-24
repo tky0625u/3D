@@ -27,6 +27,18 @@ void Player::Action()
 	{
 		m_param.Hp = 100;
 	}
+	// HP0
+	if (GetAsyncKeyState('K') & 0x8000)
+	{
+		m_param.Hp = 0;
+		
+		// Crushing
+		std::shared_ptr<Crushing> _crush = std::make_shared<Crushing>();
+		m_NextState = _crush;
+		m_NextActionType = Player::Action::CrushingType;
+		m_flow = KdGameObject::Flow::UpdateType;
+		return;
+	}
 	// スタミナ消費
 	if (GetAsyncKeyState('N') & 0x8000)
 	{
@@ -168,12 +180,6 @@ void Player::Damage(int _damage, std::shared_ptr<BulletBase> _bullet)
 //=================================================================================================
 
 // セッター========================================================================================
-// ステージマネジャ
-void Player::SetStageManager(std::shared_ptr<StageManager> _stage)
-{
-	m_StageManager = _stage;
-}
-
 // 盾
 void Player::SetShield(std::shared_ptr<Shield> _shield)
 {
@@ -1315,7 +1321,7 @@ void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shar
 	if (m_guardTime <= owner->m_ParryTime)
 	{
 		// スローにする
-		if(!owner->m_ObjectManager.lock()->GetSlowFlg())owner->m_ObjectManager.lock()->SlowChange();
+		if(!SceneManager::Instance().GetSlowFlg())SceneManager::Instance().SlowChange();
 		
 		// Parry
 		std::shared_ptr<Parry> _parry = std::make_shared<Parry>();
@@ -1363,7 +1369,7 @@ void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shar
 		GuardRotate(owner, toVec); // 回転
 
 		// スローにする
-		if (!owner->m_ObjectManager.lock()->GetSlowFlg())owner->m_ObjectManager.lock()->SlowChange();
+		if (!SceneManager::Instance().GetSlowFlg())SceneManager::Instance().SlowChange();
 
 		// Parry
 		std::shared_ptr<Parry> _parry = std::make_shared<Parry>();
@@ -1489,7 +1495,7 @@ void Player::Parry::Update(std::shared_ptr<Player> owner)
 		owner->IdolChange();
 
 		// スローを解除
-		if (owner->m_ObjectManager.lock()->GetSlowFlg())owner->m_ObjectManager.lock()->SlowChange();
+		if (SceneManager::Instance().GetSlowFlg())SceneManager::Instance().SlowChange();
 		return;
 	}
 
@@ -1528,7 +1534,7 @@ void Player::Parry::ChangeState(std::shared_ptr<Player> owner)
 		}
 
 		// スロー解除
-		if(owner->m_ObjectManager.lock()->GetSlowFlg())owner->m_ObjectManager.lock()->SlowChange();
+		if(SceneManager::Instance().GetSlowFlg())SceneManager::Instance().SlowChange();
 		return;
 	}
 
@@ -1543,7 +1549,7 @@ void Player::Parry::ChangeState(std::shared_ptr<Player> owner)
 		owner->m_NextActionType = Player::Action::RunType;
 		owner->m_flow = KdGameObject::Flow::EnterType;
 		// スロー解除
-		if (owner->m_ObjectManager.lock()->GetSlowFlg())owner->m_ObjectManager.lock()->SlowChange();
+		if (SceneManager::Instance().GetSlowFlg())SceneManager::Instance().SlowChange();
 		return;
 	}
 	else if (owner->m_keyType & Player::KeyType::GuardKey)
@@ -1556,7 +1562,7 @@ void Player::Parry::ChangeState(std::shared_ptr<Player> owner)
 		owner->m_NextActionType = Player::Action::GuardType;
 		owner->m_flow = KdGameObject::Flow::EnterType;
 		// スロー解除
-		if (owner->m_ObjectManager.lock()->GetSlowFlg())owner->m_ObjectManager.lock()->SlowChange();
+		if (SceneManager::Instance().GetSlowFlg())SceneManager::Instance().SlowChange();
 		return;
 	}
 	else if (owner->m_keyType & Player::KeyType::RollKey && !(owner->m_BeforeKeyType & Player::KeyType::RollKey))
@@ -1570,7 +1576,7 @@ void Player::Parry::ChangeState(std::shared_ptr<Player> owner)
 		owner->m_NextActionType = Player::Action::RollType;
 		owner->m_flow = KdGameObject::Flow::EnterType;
 		// スロー解除
-		if (owner->m_ObjectManager.lock()->GetSlowFlg())owner->m_ObjectManager.lock()->SlowChange();
+		if (SceneManager::Instance().GetSlowFlg())SceneManager::Instance().SlowChange();
 		return;
 	}
 }
