@@ -1,0 +1,7 @@
+{
+	"Load": {
+		"CircleChangeAngle": 0.05,
+		"StringChangeAlpha": 0.25,
+		"StringCorrectAlpha": 1.5
+	}
+}

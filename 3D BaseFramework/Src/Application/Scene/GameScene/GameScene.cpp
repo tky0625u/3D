@@ -41,63 +41,66 @@ void GameScene::Event()
 	KdEffekseerManager::GetInstance().Update();
 }
 
-void GameScene::NextStage()
-{
-	m_StageManager->NextStage();
-	m_StageManager->SetMaxWave(m_ObjManager->CreateStage(m_StageManager->GetnowStage()));
-	// 画面を明るく
-	SceneManager::Instance().BlackAlphaChange(0.01f, false);
-}
 
 // ローディング====================================================================================
-bool loop; // ループフラグ
-std::shared_ptr<ObjectManager> _ObjManager = nullptr;  // オブジェクトマネジャ
-std::shared_ptr<StageManager> _StageManager = nullptr; // ステージマネジャ
+bool Gloop; // ループフラグ
+std::shared_ptr<ObjectManager> _GObjManager = nullptr;  // オブジェクトマネジャ
+std::shared_ptr<StageManager> _GStageManager = nullptr; // ステージマネジャ
 
-// ロード
+// ゲーム開始時のロード
 void StageLoad()
 {
 	// オブジェクトマネジャ
-	_ObjManager = std::make_shared<ObjectManager>();
+	_GObjManager = std::make_shared<ObjectManager>();
 	// ステージマネジャ
-	_StageManager = std::make_shared<StageManager>();
+	_GStageManager = std::make_shared<StageManager>();
 
 	// 現在のシーンの確認
-	_ObjManager->SceneCheck();
+	_GObjManager->SceneCheck();
 	// 3Dモデル読み込み
-	_ObjManager->ModelLoad();
+	_GObjManager->ModelLoad();
 	// カメラ
-	_StageManager->SetCamera(_ObjManager->SetGameCameraParam());
+	_GStageManager->SetCamera(_GObjManager->SetGameCameraParam());
 	// オブジェクト
 	// 地面
-	_ObjManager->SetGroundParam(_StageManager->GetnowStage());
+	_GObjManager->SetGroundParam(_GStageManager->GetnowStage());
 	// 魔法陣の台
-	_ObjManager->SetCircleParam();
+	_GObjManager->SetCircleParam();
 	// 魔法陣
-	_StageManager->SetMagicPolygon(_ObjManager->SetMagicPolygonParam());
+	_GStageManager->SetMagicPolygon(_GObjManager->SetMagicPolygonParam());
 	// 空
-	_ObjManager->SetSkyBoxParam();
+	_GObjManager->SetSkyBoxParam();
 	// 壁
-	_ObjManager->SetWallParam();
+	_GObjManager->SetWallParam();
 	// プレイヤー
-	_StageManager->SetPlayer(_ObjManager->SetPlayerParam(_StageManager));
+	_GStageManager->SetPlayer(_GObjManager->SetPlayerParam(_GStageManager));
 	// 敵
-	_StageManager->SetMaxWave(_ObjManager->SetEnemyParam("Asset/Json/Game/Enemy/Stage1.json"));
+	_GStageManager->SetMaxWave(_GObjManager->SetEnemyParam("Asset/Json/Game/Enemy/Stage1.json"));
 	// ステージ数
-	_StageManager->SetMaxStage();
+	_GStageManager->SetMaxStage();
 
 	// ループフラグをOFF
-	loop = false;
+	Gloop = false;
+}
+
+// ステージ移動時のロード
+void NextStage()
+{
+	_GStageManager->NextStage();
+	_GStageManager->SetMaxWave(_GObjManager->CreateStage(_GStageManager->GetnowStage()));
+
+	Gloop = false;
 }
 
 // ローディング画面
-void LoadingTime()
+void GameLoadingTime()
 {
 	// ローディング
 	std::shared_ptr<Loading> _load = std::make_shared<Loading>(); // 生成
+	_load->GameChange(); // ゲーム用ローディング画面
 	_load->Init(); // 初期化
 
-	while (loop) // ループフラグがONの間ローディング画面を描画
+	while (Gloop) // ループフラグがONの間ローディング画面を描画
 	{
 		// 更新
 		_load->Update();
@@ -116,21 +119,21 @@ void LoadingTime()
 
 void GameScene::Init()
 {
-	loop = true;
+	Gloop = true;
 	m_EnemyManager = std::make_shared<EnemyManager>();
 
 	// ローディング=============================
 	std::thread th_Obj(StageLoad);
-	std::thread th_Load(LoadingTime);
+	std::thread th_Load(GameLoadingTime);
 
 	th_Obj.join();
 	th_Load.join();
 	//==========================================
 
 	// ステージマネジャ
-	m_StageManager = _StageManager;
+	m_StageManager = _GStageManager;
 	// オブジェクトマネジャ
-	m_ObjManager = _ObjManager;
+	m_ObjManager = _GObjManager;
 
 	// ステート
 	std::shared_ptr<Normal> _normal = std::make_shared<Normal>();
@@ -184,7 +187,22 @@ void GameScene::Normal::Update(std::shared_ptr<GameScene> owner)
 	// 次のステージ読み込み
 	if (SceneManager::Instance().GetBlackAlphaFlg() && owner->m_player->GetActionType() == Player::Action::TeleportType && SceneManager::Instance().GetBlackAlpha() >= 1.0f)
 	{
-		owner->NextStage();
+		_GStageManager = owner->m_StageManager;
+		_GObjManager = owner->m_ObjManager;
+
+		Gloop = true;
+
+		std::thread th_Obj(NextStage);
+		std::thread th_Load(GameLoadingTime);
+
+		th_Obj.join();
+		th_Load.join();
+
+		owner->m_StageManager = _GStageManager;
+		owner->m_ObjManager = _GObjManager;
+
+		// 画面を明るく
+		SceneManager::Instance().BlackAlphaChange(0.01f, false);
 		return;
 	}
 

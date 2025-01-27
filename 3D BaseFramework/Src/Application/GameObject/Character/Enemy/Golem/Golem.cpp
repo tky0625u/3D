@@ -37,6 +37,7 @@ void Golem::PostUpdate()
 
 	// 攻撃範囲表示
 	KdShaderManager::Instance().WriteCBColorEnable(m_ColorLightFlg);
+	KdShaderManager::Instance().WriteCBColorEnable(m_ColorLightFlg);
 }
 
 void Golem::Init()
@@ -433,7 +434,8 @@ void Golem::Attack2::Update(std::shared_ptr<EnemyBase> owner)
 	if (_pos != m_playerPos)owner->SetMove(_dir, 10.0f);
 
 	// 攻撃範囲
-	KdShaderManager::Instance().WriteCBColor(m_playerPos, m_AttackSphereRange,Math::Color{1.0f,0.0f,0.0f,1.0f});
+	KdShaderManager::Instance().WriteCB10Color(m_playerPos, m_AttackSphereRange, Math::Color{ 1.0f,1.0f,0.0f,1.0f });
+	KdShaderManager::Instance().WriteCB11Color(m_playerPos, 60.0f, Math::Color{ 1.0f,0.0f,0.0f,0.5f });
 }
 
 void Golem::Attack2::Exit(std::shared_ptr<EnemyBase> owner)
@@ -520,6 +522,11 @@ void Golem::Attack3::Update(std::shared_ptr<EnemyBase> owner)
 		return;
 	}
 
+	// 攻撃範囲
+	m_AttackSphereRange = 50.0f * (m_ActionFPS / 180.0f);
+	KdShaderManager::Instance().WriteCB10Color(owner->GetPos(), m_AttackSphereRange, Math::Color{ 1.0f,1.0f,0.0f,1.0f });
+	KdShaderManager::Instance().WriteCB11Color(owner->GetPos(), 50.0f, Math::Color{ 1.0f,0.0f,0.0f,0.5f });
+
 	if (161 >= m_ActionFPS)
 	{
 		// 攻撃範囲
@@ -552,10 +559,6 @@ void Golem::Attack3::Update(std::shared_ptr<EnemyBase> owner)
 		// 回転
 		owner->Rotate(dir, 2.5f);
 	}
-
-	// 攻撃範囲
-	m_AttackSphereRange = 50.0f * (m_ActionFPS / 180.0f);
-	KdShaderManager::Instance().WriteCBColor(owner->GetPos(), m_AttackSphereRange,Math::Color{1.0f,0.0f,0.0f,1.0f});
 	
 	// FPS加算
 	m_ActionFPS++;

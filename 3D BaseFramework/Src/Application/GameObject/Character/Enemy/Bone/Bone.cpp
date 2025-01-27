@@ -220,7 +220,7 @@ void Bone::Stumble::StumbleAction(std::shared_ptr<EnemyBase> owner)
 void Bone::Crushing::Enter(std::shared_ptr<EnemyBase> owner)
 {
 	// SE
-	KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Enemy/Bone/翼竜の鳴き声2 (mp3cut.net).wav", 0.1f, false);
+	KdAudioManager::Instance().Play("Asset/Sound/Game/SE/Enemy/Bone/翼竜の鳴き声2.wav", 0.05f, false);
 
 	EnemyBase::Crushing::Enter(owner);
 }

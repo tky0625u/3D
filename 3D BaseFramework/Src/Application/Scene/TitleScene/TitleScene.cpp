@@ -1,5 +1,7 @@
 ﻿#include "TitleScene.h"
 
+#include<mutex>
+
 // メイン
 #include "../../main.h"
 // シーンマネジャ
@@ -8,6 +10,8 @@
 #include"../../GameObject/ObjectManager.h"
 // タイトルカメラ
 #include"../../GameObject/Camera/TitleCamera/TitleCamera.h"
+// ローディング
+#include"../../GameObject/Loading/Loading.h"
 
 // デバッグウィンドウ
 void TitleScene::DebugObject()
@@ -21,27 +25,68 @@ void TitleScene::Event()
 	KdEffekseerManager::GetInstance().Update();
 }
 
-void TitleScene::Init()
+// ローディング====================================================================================
+std::shared_ptr<StageManager>  _TStageManager = nullptr;  // ステージマネジャ
+std::shared_ptr<ObjectManager> _TObjManager = nullptr; // オブジェクトマネジャ
+bool Tloop = true; // ループフラグ
+
+void ObjLoad()
 {
 	// オブジェクトマネジャ生成
-	m_ObjManager = std::make_shared<ObjectManager>();
+	_TObjManager = std::make_shared<ObjectManager>();
 	// 現在のシーンを確認
-	m_ObjManager->SceneCheck();
+	_TObjManager->SceneCheck();
 	// タイトルシーン
-	m_ObjManager->SetTitleCamera();
+	_TObjManager->SetTitleCamera();
 	// タイトル
-	m_ObjManager->SetTitleParam();
+	_TObjManager->SetTitleParam();
 	// GameUI
-	m_ObjManager->SetGameParam();
+	_TObjManager->SetGameParam();
 	// ExitUI
-	m_ObjManager->SetExitParam();
+	_TObjManager->SetExitParam();
 	// セレクトUI
-	m_ObjManager->SetSelectParam();
+	_TObjManager->SetSelectParam();
 	// カーソル
-	m_ObjManager->SetCursorParam();
+	_TObjManager->SetCursorParam();
 	// オブジェクト
-	m_ObjManager->SetSkyBoxParam();
-	m_ObjManager->SetWallParam();
+	_TObjManager->SetSkyBoxParam();
+	_TObjManager->SetWallParam();
+
+	Tloop = false;
+}
+
+void TitleLoadingTime()
+{
+	std::shared_ptr<Loading> _load = std::make_shared<Loading>();
+	_load->GameChange(); // タイトル用ローディング画面
+	_load->Init();        // 初期化
+
+	while (Tloop)
+	{
+		// 更新
+		_load->Update();
+
+		// 描画
+		Application::Instance().KdBeginDraw(false);
+		{
+			_load->DrawSprite();
+		}
+		Application::Instance().KdPostDraw();
+	}
+}
+
+//=================================================================================================
+
+void TitleScene::Init()
+{
+	std::thread th_Obj(ObjLoad);
+	std::thread th_Load(TitleLoadingTime);
+
+	th_Obj.join();
+	th_Load.join();
+
+	m_StageManager = _TStageManager;
+	m_ObjManager = _TObjManager;
 
 	// エフェクト生成
 	KdEffekseerManager::GetInstance().Create(1280, 720);

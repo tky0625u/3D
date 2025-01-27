@@ -104,7 +104,7 @@ private:
 
 	bool  m_blackChangeFlg = false;
 	float m_blackChange = 0.0f;
-	float m_blackAlpha = 0.0f;
+	float m_blackAlpha = 1.0f;
 	Math::Color m_black = { 0.0f,0.0f,0.0f,m_blackAlpha };
 
 	// スロー値

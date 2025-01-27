@@ -113,6 +113,28 @@ float4 main(VSOutput In) : SV_Target0
 			baseColor.rgb = col;
 		}
 	}
+
+	if (g2_ColorEnable)
+	{
+		// In:ピクセルの情報　wPos:ワールド座標
+		float3 v = g2_ColorPos - In.wPos;
+		float d = length(v); // 長さを求める　length()
+
+		if (d < g2_ColorRadius)
+		{
+			// エリア内確定
+
+			// モノクロ化
+			float3 col = (baseColor.r + baseColor.g + baseColor.b) / 3;
+
+			// セピア色
+			col.r *= g2_Color.r;
+			col.g *= g2_Color.g;
+			col.b *= g2_Color.b;
+			
+			baseColor.rgb = col;
+		}
+	}
 	
 	//------------------------------------------
 	// ライティング

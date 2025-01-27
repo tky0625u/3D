@@ -209,7 +209,8 @@ public:
 	void WriteCBShadowArea(const Math::Matrix& proj, float dirLightHeight);
 	void WriteCBPointLight(const std::list<PointLight>& pointLights);
 	void WriteCBColorEnable(bool _enable);
-	void WriteCBColor(const Math::Vector3 _pos, float _radius,Math::Color _color);
+	void WriteCB10Color(const Math::Vector3 _pos, float _radius, Math::Color _color);
+	void WriteCB11Color(const Math::Vector3 _pos, float _radius, Math::Color _color);
 
 	//==========================
 	//
@@ -241,6 +242,7 @@ private:
 	KdConstantBuffer<cbLight>	m_cb9_Light;
 
 	KdConstantBuffer<cbEffect>  m_cb10_Effect;
+	KdConstantBuffer<cbEffect>  m_cb11_Effect;
 
 	KdAmbientController m_ambientController;
 
