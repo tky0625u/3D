@@ -10,7 +10,11 @@ void Loading::Update()
 
 void Loading::DrawSprite()
 {
-	m_state->DrawSprite(shared_from_this());
+	KdShaderManager::Instance().m_spriteShader.Begin();
+	{
+		m_state->DrawSprite(shared_from_this());
+	}
+	KdShaderManager::Instance().m_spriteShader.End();
 }
 
 void Loading::Init()
@@ -33,18 +37,80 @@ void Loading::GameChange()
 // タイトル========================================================================================
 void Loading::TitleLoad::SetLoadParam()
 {
+	std::string _filePath = "Asset/Json/Title/Load/Load.json";
+
+	std::ifstream _ifs(_filePath.c_str());
+	nlohmann::json _json;
+	if (_ifs.is_open())
+	{
+		_ifs >> _json;
+	}
+
+	for (auto& _load : _json)
+	{
+		// アルファ値変化量
+		float _ChangeAlpha = 0.0f;
+		_ChangeAlpha = _load["ChangeAlpha"];
+
+		// アルファ値補正値
+		float _CorrectAlpha = 0.0f;
+		_CorrectAlpha = _load["CorrectAlpha"];
+
+		// セット
+		m_ChangeAlpha = _ChangeAlpha;
+		m_CorrectAlpha = _CorrectAlpha;
+	}
+
+	_ifs.close();
 }
 
 void Loading::TitleLoad::Init(std::shared_ptr<Loading> owner)
 {
+	m_load[TextureType::Light].m_tex = std::make_shared<KdTexture>();                    // テクスチャ生成
+	m_load[TextureType::Light].m_tex->Load("Asset/Textures/Loading/Particle02.png");     // テクスチャ読み込み
+	m_load[TextureType::Light].m_rect = { 0,0,long(128),long(128) };                     // 切り取り範囲
+	m_load[TextureType::Light].m_size = 1.0f;                                            // 大きさ
+	m_load[TextureType::Light].m_pos = { 640.0f - 64.0f,-(360.0f - 64.0f) };             // 座標
+	m_load[TextureType::Light].m_alpha = 1.0f;                                           // アルファ値
+	m_load[TextureType::Light].m_color = { 1,1,1,m_load[TextureType::Light].m_alpha };   // 色
+	m_load[TextureType::Light].m_pivot = { 0.5f,0.5f };                                  // 中心位置
 }
 
 void Loading::TitleLoad::Update(std::shared_ptr<Loading> owner)
 {
+	m_angle += m_ChangeAlpha;
+	m_load[TextureType::Light].m_alpha = sin(DirectX::XMConvertToRadians(m_angle)) + m_CorrectAlpha;
+	m_load[TextureType::Light].m_color = { 1,1,1,m_load[TextureType::Light].m_alpha };
+
+	// 行列
+	for (auto& load : m_load)
+	{
+		// 拡縮
+		Math::Matrix _scale = Math::Matrix::CreateScale(load.m_size);
+		// 回転
+		Math::Matrix _rot = Math::Matrix::CreateRotationZ(DirectX::XMConvertToRadians(load.m_angle));
+		// 座標
+		Math::Matrix _trans = Math::Matrix::CreateTranslation(Math::Vector3{ load.m_pos.x,load.m_pos.y,0.0f });
+		// 行列合成
+		load.m_Mat = _scale * _rot * _trans;
+	}
 }
 
 void Loading::TitleLoad::DrawSprite(std::shared_ptr<Loading> owner)
 {
+	// 黒背景
+	Math::Color _color = { 0,0,0,1 };
+	KdShaderManager::Instance().m_spriteShader.DrawBox(0, 0, 640, 360, &_color, true);
+
+	// 描画
+	for (auto& load : m_load)
+	{
+		// 行列セット
+		KdShaderManager::Instance().m_spriteShader.SetMatrix(load.m_Mat);
+		KdShaderManager::Instance().m_spriteShader.DrawTex(load.m_tex, 0, 0, &load.m_rect, &load.m_color, load.m_pivot);
+		// 行列を元に戻す
+		KdShaderManager::Instance().m_spriteShader.SetMatrix(Math::Matrix::Identity);
+	}
 }
 //=================================================================================================
 
@@ -142,22 +208,18 @@ void Loading::GameLoad::Update(std::shared_ptr<Loading> owner)
 
 void Loading::GameLoad::DrawSprite(std::shared_ptr<Loading> owner)
 {
-	KdShaderManager::Instance().m_spriteShader.Begin();
-	{
-		// 黒背景
-		Math::Color _color = { 0,0,0,1 };
-		KdShaderManager::Instance().m_spriteShader.DrawBox(0, 0, 640, 360, &_color, true);
+	// 黒背景
+	Math::Color _color = { 0,0,0,1 };
+	KdShaderManager::Instance().m_spriteShader.DrawBox(0, 0, 640, 360, &_color, true);
 
-		// 描画
-		for (auto& load : m_load)
-		{
-			// 行列セット
-			KdShaderManager::Instance().m_spriteShader.SetMatrix(load.m_Mat);
-			KdShaderManager::Instance().m_spriteShader.DrawTex(load.m_tex, 0, 0, &load.m_rect, &load.m_color, load.m_pivot);
-			// 行列を元に戻す
-			KdShaderManager::Instance().m_spriteShader.SetMatrix(Math::Matrix::Identity);
-		}
+	// 描画
+	for (auto& load : m_load)
+	{
+		// 行列セット
+		KdShaderManager::Instance().m_spriteShader.SetMatrix(load.m_Mat);
+		KdShaderManager::Instance().m_spriteShader.DrawTex(load.m_tex, 0, 0, &load.m_rect, &load.m_color, load.m_pivot);
+		// 行列を元に戻す
+		KdShaderManager::Instance().m_spriteShader.SetMatrix(Math::Matrix::Identity);
 	}
-	KdShaderManager::Instance().m_spriteShader.End();
 }
 //=================================================================================================

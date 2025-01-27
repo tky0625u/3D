@@ -71,7 +71,22 @@ private:
 		void DrawSprite(std::shared_ptr<Loading> owner)override;
 
 	private:
+		// テクスチャtタイプ
+		enum TextureType
+		{
+			Light, // 光
+			Num    // 数
+		};
 
+		// 構造体
+		Load m_load[Num];
+
+		// 角度
+		float m_angle = 0.0f;
+		// アルファ値変化量
+		float m_ChangeAlpha = 0.25f;
+		// アルファ値補正値
+		float m_CorrectAlpha = 1.5f;
 	};
 
 	// ゲーム

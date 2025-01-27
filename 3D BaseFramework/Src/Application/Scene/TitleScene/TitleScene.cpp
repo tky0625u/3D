@@ -58,7 +58,7 @@ void ObjLoad()
 void TitleLoadingTime()
 {
 	std::shared_ptr<Loading> _load = std::make_shared<Loading>();
-	_load->GameChange(); // タイトル用ローディング画面
+	_load->TitleChange(); // タイトル用ローディング画面
 	_load->Init();        // 初期化
 
 	while (Tloop)
