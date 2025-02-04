@@ -9,7 +9,7 @@ void Sword::Update()
 	if (m_traject.m_trajectPolyGon != nullptr && m_traject.m_trajectMatList.size() == TrajectType::Num) // ポリゴンが無い&リストの数が少ない場合は追加しない
 	{
 		// ２個目から始める　※１個目は既に追加されているため
-		for (int i = TrajectType::TransFormType; i < m_traject.m_trajectMatList.size(); ++i)
+		for (unsigned int i = TrajectType::TransFormType; i < m_traject.m_trajectMatList.size(); ++i)
 		{
 			m_traject.m_trajectPolyGon->AddPoint(m_traject.m_trajectMatList[i]);
 		}

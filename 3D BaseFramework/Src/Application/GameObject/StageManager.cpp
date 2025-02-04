@@ -40,6 +40,8 @@ bool StageManager::WaveCheck()
 		m_nowWave++;
 		return m_IsWaveMax;
 	}
+
+	return m_IsWaveMax;
 }
 
 void StageManager::NextStageLiberation()

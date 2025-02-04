@@ -422,14 +422,17 @@ const UINT& EnemyBase::GetNextActionType() const
 //=================================================================================================
 
 // ダメージ
-void EnemyBase::Damage(int _damage)
+void EnemyBase::Damage(unsigned int _damage)
 {
 	m_state->Damage(shared_from_this(), _damage);
 }
 
 // ダメージ
-void EnemyBase::StateBase::Damage(std::shared_ptr<EnemyBase> owner, int _damage)
+void EnemyBase::StateBase::Damage(std::shared_ptr<EnemyBase> owner, unsigned int _damage)
 {
+	if (owner->m_actionType == EnemyBase::Action::AppealType ||
+		owner->m_actionType == EnemyBase::Action::CrushingType)return;
+
 	if (owner->m_param.Hp <= _damage)owner->m_param.Hp = 0;
 	else { owner->m_param.Hp -= _damage; } // ダメージ
 

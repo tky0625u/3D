@@ -13,8 +13,8 @@ void Floor::Update()
 
 void Floor::DrawSprite()
 {
-	KdShaderManager::Instance().m_spriteShader.DrawTex(m_FloorPTex, (int)m_FloorPos.x, (int)m_FloorPos.y, (int)m_FloorRect.width * m_size, (int)m_FloorRect.height * m_size, &m_FloorRect, &m_FloorColor, m_FloorPivot);
-	KdShaderManager::Instance().m_spriteShader.DrawTex(m_pTex, (int)m_pos.x, (int)m_pos.y, (int)m_rect.width * m_size, (int)m_rect.height * m_size, &m_rect, &m_color, m_pivot);
+	KdShaderManager::Instance().m_spriteShader.DrawTex(m_FloorPTex, (int)m_FloorPos.x, (int)m_FloorPos.y, int(m_FloorRect.width * m_size), int(m_FloorRect.height * m_size), &m_FloorRect, &m_FloorColor, m_FloorPivot);
+	KdShaderManager::Instance().m_spriteShader.DrawTex(m_pTex, (int)m_pos.x, (int)m_pos.y, int(m_rect.width * m_size), int(m_rect.height * m_size), &m_rect, &m_color, m_pivot);
 }
 
 void Floor::Init()

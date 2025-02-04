@@ -20,7 +20,7 @@ void Player_Stamina::DrawSprite()
 {
 	for (int s = 0; s < Stamina::num; ++s)
 	{
-		KdShaderManager::Instance().m_spriteShader.DrawTex(m_pTex[s], (int)m_pos.x, (int)m_pos.y, (int)m_rect[s].width * m_size, (int)m_rect[s].height * m_size, &m_rect[s], &m_color, m_pivot);
+		KdShaderManager::Instance().m_spriteShader.DrawTex(m_pTex[s], (int)m_pos.x, (int)m_pos.y, int(m_rect[s].width * m_size), int(m_rect[s].height * m_size), &m_rect[s], &m_color, m_pivot);
 	}
 }
 

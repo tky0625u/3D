@@ -33,7 +33,7 @@ private:
 	std::weak_ptr<Player>      m_target;               // ターゲット（プレイヤー）
 	std::shared_ptr<KdTexture> m_pTex[Stamina::num];   // テクスチャ
 	Math::Rectangle            m_rect[Stamina::num];   // 切り取り範囲
-	int                        m_MaxStamina    = 0;    // 最大スタミナ
-	int                        m_beforeStamina = 0;    // 前回のスタミナ
+	unsigned int               m_MaxStamina    = 0;    // 最大スタミナ
+	unsigned int               m_beforeStamina = 0;    // 前回のスタミナ
 	float                      m_MaxWidth      = 0.0f; // 最大幅
 };

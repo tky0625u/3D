@@ -171,7 +171,7 @@ public:
 	// ゴーレム用弾
 	std::shared_ptr<Bullet> SetBulletParam();
 	// 骨色違い用弾
-	void SetBoneAlphaBulletParam(int id);
+	void SetBoneAlphaBulletParam(UINT id);
 	//=========================================================================
 
 	// テレポート位置からのフラグ trueならテレポートが可能

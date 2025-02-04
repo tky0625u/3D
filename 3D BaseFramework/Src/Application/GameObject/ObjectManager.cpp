@@ -4048,7 +4048,7 @@ std::shared_ptr<Bullet> ObjectManager::SetBulletParam()
 	return _bullet;
 }
 
-void ObjectManager::SetBoneAlphaBulletParam(int id)
+void ObjectManager::SetBoneAlphaBulletParam(UINT id)
 {
 	std::shared_ptr<BoneAlpha> _alpha;
 	for (auto& alpha : m_BoneAlphaList)
@@ -4218,7 +4218,6 @@ void ObjectManager::AddBone()
 	float _stumbleMove = 0.1f;
 	Math::Vector3 _forward = Math::Vector3::Zero;
 	_forward.z = 1.0f;
-	float _chaseRange = 1000.0f;
 
 	std::shared_ptr<Bone> enemy = nullptr;
 	enemy = std::make_shared<Bone>();
@@ -4267,7 +4266,6 @@ void ObjectManager::AddBoneAlpha()
 	float _stumbleMove = 0.1f;
 	Math::Vector3 _forward = Math::Vector3::Zero;
 	_forward.z = 1.0f;
-	float _chaseRange = 1000.0f;
 
 	std::shared_ptr<BoneAlpha> enemy = nullptr;
 	enemy = std::make_shared<BoneAlpha>();
@@ -4319,7 +4317,6 @@ void ObjectManager::AddGolem()
 	float _stumbleMove = 0.1f;
 	Math::Vector3 _forward = Math::Vector3::Zero;
 	_forward.z = -1.0f;
-	float _chaseRange = 1000.0f;
 
 	std::shared_ptr<Golem> enemy = nullptr;
 	enemy = std::make_shared<Golem>();
@@ -4445,8 +4442,8 @@ void ObjectManager::AddCircle()
 	if (!m_circle.expired())return;
 
 	std::string _name;
-	Math::Vector3 _pos;
-	float _size;
+	Math::Vector3 _pos = Math::Vector3::Zero;
+	float _size = 0.0f;
 	Math::Vector3 _angle = Math::Vector3::Zero;
 	std::shared_ptr<KdGameObject> obj;
 	std::shared_ptr<Circle> circle;

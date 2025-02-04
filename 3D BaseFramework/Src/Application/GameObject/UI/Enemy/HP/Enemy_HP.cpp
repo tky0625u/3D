@@ -34,7 +34,7 @@ void Enemy_HP::Update()
 	else // 減少開始時間が0になったら
 	{
 		m_NowDownTime = 0;
-		if (m_rect[HP::down].width != m_rect[HP::hp].width)m_rect[HP::down].width -= m_DownChange; // 現在のHPまで徐々に減少
+		if (m_rect[HP::down].width != m_rect[HP::hp].width)m_rect[HP::down].width -= long(m_DownChange); // 現在のHPまで徐々に減少
 	}
 
 	// ステート更新
@@ -47,7 +47,7 @@ void Enemy_HP::DrawSprite()
 
 	for (int h = 0; h < HP::num; ++h)
 	{
-		KdShaderManager::Instance().m_spriteShader.DrawTex(m_pTex[h], (int)(m_pos.x - (m_MaxWidth / 2)), (int)m_pos.y, (int)m_rect[h].width * m_size, (int)m_rect[h].height * m_size, &m_rect[h], &m_color, m_pivot);
+		KdShaderManager::Instance().m_spriteShader.DrawTex(m_pTex[h], (int)(m_pos.x - (m_MaxWidth / 2)), (int)m_pos.y, int(m_rect[h].width * m_size), int(m_rect[h].height * m_size), &m_rect[h], &m_color, m_pivot);
 	}
 }
 

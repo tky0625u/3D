@@ -41,7 +41,7 @@ public:
 	virtual void StumbleChange() {}; // よろけ
 	//=========================================================================
 
-	void Damage(int _damage); // ダメージ計算
+	void Damage(unsigned int _damage); // ダメージ計算
 
 	// セッター================================================================
 	void SetTarget(std::shared_ptr<Player> _target); // プレイヤー
@@ -129,7 +129,7 @@ protected:
 		virtual void Exit  (std::shared_ptr<EnemyBase> owner) {};
 
 		// ダメージ計算
-		virtual void Damage(std::shared_ptr<EnemyBase> owner, int _damage);
+		virtual void Damage(std::shared_ptr<EnemyBase> owner, unsigned int _damage);
 
 	protected:
 		// アニメーションFPS
@@ -147,8 +147,6 @@ protected:
 		virtual void Enter (std::shared_ptr<EnemyBase> owner)override;
 		virtual void Update(std::shared_ptr<EnemyBase> owner)override;
 		virtual void Exit  (std::shared_ptr<EnemyBase> owner)override;
-
-		void Damage(std::shared_ptr<EnemyBase> owner, int _damage)override { return; }
 
 	protected:
 		// エフェクト用ハンドル

@@ -47,8 +47,8 @@ private:
 	std::weak_ptr<EnemyBase>   m_target;                // ターゲット
 	std::shared_ptr<KdTexture> m_pTex[HP::num];         // テクスチャ
 	Math::Rectangle            m_rect[HP::num];         // 切り取り範囲
-	int                        m_MaxHP       = 0;       // 最大HP
-	int                        m_beforeHP    = 0;       // 前回のHP
+	unsigned int                        m_MaxHP       = 0;       // 最大HP
+	unsigned int                        m_beforeHP    = 0;       // 前回のHP
 	int                        m_DownTime    = 0;       // 減少ゲージ減少開始時間
 	int                        m_NowDownTime = 0;       // 現在の減少ゲージ減少開始時間
 	float                      m_DownChange  = 0.0f;    // 減少ゲージ変化量

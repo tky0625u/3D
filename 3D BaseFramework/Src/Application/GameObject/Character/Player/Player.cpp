@@ -322,8 +322,16 @@ void Player::StateBase::StateUpdate(std::shared_ptr<Player> owner)
 	owner->m_BeforeKeyType = owner->m_keyType;
 }
 
-void Player::StateBase::Damage(std::shared_ptr<Player> owner, int _damage, std::shared_ptr<EnemyBase> _enemy)
+void Player::StateBase::Damage(std::shared_ptr<Player> owner, unsigned int _damage, std::shared_ptr<EnemyBase> _enemy)
 {
+	if (owner->m_actionType == Player::Action::CounterType ||
+		owner->m_actionType == Player::Action::CrushingType ||
+		owner->m_actionType == Player::Action::GuardReactionType ||
+		owner->m_actionType == Player::Action::HitType ||
+		owner->m_actionType == Player::Action::ParryType ||
+		owner->m_actionType == Player::Action::RollType ||
+		owner->m_actionType == Player::Action::TeleportType)return;
+
 	// HP減少
 	if (owner->m_param.Hp <= _damage)owner->m_param.Hp = 0;
 	else { owner->m_param.Hp -= _damage; } // ダメージ
@@ -347,7 +355,7 @@ void Player::StateBase::Damage(std::shared_ptr<Player> owner, int _damage, std::
 	return;
 }
 
-void Player::StateBase::Damage(std::shared_ptr<Player> owner, int _damage, std::shared_ptr<BulletBase> _bullet)
+void Player::StateBase::Damage(std::shared_ptr<Player> owner, unsigned int _damage, std::shared_ptr<BulletBase> _bullet)
 {
 	// 弾はオブジェクトに当たったら破壊
 	_bullet->SetCrush(true);
@@ -393,7 +401,7 @@ void Player::StateBase::AttackHit(std::shared_ptr<Player> owner)
 	sphereInfo.m_sphere.Center = owner->GetSword().lock()->GetModelBottom().Translation();
 	sphereInfoList.push_back(sphereInfo);
 
-	for (int i = 0; i < sphereInfoList.size(); ++i)
+	for (unsigned int i = 0; i < sphereInfoList.size(); ++i)
 	{
 		// 半径
 		sphereInfoList[i].m_sphere.Radius = owner->m_sword.lock()->GetAttackSphereSize();
@@ -945,14 +953,14 @@ void Player::Attack::ChangeState(std::shared_ptr<Player> owner)
 	}
 }
 
-void Player::Attack::Damage(std::shared_ptr<Player> owner, int _damage, std::shared_ptr<EnemyBase> _enemy)
+void Player::Attack::Damage(std::shared_ptr<Player> owner, unsigned int _damage, std::shared_ptr<EnemyBase> _enemy)
 {
 	// 剣線削除
 	owner->GetSword().lock()->ClearTraject();
 	StateBase::Damage(owner, _damage, _enemy);
 }
 
-void Player::Attack::Damage(std::shared_ptr<Player> owner, int _damage, std::shared_ptr<BulletBase> _bullet)
+void Player::Attack::Damage(std::shared_ptr<Player> owner, unsigned int _damage, std::shared_ptr<BulletBase> _bullet)
 {
 	// 剣線削除
 	owner->GetSword().lock()->ClearTraject();
@@ -1310,7 +1318,7 @@ void Player::Guard::GuardRotate(std::shared_ptr<Player> owner, Math::Vector3 _di
 		}
 	}
 }
-void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shared_ptr<EnemyBase> _enemy)
+void Player::Guard::Damage(std::shared_ptr<Player> owner, unsigned int _damage, std::shared_ptr<EnemyBase> _enemy)
 {
 	// 攻撃してきた敵の方向
 	Math::Vector3 toVec = _enemy->GetPos() - owner->m_pos;
@@ -1358,7 +1366,7 @@ void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shar
 	}
 }
 
-void Player::Guard::Damage(std::shared_ptr<Player> owner, int _damage, std::shared_ptr<BulletBase> _bullet)
+void Player::Guard::Damage(std::shared_ptr<Player> owner, unsigned int _damage, std::shared_ptr<BulletBase> _bullet)
 {
 	if (m_guardTime <= owner->m_ParryTime)
 	{
