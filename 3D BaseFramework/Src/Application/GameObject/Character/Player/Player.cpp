@@ -276,19 +276,19 @@ const int& Player::GetParryTime() const
 }
 
 // 最大スタミナ
-const int& Player::GetMaxStamina() const
+const unsigned int& Player::GetMaxStamina() const
 {
 	return m_MaxStamina;
 }
 
 // スタミナ回復開始時間
-const int& Player::GetStaminaRecoveryTime() const
+const unsigned int& Player::GetStaminaRecoveryTime() const
 {
 	return m_StaminaRecoveryTime;
 }
 
 // 回避した時のスタミナ減少量
-const int& Player::GetRollStamina() const
+const unsigned int& Player::GetRollStamina() const
 {
 	return m_RollStamina;
 }
@@ -357,6 +357,14 @@ void Player::StateBase::Damage(std::shared_ptr<Player> owner, unsigned int _dama
 
 void Player::StateBase::Damage(std::shared_ptr<Player> owner, unsigned int _damage, std::shared_ptr<BulletBase> _bullet)
 {
+	if (owner->m_actionType == Player::Action::CounterType ||
+		owner->m_actionType == Player::Action::CrushingType ||
+		owner->m_actionType == Player::Action::GuardReactionType ||
+		owner->m_actionType == Player::Action::HitType ||
+		owner->m_actionType == Player::Action::ParryType ||
+		owner->m_actionType == Player::Action::RollType ||
+		owner->m_actionType == Player::Action::TeleportType)return;
+
 	// 弾はオブジェクトに当たったら破壊
 	_bullet->SetCrush(true);
 

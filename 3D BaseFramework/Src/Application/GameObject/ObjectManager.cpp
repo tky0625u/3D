@@ -214,39 +214,39 @@ void ObjectManager::DebugObject()
 
 			if (m_titleCamera.expired() == false)
 			{
-				std::shared_ptr<TitleCamera> _camera = m_titleCamera.lock();
+				std::shared_ptr<TitleCamera> _TCamera = m_titleCamera.lock();
 
 				// 位置
-				ImGui::Text((const char*)u8"　カメラ位置 　　x=%.2f,y=%.2f,z=%.2f", _camera->GetPos().x, _camera->GetPos().y, _camera->GetPos().z);
-				Math::Vector3 _tcPos = _camera->GetPos();
+				ImGui::Text((const char*)u8"　カメラ位置 　　x=%.2f,y=%.2f,z=%.2f", _TCamera->GetPos().x, _TCamera->GetPos().y, _TCamera->GetPos().z);
+				Math::Vector3 _tcPos = _TCamera->GetPos();
 				ImGui::SliderFloat("TitleCameraPosX", &_tcPos.x, -500, 500);
 				ImGui::SliderFloat("TitleCameraPosY", &_tcPos.y, -500, 500);
 				ImGui::SliderFloat("TitleCameraPosZ", &_tcPos.z, -500, 500);
 
 				// 角度
-				ImGui::Text((const char*)u8"　角度 　　DegAngX=%.2f, DegAngY=%.2f, DegAngZ=%.2f", _camera->GetDegAng().x, _camera->GetDegAng().y, _camera->GetDegAng().z);
-				float _tcDegAngX = _camera->GetDegAng().x;
-				float _tcDegAngY = _camera->GetDegAng().y;
-				float _tcDegAngZ = _camera->GetDegAng().z;
+				ImGui::Text((const char*)u8"　角度 　　DegAngX=%.2f, DegAngY=%.2f, DegAngZ=%.2f", _TCamera->GetDegAng().x, _TCamera->GetDegAng().y, _TCamera->GetDegAng().z);
+				float _tcDegAngX = _TCamera->GetDegAng().x;
+				float _tcDegAngY = _TCamera->GetDegAng().y;
+				float _tcDegAngZ = _TCamera->GetDegAng().z;
 				ImGui::SliderFloat("AngleX", &_tcDegAngX, -180, 180);
 				ImGui::SliderFloat("AngleY", &_tcDegAngY, -180, 180);
 				ImGui::SliderFloat("AngleZ", &_tcDegAngZ, -180, 180);
 
 				// 視野角
-				ImGui::Text((const char*)u8"　視野角 　　ViewingAngle=%.2f", _camera->GetViewingAngle());
-				float _tcViewingAngle = _camera->GetViewingAngle();
+				ImGui::Text((const char*)u8"　視野角 　　ViewingAngle=%.2f", _TCamera->GetViewingAngle());
+				float _tcViewingAngle = _TCamera->GetViewingAngle();
 				ImGui::SliderFloat("ViewingAngle", &_tcViewingAngle, 1.0f, 100.0f);
 
 				// 回転角度変化量
-				ImGui::Text((const char*)u8"　回転角度変化量 　　ChangeAngle=%.2f", _camera->GetChangeAngle());
-				float _tcChangeAngle=_camera->GetChangeAngle();
+				ImGui::Text((const char*)u8"　回転角度変化量 　　ChangeAngle=%.2f", _TCamera->GetChangeAngle());
+				float _tcChangeAngle=_TCamera->GetChangeAngle();
 				ImGui::SliderFloat("ChangeAngle", &_tcChangeAngle, -10.00f, 10.00f);
 
 				// セット
-				_camera->SetPos(_tcPos);
-				_camera->SetDegAng(Math::Vector3{ _tcDegAngX,_tcDegAngY,_tcDegAngZ });
-				_camera->SetViewingAngle(_tcViewingAngle);
-				_camera->SetChangeAngle(_tcChangeAngle);
+				_TCamera->SetPos(_tcPos);
+				_TCamera->SetDegAng(Math::Vector3{ _tcDegAngX,_tcDegAngY,_tcDegAngZ });
+				_TCamera->SetViewingAngle(_tcViewingAngle);
+				_TCamera->SetChangeAngle(_tcChangeAngle);
 			}
 
 			ImGui::TreePop();
@@ -427,11 +427,11 @@ void ObjectManager::DebugObject()
 
 					// サイズ
 					ImGui::Text((const char*)u8"　サイズ 　Size=%.2f", _cursor->GetSize());
-					float _size = _cursor->GetSize();
-					ImGui::SliderFloat("Size", &_size, 0.01f, 1.0f);
+					float _CursorSize = _cursor->GetSize();
+					ImGui::SliderFloat("Size", &_CursorSize, 0.01f, 1.0f);
 
 					// セット
-					_cursor->SetSize(_size);
+					_cursor->SetSize(_CursorSize);
 
 					// パーティクル
 					if (ImGui::TreeNode("Particle"))
@@ -527,77 +527,77 @@ void ObjectManager::DebugObject()
 
 			if (m_camera.expired() == false)
 			{
-				std::shared_ptr<GameCamera> _camera = m_camera.lock();
+				std::shared_ptr<GameCamera> _GCamera = m_camera.lock();
 
 				// ステートの切り替え
-				if (_camera->GetCameraType() != GameCamera::CameraType::PlayerType)
+				if (_GCamera->GetCameraType() != GameCamera::CameraType::PlayerType)
 				{
 					// プレイヤー
 					if (ImGui::Button((const char*)u8"Player"))
 					{
-						_camera->SetCameraType(GameCamera::CameraType::PlayerType);
-						_camera->PlayerChange();
+						_GCamera->SetCameraType(GameCamera::CameraType::PlayerType);
+						_GCamera->PlayerChange();
 					}
 				}
-				if (_camera->GetCameraType() != GameCamera::CameraType::FixedType)
+				if (_GCamera->GetCameraType() != GameCamera::CameraType::FixedType)
 				{
 					// テレポー開放
 					if (ImGui::Button((const char*)u8"Fixed"))
 					{
-						_camera->SetCameraType(GameCamera::CameraType::FixedType);
-						_camera->FixedChange();
+						_GCamera->SetCameraType(GameCamera::CameraType::FixedType);
+						_GCamera->FixedChange();
 					}
 				}
-				if (_camera->GetCameraType() != GameCamera::CameraType::BossType)
+				if (_GCamera->GetCameraType() != GameCamera::CameraType::BossType)
 				{
 					// テレポー開放
 					if (ImGui::Button((const char*)u8"Boss"))
 					{
-						_camera->SetCameraType(GameCamera::CameraType::BossType);
-						_camera->BossChange();
+						_GCamera->SetCameraType(GameCamera::CameraType::BossType);
+						_GCamera->BossChange();
 					}
 				}
-				if (_camera->GetCameraType() != GameCamera::CameraType::ClearType)
+				if (_GCamera->GetCameraType() != GameCamera::CameraType::ClearType)
 				{
 					// クリア
 					if (ImGui::Button((const char*)u8"Clear"))
 					{
-						_camera->SetCameraType(GameCamera::CameraType::ClearType);
-						_camera->ClearChange();
+						_GCamera->SetCameraType(GameCamera::CameraType::ClearType);
+						_GCamera->ClearChange();
 					}
 				}
 
 				// クリア時回転角度変化量
-				ImGui::Text((const char*)u8"　クリア時回転角度変化量 　　ChangeClearAngle=%.2f", _camera->GetChangeShakeAngle());
-				float ChangeClearAngle = _camera->GetChangeClearAngle();
+				ImGui::Text((const char*)u8"　クリア時回転角度変化量 　　ChangeClearAngle=%.2f", _GCamera->GetChangeShakeAngle());
+				float ChangeClearAngle = _GCamera->GetChangeClearAngle();
 				ImGui::SliderFloat("ChangeClearAngle", &ChangeClearAngle, 0.01f, 359.99f);
 
 				// 振動時sinカーブ変化量
-				ImGui::Text((const char*)u8"　振動sinカーブ変化量 　　ChangeShakeAngle=%.2f", _camera->GetChangeShakeAngle());
-				float ChangeShakeAngle=_camera->GetChangeShakeAngle();
+				ImGui::Text((const char*)u8"　振動sinカーブ変化量 　　ChangeShakeAngle=%.2f", _GCamera->GetChangeShakeAngle());
+				float ChangeShakeAngle=_GCamera->GetChangeShakeAngle();
 				ImGui::SliderFloat("ChangeShakeAngle", &ChangeShakeAngle, 0.1f, 359.9f);
 
 				// 振動移動量
-				ImGui::Text((const char*)u8"　振動移動量 　　Move=%.2f", _camera->GetDefaultMove());
-				float move = _camera->GetDefaultMove();
+				ImGui::Text((const char*)u8"　振動移動量 　　Move=%.2f", _GCamera->GetDefaultMove());
+				float move = _GCamera->GetDefaultMove();
 				ImGui::SliderFloat("Move", &move, 0.1f, 100.0f);
 
 				// 振動時間
-				ImGui::Text((const char*)u8"　振動時間 　　ShakeTime=%d", _camera->GetDefaultShakeTime());
-				int time = _camera->GetDefaultShakeTime();
+				ImGui::Text((const char*)u8"　振動時間 　　ShakeTime=%d", _GCamera->GetDefaultShakeTime());
+				int time = _GCamera->GetDefaultShakeTime();
 				ImGui::SliderInt("ShakeTime", &time, 1, 300);
 
 				// 位置
-				ImGui::Text((const char*)u8"　カメラ位置 　　x=%.2f,y=%.2f,z=%.2f", _camera->GetNowPos().x, _camera->GetNowPos().y, _camera->GetNowPos().z);
-				Math::Vector3 pos = _camera->GetNowPos();
+				ImGui::Text((const char*)u8"　カメラ位置 　　x=%.2f,y=%.2f,z=%.2f", _GCamera->GetNowPos().x, _GCamera->GetNowPos().y, _GCamera->GetNowPos().z);
+				Math::Vector3 pos = _GCamera->GetNowPos();
 				ImGui::SliderFloat("PosX", &pos.x, -10, 10);
 				ImGui::SliderFloat("PosY", &pos.y, -10, 10);
 				ImGui::SliderFloat("PosZ", &pos.z, -100, 0);
 
 				// 角度
-				ImGui::Text((const char*)u8"　角度 　　AngleX=%.2f, AngleY=%.2f", _camera->GetNowDegAng().x, _camera->GetNowDegAng().y);
-				float angleX = _camera->GetNowDegAng().x;
-				float angleY = _camera->GetNowDegAng().y;
+				ImGui::Text((const char*)u8"　角度 　　AngleX=%.2f, AngleY=%.2f", _GCamera->GetNowDegAng().x, _GCamera->GetNowDegAng().y);
+				float angleX = _GCamera->GetNowDegAng().x;
+				float angleY = _GCamera->GetNowDegAng().y;
 
 				ImGui::SliderFloat("AngleX", &angleX, -180.0f, 180.0f);
 				ImGui::SliderFloat("AngleY", &angleY, 0, 360);
@@ -608,19 +608,19 @@ void ObjectManager::DebugObject()
 				else if (angleY < 0.0f)angleY += 360.0f;
 
 				// 視野角
-				ImGui::Text((const char*)u8"　視野角 　　ViewAngleX=%.2f", _camera->GetNowViewAng());
-				float ViewAngle = _camera->GetNowViewAng();
+				ImGui::Text((const char*)u8"　視野角 　　ViewAngleX=%.2f", _GCamera->GetNowViewAng());
+				float ViewAngle = _GCamera->GetNowViewAng();
 
 				ImGui::SliderFloat("ViewAngle", &ViewAngle, 0, 360);
 
 				// セット
-				_camera->SetChangeClearAngle(ChangeClearAngle);
-				_camera->SetChangeShakeAngle(ChangeShakeAngle);
-				_camera->SetDefaultShakeMove(move);
-				_camera->SetDefaultShakeTime(time);
-				_camera->SetPos(pos);
-				_camera->SetDegAng(Math::Vector3{ angleX,angleY,0.0f });
-				_camera->SetViewAng(ViewAngle);
+				_GCamera->SetChangeClearAngle(ChangeClearAngle);
+				_GCamera->SetChangeShakeAngle(ChangeShakeAngle);
+				_GCamera->SetDefaultShakeMove(move);
+				_GCamera->SetDefaultShakeTime(time);
+				_GCamera->SetPos(pos);
+				_GCamera->SetDegAng(Math::Vector3{ angleX,angleY,0.0f });
+				_GCamera->SetViewAng(ViewAngle);
 			}
 
 			ImGui::TreePop();

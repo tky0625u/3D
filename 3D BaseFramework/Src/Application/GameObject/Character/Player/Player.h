@@ -70,9 +70,9 @@ public:
 	const UINT&                         GetParryID() const;             // パリィした敵のID
 	const UINT&                         GetActionType() const;          // 行動タイプ
 	const int&                          GetParryTime() const;           // パリィ可能時間
-	const int&                          GetMaxStamina() const;          // 最大スタミナ
-	const int&                          GetStaminaRecoveryTime() const; // スタミナ回復開始時間
-	const int&                          GetRollStamina() const;         // 回避した時のスタミナ減少量
+	const unsigned int&                 GetMaxStamina() const;          // 最大スタミナ
+	const unsigned int&                 GetStaminaRecoveryTime() const; // スタミナ回復開始時間
+	const unsigned int&                 GetRollStamina() const;         // 回避した時のスタミナ減少量
 	//=============================================================================================
 
 private:
